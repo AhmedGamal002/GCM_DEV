@@ -51,7 +51,25 @@
       "Bash(curl -s -o /dev/null -w \"status: %{http_code} | redirect: %{redirect_url}\\\\n\" http://127.0.0.1:8000/)",
       "Bash(curl -s -o /dev/null -w \"status: %{http_code} | redirect: %{redirect_url}\\\\n\" http://127.0.0.1:8000/dashboard/analytics)",
       "Bash(curl -s -o /dev/null -w \"status: %{http_code} | redirect: %{redirect_url}\\\\n\" http://127.0.0.1:8000/dashboard/crm)",
-      "Bash(curl -s -o /dev/null -w \"status: %{http_code} | redirect: %{redirect_url}\\\\n\" http://127.0.0.1:8000/dashboard)"
+      "Bash(curl -s -o /dev/null -w \"status: %{http_code} | redirect: %{redirect_url}\\\\n\" http://127.0.0.1:8000/dashboard)",
+      "PowerShell($conns = Get-NetTCPConnection -LocalPort 8000 -State Listen -ErrorAction SilentlyContinue; if \\($conns\\) { $conns | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue } }; Start-Sleep -Seconds 1; \"done\")",
+      "Bash(composer require *)",
+      "Bash(grep -viE \"\\\\.php$|\\\\.js$|\\\\.json$|\\\\.blade\\\\.php$|storage|bootstrap/cache\")",
+      "Bash(php -r \"var_dump\\(json_decode\\(file_get_contents\\('lang/ar.json'\\)\\) !== null\\); var_dump\\(json_decode\\(file_get_contents\\('lang/en.json'\\)\\) !== null\\);\")",
+      "Bash(cd /tmp)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code} %{content_type}\\\\n\" \"http://127.0.0.1:8000/api/v1/users/export?format=xlsx\" -H \"Cookie: $\\(echo\\)\")",
+      "Bash(python3 -c ' *)",
+      "PowerShell(Get-Command python, python3, py -ErrorAction SilentlyContinue)",
+      "Bash(\"/c/Program Files/Git/mingw64/bin/pdftotext.exe\" -layout \"GCM_Portal_NewSystem_FRD_V01.05.pdf\" /tmp/frd.txt)",
+      "Read(//tmp/**)",
+      "Bash(sed -n '180,345p' /tmp/frd.txt)",
+      "Bash(\"/c/Program Files/Git/mingw64/bin/pdftotext.exe\" -f 7 -l 7 -raw \"GCM_Portal_NewSystem_FRD_V01.05.pdf\" /tmp/frd_p7_raw.txt)",
+      "Bash(where.exe tesseract *)",
+      "Bash(\"/c/Program Files/Git/mingw64/bin/pdftotext.exe\" -f 6 -l 6 -layout -enc UTF-8 \"D:\\\\personal\\\\GCM\\\\cl\\\\GCM_Portal_NewSystem_FRD_V01.05.pdf\" -)",
+      "Bash(php -r \"var_dump\\(json_decode\\(file_get_contents\\('lang/en.json'\\)\\) !== null\\); var_dump\\(json_decode\\(file_get_contents\\('lang/ar.json'\\)\\) !== null\\);\")",
+      "Bash(where python *)",
+      "Bash(py -3 -c \"print\\('ok'\\)\")",
+      "Bash(git check-ignore *)"
     ]
   }
 }

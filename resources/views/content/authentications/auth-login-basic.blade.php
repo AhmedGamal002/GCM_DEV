@@ -6,29 +6,15 @@ $customizerHidden = 'customizer-hide';
 
 @section('title', 'Login Basic - Pages')
 
-@section('vendor-style')
-@vite([
-  'resources/assets/vendor/libs/@form-validation/form-validation.scss'
-])
-@endsection
-
 @section('page-style')
 @vite([
   'resources/assets/vendor/scss/pages/page-auth.scss'
 ])
 @endsection
 
-@section('vendor-script')
-@vite([
-  'resources/assets/vendor/libs/@form-validation/popular.js',
-  'resources/assets/vendor/libs/@form-validation/bootstrap5.js',
-  'resources/assets/vendor/libs/@form-validation/auto-focus.js'
-])
-@endsection
-
 @section('page-script')
 @vite([
-  'resources/assets/js/pages-auth.js'
+  'resources/assets/js/pages-auth-login.js'
 ])
 @endsection
 
@@ -50,22 +36,17 @@ $customizerHidden = 'customizer-hide';
           <h4 class="mb-1">Welcome to {{ config('variables.templateName') }}! 👋</h4>
           <p class="mb-6">Please sign-in to your account and start the adventure</p>
 
-          @if ($errors->any())
-            <div class="alert alert-danger">
-              {{ $errors->first() }}
-            </div>
-          @endif
+          <div id="login-error" class="alert alert-danger d-none"></div>
 
-          <form id="formAuthentication" class="mb-4" action="{{ route('login') }}" method="POST">
-            @csrf
+          <form id="formAuthentication" class="mb-4">
             <div class="mb-6">
               <label for="email" class="form-label">Email</label>
-              <input type="text" class="form-control" id="email" name="email" value="{{ old('email') }}" placeholder="Enter your email" autofocus>
+              <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" autofocus required>
             </div>
             <div class="mb-6 form-password-toggle">
               <label class="form-label" for="password">Password</label>
               <div class="input-group input-group-merge">
-                <input type="password" id="password" class="form-control" name="password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" />
+                <input type="password" id="password" class="form-control" name="password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" required />
                 <span class="input-group-text cursor-pointer"><i class="ti ti-eye-off"></i></span>
               </div>
             </div>

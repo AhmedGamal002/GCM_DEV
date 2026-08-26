@@ -62,12 +62,13 @@ class PlatformLoginTest extends TestCase
             'password' => bcrypt('secret-password'),
         ]);
 
-        $response = $this->post('/login', [
-            'email' => 'superadmin@product.test',
-            'password' => 'secret-password',
-        ]);
+        $response = $this->withHeaders(['Referer' => 'http://localhost'])
+            ->postJson('/api/v1/auth/login', [
+                'email' => 'superadmin@product.test',
+                'password' => 'secret-password',
+            ]);
 
-        $response->assertSessionHasErrors('email');
+        $response->assertJsonValidationErrors('email');
         $this->assertFalse(Auth::guard('web')->check());
     }
 }

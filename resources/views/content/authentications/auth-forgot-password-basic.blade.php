@@ -5,29 +5,15 @@ $customizerHidden = 'customizer-hide';
 
 @section('title', 'Forgot Password Basic - Pages')
 
-@section('vendor-style')
-@vite([
-  'resources/assets/vendor/libs/@form-validation/form-validation.scss'
-])
-@endsection
-
 @section('page-style')
 @vite([
   'resources/assets/vendor/scss/pages/page-auth.scss'
 ])
 @endsection
 
-@section('vendor-script')
-@vite([
-  'resources/assets/vendor/libs/@form-validation/popular.js',
-  'resources/assets/vendor/libs/@form-validation/bootstrap5.js',
-  'resources/assets/vendor/libs/@form-validation/auto-focus.js'
-])
-@endsection
-
 @section('page-script')
 @vite([
-  'resources/assets/js/pages-auth.js'
+  'resources/assets/js/pages-auth-forgot-password.js'
 ])
 @endsection
 
@@ -49,20 +35,15 @@ $customizerHidden = 'customizer-hide';
           <h4 class="mb-1">Forgot Password? 🔒</h4>
           <p class="mb-6">Enter your email and we'll send you instructions to reset your password</p>
 
-          @if (session('status'))
-            <div class="alert alert-success">{{ session('status') }}</div>
-          @endif
-          @if ($errors->any())
-            <div class="alert alert-danger">{{ $errors->first() }}</div>
-          @endif
+          <div id="form-status" class="alert alert-success d-none"></div>
+          <div id="form-error" class="alert alert-danger d-none"></div>
 
-          <form id="formAuthentication" class="mb-6" action="{{ route('password.email') }}" method="POST">
-            @csrf
+          <form id="formAuthentication" class="mb-6">
             <div class="mb-6">
               <label for="email" class="form-label">Email</label>
-              <input type="text" class="form-control" id="email" name="email" value="{{ old('email') }}" placeholder="Enter your email" autofocus>
+              <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" autofocus required>
             </div>
-            <button class="btn btn-primary d-grid w-100">Send Reset Link</button>
+            <button class="btn btn-primary d-grid w-100" type="submit">Send Reset Link</button>
           </form>
           <div class="text-center">
             <a href="{{ route('login') }}" class="d-flex justify-content-center">

@@ -7,8 +7,10 @@ use Illuminate\Http\Request;
 
 class AccountSettingsAccount extends Controller
 {
-  public function index()
+  public function index(Request $request)
   {
-    return view('content.pages.pages-account-settings-account');
+    return view('content.pages.pages-account-settings-account', [
+      'user' => $request->user(),
+    ]);
   }
 }

@@ -28,8 +28,13 @@ class User extends Authenticatable
   protected $fillable = [
     'name',
     'email',
+    'phone',
+    'photo',
     'password',
     'status',
+    'additional_data',
+    'affiliation',
+    'contractor_id',
   ];
 
   /**
@@ -53,5 +58,24 @@ class User extends Authenticatable
       'email_verified_at' => 'datetime',
       'password' => 'hashed',
     ];
+  }
+
+  /**
+   * `code` is the FRD's "الرقم التعريفي" — a random, non-guessable
+   * identifier distinct from the raw db `id`, unique per tenant.
+   * Deliberately not in $fillable: it's never settable via mass
+   * assignment, only here.
+   */
+  protected static function booted(): void
+  {
+    static::creating(function (User $user) {
+      if (is_null($user->code)) {
+        do {
+            $candidate = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+        } while (static::where('code', $candidate)->exists());
+
+        $user->code = $candidate;
+      }
+    });
   }
 }

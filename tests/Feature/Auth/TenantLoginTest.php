@@ -7,6 +7,7 @@ use App\Models\User;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Testing\TestResponse;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
@@ -26,18 +27,28 @@ class TenantLoginTest extends TestCase
         app()->instance('tenant', $this->tenant);
     }
 
+    /**
+     * Simulates the web panel's request: Sanctum only treats a request as
+     * "stateful" (cookie-based) when its Referer/Origin matches
+     * SANCTUM_STATEFUL_DOMAINS — see EnsureFrontendRequestsAreStateful.
+     */
+    private function postAsFrontend(string $uri, array $data): TestResponse
+    {
+        return $this->withHeaders(['Referer' => 'http://localhost'])->postJson($uri, $data);
+    }
+
     #[DataProvider('gcmRolesProvider')]
     public function test_each_gcm_role_can_login(string $role): void
     {
         $user = User::factory()->create(['email' => "{$role}@gcm.test", 'password' => bcrypt('secret-password')]);
         $user->assignRole($role);
 
-        $response = $this->post('/login', [
+        $response = $this->postAsFrontend('/api/v1/auth/login', [
             'email' => "{$role}@gcm.test",
             'password' => 'secret-password',
         ]);
 
-        $response->assertRedirect(route('dashboard'));
+        $response->assertOk()->assertJsonMissing(['token']);
         $this->assertTrue(Auth::guard('web')->check());
         $this->assertTrue(Auth::guard('web')->user()->is($user));
     }
@@ -56,12 +67,12 @@ class TenantLoginTest extends TestCase
     {
         User::factory()->create(['email' => 'admin@gcm.test', 'password' => bcrypt('secret-password')]);
 
-        $response = $this->post('/login', [
+        $response = $this->postAsFrontend('/api/v1/auth/login', [
             'email' => 'admin@gcm.test',
             'password' => 'wrong-password',
         ]);
 
-        $response->assertSessionHasErrors('email');
+        $response->assertJsonValidationErrors('email');
         $this->assertFalse(Auth::guard('web')->check());
     }
 
@@ -73,12 +84,47 @@ class TenantLoginTest extends TestCase
             'status' => 'deactivated',
         ]);
 
-        $response = $this->post('/login', [
+        $response = $this->postAsFrontend('/api/v1/auth/login', [
             'email' => 'deactivated@gcm.test',
             'password' => 'secret-password',
         ]);
 
-        $response->assertSessionHasErrors('email');
+        $response->assertJsonValidationErrors('email');
         $this->assertFalse(Auth::guard('web')->check());
+    }
+
+    public function test_non_frontend_request_gets_a_token_instead_of_a_session(): void
+    {
+        $user = User::factory()->create(['email' => 'mobile@gcm.test', 'password' => bcrypt('secret-password')]);
+        $user->assignRole('driver');
+
+        // No Referer/Origin header — mimics the (future) mobile app, which
+        // isn't a SANCTUM_STATEFUL_DOMAINS origin.
+        $response = $this->postJson('/api/v1/auth/login', [
+            'email' => 'mobile@gcm.test',
+            'password' => 'secret-password',
+        ]);
+
+        $response->assertOk()->assertJsonStructure(['token', 'user']);
+        $this->assertFalse(Auth::guard('web')->check());
+    }
+
+    public function test_login_is_rate_limited_after_five_attempts(): void
+    {
+        User::factory()->create(['email' => 'throttle@gcm.test', 'password' => bcrypt('secret-password')]);
+
+        for ($i = 0; $i < 5; $i++) {
+            $this->postAsFrontend('/api/v1/auth/login', [
+                'email' => 'throttle@gcm.test',
+                'password' => 'wrong-password',
+            ]);
+        }
+
+        $response = $this->postAsFrontend('/api/v1/auth/login', [
+            'email' => 'throttle@gcm.test',
+            'password' => 'wrong-password',
+        ]);
+
+        $response->assertStatus(429);
     }
 }

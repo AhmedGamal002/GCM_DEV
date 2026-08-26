@@ -353,16 +353,17 @@
           "name": "Roles & Permissions",
           "icon": "menu-icon tf-icons ti ti-settings",
           "slug": "app-access",
+          "platformOnly": true,
           "submenu": [
             {
-              "url": "app/access-roles",
+              "url": "platform/roles",
               "name": "Roles",
-              "slug": "app-access-roles"
+              "slug": "platform-roles"
             },
             {
-              "url": "app/access-permission",
+              "url": "platform/permissions",
               "name": "Permission",
-              "slug": "app-access-permission"
+              "slug": "platform-permissions"
             }
           ]
         },

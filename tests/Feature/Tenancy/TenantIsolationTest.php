@@ -64,7 +64,7 @@ class TenantIsolationTest extends TestCase
         $response = $this->actingAs($this->userA, 'web')
             ->getJson("/api/v1/users/{$this->userA->id}");
 
-        $response->assertOk()->assertJsonPath('id', $this->userA->id);
+        $response->assertOk()->assertJsonPath('data.id', $this->userA->id);
     }
 
     public function test_creating_a_model_without_bound_tenant_context_throws(): void

@@ -76,18 +76,8 @@ $navbarDetached = ($navbarDetached ?? '');
                 </a>
               </li>
               <li>
-                <a class="dropdown-item {{ app()->getLocale() === 'fr' ? 'active' : '' }}" href="{{url('lang/fr')}}" data-language="fr" data-text-direction="ltr">
-                  <span>French</span>
-                </a>
-              </li>
-              <li>
                 <a class="dropdown-item {{ app()->getLocale() === 'ar' ? 'active' : '' }}" href="{{url('lang/ar')}}" data-language="ar" data-text-direction="rtl">
                   <span>Arabic</span>
-                </a>
-              </li>
-              <li>
-                <a class="dropdown-item {{ app()->getLocale() === 'de' ? 'active' : '' }}" href="{{url('lang/de')}}" data-language="de" data-text-direction="ltr">
-                  <span>German</span>
                 </a>
               </li>
             </ul>
@@ -407,7 +397,13 @@ $navbarDetached = ($navbarDetached ?? '');
             </a>
             <ul class="dropdown-menu dropdown-menu-end">
               <li>
-                <a class="dropdown-item mt-0" href="{{ Route::has('profile.show') ? route('profile.show') : url('pages/profile-user') }}">
+                @php
+                  // Platform (Super Admin) has no profile page of its own yet
+                  // — this link is tenant-user-only, see navbar's other
+                  // instanceof checks below for the same distinction.
+                  $isTenantUser = Auth::check() && Auth::user() instanceof \App\Models\User;
+                @endphp
+                <a class="dropdown-item mt-0" href="{{ $isTenantUser ? route('pages-account-settings-account') : '#' }}">
                   <div class="d-flex align-items-center">
                     <div class="flex-shrink-0 me-2">
                       <div class="avatar avatar-online">
@@ -438,29 +434,39 @@ $navbarDetached = ($navbarDetached ?? '');
               <li>
                 <div class="dropdown-divider my-1 mx-n2"></div>
               </li>
-              <li>
-                <a class="dropdown-item" href="{{ Route::has('profile.show') ? route('profile.show') : url('pages/profile-user') }}">
-                  <i class="ti ti-user me-3 ti-md"></i><span class="align-middle">My Profile</span>
-                </a>
-              </li>
+              @if ($isTenantUser)
+                <li>
+                  <a class="dropdown-item" href="{{ route('pages-account-settings-account') }}">
+                    <i class="ti ti-user me-3 ti-md"></i><span class="align-middle">My Profile</span>
+                  </a>
+                </li>
+              @endif
               <li>
                 <div class="dropdown-divider my-1 mx-n2"></div>
               </li>
-              @if (Auth::check())
-                @php
-                  $logoutRoute = Auth::user() instanceof \App\Models\PlatformAdmin ? route('platform.logout') : route('logout');
-                @endphp
+              @if (Auth::check() && Auth::user() instanceof \App\Models\PlatformAdmin)
+                {{-- Platform (Super Admin) stays on classic form-post logout — web-only, not API-driven. --}}
                 <li>
                   <div class="d-grid px-2 pt-2 pb-1">
-                    <a class="btn btn-sm btn-danger d-flex" href="{{ $logoutRoute }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    <a class="btn btn-sm btn-danger d-flex" href="{{ route('platform.logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                       <small class="align-middle">Logout</small>
                       <i class="ti ti-logout ms-2 ti-14px"></i>
                     </a>
                   </div>
                 </li>
-                <form method="POST" id="logout-form" action="{{ $logoutRoute }}">
+                <form method="POST" id="logout-form" action="{{ route('platform.logout') }}">
                   @csrf
                 </form>
+              @elseif (Auth::check())
+                {{-- Tenant users log out via the API (see resources/js/app.js) — same endpoint the mobile app will use later. --}}
+                <li>
+                  <div class="d-grid px-2 pt-2 pb-1">
+                    <a class="btn btn-sm btn-danger d-flex" href="javascript:void(0);" id="api-logout-link">
+                      <small class="align-middle">Logout</small>
+                      <i class="ti ti-logout ms-2 ti-14px"></i>
+                    </a>
+                  </div>
+                </li>
               @else
                 <li>
                   <div class="d-grid px-2 pt-2 pb-1">

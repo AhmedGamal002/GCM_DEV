@@ -6,29 +6,15 @@ $customizerHidden = 'customizer-hide';
 
 @section('title', 'Reset Password Basic - Pages')
 
-@section('vendor-style')
-@vite([
-  'resources/assets/vendor/libs/@form-validation/form-validation.scss'
-])
-@endsection
-
 @section('page-style')
 @vite([
   'resources/assets/vendor/scss/pages/page-auth.scss'
 ])
 @endsection
 
-@section('vendor-script')
-@vite([
-  'resources/assets/vendor/libs/@form-validation/popular.js',
-  'resources/assets/vendor/libs/@form-validation/bootstrap5.js',
-  'resources/assets/vendor/libs/@form-validation/auto-focus.js'
-])
-@endsection
-
 @section('page-script')
 @vite([
-  'resources/assets/js/pages-auth.js'
+  'resources/assets/js/pages-auth-reset-password.js'
 ])
 @endsection
 
@@ -50,32 +36,29 @@ $customizerHidden = 'customizer-hide';
           <h4 class="mb-1">Reset Password 🔒</h4>
           <p class="mb-6"><span class="fw-medium">Your new password must be different from previously used passwords</span></p>
 
-          @if ($errors->any())
-            <div class="alert alert-danger">{{ $errors->first() }}</div>
-          @endif
+          <div id="form-error" class="alert alert-danger d-none"></div>
 
-          <form id="formAuthentication" action="{{ route('password.update') }}" method="POST">
-            @csrf
-            <input type="hidden" name="token" value="{{ $token }}">
+          <form id="formAuthentication">
+            <input type="hidden" id="token" value="{{ $token }}">
             <div class="mb-6">
               <label for="email" class="form-label">Email</label>
-              <input type="text" class="form-control" id="email" name="email" value="{{ old('email', $email) }}" placeholder="Enter your email" autofocus>
+              <input type="email" class="form-control" id="email" name="email" value="{{ $email }}" placeholder="Enter your email" autofocus required>
             </div>
             <div class="mb-6 form-password-toggle">
               <label class="form-label" for="password">New Password</label>
               <div class="input-group input-group-merge">
-                <input type="password" id="password" class="form-control" name="password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" />
+                <input type="password" id="password" class="form-control" name="password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" required />
                 <span class="input-group-text cursor-pointer"><i class="ti ti-eye-off"></i></span>
               </div>
             </div>
             <div class="mb-6 form-password-toggle">
               <label class="form-label" for="password_confirmation">Confirm Password</label>
               <div class="input-group input-group-merge">
-                <input type="password" id="password_confirmation" class="form-control" name="password_confirmation" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" />
+                <input type="password" id="password_confirmation" class="form-control" name="password_confirmation" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" required />
                 <span class="input-group-text cursor-pointer"><i class="ti ti-eye-off"></i></span>
               </div>
             </div>
-            <button class="btn btn-primary d-grid w-100 mb-6">
+            <button class="btn btn-primary d-grid w-100 mb-6" type="submit">
               Set new password
             </button>
             <div class="text-center">
