@@ -46,6 +46,11 @@
 
 @section('content')
 
+@include('_partials.breadcrumb', ['breadcrumbs' => [
+  ['title' => __('Users'), 'url' => route('app-user-list')],
+  ['title' => __('List')],
+]])
+
 <div id="user-list-status" class="alert alert-success d-none"></div>
 
 <!-- Users List Table -->

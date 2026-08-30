@@ -3,6 +3,15 @@
 @section('title', 'Tenants — Platform')
 
 @section('content')
+
+@include('_partials.breadcrumb', [
+  'homeUrl' => route('platform.dashboard'),
+  'breadcrumbs' => [
+    ['title' => 'Tenants', 'url' => route('platform.tenants.index')],
+    ['title' => 'List'],
+  ],
+])
+
 <div class="d-flex justify-content-between align-items-center mb-1">
   <h4 class="mb-0">Tenants</h4>
   <a href="{{ route('platform.tenants.create') }}" class="btn btn-primary">

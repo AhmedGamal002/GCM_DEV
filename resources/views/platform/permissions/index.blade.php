@@ -3,6 +3,15 @@
 @section('title', 'Permissions — Platform')
 
 @section('content')
+
+@include('_partials.breadcrumb', [
+  'homeUrl' => route('platform.dashboard'),
+  'breadcrumbs' => [
+    ['title' => 'Roles & Permissions'],
+    ['title' => 'Permissions'],
+  ],
+])
+
 <h4 class="mb-1">Permissions</h4>
 <p class="mb-6">Fine-grained permissions, assignable to roles. Only Super Admin can manage them.</p>
 

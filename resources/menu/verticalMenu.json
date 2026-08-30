@@ -408,6 +408,23 @@
       ]
     },
     {
+      "name": "Drivers",
+      "icon": "menu-icon tf-icons ti ti-steering-wheel",
+      "slug": "app-driver",
+      "submenu": [
+        {
+          "url": "app/driver/list",
+          "name": "List",
+          "slug": "app-driver-list"
+        },
+        {
+          "url": "app/driver/add",
+          "name": "Add",
+          "slug": "app-driver-add"
+        }
+      ]
+    },
+    {
       "name": "Roles & Permissions",
       "icon": "menu-icon tf-icons ti ti-settings",
       "slug": "app-access",

@@ -3,6 +3,15 @@
 @section('title', 'Roles — Platform')
 
 @section('content')
+
+@include('_partials.breadcrumb', [
+  'homeUrl' => route('platform.dashboard'),
+  'breadcrumbs' => [
+    ['title' => 'Roles & Permissions'],
+    ['title' => 'Roles'],
+  ],
+])
+
 <h4 class="mb-1">Roles</h4>
 <p class="mb-6">Roles are a product-wide concept — shared across every tenant. Only Super Admin can create, edit, or delete them.</p>
 

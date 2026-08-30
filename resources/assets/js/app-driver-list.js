@@ -1,24 +1,18 @@
 /**
- * Users DataTable — restores the original template's DataTables-based
- * layout (search + export together in the same row, role/status filters
- * built from the loaded column data, "Processing" indicator while ajax
- * loads) instead of a hand-rolled table, wired to the real
- * /api/v1/users endpoint. Columns match the FRD's list-table spec:
- * ID / User / Affiliation / Entity / Role / Status / Actions. The
- * "Actions" column is a single link to the dedicated account-details
- * page (FRD: "رابط لصفحة تفاصيل هذا الحساب") — editing and status
- * changes happen there, not inline on this list.
+ * Drivers DataTable — matches the FRD's dedicated "إدارة السائقين" page
+ * spec exactly: 4 stat cards (available / on trips / on vacation /
+ * deactivated), a 5-column table (ID / Driver Name / Affiliation /
+ * Driver Availability / Details), filters (Affiliation + Availability),
+ * and an Export button — a DIFFERENT, smaller column set than the
+ * general Users table (no Entity/Role columns — this page is
+ * driver-only, so "Role" is always "driver" and redundant here).
  */
 'use strict';
 
 $(function () {
-  const t = window.userListTranslations || {};
-  const dtUserTable = $('.datatables-users');
+  const t = window.driverListTranslations || {};
+  const dtDriverTable = $('.datatables-drivers');
 
-  // name/email are user-controlled (any tenant role can set their own
-  // name via the self-service profile) and this render path builds raw
-  // HTML strings, so it must be escaped explicitly — DataTables inserts
-  // a render callback's return value via .html(), not as text.
   function escapeHtml(value) {
     return $('<div>').text(value == null ? '' : value).html();
   }
@@ -30,20 +24,35 @@ $(function () {
   };
 
   if (new URLSearchParams(window.location.search).get('created')) {
-    const box = document.getElementById('user-list-status');
-    box.textContent = t.created || 'User created successfully.';
+    const box = document.getElementById('driver-list-status');
+    box.textContent = t.created || 'Driver created successfully.';
     box.classList.remove('d-none');
   }
 
-  if (!dtUserTable.length) {
+  if (!dtDriverTable.length) {
     return;
   }
 
-  dtUserTable.DataTable({
+  function updateStats(drivers) {
+    const counts = { active: 0, on_vacation: 0, deactivated: 0 };
+    drivers.forEach(function (d) {
+      if (counts[d.status] !== undefined) counts[d.status]++;
+    });
+
+    document.getElementById('dl-stat-available').textContent = counts.active;
+    document.getElementById('dl-stat-vacation').textContent = counts.on_vacation;
+    document.getElementById('dl-stat-deactivated').textContent = counts.deactivated;
+    // "On Trips" stays 0 — no Trips module yet (Week 7).
+  }
+
+  dtDriverTable.DataTable({
     processing: true,
     ajax: {
-      url: '/api/v1/users?per_page=1000',
-      dataSrc: 'data'
+      url: '/api/v1/drivers?per_page=1000',
+      dataSrc: function (json) {
+        updateStats(json.data);
+        return json.data;
+      }
     },
     columns: [
       { data: 'id' },
@@ -51,8 +60,6 @@ $(function () {
       { data: 'code' },
       { data: 'name' },
       { data: 'affiliation' },
-      { data: 'entity_name' },
-      { data: 'roles' },
       { data: 'status' },
       { data: 'id' }
     ],
@@ -74,7 +81,6 @@ $(function () {
       },
       {
         targets: 3,
-        // Name + email, same visual pattern as the template's other user tables
         responsivePriority: 4,
         render: function (data, type, full) {
           const initials = (full.name.match(/\b\w/g) || []).slice(0, 2).join('').toUpperCase();
@@ -105,14 +111,6 @@ $(function () {
       },
       {
         targets: 5,
-        render: (data, type, full) => full.entity_name || ''
-      },
-      {
-        targets: 6,
-        render: (data, type, full) => full.roles.join(', ')
-      },
-      {
-        targets: 7,
         render: function (data, type, full) {
           if (type === 'filter' || type === 'sort' || type === 'type') return full.status;
           const status = statusObj[full.status] || { title: full.status, class: 'bg-label-secondary' };
@@ -125,8 +123,8 @@ $(function () {
         searchable: false,
         orderable: false,
         render: function (data, type, full) {
-          const viewUrl = (t.view_url_base || '/app/user/view') + '/' + full.id;
-          const editUrl = (t.edit_url_base || '/app/user/edit') + '/' + full.id;
+          const viewUrl = (t.view_url_base || '/app/driver/view') + '/' + full.id;
+          const editUrl = (t.edit_url_base || '/app/driver/edit') + '/' + full.id;
           return (
             '<div class="d-flex align-items-center">' +
             '<a href="' + viewUrl + '" class="btn btn-icon btn-text-secondary waves-effect waves-light rounded-pill" title="' +
@@ -142,8 +140,8 @@ $(function () {
     language: {
       sLengthMenu: '_MENU_',
       search: '',
-      searchPlaceholder: t.search_user || 'Search User',
-      emptyTable: t.no_users_found || 'No users found.',
+      searchPlaceholder: t.search_driver || 'Search Driver',
+      emptyTable: t.no_drivers_found || 'No drivers found.',
       info: t.info || 'Showing _START_ to _END_ of _TOTAL_ entries',
       infoEmpty: t.info_empty || 'Showing 0 to 0 of 0 entries',
       paginate: {
@@ -151,8 +149,6 @@ $(function () {
         previous: '<i class="ti ti-chevron-left ti-sm"></i>'
       }
     },
-    // Search + export live in the same row as the original template's
-    // layout (dt-action-buttons wraps both f=search and B=buttons).
     dom:
       '<"row"' +
       '<"col-md-2"<"ms-n2"l>>' +
@@ -171,19 +167,19 @@ $(function () {
           {
             text: '<i class="ti ti-file-spreadsheet me-2"></i>Excel',
             className: 'dropdown-item',
-            action: () => window.location.assign('/api/v1/users/export?format=xlsx')
+            action: () => window.location.assign('/api/v1/drivers/export?format=xlsx')
           },
           {
             text: '<i class="ti ti-file-code-2 me-2"></i>Pdf',
             className: 'dropdown-item',
-            action: () => window.location.assign('/api/v1/users/export?format=pdf')
+            action: () => window.location.assign('/api/v1/drivers/export?format=pdf')
           }
         ]
       },
       {
-        text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">' + (t.add_user || 'Add User') + '</span>',
+        text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">' + (t.add_driver || 'Add Driver') + '</span>',
         className: 'add-new btn btn-primary waves-effect waves-light',
-        action: () => window.location.assign(t.add_user_url || '/app/user/add')
+        action: () => window.location.assign(t.add_driver_url || '/app/driver/add')
       }
     ],
     responsive: {
@@ -204,46 +200,44 @@ $(function () {
       }
     },
     initComplete: function () {
-      // Role filter, built from whatever roles are actually present in
-      // the loaded data — same mechanism the original template used.
+      // Affiliation filter — FRD: "التبعية (للشركة / لمتعهد)"
       this.api()
-        .columns(6)
+        .columns(4)
         .every(function () {
           const column = this;
           const select = $(
-            '<select class="form-select text-capitalize"><option value="">' + (t.all_roles || 'All roles') + '</option></select>'
+            '<select class="form-select"><option value="">' + (t.all_affiliations || 'All affiliations') + '</option></select>'
           )
-            .appendTo('.user_role')
+            .appendTo('.driver_affiliation')
             .on('change', function () {
               const val = $.fn.dataTable.util.escapeRegex($(this).val());
-              column.search(val ? val : '', true, false).draw();
+              column.search(val ? '^' + val + '$' : '', true, false).draw();
             });
 
           const seen = new Set();
-          column
-            .data()
-            .each(function (roles) {
-              roles.forEach((role) => seen.add(role));
-            });
-          Array.from(seen).sort().forEach((role) => select.append('<option value="' + role + '">' + role + '</option>'));
+          column.data().each((affiliation) => seen.add(affiliation));
+          Array.from(seen).sort().forEach((affiliation) => {
+            const label = affiliation === 'gcm' ? 'GCM' : affiliation;
+            select.append('<option value="' + affiliation + '">' + label + '</option>');
+          });
         });
 
-      // Status filter
+      // Availability filter — FRD: "توفر السائق"
       this.api()
-        .columns(7)
+        .columns(5)
         .every(function () {
           const column = this;
           const select = $(
             '<select class="form-select"><option value="">' + (t.all_statuses || 'All statuses') + '</option></select>'
           )
-            .appendTo('.user_status')
+            .appendTo('.driver_status')
             .on('change', function () {
               const val = $.fn.dataTable.util.escapeRegex($(this).val());
               column.search(val ? '^' + val + '$' : '', true, false).draw();
             });
 
           ['active', 'on_vacation', 'deactivated'].forEach((status) => {
-            select.append('<option value="' + status + '">' + (statusObj[status].title) + '</option>');
+            select.append('<option value="' + status + '">' + statusObj[status].title + '</option>');
           });
         });
     }

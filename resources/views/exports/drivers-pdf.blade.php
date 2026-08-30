@@ -10,27 +10,23 @@
   </style>
 </head>
 <body>
-  <h3>Users</h3>
+  <h3>Drivers</h3>
   <table>
     <thead>
       <tr>
         <th>ID</th>
-        <th>Name</th>
+        <th>Driver Name</th>
         <th>Affiliation</th>
-        <th>Entity</th>
-        <th>Role</th>
-        <th>Status</th>
+        <th>Driver Availability</th>
       </tr>
     </thead>
     <tbody>
-      @foreach ($users as $user)
+      @foreach ($drivers as $driver)
         <tr>
-          <td>{{ $user->code }}</td>
-          <td>{{ $user->name }}</td>
-          <td>{{ $user->affiliation === 'gcm' ? 'GCM' : $user->affiliation }}</td>
-          <td>{{ $user->affiliation === 'gcm' ? $user->tenant->name : '' }}</td>
-          <td>{{ $user->getRoleNames()->implode(', ') }}</td>
-          <td>{{ $user->status }}</td>
+          <td>{{ $driver->user->code }}</td>
+          <td>{{ $driver->user->name }}</td>
+          <td>{{ $driver->user->affiliation === 'gcm' ? 'GCM' : $driver->user->affiliation }}</td>
+          <td>{{ $driver->user->status }}</td>
         </tr>
       @endforeach
     </tbody>

@@ -3,6 +3,16 @@
 @section('title', 'Edit Role — Platform')
 
 @section('content')
+
+@include('_partials.breadcrumb', [
+  'homeUrl' => route('platform.dashboard'),
+  'breadcrumbs' => [
+    ['title' => 'Roles & Permissions'],
+    ['title' => 'Roles', 'url' => route('platform.roles.index')],
+    ['title' => 'Edit'],
+  ],
+])
+
 <h4 class="mb-6">Edit Role — {{ $role->name }}</h4>
 
 @if ($errors->any())

@@ -73,7 +73,8 @@
       "Bash(git symbolic-ref *)",
       "Bash(git remote *)",
       "Bash(xargs -I{} basename {})",
-      "Bash(php -r \"var_dump\\(json_decode\\(file_get_contents\\('resources/menu/verticalMenu.json'\\)\\) !== null\\);\")"
+      "Bash(php -r \"var_dump\\(json_decode\\(file_get_contents\\('resources/menu/verticalMenu.json'\\)\\) !== null\\);\")",
+      "Bash(cygpath -w /tmp/frd_full.txt)"
     ]
   }
 }

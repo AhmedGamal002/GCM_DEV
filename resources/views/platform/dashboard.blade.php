@@ -3,6 +3,14 @@
 @section('title', 'Platform Dashboard')
 
 @section('content')
+
+@include('_partials.breadcrumb', [
+  'homeUrl' => route('platform.dashboard'),
+  'breadcrumbs' => [
+    ['title' => 'Dashboard'],
+  ],
+])
+
 <div class="row g-6">
   <div class="col-12">
     <div class="card">

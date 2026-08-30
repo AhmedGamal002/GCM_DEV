@@ -229,6 +229,11 @@ Route::get('/app/user/list', [UserList::class, 'index'])->middleware(['auth', 't
 Route::get('/app/user/add', [\App\Http\Controllers\apps\UserAdd::class, 'index'])->middleware(['auth', 'tenant'])->name('app-user-add');
 Route::get('/app/user/view/{user}', [\App\Http\Controllers\apps\UserAccount::class, 'view'])->whereNumber('user')->middleware(['auth', 'tenant'])->name('app-user-view');
 Route::get('/app/user/edit/{user}', [\App\Http\Controllers\apps\UserAccount::class, 'edit'])->whereNumber('user')->middleware(['auth', 'tenant'])->name('app-user-edit');
+Route::get('/app/driver/list', [\App\Http\Controllers\apps\DriverAccount::class, 'list'])->middleware(['auth', 'tenant'])->name('app-driver-list');
+Route::get('/app/driver/add', [\App\Http\Controllers\apps\DriverAccount::class, 'add'])->middleware(['auth', 'tenant'])->name('app-driver-add');
+Route::get('/app/driver/view/{driver}', [\App\Http\Controllers\apps\DriverAccount::class, 'view'])->whereNumber('driver')->middleware(['auth', 'tenant'])->name('app-driver-view');
+Route::get('/app/driver/edit/{driver}', [\App\Http\Controllers\apps\DriverAccount::class, 'edit'])->whereNumber('driver')->middleware(['auth', 'tenant'])->name('app-driver-edit');
+
 Route::get('/app/user/view/account', [UserViewAccount::class, 'index'])->name('app-user-view-account');
 Route::get('/app/user/view/security', [UserViewSecurity::class, 'index'])->name('app-user-view-security');
 Route::get('/app/user/view/billing', [UserViewBilling::class, 'index'])->name('app-user-view-billing');

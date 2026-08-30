@@ -3,6 +3,15 @@
 @section('title', 'Add Tenant — Platform')
 
 @section('content')
+
+@include('_partials.breadcrumb', [
+  'homeUrl' => route('platform.dashboard'),
+  'breadcrumbs' => [
+    ['title' => 'Tenants', 'url' => route('platform.tenants.index')],
+    ['title' => 'Add'],
+  ],
+])
+
 <h4 class="mb-6">Add New Tenant</h4>
 
 @if ($errors->any())

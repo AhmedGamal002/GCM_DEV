@@ -7,6 +7,12 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
+/**
+ * Columns match the FRD's list-table spec exactly: الرقم التعريفي /
+ * الاسم / التبعية / اسم الجهة التابع لها / الدور الوظيفي / حالة الحساب
+ * — i.e. what's actually on screen in app-user-list, not an arbitrary
+ * export-only column set (email/created_at were never in that spec).
+ */
 class UsersExport implements FromCollection, WithHeadings, WithMapping
 {
     public function __construct(private readonly Collection $users)
@@ -20,18 +26,18 @@ class UsersExport implements FromCollection, WithHeadings, WithMapping
 
     public function headings(): array
     {
-        return ['ID', 'Name', 'Email', 'Status', 'Roles', 'Created At'];
+        return ['ID', 'Name', 'Affiliation', 'Entity', 'Role', 'Status'];
     }
 
     public function map($user): array
     {
         return [
-            $user->id,
+            $user->code,
             $user->name,
-            $user->email,
-            $user->status,
+            $user->affiliation === 'gcm' ? 'GCM' : $user->affiliation,
+            $user->affiliation === 'gcm' ? $user->tenant->name : null,
             $user->getRoleNames()->implode(', '),
-            $user->created_at,
+            $user->status,
         ];
     }
 }

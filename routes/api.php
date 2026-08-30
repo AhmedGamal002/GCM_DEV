@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\V1\Auth\LogoutController;
 use App\Http\Controllers\Api\V1\Auth\MeController;
 use App\Http\Controllers\Api\V1\Auth\NewPasswordController;
 use App\Http\Controllers\Api\V1\Auth\PasswordResetLinkController;
+use App\Http\Controllers\Api\V1\DriverController;
 use App\Http\Controllers\Api\V1\ProfileController;
 use App\Http\Controllers\Api\V1\RoleController;
 use App\Http\Controllers\Api\V1\UserController;
@@ -39,5 +40,16 @@ Route::prefix('v1')->group(function () {
         Route::get('/users/{user}', [UserController::class, 'show']);
         Route::patch('/users/{user}', [UserController::class, 'update']);
         Route::patch('/users/{user}/status', [UserController::class, 'status']);
+
+        // /drivers/export MUST be registered before /drivers/{driver} —
+        // same reasoning as /users/export (see above).
+        Route::get('/drivers/export', [DriverController::class, 'export']);
+        Route::get('/drivers', [DriverController::class, 'index']);
+        Route::post('/drivers', [DriverController::class, 'store']);
+        Route::get('/drivers/{driver}', [DriverController::class, 'show']);
+        Route::patch('/drivers/{driver}', [DriverController::class, 'update']);
+        Route::post('/drivers/{driver}/entry-permits', [DriverController::class, 'addEntryPermit']);
+        Route::get('/drivers/{driver}/documents/{type}', [DriverController::class, 'downloadDocument']);
+        Route::get('/driver-entry-permits/{permit}/attachment', [DriverController::class, 'downloadEntryPermitAttachment']);
     });
 });
