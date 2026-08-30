@@ -120,9 +120,13 @@
 | الصلاحيات | إنشاء/تعطيل/تفعيل Tenant، إنشاء أول Tenant Admin لأي Tenant جديد، إحصائيات عبر كل الـ Tenants (اشتراكات لاحقًا) | كل صلاحيات "مدير النظام" الأصلية من الـ FRD — لكن مقصورة على tenant_id الخاص به فقط |
 | قاعدة "مدير واحد فقط" (من الـ FRD الأصلي) | لا تنطبق — يمكن أكثر من Super Admin | تنطبق **لكل Tenant على حدة**: تينانت GCM له مدير نظام واحد فقط، وأي Tenant جديد يُنشأ له مدير نظام واحد فقط خاص به |
 
-**آلية الإنشاء:** عند إنشاء Tenant جديد من لوحة Super Admin، يُنشأ تلقائيًا أول حساب `system_admin` لهذا الـ Tenant.
+**آلية الإنشاء:** عند إنشاء Tenant جديد من لوحة Super Admin، يُنشأ تلقائيًا أول حساب `system_admin` لهذا الـ Tenant. **✅ مُنفَّذ فعليًا (أسبوع 2):** `Platform\TenantController` + `Domain\Tenants\Actions\CreateTenantAction` — فورم واحد (بيانات الشركة + بيانات أول `system_admin` لها معًا)، `/platform/tenants`. تعطيل الـ Tenant (`status = suspended`) بيفعّل فورًا خلال `EnsureTenant` middleware — أي جلسة مستخدم تابعة لـ tenant معطّل بتتقفل تلقائيًا (force logout) في أول طلب تالي.
+
+**⚠️ فخ لازم الانتباه له عند أي `withCount()`/subquery على علاقة `users` من كود الـ Platform:** أي استعلام Platform-side (مفيهوش tenant مربوط في الـ container) لو استخدم `Tenant::withCount('users')` أو أي subquery بترجع لجدول `users`، هيرمي `TenantContextMissingException` — لإن الـ subquery لسه شايل الـ Global Scope بتاع `BelongsToTenant` حتى لو الاستعلام الأساسي على `Tenant` مش `User`. الحل الثابت المستخدم في كل من `Platform\RoleController` و`Platform\TenantController`: عدّ صريح بحلقة `foreach` + `User::withoutGlobalScope(BelongsToTenant::class)->where('tenant_id', $x)->count()` بدل `withCount()`.
 
 **في الواجهة:** كل Tenant Admin يرى اسم شركته (Tenant) بوضوح بجانب دوره في الـ topbar/dashboard — مثلاً "مدير النظام — GCM"، وليس تسمية عامة غامضة. يمنع أي التباس بين كونه مدير نظام لشركته فقط وليس للمنتج كله.
+
+**⚠️ فخ اكتُشف عمليًا (أسبوع 2) — القائمة الجانبية وقت وجود جلستين معًا:** Laravel بيحتفظ بتسجيل دخول كل guard (`web` و`platform`) **بشكل مستقل تمامًا في نفس session/متصفح** — يعني مستخدم سجّل دخول Super Admin وبعدين سجّل دخول Tenant admin (أو العكس) من غير logout صريح من الأول، الاتنين بيفضلوا شغالين في نفس الوقت. قرار "أعرض قائمة السوبر أدمن ولا لأ؟" **لازم** يعتمد على الرابط الحالي (`Request::is('platform*')`) **مع** `Auth::guard('platform')->check()` معًا — الاعتماد على `Auth::guard('platform')->check()` لوحدها (من غير فحص الرابط) بيوري قائمة Super Admin حتى وإنت فاتح صفحة تينانت عادية. راجع `App\View\Composers\MenuComposer`.
 
 **مسارات إضافية:**
 ```
@@ -147,6 +151,23 @@ app/Models/PlatformAdmin.php   # لا يمتلك trait BelongsToTenant إطلا�
 | **Trip Lifecycle** | ⚠️ **غير مؤكد** | لا يوجد تفصيل في FRD — مبني على تخمين من إشارات BRD فقط. **لا تُنفَّذ فعليًا قبل الحصول على التفاصيل** |
 | **Documents (PDF) / Reports** | ⚠️ **غير مؤكد** | نفس السبب — تابع لعدم اكتمال قسم Trip |
 | Units of Measure | 🔄 مُصحَّح | ليس CRUD كامل — جدول بيانات ثابت (Seeded) بـ 4 مجموعات ثابتة (كتلة/حجم/طول/مساحة) + منطق تحويل تلقائي. لا يحتاج `UnitOfMeasureController` بمعنى إدارة كاملة، فقط Seeder + Service للتحويل بين الوحدات |
+
+## 3.8 الرقم التعريفي للمستخدم (`users.code`) — نمط عام لأي كيان محتاج "رقم عرض" مش الـ `id` الخام
+
+> **قرار (أسبوع 2):** عمود `users.code` — رقم عشوائي (مش متسلسل) من 6 خانات، فريد **لكل tenant على حدة** (unique index على `(tenant_id, code)`)، بيتولّد تلقائيًا. الغرض: "الرقم التعريفي" اللي الـ FRD بيطلبه كعمود في جدول عرض المستخدمين — لازم يكون هوية مستقرة ومميزة، مش الـ `id` الخام لقاعدة البيانات (اللي بيكشف حجم البيانات الفعلي ومتسلسل يسهل تخمينه).
+
+**التنفيذ (النمط ده قابل لإعادة الاستخدام لأي كيان تاني محتاج نفس الحاجة):**
+- التوليد في `Model::booted()` عبر `static::creating()` hook — **مش** في الـ Action/Controller — عشان يشتغل تلقائيًا لأي طريقة إنشاء (factory، seeder، Action) من غير تكرار الكود.
+- التوليد عشوائي مع تحقق تكرار في حلقة `do...while` (`random_int` + `str_pad` + `exists()` check) — مش متسلسل (`max()+1`) لإن ده بيكشف عدد السجلات الفعلي.
+- التفرد مضبوط بمستوى الـ tenant (مش عالمي) — بما إن الـ Global Scope بتاع `BelongsToTenant` بيفلتر أي `where('code', ...)->exists()` تلقائيًا على الـ tenant الحالي، مفيش حاجة إضافية مطلوبة غير الـ unique index المركّب.
+- العمود **مش** في `$fillable` — بيتولّد جوه الـ hook بس، مايتقبلش عن طريق mass assignment من أي request.
+
+## 3.9 فخاخ بيئة التطوير (اتكشفت عمليًا، بتضيّع وقت لو اتنسيت)
+
+- **`APP_URL` لازم يشمل رقم البورت** في بيئة التطوير المحلية (`http://localhost:8000`، مش `http://localhost`) — أي كود بيستخدم `Storage::disk('public')->url(...)` أو `url()`/`route()` هيولّد روابط بمنفذ غلط (80 بدل 8000) لو `APP_URL` ناقص البورت. النتيجة الملموسة: صور بترفع وتتخزن صح على القرص، بس رابط عرضها بيتكسر في المتصفح (يبان وكإن "الصورة مش بتتخزن" رغم إنها موجودة فعليًا).
+- **`php artisan serve --no-reload` (مُفعّل عمدًا من الأسبوع 1 لحل بطء الأداء عبر `PHP_CLI_SERVER_WORKERS`) بيخلي أي تعديل في `.env` مايتفعّلش غير بعد إعادة تشغيل السيرفر بالكامل.** السبب: PHP بتستخدم `putenv()` لضبط متغيرات البيئة، وده تأثيره على مستوى الـ **process** مش الـ request — أول ما الـ worker process يقرأ `.env` مرة، القيمة بتفضل عالقة في الـ process لحد ما يتقفل. `php artisan config:clear` **مش كافي** لوحده هنا — لازم إيقاف وإعادة تشغيل السيرفر (`preview_stop` ثم `preview_start`، أو `Stop-Process` على أي `php.exe` شايل البورت لو معلّق).
+- **`Storage::fake('public')` في الاختبارات بيسقط أي إعداد `'url'` مخصص في `config/filesystems.php`** (`Storage::buildDiskConfiguration()` بترجّع بس `throw` + الإعدادات الممرَّرة + `root` — مش الإعدادات الأصلية كلها). يعني تستات رفع الصور لازم تتأكد من وجود الملف (`Storage::disk('public')->assertExists(...)`) ومحتوى الرابط (`assertStringContainsString`)، **مش** من كونه absolute URL بالكامل — الـ absolute-ness مضمونة بس في التشغيل الحقيقي (غير الـ fake) عن طريق `APP_URL`.
+- **`Route::currentRouteName()`/الجلسة بتتصفّر بعد `php artisan migrate:fresh`** (جدول `sessions` بيتصفّر معاها) — أي جلسة متصفح شغالة قبل الأمر ده هتترمي على صفحة تسجيل الدخول تاني.
 
 ## 4. هيكل الفولدرز الكامل (نسخة مدمجة نهائية)
 
@@ -433,6 +454,7 @@ gcm-wms/
 - `$fillable` صريح في كل Model (mass assignment protection).
 - HTTPS إجباري، تشفير الحقول الحساسة.
 - **Global Scope للـ tenant إلزامي على كل query** — هذا هو خط الدفاع الأول ضد تسريب بيانات بين الشركات المشتركة في المنتج.
+- **⚠️ قاعدة اتأكدت أهميتها فعليًا (أسبوع 2) — أي DataTables `render` callback في JS بيرجع HTML خام لازم يعمل escape للحقول اللي مصدرها بيانات مستخدم (اسم، إيميل، أي حقل self-service قابل للتعديل).** DataTables بتحقن النتيجة عبر `.html()` مش كـ نص، فأي حقل زي `full.name` (مستخدم عادي أي دور يقدر يغيّره بنفسه عن طريق `/api/v1/me`) لو اتحط في الـ HTML string من غير escaping بيبقى XSS مخزّن قابل للتنفيذ في جلسة أي حد بيشوف الجدول (زي system_admin وهو بيفتح صفحة المستخدمين). استخدم helper بسيط زي `$('<div>').text(value).html()` قبل أي تسلسل نصي HTML. الحقول اللي مصدرها الكود نفسه (roles enum ثابت، صور برابط متولّد من hash عشوائي server-side) مش محتاجة نفس المعاملة.
 
 ## 6. الأداء
 
@@ -441,6 +463,7 @@ gcm-wms/
 - Eager loading دائمًا (`with()`) لتفادي N+1 — الهيكل متداخل (tenant → company → project → contract → trip).
 - Pagination بـ Laravel القياسي (limit/offset) كما هو محدد في BRD.
 - فهرسة `tenant_id` على كل جدول (أداء العزل).
+- **⚠️ فخ N+1 اتأكد عمليًا مع Spatie Permission (أسبوع 2):** أي `Resource` بيستخدم `getRoleNames()`/`getPermissionNames()` من `HasRoles` trait، الدالة دي بتعمل `loadMissing('roles')` — يعني لو الـ query الأساسي مجابش `roles` ضمن `->with([...])`، كل صف في القائمة هيسبب query منفصل لجلب أدواره (N+1 كامل). لازم أي `index()`/`export()` بيرجّع مجموعة `User` (أو أي Model عليه `HasRoles`) يضيف الـ relation المطلوبة صراحة في `->with([...])` — اتأكد منها بتست بيعد عدد الـ queries الفعلي (`DB::enableQueryLog()`) بدل الاعتماد على المراجعة البصرية للكود بس.
 
 ## 7. خطة الشهرين — 3 مراحل
 

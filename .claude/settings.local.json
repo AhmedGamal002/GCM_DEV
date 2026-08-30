@@ -69,7 +69,11 @@
       "Bash(php -r \"var_dump\\(json_decode\\(file_get_contents\\('lang/en.json'\\)\\) !== null\\); var_dump\\(json_decode\\(file_get_contents\\('lang/ar.json'\\)\\) !== null\\);\")",
       "Bash(where python *)",
       "Bash(py -3 -c \"print\\('ok'\\)\")",
-      "Bash(git check-ignore *)"
+      "Bash(git check-ignore *)",
+      "Bash(git symbolic-ref *)",
+      "Bash(git remote *)",
+      "Bash(xargs -I{} basename {})",
+      "Bash(php -r \"var_dump\\(json_decode\\(file_get_contents\\('resources/menu/verticalMenu.json'\\)\\) !== null\\);\")"
     ]
   }
 }

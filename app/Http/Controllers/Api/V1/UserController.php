@@ -37,7 +37,11 @@ class UserController extends Controller
         Gate::authorize('viewAny', User::class);
 
         $users = User::query()
-            ->with('tenant')
+            // 'roles' is eager-loaded too — UserResource::getRoleNames()
+            // otherwise lazy-loads it per row (Spatie's HasRoles trait
+            // calls loadMissing('roles')), an N+1 query per user on both
+            // the paginated list and the (unpaginated) export.
+            ->with(['tenant', 'roles'])
             // This is "manage other users", not self-service — the
             // caller's own row is never listed here. Editing yourself
             // goes through /api/v1/me (ProfileController) instead.
@@ -98,7 +102,11 @@ class UserController extends Controller
         Gate::authorize('viewAny', User::class);
 
         $users = User::query()
-            ->with('tenant')
+            // 'roles' is eager-loaded too — UserResource::getRoleNames()
+            // otherwise lazy-loads it per row (Spatie's HasRoles trait
+            // calls loadMissing('roles')), an N+1 query per user on both
+            // the paginated list and the (unpaginated) export.
+            ->with(['tenant', 'roles'])
             ->where('id', '!=', $request->user()->id)
             ->when($request->filled('status'), fn ($q) => $q->where('status', $request->string('status')))
             ->when($request->filled('role'), fn ($q) => $q->role($request->string('role')->toString()))

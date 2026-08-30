@@ -15,6 +15,14 @@ $(function () {
   const t = window.userListTranslations || {};
   const dtUserTable = $('.datatables-users');
 
+  // name/email are user-controlled (any tenant role can set their own
+  // name via the self-service profile) and this render path builds raw
+  // HTML strings, so it must be escaped explicitly — DataTables inserts
+  // a render callback's return value via .html(), not as text.
+  function escapeHtml(value) {
+    return $('<div>').text(value == null ? '' : value).html();
+  }
+
   const statusObj = {
     active: { title: t.active || 'Active', class: 'bg-label-success' },
     on_vacation: { title: t.on_vacation || 'On Vacation', class: 'bg-label-warning' },
@@ -78,8 +86,8 @@ $(function () {
               : '<span class="avatar-initial rounded-circle bg-label-primary">' + initials + '</span>') +
             '</div></div>' +
             '<div class="d-flex flex-column">' +
-            '<span class="text-heading fw-medium">' + full.name + '</span>' +
-            '<small>' + full.email + '</small>' +
+            '<span class="text-heading fw-medium">' + escapeHtml(full.name) + '</span>' +
+            '<small>' + escapeHtml(full.email) + '</small>' +
             '</div></div>'
           );
         }

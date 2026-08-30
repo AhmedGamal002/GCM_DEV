@@ -1072,23 +1072,6 @@
       "icon": "menu-icon tf-icons ti ti-map",
       "name": "Leaflet Maps",
       "slug": "maps-leaflet"
-    },
-    {
-      "menuHeader": "Misc"
-    },
-    {
-      "url": "https://pixinvent.ticksy.com/",
-      "icon": "menu-icon tf-icons ti ti-lifebuoy",
-      "name": "Support",
-      "slug": "support",
-      "target": "_blank"
-    },
-    {
-      "url": "https://demos.pixinvent.com/vuexy-html-admin-template/documentation/laravel-introduction.html",
-      "icon": "menu-icon tf-icons ti ti-file-description",
-      "name": "Documentation",
-      "slug": "documentation",
-      "target": "_blank"
     }
   ]
 }

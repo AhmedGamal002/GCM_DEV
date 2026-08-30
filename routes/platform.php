@@ -4,6 +4,7 @@ use App\Http\Controllers\Platform\AuthenticatedSessionController;
 use App\Http\Controllers\Platform\DashboardController;
 use App\Http\Controllers\Platform\PermissionController;
 use App\Http\Controllers\Platform\RoleController;
+use App\Http\Controllers\Platform\TenantController;
 use Illuminate\Support\Facades\Route;
 
 // Super Admin — entirely separate guard/provider/session from tenant users.
@@ -36,4 +37,14 @@ Route::middleware('auth:platform')->prefix('platform')->name('platform.')->group
     Route::post('/permissions', [PermissionController::class, 'store'])->name('permissions.store');
     Route::put('/permissions/{permission}', [PermissionController::class, 'update'])->name('permissions.update');
     Route::delete('/permissions/{permission}', [PermissionController::class, 'destroy'])->name('permissions.destroy');
+
+    // Tenants — no hard delete (same rule as Users): a tenant is only
+    // ever suspended, which EnsureTenant already enforces by rejecting
+    // every session belonging to a non-active tenant.
+    Route::get('/tenants', [TenantController::class, 'index'])->name('tenants.index');
+    Route::get('/tenants/create', [TenantController::class, 'create'])->name('tenants.create');
+    Route::post('/tenants', [TenantController::class, 'store'])->name('tenants.store');
+    Route::get('/tenants/{tenant}/edit', [TenantController::class, 'edit'])->name('tenants.edit');
+    Route::put('/tenants/{tenant}', [TenantController::class, 'update'])->name('tenants.update');
+    Route::patch('/tenants/{tenant}/status', [TenantController::class, 'status'])->name('tenants.status');
 });
