@@ -73,7 +73,24 @@
       "Bash(git symbolic-ref *)",
       "Bash(git remote *)",
       "Bash(xargs -I{} basename {})",
-      "Bash(php -r \"var_dump\\(json_decode\\(file_get_contents\\('resources/menu/verticalMenu.json'\\)\\) !== null\\);\")"
+      "Bash(php -r \"var_dump\\(json_decode\\(file_get_contents\\('resources/menu/verticalMenu.json'\\)\\) !== null\\);\")",
+      "Bash(php -r \"json_decode\\(file_get_contents\\('lang/ar.json'\\),true\\); echo 'ar:'.json_last_error_msg\\(\\).PHP_EOL; json_decode\\(file_get_contents\\('lang/en.json'\\),true\\); echo 'en:'.json_last_error_msg\\(\\).PHP_EOL; json_decode\\(file_get_contents\\('resources/menu/verticalMenu.json'\\),true\\); echo 'vmenu:'.json_last_error_msg\\(\\).PHP_EOL; json_decode\\(file_get_contents\\('resources/menu/horizontalMenu.json'\\),true\\); echo 'hmenu:'.json_last_error_msg\\(\\).PHP_EOL;\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8000/login)",
+      "Bash(timeout 280 npm run build)",
+      "Bash(vendor/bin/pint --dirty)",
+      "Bash(php -r '$f=[\"lang/ar.json\",\"lang/en.json\"]; foreach\\($f as $x\\){ json_decode\\(file_get_contents\\($x\\)\\); echo $x.\": \".json_last_error_msg\\(\\).PHP_EOL; }')",
+      "Bash(vendor/bin/pint --dirty -q)",
+      "Bash(timeout 300 npm run build)",
+      "Bash(ps -W)",
+      "Bash(wait)",
+      "Bash(grep -A30 \"FAILED\\\\|Tests\\\\\\\\\\\\\\\\Feature\")",
+      "Bash(php -r 'foreach\\([\"resources/menu/verticalMenu.json\",\"resources/menu/horizontalMenu.json\"] as $x\\){ json_decode\\(file_get_contents\\($x\\)\\); echo $x.\": \".json_last_error_msg\\(\\).PHP_EOL; }')",
+      "Bash(grep -n \"use App\\\\\\\\\\\\\\\\Http\\\\\\\\\\\\\\\\Controllers\\\\\\\\\\\\\\\\apps\\\\\\\\\\\\\\\\User\" routes/web.php)",
+      "Bash(sed -i 's#app/fleet/vehicle/list#app/vehicle/list#' resources/menu/verticalMenu.json resources/menu/horizontalMenu.json)",
+      "Bash(vendor/bin/pint --dirty -q app/Helpers/Helpers.php)",
+      "Bash(grep -oE \"\\\\\\\\\\\\\\\\?[a-f0-9]{4};[^\\\\\"]*\\\\\"[a-z-]+\\\\\"|'[a-z][a-z0-9-]{2,}'\" resources/assets/vendor/fonts/tabler-icons.scss)",
+      "Bash(grep -o \"\\\\.text-heading[ ,{]\" public/build/assets/core-Be7SmMeJ.css)",
+      "Bash(grep -q '^$ti-icon-recycle:' resources/assets/vendor/fonts/tabler-icons.scss)"
     ]
   }
 }

@@ -408,6 +408,12 @@
       ]
     },
     {
+      "url": "app/vehicle/list",
+      "name": "Vehicles",
+      "icon": "menu-icon tf-icons ti ti-truck",
+      "slug": "app-vehicle-list"
+    },
+    {
       "name": "Roles & Permissions",
       "icon": "menu-icon tf-icons ti ti-settings",
       "slug": "app-access",

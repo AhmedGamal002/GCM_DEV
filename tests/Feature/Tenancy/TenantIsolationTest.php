@@ -6,8 +6,11 @@ use App\Concerns\BelongsToTenant;
 use App\Exceptions\TenantContextMissingException;
 use App\Models\Tenant;
 use App\Models\User;
+use App\Models\Vehicle;
 use Database\Seeders\RoleSeeder;
+use Database\Seeders\VehicleCategorySeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 class TenantIsolationTest extends TestCase
@@ -15,8 +18,11 @@ class TenantIsolationTest extends TestCase
     use RefreshDatabase;
 
     private Tenant $tenantA;
+
     private Tenant $tenantB;
+
     private User $userA;
+
     private User $userB;
 
     protected function setUp(): void
@@ -94,11 +100,24 @@ class TenantIsolationTest extends TestCase
         $this->assertCount(2, $users);
     }
 
+    public function test_vehicle_query_is_scoped_to_current_tenant_only(): void
+    {
+        $this->seed(VehicleCategorySeeder::class);
+
+        app()->instance('tenant', $this->tenantB);
+        Vehicle::factory()->create();
+
+        app()->instance('tenant', $this->tenantA);
+        Vehicle::factory()->create();
+
+        $this->assertCount(1, Vehicle::all());
+    }
+
     public function test_role_relationship_traversal_stays_scoped_by_tenant(): void
     {
         app()->instance('tenant', $this->tenantA);
 
-        $role = \Spatie\Permission\Models\Role::where('name', 'system_admin')->first();
+        $role = Role::where('name', 'system_admin')->first();
 
         $users = $role->users;
 

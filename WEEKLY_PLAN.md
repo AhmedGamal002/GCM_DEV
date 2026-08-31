@@ -83,6 +83,8 @@
 
 > **يضم الآن محتوى الأسبوع 2 الأصلي (Fleet) + محتوى الأسبوع 3 الأصلي (السائقين + الأصول)** بعد نقل Fleet هنا. من المحتمل يُبنى هذا الأسبوع بواسطة زميل آخر بالتوازي ويترجع لمراجعة قبل الدمج.
 
+> **حالة موديول المركبات (Vehicle Fleet): ✅ مكتمل.** جداول `vehicle_categories` (عالمي، 5 أنواع مبذورة) + `asset_capacity_categories` (نسخة مصغّرة: جدول + Model + Seeder + endpoint قراءة فقط — CRUD كامل يتأجل لموديول الأصول) + `vehicles` + `vehicle_documents` (رخصة/حالة/فحص/تأمين + تصاريح دخول متكررة). `VehicleController` (index/store/show/update/status/stats/export/downloadDocument) + `VehiclePolicy` (system_admin+data_entry ينشئوا/يعدّلوا، auditor عرض/تصدير، deactivate = system_admin فقط) + Domain `app/Domain/Fleet/Actions/*`. واجهة: `/app/fleet/vehicle/{list,add,view,edit}` + قائمة جانبية "Fleet". فورم الإضافة/التعديل يتشارك محرك JS واحد (`resources/assets/js/vehicle/form-core.js`) فيه: تحقق inline لكل حقل (نص خطأ تحت الحقل، client-side + mapping لأخطاء 422 من السيرفر)، وحقول أرقام فقط (رقم اللوحة + أرقام كل الوثائق + رقم التصريح — `regex:/^[0-9]+$/` + strip فوري في JS). 19 Feature test. **مؤجَّل عمدًا:** عمود/إحصائيات "عدد الرحلات" وجدول رحلات المركبة وحالة "في رحلة رقم..." — يعتمد على موديول Trip (أسبوع 7)، يُعرض `0`/حالة فارغة. المركبة هويتها اللوحة (لا عمود `code`). `contractor_id` بدون FK (أسبوع 5).
+
 **مهام الباك اند:**
 - Migration: `vehicle_categories`, `vehicles` — **عمود `contractor_id` بدون FK constraint** (راجع الملاحظة التقنية في ARCHITECTURE.md)
 - `VehicleController` + `VehicleCategoryController` (API)

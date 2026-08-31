@@ -385,9 +385,9 @@ gcm-wms/
 │   ├── 004_create_users_table.php                             # + tenant_id
 │   ├── 005_create_projects_table.php                          # + tenant_id
 │   ├── 006_create_project_user_table.php                      # + عمود scope (all/specific)
-│   ├── 007_create_vehicle_categories_table.php                # + tenant_id
-│   ├── 008_create_vehicles_table.php                          # + tenant_id + contractor_id (بدون FK أولاً)
-│   ├── 009_create_asset_capacities_table.php                  # + tenant_id، capacity_cbm + capacity_ton معًا
+│   ├── 007_create_vehicle_categories_table.php                # جدول عالمي بدون tenant_id — قائمة ثابتة (5 أنواع) مبذورة، نفس مبرر roles
+│   ├── 008_create_vehicles_table.php                          # + tenant_id + contractor_id (بدون FK أولاً)، هوية = اللوحة (لا code)
+│   ├── 009_create_asset_capacity_categories_table.php         # + tenant_id، capacity_cbm + capacity_ton معًا (نسخة مصغّرة في أسبوع 3، CRUD كامل مع الأصول)
 │   ├── 010_create_assets_table.php                             # + tenant_id + contractor_id (بدون FK أولاً)
 │   ├── 011_create_main_services_table.php / 012_create_sub_services_table.php
 │   ├── 013_create_facilities_table.php

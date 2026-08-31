@@ -192,7 +192,11 @@ if (document.getElementById('layout-menu')) {
     for (let i = 0; i < dropdownItems.length; i++) {
       dropdownItems[i].addEventListener('click', function () {
         let textDirection = this.getAttribute('data-text-direction');
-        window.templateCustomizer.setLang(this.getAttribute('data-language'));
+        // The Template Customizer is disabled in this project; page
+        // direction now follows the locale server-side (see Helpers).
+        if (window.templateCustomizer) {
+          window.templateCustomizer.setLang(this.getAttribute('data-language'));
+        }
         directionChange(textDirection);
       });
     }
