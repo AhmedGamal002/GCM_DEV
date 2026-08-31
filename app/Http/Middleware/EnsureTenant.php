@@ -17,13 +17,20 @@ use Symfony\Component\HttpFoundation\Response;
  *     reserved hosts like www/api/platform/localhost). Structurally ready
  *     for real tenant subdomains, though not exercised yet since local dev
  *     runs on a single host.
- *  2. The authenticated `web` guard user's tenant_id.
+ *  2. The authenticated user's tenant_id, resolved via guard `sanctum`
+ *     rather than `web` directly — Sanctum's guard transparently covers
+ *     BOTH auth modes this app supports (see LoginController): a
+ *     stateful/cookie request falls through to the `web` session guard
+ *     exactly as before, while a bearer-token (mobile) request resolves
+ *     via the token's tokenable. `Auth::guard('web')` alone would leave
+ *     every token-authenticated request with no tenant bound at all.
  *  3. Otherwise left unbound (public/guest routes — login pages etc.).
  *
  * If a subdomain resolves to a tenant that conflicts with the
- * authenticated user's own tenant, the session is force-logged-out and the
- * request rejected — defends against a session cookie issued on one
- * tenant's subdomain being replayed against another's.
+ * authenticated user's own tenant, the credential is force-revoked and
+ * the request rejected — defends against a session cookie (or, for
+ * mobile, a bearer token) issued for one tenant being replayed against
+ * another's.
  */
 class EnsureTenant
 {
@@ -32,22 +39,19 @@ class EnsureTenant
     public function handle(Request $request, Closure $next): Response
     {
         $tenant = $this->resolveFromSubdomain($request);
+        $user = Auth::guard('sanctum')->user();
 
         if ($tenant) {
-            if (Auth::guard('web')->check() && Auth::guard('web')->user()->tenant_id !== $tenant->id) {
-                Auth::guard('web')->logout();
-                $request->session()->invalidate();
-                $request->session()->regenerateToken();
+            if ($user && $user->tenant_id !== $tenant->id) {
+                $this->revokeAuthentication($request, $user);
 
                 abort(403, 'Session does not belong to this tenant.');
             }
-        } elseif (Auth::guard('web')->check()) {
-            $tenant = Tenant::find(Auth::guard('web')->user()->tenant_id);
+        } elseif ($user) {
+            $tenant = Tenant::find($user->tenant_id);
 
             if (! $tenant || $tenant->status !== 'active') {
-                Auth::guard('web')->logout();
-                $request->session()->invalidate();
-                $request->session()->regenerateToken();
+                $this->revokeAuthentication($request, $user);
 
                 abort(403, 'Your organization account is not active.');
             }
@@ -58,6 +62,25 @@ class EnsureTenant
         }
 
         return $next($request);
+    }
+
+    /**
+     * Session-based auth gets the original web-guard logout + session
+     * invalidation. A bearer-token request has no session to invalidate —
+     * the equivalent action is deleting the token itself, so it can't be
+     * replayed after this rejection.
+     */
+    private function revokeAuthentication(Request $request, $user): void
+    {
+        if (Auth::guard('web')->check()) {
+            Auth::guard('web')->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return;
+        }
+
+        $user->currentAccessToken()?->delete();
     }
 
     private function resolveFromSubdomain(Request $request): ?Tenant

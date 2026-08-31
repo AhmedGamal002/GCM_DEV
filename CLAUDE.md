@@ -4,14 +4,20 @@
 
 ## الحالة الحالية
 
-- **الأسبوع 1 (Tenant/Auth) و2 (المستخدمين/الأدوار) خلصوا بالكامل**، وجزء "إدارة السائقين" من الأسبوع 3 كمان. 86 Feature test شغالة. راجع `WEEKLY_PLAN.md` لتفاصيل كل أسبوع وإضافاته.
+- **الأسبوع 1 (Tenant/Auth) و2 (المستخدمين/الأدوار) خلصوا بالكامل**، وجزء "إدارة السائقين" من الأسبوع 3 كمان. 89 Feature test شغالة. راجع `WEEKLY_PLAN.md` لتفاصيل كل أسبوع وإضافاته.
 - باقي الأسبوع 3 (الأسطول/الأصول) محتمل يبنيه زميل بالتوازي — مش جزء من شغل الجلسات دي.
 - Company/Contractor مؤجلين للأسبوع 4-5 — أي كود بيفترض وجودهم (فروع الفورم، أدوار العميل) مش مبني لسه عمدًا.
+- **فيه Postman collection كاملة في `postman/`** (راجع `postman/README.md`) بتغطي كل الـ endpoints الشغالة — لازم تتحدث فورًا مع أي route جديد، نفس لحظة إضافته لـ `routes/api.php`/`routes/platform.php`.
 
 ## اتفاقيات ثابتة — لازم تتطبق على أي صفحة جديدة
 
 - **أي صفحة محتوى جديدة (`@section('content')`) لازم تبدأ بـ breadcrumb** — `@include('_partials.breadcrumb', ['breadcrumbs' => [...]])`. الـ partial موجود في `resources/views/_partials/breadcrumb.blade.php`، بياخد array من `['title' => ..., 'url' => ...]` (آخر عنصر أو أي عنصر من غير `url` بيتعرض كـ active/مش رابط تلقائيًا)، وبارامتر اختياري `homeUrl` لو الصفحة تحت `routes/platform.php` (استخدم `route('platform.dashboard')` بدل الافتراضي `url('/')`). راجع أي صفحة من صفحات Users/Drivers/Platform الحالية كمثال جاهز.
 - صفحات التينانت بتستخدم `__()` للعناوين (ثنائية اللغة)، صفحات الـ Platform إنجليزي ثابت بدون `__()` — خلي الـ breadcrumb متسق مع نفس الصفحة (متستخدمش `__()` في breadcrumb صفحة Platform).
+- **مكان الملفات — أي موديول جديد (Fleet/Assets/Companies/...) لازم يتبع نفس البنية المستخدمة لـ Users/Drivers، مش يترمي وسط سقالة Vuexy الديمو**:
+  - View: `resources/views/tenant/{module}/{page}.blade.php` (مثلاً `tenant/fleet/list.blade.php`)
+  - Controller: `App\Http\Controllers\Web\{Module}\{Page}Controller` (namespace بحرف كابيتال، مطابق لباقي الموديولات)
+  - Route: يضاف في `routes/tenant.php`، **مش** `routes/web.php` (الملف ده سقالة Vuexy الأصلية، يفضل زي ما هو)
+  - راجع `ARCHITECTURE.md §9.5` للتفاصيل والسبب (كان فيه 47 ملف ديمو مختلط مع 8 حقيقيين بس في مجلد واحد قبل الفصل ده).
 
 ## قبل ما تبدأ أي تعديل
 
@@ -27,6 +33,9 @@
 5. **`Storage::fake('public')` في التستات بيسقط إعداد `'url'` المخصص** من `config/filesystems.php` — تستات رفع الصور تتأكد من وجود الملف + جزء من الرابط، مش من كونه absolute URL كامل (ده مضمون بس في التشغيل الحقيقي).
 6. **`php artisan migrate:fresh` بيصفّر جدول `sessions`** — أي تبويب متصفح مفتوح هيترمي على صفحة تسجيل الدخول تاني بعدها.
 7. **Laravel بيحتفظ بجلسة كل guard (`web`/`platform`) بشكل مستقل** — تسجيل دخول على guard مايسجّلش خروج من التاني. أي قرار UI بيعتمد على "مين المستخدم الحالي" (زي القائمة الجانبية) لازم ياخد في الاعتبار الرابط الحالي كمان، مش بس "هل فيه جلسة platform شغالة".
+8. **`php artisan route:list` مكسور من قبل أي تعديل من الجلسة دي** — بيرمي `ReflectionException: Class "App\Http\Controllers\layouts\NavbarFull" does not exist` (راوت ديمو Vuexy بيشاور على كنترولر مش موجود أصلاً في المشروع). متحاولش تصلحه، ومتستخدموش للتحقق — استخدم `curl`/المتصفح مباشرة على الراوتات اللي محتاج تتأكد منها.
+9. **صفحة الديمو `/auth/reset-password-basic`** (مش الصفحة الحقيقية `/reset-password/{token}`) بترمي 500 (`Undefined variable $token`) — الكنترولر الديمو (`authentications\ResetPasswordBasic`) بيرندر نفس الـ view بتاع الصفحة الحقيقية من غير ما يمرر `token`/`email`. موجود من الأصل، مش حاجة اتكسرت، مش أولوية تتصلح.
+10. **أي تست بيستخدم `actingAs($user, 'web')` بيتجاوز الـ guard/middleware pipeline بالكامل** — مبيثبتش إن المصادقة الحقيقية (session cookie فعلي، أو Bearer token فعلي) شغالة. اتكشف بيه باگ حرج فعلي (كل طلب بتوكن كان بيرمي 500 على أي endpoint تينانتي — راجع `ARCHITECTURE.md §3.11`) فضل مخفي لحد ما اتحصل عليه بتوكن حقيقي عن طريق Postman/curl. أي auth provider مخصص بيغطي guard واحد بس — لو فيه أكتر من مسار مصادقة لنفس الموديل (session + token)، كل مسار محتاج فحص/فيكس منفصل، ومفيش بديل عن تجربة فعلية بتوكن حقيقي (مش `actingAs`) لتغطية مسار الـ API الحقيقي.
 
 ## قواعد كود اتأكدت أهميتها بالتجربة (مش نظرية)
 

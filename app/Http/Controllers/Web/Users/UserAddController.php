@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\apps;
+namespace App\Http\Controllers\Web\Users;
 
 use App\Http\Controllers\Controller;
 
@@ -10,10 +10,10 @@ use App\Http\Controllers\Controller;
  * same pattern as /form/layouts-vertical. Actual creation happens via
  * POST /api/v1/users (UserController@store).
  */
-class UserAdd extends Controller
+class UserAddController extends Controller
 {
     public function index()
     {
-        return view('content.apps.app-user-add');
+        return view('tenant.users.add');
     }
 }

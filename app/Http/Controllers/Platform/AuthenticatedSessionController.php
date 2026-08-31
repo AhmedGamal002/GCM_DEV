@@ -16,7 +16,7 @@ class AuthenticatedSessionController extends Controller
 {
     public function create()
     {
-        return view('content.authentications.platform-login-basic', [
+        return view('platform.auth.login', [
             'pageConfigs' => ['myLayout' => 'blank'],
         ]);
     }

@@ -13,7 +13,7 @@ class PasswordResetLinkController extends Controller
 {
     public function create()
     {
-        return view('content.authentications.auth-forgot-password-basic', [
+        return view('tenant.auth.forgot-password', [
             'pageConfigs' => ['myLayout' => 'blank'],
         ]);
     }

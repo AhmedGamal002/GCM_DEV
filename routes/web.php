@@ -55,7 +55,6 @@ use App\Http\Controllers\apps\InvoicePreview;
 use App\Http\Controllers\apps\InvoicePrint;
 use App\Http\Controllers\apps\InvoiceEdit;
 use App\Http\Controllers\apps\InvoiceAdd;
-use App\Http\Controllers\apps\UserList;
 use App\Http\Controllers\apps\UserViewAccount;
 use App\Http\Controllers\apps\UserViewSecurity;
 use App\Http\Controllers\apps\UserViewBilling;
@@ -65,8 +64,6 @@ use App\Http\Controllers\pages\UserProfile;
 use App\Http\Controllers\pages\UserTeams;
 use App\Http\Controllers\pages\UserProjects;
 use App\Http\Controllers\pages\UserConnections;
-use App\Http\Controllers\pages\AccountSettingsAccount;
-use App\Http\Controllers\pages\AccountSettingsSecurity;
 use App\Http\Controllers\pages\AccountSettingsBilling;
 use App\Http\Controllers\pages\AccountSettingsNotifications;
 use App\Http\Controllers\pages\AccountSettingsConnections;
@@ -225,15 +222,6 @@ Route::get('/app/invoice/preview', [InvoicePreview::class, 'index'])->name('app-
 Route::get('/app/invoice/print', [InvoicePrint::class, 'index'])->name('app-invoice-print');
 Route::get('/app/invoice/edit', [InvoiceEdit::class, 'index'])->name('app-invoice-edit');
 Route::get('/app/invoice/add', [InvoiceAdd::class, 'index'])->name('app-invoice-add');
-Route::get('/app/user/list', [UserList::class, 'index'])->middleware(['auth', 'tenant'])->name('app-user-list');
-Route::get('/app/user/add', [\App\Http\Controllers\apps\UserAdd::class, 'index'])->middleware(['auth', 'tenant'])->name('app-user-add');
-Route::get('/app/user/view/{user}', [\App\Http\Controllers\apps\UserAccount::class, 'view'])->whereNumber('user')->middleware(['auth', 'tenant'])->name('app-user-view');
-Route::get('/app/user/edit/{user}', [\App\Http\Controllers\apps\UserAccount::class, 'edit'])->whereNumber('user')->middleware(['auth', 'tenant'])->name('app-user-edit');
-Route::get('/app/driver/list', [\App\Http\Controllers\apps\DriverAccount::class, 'list'])->middleware(['auth', 'tenant'])->name('app-driver-list');
-Route::get('/app/driver/add', [\App\Http\Controllers\apps\DriverAccount::class, 'add'])->middleware(['auth', 'tenant'])->name('app-driver-add');
-Route::get('/app/driver/view/{driver}', [\App\Http\Controllers\apps\DriverAccount::class, 'view'])->whereNumber('driver')->middleware(['auth', 'tenant'])->name('app-driver-view');
-Route::get('/app/driver/edit/{driver}', [\App\Http\Controllers\apps\DriverAccount::class, 'edit'])->whereNumber('driver')->middleware(['auth', 'tenant'])->name('app-driver-edit');
-
 Route::get('/app/user/view/account', [UserViewAccount::class, 'index'])->name('app-user-view-account');
 Route::get('/app/user/view/security', [UserViewSecurity::class, 'index'])->name('app-user-view-security');
 Route::get('/app/user/view/billing', [UserViewBilling::class, 'index'])->name('app-user-view-billing');
@@ -245,8 +233,6 @@ Route::get('/pages/profile-user', [UserProfile::class, 'index'])->name('pages-pr
 Route::get('/pages/profile-teams', [UserTeams::class, 'index'])->name('pages-profile-teams');
 Route::get('/pages/profile-projects', [UserProjects::class, 'index'])->name('pages-profile-projects');
 Route::get('/pages/profile-connections', [UserConnections::class, 'index'])->name('pages-profile-connections');
-Route::get('/pages/account-settings-account', [AccountSettingsAccount::class, 'index'])->middleware(['auth', 'tenant'])->name('pages-account-settings-account');
-Route::get('/pages/account-settings-security', [AccountSettingsSecurity::class, 'index'])->middleware(['auth', 'tenant'])->name('pages-account-settings-security');
 Route::get('/pages/account-settings-billing', [AccountSettingsBilling::class, 'index'])->name('pages-account-settings-billing');
 Route::get('/pages/account-settings-notifications', [AccountSettingsNotifications::class, 'index'])->name('pages-account-settings-notifications');
 Route::get('/pages/account-settings-connections', [AccountSettingsConnections::class, 'index'])->name('pages-account-settings-connections');
@@ -367,15 +353,7 @@ Route::get('/maps/leaflet', [Leaflet::class, 'index'])->name('maps-leaflet');
 Route::get('/laravel/user-management', [UserManagement::class, 'UserManagement'])->name('laravel-example-user-management');
 Route::resource('/user-list', UserManagement::class);
 
-// GCM Portal — web.php stays a Blade shell only. Login/logout/forgot-password
-// /reset-password are ALL handled by Api\V1\Auth\* (see routes/api.php) so
-// the exact same endpoints work for the driver mobile app later.
-Route::middleware('guest')->group(function () {
-    Route::get('/login', [\App\Http\Controllers\Web\AuthenticatedSessionController::class, 'create'])->name('login');
-    Route::get('/forgot-password', [\App\Http\Controllers\Web\PasswordResetLinkController::class, 'create'])->name('password.request');
-    Route::get('/reset-password/{token}', [\App\Http\Controllers\Web\NewPasswordController::class, 'create'])->name('password.reset');
-});
-
-Route::get('/dashboard', [\App\Http\Controllers\Web\DashboardController::class, 'index'])
-    ->middleware(['auth', 'tenant'])
-    ->name('dashboard');
+// GCM Portal's own real routes (Auth shell, dashboard, Users, Drivers,
+// Profile) live in routes/tenant.php, not here — keeps this file purely
+// the untouched Vuexy template scaffold. See that file's own docblock.
+require __DIR__.'/tenant.php';

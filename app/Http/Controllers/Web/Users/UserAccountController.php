@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\apps;
+namespace App\Http\Controllers\Web\Users;
 
 use App\Http\Controllers\Controller;
 
@@ -13,15 +13,15 @@ use App\Http\Controllers\Controller;
  * middleware reason as UserController), so authorization happens entirely
  * through the API call, not here.
  */
-class UserAccount extends Controller
+class UserAccountController extends Controller
 {
     public function view(int $user)
     {
-        return view('content.apps.app-user-view', ['userId' => $user]);
+        return view('tenant.users.view', ['userId' => $user]);
     }
 
     public function edit(int $user)
     {
-        return view('content.apps.app-user-edit', ['userId' => $user]);
+        return view('tenant.users.edit', ['userId' => $user]);
     }
 }

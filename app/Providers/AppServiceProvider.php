@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Auth\TenantUnawareEloquentUserProvider;
+use App\Models\PersonalAccessToken;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\ServiceProvider;
@@ -10,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\Str;
+use Laravel\Sanctum\Sanctum;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -32,6 +34,12 @@ class AppServiceProvider extends ServiceProvider
     Auth::provider('tenant_unaware_eloquent', function ($app, array $config) {
       return new TenantUnawareEloquentUserProvider($app['hash'], $config['model']);
     });
+
+    // See PersonalAccessToken's docblock: the bearer-token (mobile) auth
+    // path resolves its owner via this model's tokenable() relation,
+    // completely outside the 'users' auth provider above — needs its
+    // own BelongsToTenant bypass or every token-authenticated request 500s.
+    Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
 
     // Brute-force protection on login: 5 attempts/minute per email+IP pair,
     // so a single attacker IP can't lock out a victim's account by hammering
