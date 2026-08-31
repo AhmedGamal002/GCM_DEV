@@ -14,7 +14,7 @@ class NewPasswordController extends Controller
 {
     public function create(Request $request, string $token)
     {
-        return view('content.authentications.auth-reset-password-basic', [
+        return view('tenant.auth.reset-password', [
             'pageConfigs' => ['myLayout' => 'blank'],
             'token' => $token,
             'email' => $request->query('email', ''),

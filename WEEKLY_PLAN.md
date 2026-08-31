@@ -131,6 +131,8 @@
 
 بالمناسبة، تصدير المستخدمين نفسه كان فيه مشكلة أعمدة مشابهة (Email/Created At بدل Affiliation/Entity، والـ ID كان الـ `id` الخام مش `code`) — اتصلح في نفس الوقت.
 
+**⚠️ باگ حرج منفصل تمامًا عن السائقين، اتكشف أثناء بناء Postman collection:** كل طلب بـ `Authorization: Bearer <token>` (مسار موبايل السائق المستقبلي) كان بيفشل بـ 500 على أي `/api/v1/*` endpoint تينانتي — مش حاجة خاصة بالسائقين، تأثيره عام على أي endpoint. راجع `ARCHITECTURE.md §3.11` للتفاصيل والحل (`app/Models/PersonalAccessToken.php` + تصحيح `EnsureTenant`) — اتصلح فورًا مع تست حماية حقيقي (`BearerTokenTenantAccessTest`)، مش بس تقرير.
+
 ---
 
 ## المرحلة 2: الكيانات التجارية (أسابيع 4-5)

@@ -193,6 +193,27 @@ render: function (data, type, full) {
 - العرض: route محمي بالـ Policy بيعيد بث الملف وقت الطلب فقط، بعد ما يتأكد من نفس صلاحية `view` بتاعة الكيان نفسه — `Storage::disk('local')->response($path)`. كل طلب تحميل بيعمل تحقق صلاحيات من الأول، مفيش "رابط دائم" يتخزن أو يتشارك.
 - الـ pattern ده قابل لإعادة الاستخدام لأي مستند حساس تاني في المشروع (عقود PO، مستندات المتعهدين... إلخ) — مش خاص بالسائقين بس.
 
+## 3.11 باگ حرج اتصلح: أي طلب بـ Bearer Token كان بيفشل (500) على كل endpoint تينانتي
+
+> اتكشف أثناء بناء Postman collection (أول مرة فعليًا بيتحصل على `/api/v1/*` بتوكن حقيقي عبر `Authorization: Bearer` header بدل session cookie) — مش عن طريق اختبار مكتوب مسبقًا. كل الـ 86 تست الموجودين وقتها كانوا بيستخدموا `actingAs($user, 'web')`، اللي بيحقن المستخدم المصادق عليه مباشرة **من غير** ما يمرّ فعليًا على الـ guard/middleware pipeline — فمفيش تست واحد كان بيغطي المسار الحقيقي اللي هيستخدمه موبايل السائق مستقبلًا.
+
+**الأعراض:** أي طلب فيه `Authorization: Bearer <token>` صحيح لأي endpoint تحت `['auth:sanctum','tenant']` (مثلاً `/api/v1/users`) كان بيرجّع **500** (`TenantContextMissingException`) — حتى إن الـ token نفسه صحيح 100%.
+
+**السبب الجذري (اتنين مشكلتين متسلسلتين):**
+
+1. Sanctum بيتحقق من الـ bearer token عن طريق `Guard::isValidAccessToken()`، اللي بيعمل `$accessToken->tokenable` (علاقة `MorphTo` على موديل `PersonalAccessToken` الأصلي بتاع الحزمة) عشان يجيب الـ `User` المالك للتوكن. الاستعلام ده بيمر بمسار **Eloquent relation عادي تمامًا**، مش عن طريق auth provider بتاعنا (`TenantUnawareEloquentUserProvider`) اللي أصلاً اتعمل مخصوص عشان يحل نفس المشكلة دي لكن لمسار الـ `web` guard session بس (`retrieveById`/`retrieveByCredentials`). يعني: الحل الموجود من قبل كان بيغطي نص المشكلة بس (تسجيل الدخول بالكوكي)، والنص التاني (تسجيل الدخول بالتوكن) كان لسه مكشوف.
+2. حتى لو اتصلحت المشكلة الأولى، `EnsureTenant` middleware كانت بتحدد التينانت الحالي عن طريق `Auth::guard('web')->user()->tenant_id` **بس** — طلب متحقق منه بتوكن (مش session) مايظهرش خالص في guard `web`، فالـ tenant كان هيفضل مش مربوط برضو، والاستعلام بعدها في الكنترولر هيرمي نفس الاستثناء.
+
+**الحل (فايلين + تصحيح middleware):**
+- [`app/Models/PersonalAccessToken.php`](app/Models/PersonalAccessToken.php) — موديل جديد بيورث من `Laravel\Sanctum\PersonalAccessToken`، بيعمل override لـ `tokenable()` بإضافة `->withoutGlobalScope(BelongsToTenant::class)` — بالظبط نفس منطق `TenantUnawareEloquentUserProvider` لكن لمسار الـ token.
+- مُسجّل في `AppServiceProvider::boot()` عن طريق `Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class)`.
+- [`app/Http/Middleware/EnsureTenant.php`](app/Http/Middleware/EnsureTenant.php) — اتصلح عشان يجيب المستخدم عن طريق `Auth::guard('sanctum')->user()` بدل `Auth::guard('web')` مباشرة. الـ guard `sanctum` بيغطي الحالتين تلقائيًا: طلب stateful (كوكي) بيرجع لـ guard `web` زي ما كان بالظبط، وطلب بتوكن بيتحقق من التوكن ويرجّع صاحبه — فمفيش فرق سلوك للمسار القديم، وبس اتضاف المسار الناقص.
+- دالة `revokeAuthentication()` جديدة جوه نفس الـ middleware: لو تم اكتشاف تعارض tenant (نفس منطق الحماية الموجود قبل كده)، بترفض بـ logout+session invalidate لو الطلب كان بكوكي، أو **تحذف الـ access token نفسه** لو كان بتوكن (مفيش session تتلغي أصلاً) — عشان التوكن المرفوض ميتقدرش يتستخدم تاني.
+
+**تست الحماية:** [`tests/Feature/Auth/BearerTokenTenantAccessTest.php`](tests/Feature/Auth/BearerTokenTenantAccessTest.php) — 3 تستات بتستخدم توكن حقيقي فعليًا (مش `actingAs`) عبر `Authorization: Bearer` header حقيقي: وصول ناجح، عزل تينانت لسه شغال بالتوكن، وتينانت متعطل بيرفض الطلب **ويمسح التوكن**. اتأكد فعليًا إن الـ 3 تستات دول بيفشلوا (بنفس الـ exception) لو رجّعنا الفيكس (`git stash` مؤقت) — مش افتراض.
+
+**الدرس العام:** أي auth provider مخصص (زي `TenantUnawareEloquentUserProvider`) بيغطي مسار guard واحد بس. لو فيه أكتر من طريقة مصادقة على نفس الموديل (session guard + token guard هنا)، كل مسار لازم فحص/فيكس منفصل — الغطاء الظاهري لتست واحد شغال (session، عن طريق المتصفح) مبيضمنش إن المسار التاني (توكن) شغال، خصوصًا لو التستات كلها بتستخدم `actingAs()` اللي بيتجاوز الـ guard resolution تمامًا.
+
 ## 4. هيكل الفولدرز الكامل (نسخة مدمجة نهائية)
 
 > **مصدر هذا الهيكل:** دُمج هيكل مقترح من مصدر خارجي (نمط Domain-Driven مع Actions منفصلة، Quota Ledger، وState Machine للرحلة — أرقى تقنيًا من المسودة الأولى لهذا الملف) **مع** طبقة الـ Multi-tenancy الكاملة (كانت غائبة تمامًا من المصدر الخارجي — أهم ثغرة تم سدها) وتصحيحين إضافيين (تسمية قاعدة عدم التداخل، وحقل نطاق دور مدير المشروعات).
@@ -552,3 +573,27 @@ gcm-wms/
   - صفحات التينانت: العناوين عبر `__()` (ثنائية اللغة، زي باقي الصفحة).
   - صفحات `routes/platform.php`: عناوين إنجليزي ثابت من غير `__()` (نفس اتفاقية بقية صفحات الـ Platform)، ولازم تمرّر `'homeUrl' => route('platform.dashboard')` صراحة (الافتراضي `url('/')` بيوصل لداشبورد التينانت مش داشبورد السوبر أدمن).
   - المرجع: أي صفحة من صفحات Users/Drivers/Platform الحالية (أسبوع 2-3) بتطبّق النمط ده بالظبط.
+
+## 9.5 فصل كود GCM الحقيقي عن سقالة Vuexy الديمو (Views/Controllers/Routes)
+
+> اتعمل بعد ملاحظة مباشرة من المستخدم: صفحات المشروع الحقيقية كانت متفرقة وسط عشرات ملفات ديمو Vuexy غير مستخدمة في نفس المجلدات بالظبط (`content/apps/` كان فيه 47 ملف، 8 بس حقيقيين؛ `Controllers/apps/` فيه 42، 4 بس حقيقيين؛ `routes/web.php` 380 سطر، أقل من 20 منهم حقيقي). القرار: **فصل بس، من غير حذف أي ديمو** — حذف الديمو المؤكد إنه مش هيتستخدم مؤجل لاحقًا (قرار مقصود، راجع نقاش الجلسة).
+
+**البنية الجديدة (تنطبق على أي موديول جديد من هنا فصاعدًا — Fleet/Assets/Companies/...):**
+
+| الطبقة | المكان الجديد | مثال |
+|---|---|---|
+| Views | `resources/views/tenant/{module}/` | `resources/views/tenant/users/list.blade.php` |
+| Controllers | `App\Http\Controllers\Web\{Module}\` | `App\Http\Controllers\Web\Users\UserListController` |
+| Routes | `routes/tenant.php` (مش `routes/web.php`) | يتحمّل عبر `require` في آخر `web.php`، بيورث middleware group `web` تلقائي |
+
+- **`routes/web.php` يفضل زي ما هو** — سقالة Vuexy الأصلية بالكامل، بدون أي تعديل تاني غير حذف السطور اللي اتنقلت. أي حد بيدور على راوت GCM حقيقي يفتح `routes/tenant.php` (~45 سطر) مش يدور وسط 380 سطر ديمو.
+- **مسارات الراوت (`/app/user/list`) وأسماؤها (`app-user-list`) متغيّرتش خالص** — بس مكان ملف الكنترولر والـ view اتغيّر. يعني أي حاجة بتربط بالاسم (menu JSON، breadcrumbs، `route()` calls، الـ 89 تست) اشتغلت من غير أي تعديل.
+- **اكتشاف مهم أثناء النقل:** بعض ملفات "الديمو" مش نسخة منفصلة — هي **الصفحة الحقيقية نفسها بدون تكرار** (مثلاً `content/authentications/auth-login-basic.blade.php` كانت الصفحة الحقيقية لـ `/login` **وكمان** صفحة الديمو `/auth/login-basic` في نفس الوقت، عن طريق كنترولرين مختلفين بيرجّعوا نفس اسم الـ view). لما الملف اتنقل لـ `tenant/auth/login.blade.php`، الكنترولر الديمو (`App\Http\Controllers\authentications\LoginBasic`) اتحدّث يشاور على المكان الجديد بدل ما يتكسر — **مفيش نسخ**، نفس الملف لسه بيخدم الاتنين. نفس الشيء لصفحات forgot/reset password. **درس عام:** قبل نقل أي ملف "ديمو"، لازم تتأكد الأول إنه مش بيتستخدم فعليًا من كنترولر حقيقي، مش تفترض بالاسم بس.
+- **تم التحقق فعليًا** (مش افتراض): كل صفحة اتنقلت جُرّبت بمتصفح حقيقي بعد تسجيل دخول فعلي (login → users list → driver add form)، + `curl` على كل route بمصادقة session حقيقية، + الـ 89 تست شغالين، + تأكيد إن صفحات الديمو المرتبطة (login-basic gallery, إلخ) لسه شغالة.
+- **موجود من قبل، مبيتأثرش:** `resources/views/platform/` (بالفعل مكان مستقل لصفحات الـ Platform) اتوسّع بـ `platform/auth/login.blade.php` بس (كان قاعد لوحده وسط `content/authentications/` بدون داعي).
+
+## 10. Postman Collection
+
+> مجلد `postman/` في جذر المشروع فيه مجموعة Postman كاملة (`GCM-Portal.postman_collection.json` + `GCM-Portal-Local.postman_environment.json` + `README.md`) بتغطي كل الـ endpoints الشغالة حتى الآن — الأسبوع 1+2 وجزء إدارة السائقين من الأسبوع 3، بنظامي المصادقة الاتنين (`/api/v1/*` بـ Bearer token، `/platform/*` بـ session+CSRF).
+
+**قاعدة إلزامية:** أي route جديد يتضاف في `routes/api.php` أو `routes/platform.php` **لازم** ريكوست مقابل له في نفس اللحظة (نفس الـ commit/session)، مش تأجيل لاحق — راجع "قاعدة التحديث" في `postman/README.md` للتفاصيل (المجلد المناسب، نمط الـ pre-request script بتاع CSRF للـ Platform، نمط حفظ الـ id في collection variable للـ Create requests).
