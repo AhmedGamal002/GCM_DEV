@@ -1,0 +1,235 @@
+{
+  "info": {
+    "name": "GCM Portal — Vehicles",
+    "description": "Vehicles module endpoints (Week 3). Standalone for now — drop the \"Vehicles\" folder into the main GCM-Portal collection after the folder-structure merge.\n\nAuth: run **Auth › Login** first; its test script saves `{{token}}`, and every request below sends `Authorization: Bearer {{token}}`.\n\nNote: bearer-token auth on tenant-scoped endpoints needs the PersonalAccessToken / EnsureTenant fix (Part 2 of the reorg handoff) — it comes with the merge.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8000/api/v1" },
+    { "key": "token", "value": "" },
+    { "key": "email", "value": "admin@gcm.test" },
+    { "key": "password", "value": "password" },
+    { "key": "vehicle_id", "value": "1" },
+    { "key": "document_id", "value": "1" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login (saves {{token}})",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const body = pm.response.json();",
+                  "if (body.token) {",
+                  "  pm.collectionVariables.set('token', body.token);",
+                  "  pm.test('token saved', () => pm.expect(body.token).to.be.a('string'));",
+                  "} else {",
+                  "  pm.test('got a token', () => pm.expect.fail('no token in response — a stateful origin got a cookie instead'));",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "options": { "raw": { "language": "json" } },
+              "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/auth/login", "host": ["{{base_url}}"], "path": ["auth", "login"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Vehicles",
+      "item": [
+        {
+          "name": "Reference — Vehicle categories",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/vehicle-categories", "host": ["{{base_url}}"], "path": ["vehicle-categories"] }
+          }
+        },
+        {
+          "name": "Reference — Asset capacity categories",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/asset-capacity-categories", "host": ["{{base_url}}"], "path": ["asset-capacity-categories"] }
+          }
+        },
+        {
+          "name": "List vehicles",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/vehicles?per_page=15",
+              "host": ["{{base_url}}"],
+              "path": ["vehicles"],
+              "query": [
+                { "key": "per_page", "value": "15" },
+                { "key": "category", "value": "hook_lift", "disabled": true },
+                { "key": "operational_status", "value": "active", "disabled": true },
+                { "key": "affiliation", "value": "gcm", "disabled": true },
+                { "key": "search", "value": "ABC", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Stats (cards)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/vehicles/stats", "host": ["{{base_url}}"], "path": ["vehicles", "stats"] }
+          }
+        },
+        {
+          "name": "Show vehicle",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/vehicles/{{vehicle_id}}", "host": ["{{base_url}}"], "path": ["vehicles", "{{vehicle_id}}"] }
+          }
+        },
+        {
+          "name": "Create vehicle",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('vehicle_id', pm.response.json().data.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "plate_letters", "value": "ABC", "type": "text" },
+                { "key": "plate_numbers", "value": "1234", "type": "text" },
+                { "key": "vehicle_category_id", "value": "1", "type": "text" },
+                { "key": "has_embedded_container", "value": "1", "type": "text" },
+                { "key": "embedded_container_type", "value": "container", "type": "text" },
+                { "key": "embedded_asset_capacity_category_id", "value": "1", "type": "text" },
+                { "key": "operational_status", "value": "active", "type": "text" },
+                { "key": "affiliation", "value": "gcm", "type": "text" },
+                { "key": "additional_data", "value": "<p>notes</p>", "type": "text" },
+                { "key": "photo_front", "type": "file", "src": [] },
+                { "key": "photo_back", "type": "file", "src": [] },
+                { "key": "documents[registration_card][number]", "value": "1001", "type": "text" },
+                { "key": "documents[registration_card][valid_to]", "value": "2027-01-01", "type": "text" },
+                { "key": "documents[registration_card][attachment]", "type": "file", "src": [] },
+                { "key": "documents[fitness_document][number]", "value": "1002", "type": "text" },
+                { "key": "documents[fitness_document][valid_to]", "value": "2027-01-01", "type": "text" },
+                { "key": "documents[inspection_certificate][number]", "value": "1003", "type": "text" },
+                { "key": "documents[inspection_certificate][valid_to]", "value": "2027-01-01", "type": "text" },
+                { "key": "documents[insurance][number]", "value": "1004", "type": "text" },
+                { "key": "documents[insurance][valid_to]", "value": "2027-01-01", "type": "text" },
+                { "key": "entry_permits[0][area_name]", "value": "Riyadh", "type": "text" },
+                { "key": "entry_permits[0][permit_number]", "value": "2001", "type": "text" },
+                { "key": "entry_permits[0][valid_to]", "value": "2027-01-01", "type": "text" },
+                { "key": "entry_permits[0][attachment]", "type": "file", "src": [] }
+              ]
+            },
+            "url": { "raw": "{{base_url}}/vehicles", "host": ["{{base_url}}"], "path": ["vehicles"] }
+          }
+        },
+        {
+          "name": "Update vehicle",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "_method", "value": "PATCH", "type": "text" },
+                { "key": "plate_letters", "value": "XYZ", "type": "text" },
+                { "key": "plate_numbers", "value": "9999", "type": "text" },
+                { "key": "vehicle_category_id", "value": "1", "type": "text" },
+                { "key": "has_embedded_container", "value": "0", "type": "text" },
+                { "key": "additional_data", "value": "<p>updated</p>", "type": "text" },
+                { "key": "documents[registration_card][number]", "value": "1001", "type": "text" },
+                { "key": "documents[registration_card][valid_to]", "value": "2027-01-01", "type": "text" },
+                { "key": "documents[fitness_document][number]", "value": "1002", "type": "text" },
+                { "key": "documents[fitness_document][valid_to]", "value": "2027-01-01", "type": "text" },
+                { "key": "documents[inspection_certificate][number]", "value": "1003", "type": "text" },
+                { "key": "documents[inspection_certificate][valid_to]", "value": "2027-01-01", "type": "text" },
+                { "key": "documents[insurance][number]", "value": "1004", "type": "text" },
+                { "key": "documents[insurance][valid_to]", "value": "2027-01-01", "type": "text" },
+                { "key": "entry_permits[0][id]", "value": "", "type": "text", "description": "existing permit id — keeps its attachment; blank = new row" },
+                { "key": "entry_permits[0][area_name]", "value": "Jeddah", "type": "text" },
+                { "key": "entry_permits[0][permit_number]", "value": "2002", "type": "text" },
+                { "key": "entry_permits[0][valid_to]", "value": "2027-01-01", "type": "text" }
+              ]
+            },
+            "url": { "raw": "{{base_url}}/vehicles/{{vehicle_id}}", "host": ["{{base_url}}"], "path": ["vehicles", "{{vehicle_id}}"] }
+          }
+        },
+        {
+          "name": "Change operational status",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "options": { "raw": { "language": "json" } },
+              "raw": "{\n  \"status\": \"on_maintenance\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/vehicles/{{vehicle_id}}/status", "host": ["{{base_url}}"], "path": ["vehicles", "{{vehicle_id}}", "status"] }
+          }
+        },
+        {
+          "name": "Download a document",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/vehicles/{{vehicle_id}}/documents/{{document_id}}/download",
+              "host": ["{{base_url}}"],
+              "path": ["vehicles", "{{vehicle_id}}", "documents", "{{document_id}}", "download"]
+            }
+          }
+        },
+        {
+          "name": "Export — Excel",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/vehicles/export?format=xlsx", "host": ["{{base_url}}"], "path": ["vehicles", "export"], "query": [{ "key": "format", "value": "xlsx" }] }
+          }
+        },
+        {
+          "name": "Export — PDF",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/vehicles/export?format=pdf", "host": ["{{base_url}}"], "path": ["vehicles", "export"], "query": [{ "key": "format", "value": "pdf" }] }
+          }
+        }
+      ]
+    }
+  ]
+}

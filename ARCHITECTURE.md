@@ -264,13 +264,13 @@ gcm-wms/
 │   │   │   └── Scopes/
 │   │   │       └── ContractorVisibilityScope.php
 │   │   │
-│   │   ├── Fleet/
+│   │   ├── Vehicles/                              # موديول مستقل (زي Users) — مش تحت "Fleet"
 │   │   │   ├── Actions/
 │   │   │   │   ├── CreateVehicleAction.php
-│   │   │   │   ├── SetVehicleMaintenanceAction.php
-│   │   │   │   └── AssignDefaultDriverAction.php
-│   │   │   └── Rules/
-│   │   │       └── VehicleCategoryMatchesDriverLicenseRule.php
+│   │   │   │   ├── UpdateVehicleAction.php
+│   │   │   │   └── UpdateVehicleStatusAction.php
+│   │   │   └── Exceptions/
+│   │   │       └── CannotDeactivateVehicleException.php
 │   │   │
 │   │   ├── Assets/
 │   │   │   ├── Actions/
@@ -361,9 +361,10 @@ gcm-wms/
 │   │   │   │       ├── AggregatedDocumentsReportController.php
 │   │   │   │       └── RecycleRateReportController.php
 │   │   │   │
-│   │   │   └── Web/                                       # Blade shell فقط — بدون بيانات حقيقية
+│   │   │   └── Web/                                       # Blade shell فقط — بدون بيانات حقيقية، مجلد لكل موديول
 │   │   │       ├── DashboardController.php
-│   │   │       └── AuthenticatedSessionController.php     # صفحة دخول Vuexy بجلسة Cookie
+│   │   │       ├── AuthenticatedSessionController.php     # صفحة دخول Vuexy بجلسة Cookie
+│   │   │       └── Vehicles/Vehicle{List,Add,Account}Controller.php   # 🆕 (Users/Drivers/... زيّها — يتدمجوا من فرع الزميل)
 │   │   │
 │   │   ├── Requests/
 │   │   │   ├── Users/{Store,Update}UserRequest.php
@@ -430,9 +431,9 @@ gcm-wms/
 │   ├── 004_create_users_table.php                             # + tenant_id
 │   ├── 005_create_projects_table.php                          # + tenant_id
 │   ├── 006_create_project_user_table.php                      # + عمود scope (all/specific)
-│   ├── 007_create_vehicle_categories_table.php                # + tenant_id
-│   ├── 008_create_vehicles_table.php                          # + tenant_id + contractor_id (بدون FK أولاً)
-│   ├── 009_create_asset_capacities_table.php                  # + tenant_id، capacity_cbm + capacity_ton معًا
+│   ├── 007_create_vehicle_categories_table.php                # جدول عالمي بدون tenant_id — قائمة ثابتة (5 أنواع) مبذورة، نفس مبرر roles
+│   ├── 008_create_vehicles_table.php                          # + tenant_id + contractor_id (بدون FK أولاً)، هوية = اللوحة (لا code)
+│   ├── 009_create_asset_capacity_categories_table.php         # + tenant_id، capacity_cbm + capacity_ton معًا (نسخة مصغّرة في أسبوع 3، CRUD كامل مع الأصول)
 │   ├── 010_create_assets_table.php                             # + tenant_id + contractor_id (بدون FK أولاً)
 │   ├── 011_create_main_services_table.php / 012_create_sub_services_table.php
 │   ├── 013_create_facilities_table.php
@@ -448,12 +449,12 @@ gcm-wms/
 │   └── DemoDataSeeder.php                                       # local/staging فقط
 │
 ├── resources/
-│   ├── views/                                                    # لوحة Vuexy Blade
-│   │   ├── layouts/panel.blade.php
-│   │   ├── auth/{login,forgot-password}.blade.php
-│   │   ├── dashboard.blade.php
-│   │   ├── users/ companies/ projects/ contractors/ fleet/ assets/
-│   │   ├── services/ facilities/ purchase-orders/ trips/ reports/
+│   ├── views/
+│   │   ├── layouts/ + layouts/sections/ + _partials/             # سقالة Vuexy المشتركة — ما تتحركش
+│   │   ├── content/                                              # صفحات Vuexy الديمو — تفضل مكانها
+│   │   └── tenant/                                               # 🆕 صفحات GCM الحقيقية، مجلد لكل موديول:
+│   │       ├── vehicles/{list,add,edit,view,_form}.blade.php     #    + vehicles/exports/vehicles-pdf.blade.php
+│   │       └── users/ auth/ profile/  (على فرع الزميل — يتدمج)
 │   │   │   # كل صفحة هنا Shell رفيع يستدعي /api/v1/* عبر axios فقط
 │   ├── js/
 │   │   ├── api/client.js                                        # axios instance + Sanctum CSRF bootstrap
@@ -463,7 +464,8 @@ gcm-wms/
 ├── routes/
 │   ├── platform.php                                               # 🆕 Super Admin — auth:platform
 │   ├── api.php                                                    # /api/v1/* — اللوحة والموبايل معًا لاحقًا
-│   ├── web.php                                                    # Blade shell فقط
+│   ├── web.php                                                    # سقالة Vuexy الديمو فقط — require tenant.php في آخره
+│   ├── tenant.php                                                 # 🆕 راوتات صفحات GCM الحقيقية (Web\{Module}\* controllers)
 │   └── console.php
 │
 ├── tests/

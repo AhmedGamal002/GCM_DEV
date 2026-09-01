@@ -4,8 +4,9 @@
 
 ## الحالة الحالية
 
-- **الأسبوع 1 (Tenant/Auth) و2 (المستخدمين/الأدوار) خلصوا بالكامل**، وجزء "إدارة السائقين" من الأسبوع 3 كمان. 95 Feature test شغالة. راجع `WEEKLY_PLAN.md` لتفاصيل كل أسبوع وإضافاته.
-- باقي الأسبوع 3 (الأسطول/الأصول) محتمل يبنيه زميل بالتوازي — مش جزء من شغل الجلسات دي.
+- **الأسبوع 1 (Tenant/Auth) و2 (المستخدمين/الأدوار) خلصوا بالكامل** — 70 Feature test شغالة. راجع `WEEKLY_PLAN.md` لتفاصيل كل أسبوع وإضافاته.
+- **الأسبوع 3 — موديول المركبات خلص** (94 Feature test إجمالًا، منها 23 تحت `tests/Feature/Vehicles/`). **موديول مستقل top-level زي Users** — `app/Domain/Vehicles/`، مسار `/app/vehicle/*`، عنصر قائمة "Vehicles" مسطّح؛ **مفيش مجموعة "Fleet"**. **البنية الجديدة:** views في `resources/views/tenant/vehicles/`، web controllers في `app/Http/Controllers/Web/Vehicles/`، routes في `routes/tenant.php` (مطلوبة من `web.php`). (باقي الموديولات — Users/Auth/Profile — هيتنقلوا لنفس البنية مع الـ merge من فرع الزميل.) السائقون والأصول لسه. راجع `WEEKLY_PLAN.md` أسبوع 3 لتفاصيل المؤجَّل (إحصائيات الرحلات) والقرارات (vehicle_categories عالمي، هوية المركبة = اللوحة).
+- **إعداد بيئة أول مرة على نسخة جديدة:** `composer install` + `php artisan storage:link` + احذف `public/hot` لو موجود (بيخلي الأصول تحاول تحمّل من vite dev server مش من `public/build`) + `APP_URL=http://localhost:8000` (بالبورت). `maatwebsite/excel` و`barryvdh/laravel-dompdf` في الـ lock لكن التصدير بيرمي 500 لو `vendor/` مش متزامن.
 - Company/Contractor مؤجلين للأسبوع 4-5 — أي كود بيفترض وجودهم (فروع الفورم، أدوار العميل) مش مبني لسه عمدًا.
 - **فيه Postman collection كاملة في `postman/`** (راجع `postman/README.md`) بتغطي كل الـ endpoints الشغالة — لازم تتحدث فورًا مع أي route جديد، نفس لحظة إضافته لـ `routes/api.php`/`routes/platform.php`.
 

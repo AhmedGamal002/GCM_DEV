@@ -18,6 +18,8 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             PermissionSeeder::class,
             PlatformAdminSeeder::class,
+            // Global reference data — no tenant context needed.
+            VehicleCategorySeeder::class,
         ]);
 
         $tenant = Tenant::create([
@@ -29,6 +31,11 @@ class DatabaseSeeder extends Seeder
         // BelongsToTenant's creating() auto-stamp needs a bound tenant to
         // create rows outside an HTTP request/EnsureTenant context.
         app()->instance('tenant', $tenant);
+
+        // Tenant-scoped reference data — needs the bound tenant above.
+        $this->call([
+            AssetCapacityCategorySeeder::class,
+        ]);
 
         User::factory()->create(['name' => 'System Admin', 'email' => 'admin@gcm.test'])
             ->assignRole('system_admin');

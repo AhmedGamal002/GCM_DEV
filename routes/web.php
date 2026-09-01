@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\laravel_example\UserManagement;
 use App\Http\Controllers\dashboard\Analytics;
@@ -356,4 +357,4 @@ Route::resource('/user-list', UserManagement::class);
 // GCM Portal's own real routes (Auth shell, dashboard, Users, Drivers,
 // Profile) live in routes/tenant.php, not here — keeps this file purely
 // the untouched Vuexy template scaffold. See that file's own docblock.
-require __DIR__.'/tenant.php';
+require __DIR__ . '/tenant.php';

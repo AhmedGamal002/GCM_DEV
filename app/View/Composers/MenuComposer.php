@@ -14,7 +14,7 @@ use Illuminate\View\View;
  * available here.
  *
  * A `platform`-guard session gets its own small, dedicated menu instead
- * of the tenant menu (Users, Fleet, and every other Vuexy demo item)
+ * of the tenant menu (Users, Vehicles, and every other Vuexy demo item)
  * with just the "Roles & Permissions" node filtered in — those routes
  * all require the `web` guard/tenant context the Super Admin doesn't
  * have, so following any of them redirected to /login with no

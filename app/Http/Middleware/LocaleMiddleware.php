@@ -8,18 +8,19 @@ use Symfony\Component\HttpFoundation\Response;
 
 class LocaleMiddleware
 {
-  /**
-   * Handle an incoming request.
-   *
-   * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-   */
-  public function handle(Request $request, Closure $next): Response
-  {
-    // Locale is enabled and allowed to be change
-    if (session()->has('locale') && in_array(session()->get('locale'), ['en', 'ar'])) {
-      app()->setLocale(session()->get('locale'));
-    }
+    /**
+     * Handle an incoming request.
+     *
+     * @param  Closure(Request): (Response)  $next
+     */
+    public function handle(Request $request, Closure $next): Response
+    {
+        // Runs on both the `web` and `api` groups — `hasSession()` guards the
+        // token-only (no session) case a future mobile client would use.
+        if ($request->hasSession() && in_array($request->session()->get('locale'), ['en', 'ar'], true)) {
+            app()->setLocale($request->session()->get('locale'));
+        }
 
-    return $next($request);
-  }
+        return $next($request);
+    }
 }
