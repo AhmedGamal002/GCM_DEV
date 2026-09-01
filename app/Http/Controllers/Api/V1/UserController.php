@@ -6,7 +6,7 @@ use App\Domain\Users\Actions\CreateUserAction;
 use App\Domain\Users\Actions\UpdateUserAction;
 use App\Domain\Users\Actions\UpdateUserStatusAction;
 use App\Domain\Users\Exceptions\CannotDeactivateSystemAdminException;
-use App\Exports\UsersExport;
+use App\Domain\Users\Exports\UsersExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Users\StoreUserRequest;
 use App\Http\Requests\Users\UpdateUserRequest;
@@ -40,8 +40,9 @@ class UserController extends Controller
             // 'roles' is eager-loaded too — UserResource::getRoleNames()
             // otherwise lazy-loads it per row (Spatie's HasRoles trait
             // calls loadMissing('roles')), an N+1 query per user on both
-            // the paginated list and the (unpaginated) export.
-            ->with(['tenant', 'roles'])
+            // the paginated list and the (unpaginated) export. Same
+            // reasoning for 'driver' — UserResource::driver_id touches it.
+            ->with(['tenant', 'roles', 'driver'])
             // This is "manage other users", not self-service — the
             // caller's own row is never listed here. Editing yourself
             // goes through /api/v1/me (ProfileController) instead.
@@ -68,7 +69,11 @@ class UserController extends Controller
 
     public function show(int $user)
     {
-        $user = User::findOrFail($user);
+        // Eager-loads 'driver' too — the Edit page's initial GET uses
+        // driver_id (see UserResource) to detect a driver-role user and
+        // redirect to the dedicated Drivers edit page instead of showing
+        // the (policy-blocked, see UserPolicy::update()) generic form.
+        $user = User::with('driver')->findOrFail($user);
 
         Gate::authorize('view', $user);
 
@@ -105,15 +110,16 @@ class UserController extends Controller
             // 'roles' is eager-loaded too — UserResource::getRoleNames()
             // otherwise lazy-loads it per row (Spatie's HasRoles trait
             // calls loadMissing('roles')), an N+1 query per user on both
-            // the paginated list and the (unpaginated) export.
-            ->with(['tenant', 'roles'])
+            // the paginated list and the (unpaginated) export. Same
+            // reasoning for 'driver' — UserResource::driver_id touches it.
+            ->with(['tenant', 'roles', 'driver'])
             ->where('id', '!=', $request->user()->id)
             ->when($request->filled('status'), fn ($q) => $q->where('status', $request->string('status')))
             ->when($request->filled('role'), fn ($q) => $q->role($request->string('role')->toString()))
             ->get();
 
         if ($request->query('format', 'xlsx') === 'pdf') {
-            $pdf = app('dompdf.wrapper')->loadView('exports.users-pdf', ['users' => $users]);
+            $pdf = app('dompdf.wrapper')->loadView('tenant.users.export-pdf', ['users' => $users]);
 
             return $pdf->download('users.pdf');
         }

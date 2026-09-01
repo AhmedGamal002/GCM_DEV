@@ -5,7 +5,23 @@ namespace App\Http\Requests\Users;
 use App\Domain\Users\Rules\OnlyOneSystemAdminPerTenantRule;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
+/**
+ * Same 'driver' exclusion as StoreUserRequest — see its docblock. Editing
+ * an existing driver's role/data goes through PATCH /api/v1/drivers/{id}
+ * instead; UserPolicy::update() rejects this endpoint outright for a
+ * target who already hasRole('driver'), so this validation rule mainly
+ * guards the OTHER direction (promoting a data_entry/auditor INTO
+ * 'driver' here, which would create the same orphaned-record bug).
+ *
+ * Also tightened from a bare `exists:roles,...` (which allowed ANY role
+ * name, including system_admin) to the same explicit whitelist as Store
+ * — promoting an existing user to system_admin was never supposed to be
+ * possible outside initial tenant provisioning (see StoreUserRequest's
+ * docblock: "provisioned separately, not cloneable"), and the old rule
+ * only ever caught a *second* system_admin, not a promotion at all.
+ */
 class UpdateUserRequest extends FormRequest
 {
     private ?User $targetUser = null;
@@ -33,7 +49,7 @@ class UpdateUserRequest extends FormRequest
             'photo' => ['nullable', 'image', 'max:2048'],
             'additional_data' => ['nullable', 'string'],
             'roles' => ['required', 'array', 'min:1', new OnlyOneSystemAdminPerTenantRule($this->targetUser()->id)],
-            'roles.*' => ['string', 'exists:roles,name,guard_name,web'],
+            'roles.*' => ['string', Rule::in(['data_entry', 'auditor'])],
         ];
     }
 }

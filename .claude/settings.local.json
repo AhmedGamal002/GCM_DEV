@@ -94,7 +94,12 @@
       "Bash(powershell -Command \"Stop-Process -Id 36932 -Force -ErrorAction SilentlyContinue; Start-Sleep -Milliseconds 500; Get-Process -Id 36932 -ErrorAction SilentlyContinue\")",
       "Bash(curl -s -H \"Accept: application/json\" \"http://localhost:8000/auth/reset-password-basic\")",
       "Bash(curl -s -o /tmp/rp.html -w \"%{http_code}\" \"http://localhost:8000/reset-password/fake-token-123?email=admin@gcm.test\")",
-      "Bash(curl -s -H \"Accept: application/json\" \"http://localhost:8000/reset-password/fake-token-123?email=admin@gcm.test\")"
+      "Bash(curl -s -H \"Accept: application/json\" \"http://localhost:8000/reset-password/fake-token-123?email=admin@gcm.test\")",
+      "Bash(mkdir -p app/Domain/Users/Exports app/Domain/Drivers/Exports)",
+      "Bash(rmdir resources/views/exports)",
+      "Bash(rmdir app/Exports)",
+      "Bash(powershell -Command \"Stop-Process -Id 39848 -Force -ErrorAction SilentlyContinue; Start-Sleep -Milliseconds 500; 'done'\")",
+      "Bash(powershell -Command \"Stop-Process -Id 23556 -Force -ErrorAction SilentlyContinue; Start-Sleep -Milliseconds 500; 'done'\")"
     ]
   }
 }

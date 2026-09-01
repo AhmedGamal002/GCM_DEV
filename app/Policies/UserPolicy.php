@@ -28,9 +28,17 @@ class UserPolicy
         return $actor->hasRole('system_admin');
     }
 
+    /**
+     * A driver's editable record lives entirely under the Drivers module
+     * (PATCH /api/v1/drivers/{id}) — never here, regardless of payload.
+     * Blocking it at the policy level (not just UserAddController's/the
+     * FormRequest's role whitelist) means it holds even if someone posts
+     * directly to this endpoint bypassing the UI. See StoreUserRequest's
+     * docblock for the bug this prevents (a driver with no `drivers` row).
+     */
     public function update(User $actor, User $target): bool
     {
-        return $actor->hasRole('system_admin');
+        return $actor->hasRole('system_admin') && ! $target->hasRole('driver');
     }
 
     public function updateStatus(User $actor, User $target): bool

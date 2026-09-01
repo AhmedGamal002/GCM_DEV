@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Exports;
+namespace App\Domain\Drivers\Exports;
 
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;

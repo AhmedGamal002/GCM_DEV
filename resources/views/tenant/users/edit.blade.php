@@ -20,13 +20,13 @@
   window.userEditTranslations = {
     data_entry: @json(__('Data Entry')),
     system_auditor: @json(__('System Auditor')),
-    driver: @json(__('Driver')),
     active: @json(__('Active')),
     on_vacation: @json(__('On Vacation')),
     deactivated: @json(__('Deactivated')),
     saved: @json(__('Changes saved successfully.')),
     generic_error: @json(__('Something went wrong. Please try again.')),
-    view_url_base: @json(url('/app/user/view'))
+    view_url_base: @json(url('/app/user/view')),
+    driver_edit_url_base: @json(url('/app/driver/edit'))
   };
   window.userEditId = {{ $userId }};
 </script>
@@ -46,6 +46,17 @@
 <div class="card mb-6">
   <div class="card-body text-center py-6" id="user-edit-loading">
     <div class="spinner-border" role="status"></div>
+  </div>
+
+  <div class="card-body d-none" id="user-edit-driver-redirect">
+    <div class="alert alert-info d-flex align-items-center mb-0" role="alert">
+      <i class="ti ti-info-circle me-2"></i>
+      <span>
+        {{ __('This account is a Driver — edit it from the') }}
+        <a href="#" id="user-edit-driver-link">{{ __('Drivers') }}</a>
+        {{ __('page instead, where residence/license/insurance details are also editable.') }}
+      </span>
+    </div>
   </div>
 
   <div class="d-none" id="user-edit-form-wrapper">
@@ -84,10 +95,6 @@
           <div class="form-check form-check-inline">
             <input class="form-check-input" type="radio" name="role" id="role-auditor" value="auditor">
             <label class="form-check-label" for="role-auditor">{{ __('System Auditor') }}</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="role" id="role-driver" value="driver">
-            <label class="form-check-label" for="role-driver">{{ __('Driver') }}</label>
           </div>
         </div>
         <div class="col-md-6">

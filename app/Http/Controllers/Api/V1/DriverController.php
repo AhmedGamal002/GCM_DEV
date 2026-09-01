@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Domain\Drivers\Actions\AddDriverEntryPermitAction;
 use App\Domain\Drivers\Actions\CreateDriverAction;
 use App\Domain\Drivers\Actions\UpdateDriverAction;
-use App\Exports\DriversExport;
+use App\Domain\Drivers\Exports\DriversExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Drivers\AddDriverEntryPermitRequest;
 use App\Http\Requests\Drivers\StoreDriverRequest;
@@ -71,7 +71,7 @@ class DriverController extends Controller
             ->get();
 
         if ($request->query('format', 'xlsx') === 'pdf') {
-            $pdf = app('dompdf.wrapper')->loadView('exports.drivers-pdf', ['drivers' => $drivers]);
+            $pdf = app('dompdf.wrapper')->loadView('tenant.drivers.export-pdf', ['drivers' => $drivers]);
 
             return $pdf->download('drivers.pdf');
         }

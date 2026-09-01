@@ -30,6 +30,9 @@ document.addEventListener('DOMContentLoaded', function () {
     statusBox.classList.add('d-none');
     errorBox.classList.add('d-none');
 
+    // A driver created here gets an empty Driver profile row server-side
+    // (see CreateUserAction) — residence/license/insurance aren't
+    // required on this form, only filled in later via the Drivers page.
     const category = form.querySelector('input[name="category"]:checked').value;
     const role = category === 'driver' ? 'driver' : form.querySelector('input[name="role"]:checked').value;
 

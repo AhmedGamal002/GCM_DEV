@@ -4,7 +4,7 @@
 
 ## الحالة الحالية
 
-- **الأسبوع 1 (Tenant/Auth) و2 (المستخدمين/الأدوار) خلصوا بالكامل**، وجزء "إدارة السائقين" من الأسبوع 3 كمان. 89 Feature test شغالة. راجع `WEEKLY_PLAN.md` لتفاصيل كل أسبوع وإضافاته.
+- **الأسبوع 1 (Tenant/Auth) و2 (المستخدمين/الأدوار) خلصوا بالكامل**، وجزء "إدارة السائقين" من الأسبوع 3 كمان. 95 Feature test شغالة. راجع `WEEKLY_PLAN.md` لتفاصيل كل أسبوع وإضافاته.
 - باقي الأسبوع 3 (الأسطول/الأصول) محتمل يبنيه زميل بالتوازي — مش جزء من شغل الجلسات دي.
 - Company/Contractor مؤجلين للأسبوع 4-5 — أي كود بيفترض وجودهم (فروع الفورم، أدوار العميل) مش مبني لسه عمدًا.
 - **فيه Postman collection كاملة في `postman/`** (راجع `postman/README.md`) بتغطي كل الـ endpoints الشغالة — لازم تتحدث فورًا مع أي route جديد، نفس لحظة إضافته لـ `routes/api.php`/`routes/platform.php`.
@@ -17,7 +17,9 @@
   - View: `resources/views/tenant/{module}/{page}.blade.php` (مثلاً `tenant/fleet/list.blade.php`)
   - Controller: `App\Http\Controllers\Web\{Module}\{Page}Controller` (namespace بحرف كابيتال، مطابق لباقي الموديولات)
   - Route: يضاف في `routes/tenant.php`، **مش** `routes/web.php` (الملف ده سقالة Vuexy الأصلية، يفضل زي ما هو)
+  - Export (PDF/Excel): `app/Domain/{module}/Exports/{Module}Export.php` (مش `app/Exports/` عام) + قالب PDF في `resources/views/tenant/{module}/export-pdf.blade.php`
   - راجع `ARCHITECTURE.md §9.5` للتفاصيل والسبب (كان فيه 47 ملف ديمو مختلط مع 8 حقيقيين بس في مجلد واحد قبل الفصل ده).
+  - **`app/Models/` مقصود يفضل flat** — مش نفس القاعدة، ده استثناء واعي (تفاصيل في `ARCHITECTURE.md §9.5`)، متقترحش نقله تلقائي.
 
 ## قبل ما تبدأ أي تعديل
 
@@ -43,6 +45,7 @@
 - **أي Model بيستخدم `getRoleNames()`/Spatie `HasRoles`، لازم تعمل `->with('roles')` صريح في أي query بيرجّع مجموعة (list/export)** — من غيرها N+1 كامل (`HasRoles::getRoleNames()` بتعمل `loadMissing('roles')` تلقائيًا لو مش eager-loaded).
 - **أي `withCount()` أو subquery على علاقة بتاعة Model عليه `BelongsToTenant`، شغّالة من كود Platform (مفيهوش tenant مربوط)، هترمي `TenantContextMissingException`** — حتى لو الاستعلام الأساسي مش على الـ Model المحمي نفسه. الحل: عد صريح بـ `withoutGlobalScope(BelongsToTenant::class)`.
 - **عمود "رقم تعريفي/عرض" لأي كيان (مش الـ `id` الخام) يتولّد في `Model::booted()`** عبر `creating()` hook — عشوائي مش متسلسل، فريد على مستوى الـ tenant، خارج الـ `$fillable`. راجع `users.code` كمرجع (`ARCHITECTURE.md §3.8`).
+- **دور له كيان فرعي مرتبط بيه (زي `driver` ↔ جدول `drivers`) — قبل ما تمنعه من مسار "الإنشاء العام"، ارجع للـ FRD الأول.** أول محاولة إصلاح هنا شالت `driver` من فورم إنشاء المستخدم العام بالكامل — غلط، اتصحح بعد ملاحظة المستخدم: الـ FRD فعليًا بيدي الفورم ده خيار "Driver" لإن الحقول الإضافية (إقامة/رخصة/تأمين) مش إجبارية وقت الإنشاء. الحل الصح: اضمن الكيان الفرعي يتنشئ فاضي (`CreateUserAction` بينشئ `Driver::create(['user_id' => ...])`) بدل ما تمنع المسار كله. **التعديل مختلف عن الإنشاء** — `UserPolicy::update()` لسه بيرفض 403 أي تعديل على مستخدم `hasRole('driver')`، لإن مفيش نفس ضمان "الصف بيتنشئ تلقائي" في مسار التعديل. راجع `ARCHITECTURE.md §5` و`WEEKLY_PLAN.md` (الأسبوع 3) للتفاصيل.
 
 ## سير التحقق القياسي بعد أي تعديل
 
