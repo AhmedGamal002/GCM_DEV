@@ -41,9 +41,6 @@ use App\Http\Controllers\apps\UserViewBilling;
 use App\Http\Controllers\apps\UserViewConnections;
 use App\Http\Controllers\apps\UserViewNotifications;
 use App\Http\Controllers\apps\UserViewSecurity;
-use App\Http\Controllers\apps\VehicleAccount;
-use App\Http\Controllers\apps\VehicleAdd;
-use App\Http\Controllers\apps\VehicleList;
 use App\Http\Controllers\authentications\ForgotPasswordBasic;
 use App\Http\Controllers\authentications\ForgotPasswordCover;
 use App\Http\Controllers\authentications\LoginBasic;
@@ -239,12 +236,6 @@ Route::get('/app/user/list', [UserList::class, 'index'])->middleware(['auth', 't
 Route::get('/app/user/add', [UserAdd::class, 'index'])->middleware(['auth', 'tenant'])->name('app-user-add');
 Route::get('/app/user/view/{user}', [UserAccount::class, 'view'])->whereNumber('user')->middleware(['auth', 'tenant'])->name('app-user-view');
 Route::get('/app/user/edit/{user}', [UserAccount::class, 'edit'])->whereNumber('user')->middleware(['auth', 'tenant'])->name('app-user-edit');
-// GCM Portal — Vehicles (Week 3). Blade shells only; data via
-// /api/v1/vehicles. {vehicle} kept as a raw numeric id.
-Route::get('/app/vehicle/list', [VehicleList::class, 'index'])->middleware(['auth', 'tenant'])->name('app-vehicle-list');
-Route::get('/app/vehicle/add', [VehicleAdd::class, 'index'])->middleware(['auth', 'tenant'])->name('app-vehicle-add');
-Route::get('/app/vehicle/view/{vehicle}', [VehicleAccount::class, 'view'])->whereNumber('vehicle')->middleware(['auth', 'tenant'])->name('app-vehicle-view');
-Route::get('/app/vehicle/edit/{vehicle}', [VehicleAccount::class, 'edit'])->whereNumber('vehicle')->middleware(['auth', 'tenant'])->name('app-vehicle-edit');
 
 Route::get('/app/user/view/account', [UserViewAccount::class, 'index'])->name('app-user-view-account');
 Route::get('/app/user/view/security', [UserViewSecurity::class, 'index'])->name('app-user-view-security');
@@ -378,6 +369,11 @@ Route::get('/maps/leaflet', [Leaflet::class, 'index'])->name('maps-leaflet');
 // laravel example
 Route::get('/laravel/user-management', [UserManagement::class, 'UserManagement'])->name('laravel-example-user-management');
 Route::resource('/user-list', UserManagement::class);
+
+// GCM Portal — the app's own real tenant-side page routes live in
+// routes/tenant.php (split out of this file per the folder-structure
+// handoff). `require`d here so it inherits the same 'web' middleware group.
+require __DIR__.'/tenant.php';
 
 // GCM Portal — web.php stays a Blade shell only. Login/logout/forgot-password
 // /reset-password are ALL handled by Api\V1\Auth\* (see routes/api.php) so

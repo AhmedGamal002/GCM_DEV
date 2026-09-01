@@ -90,7 +90,20 @@
       "Bash(vendor/bin/pint --dirty -q app/Helpers/Helpers.php)",
       "Bash(grep -oE \"\\\\\\\\\\\\\\\\?[a-f0-9]{4};[^\\\\\"]*\\\\\"[a-z-]+\\\\\"|'[a-z][a-z0-9-]{2,}'\" resources/assets/vendor/fonts/tabler-icons.scss)",
       "Bash(grep -o \"\\\\.text-heading[ ,{]\" public/build/assets/core-Be7SmMeJ.css)",
-      "Bash(grep -q '^$ti-icon-recycle:' resources/assets/vendor/fonts/tabler-icons.scss)"
+      "Bash(grep -q '^$ti-icon-recycle:' resources/assets/vendor/fonts/tabler-icons.scss)",
+      "Bash(grep -iE \"\\\\.s?css$\")",
+      "Bash(echo \"=== all references to Domain\\\\\\\\Fleet or Domain/Fleet ===\")",
+      "Bash(grep -rn \"Domain\\\\\\\\\\\\\\\\Fleet\\\\|Domain/Fleet\\\\|App\\\\\\\\\\\\\\\\Domain\\\\\\\\\\\\\\\\Fleet\" app tests routes bootstrap config database --include=\"*.php\")",
+      "Bash(git mv *)",
+      "Bash(sed -i 's#App\\\\\\\\Domain\\\\\\\\Fleet#App\\\\\\\\Domain\\\\\\\\Vehicles#g' app/Domain/Vehicles/Actions/*.php app/Domain/Vehicles/Exceptions/*.php app/Http/Controllers/Api/V1/VehicleController.php)",
+      "Bash(sed -i 's#Tests\\\\\\\\Feature\\\\\\\\Fleet#Tests\\\\\\\\Feature\\\\\\\\Vehicles#g' tests/Feature/Vehicles/*.php)",
+      "Bash(perl -0pi -e 's/App\\\\\\\\Domain\\\\\\\\Fleet/App\\\\\\\\Domain\\\\\\\\Vehicles/g' app/Domain/Vehicles/Actions/CreateVehicleAction.php app/Domain/Vehicles/Actions/UpdateVehicleAction.php app/Domain/Vehicles/Actions/UpdateVehicleStatusAction.php app/Domain/Vehicles/Exceptions/CannotDeactivateVehicleException.php app/Http/Controllers/Api/V1/VehicleController.php)",
+      "Bash(perl -0pi -e 's/Tests\\\\\\\\Feature\\\\\\\\Fleet/Tests\\\\\\\\Feature\\\\\\\\Vehicles/g' tests/Feature/Vehicles/AssetCapacityCategoryReadTest.php tests/Feature/Vehicles/VehicleManagementTest.php tests/Feature/Vehicles/VehiclePolicyTest.php tests/Feature/Vehicles/VehicleUniquePlateTest.php)",
+      "Bash(perl -e 'print \"perl works\\\\n\"')",
+      "Bash(perl -pi -e 's/Fleet/XXXX/g' app/Domain/Vehicles/Actions/CreateVehicleAction.php)",
+      "Bash(composer dump-autoload *)",
+      "Bash(grep -rn \"content.apps.app-vehicle\\\\|content/apps/app-vehicle\\\\|exports.vehicles-pdf\\\\|Controllers.apps.Vehicle\\\\|apps\\\\\\\\\\\\\\\\Vehicle\\\\|app-vehicle-list.blade\\\\|_vehicle-form\" app tests resources routes --include=\"*.php\" --include=\"*.blade.php\")",
+      "Bash(php -r 'json_decode\\(file_get_contents\\(\"postman/GCM-Portal-Vehicles.postman_collection.json\"\\)\\); echo \"postman json: \".json_last_error_msg\\(\\).PHP_EOL;')"
     ]
   }
 }

@@ -219,13 +219,13 @@ gcm-wms/
 │   │   │   └── Scopes/
 │   │   │       └── ContractorVisibilityScope.php
 │   │   │
-│   │   ├── Fleet/
+│   │   ├── Vehicles/                              # موديول مستقل (زي Users) — مش تحت "Fleet"
 │   │   │   ├── Actions/
 │   │   │   │   ├── CreateVehicleAction.php
-│   │   │   │   ├── SetVehicleMaintenanceAction.php
-│   │   │   │   └── AssignDefaultDriverAction.php
-│   │   │   └── Rules/
-│   │   │       └── VehicleCategoryMatchesDriverLicenseRule.php
+│   │   │   │   ├── UpdateVehicleAction.php
+│   │   │   │   └── UpdateVehicleStatusAction.php
+│   │   │   └── Exceptions/
+│   │   │       └── CannotDeactivateVehicleException.php
 │   │   │
 │   │   ├── Assets/
 │   │   │   ├── Actions/
@@ -316,9 +316,10 @@ gcm-wms/
 │   │   │   │       ├── AggregatedDocumentsReportController.php
 │   │   │   │       └── RecycleRateReportController.php
 │   │   │   │
-│   │   │   └── Web/                                       # Blade shell فقط — بدون بيانات حقيقية
+│   │   │   └── Web/                                       # Blade shell فقط — بدون بيانات حقيقية، مجلد لكل موديول
 │   │   │       ├── DashboardController.php
-│   │   │       └── AuthenticatedSessionController.php     # صفحة دخول Vuexy بجلسة Cookie
+│   │   │       ├── AuthenticatedSessionController.php     # صفحة دخول Vuexy بجلسة Cookie
+│   │   │       └── Vehicles/Vehicle{List,Add,Account}Controller.php   # 🆕 (Users/Drivers/... زيّها — يتدمجوا من فرع الزميل)
 │   │   │
 │   │   ├── Requests/
 │   │   │   ├── Users/{Store,Update}UserRequest.php
@@ -403,12 +404,12 @@ gcm-wms/
 │   └── DemoDataSeeder.php                                       # local/staging فقط
 │
 ├── resources/
-│   ├── views/                                                    # لوحة Vuexy Blade
-│   │   ├── layouts/panel.blade.php
-│   │   ├── auth/{login,forgot-password}.blade.php
-│   │   ├── dashboard.blade.php
-│   │   ├── users/ companies/ projects/ contractors/ fleet/ assets/
-│   │   ├── services/ facilities/ purchase-orders/ trips/ reports/
+│   ├── views/
+│   │   ├── layouts/ + layouts/sections/ + _partials/             # سقالة Vuexy المشتركة — ما تتحركش
+│   │   ├── content/                                              # صفحات Vuexy الديمو — تفضل مكانها
+│   │   └── tenant/                                               # 🆕 صفحات GCM الحقيقية، مجلد لكل موديول:
+│   │       ├── vehicles/{list,add,edit,view,_form}.blade.php     #    + vehicles/exports/vehicles-pdf.blade.php
+│   │       └── users/ auth/ profile/  (على فرع الزميل — يتدمج)
 │   │   │   # كل صفحة هنا Shell رفيع يستدعي /api/v1/* عبر axios فقط
 │   ├── js/
 │   │   ├── api/client.js                                        # axios instance + Sanctum CSRF bootstrap
@@ -418,7 +419,8 @@ gcm-wms/
 ├── routes/
 │   ├── platform.php                                               # 🆕 Super Admin — auth:platform
 │   ├── api.php                                                    # /api/v1/* — اللوحة والموبايل معًا لاحقًا
-│   ├── web.php                                                    # Blade shell فقط
+│   ├── web.php                                                    # سقالة Vuexy الديمو فقط — require tenant.php في آخره
+│   ├── tenant.php                                                 # 🆕 راوتات صفحات GCM الحقيقية (Web\{Module}\* controllers)
 │   └── console.php
 │
 ├── tests/

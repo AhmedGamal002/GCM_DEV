@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\apps;
+namespace App\Http\Controllers\Web\Vehicles;
 
 use App\Http\Controllers\Controller;
 
@@ -11,15 +11,15 @@ use App\Http\Controllers\Controller;
  * SubstituteBindings-before-tenant reason as VehicleController), so
  * authorization happens through the API call, not here.
  */
-class VehicleAccount extends Controller
+class VehicleAccountController extends Controller
 {
     public function view(int $vehicle)
     {
-        return view('content.apps.app-vehicle-view', ['vehicleId' => $vehicle]);
+        return view('tenant.vehicles.view', ['vehicleId' => $vehicle]);
     }
 
     public function edit(int $vehicle)
     {
-        return view('content.apps.app-vehicle-edit', ['vehicleId' => $vehicle]);
+        return view('tenant.vehicles.edit', ['vehicleId' => $vehicle]);
     }
 }

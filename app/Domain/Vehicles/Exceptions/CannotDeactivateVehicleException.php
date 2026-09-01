@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Fleet\Exceptions;
+namespace App\Domain\Vehicles\Exceptions;
 
 use RuntimeException;
 

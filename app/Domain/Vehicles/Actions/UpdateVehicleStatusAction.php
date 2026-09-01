@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Domain\Fleet\Actions;
+namespace App\Domain\Vehicles\Actions;
 
-use App\Domain\Fleet\Exceptions\CannotDeactivateVehicleException;
+use App\Domain\Vehicles\Exceptions\CannotDeactivateVehicleException;
 use App\Models\User;
 use App\Models\Vehicle;
 

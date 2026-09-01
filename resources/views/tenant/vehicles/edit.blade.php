@@ -1,6 +1,6 @@
 @extends('layouts/layoutMaster')
 
-@section('title', __('Create New Vehicle'))
+@section('title', __('Edit Vehicle'))
 
 @section('vendor-style')
 @vite([
@@ -22,16 +22,19 @@
     remove: @json(__('Remove')),
     required: @json(__('This field is required.')),
     numeric: @json(__('Only digits are allowed.')),
-    list_url: @json(route('app-vehicle-list'))
+    cancel: @json(__('Cancel')),
+    list_url: @json(route('app-vehicle-list')),
+    view_url_base: @json(url('/app/vehicle/view'))
   };
+  window.vehicleEditId = {{ $vehicleId }};
 </script>
-@vite('resources/assets/js/app-vehicle-add.js')
+@vite('resources/assets/js/app-vehicle-edit.js')
 @endsection
 
 @section('content')
 
 <div id="vehicle-form-error" class="alert alert-danger d-none"></div>
 
-@include('content.apps._vehicle-form', ['mode' => 'create'])
+@include('tenant.vehicles._form', ['mode' => 'edit'])
 
 @endsection

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Fleet;
+namespace Tests\Feature\Vehicles;
 
 use App\Concerns\BelongsToTenant;
 use App\Models\Tenant;

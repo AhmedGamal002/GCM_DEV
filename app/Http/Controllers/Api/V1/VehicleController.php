@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Domain\Fleet\Actions\CreateVehicleAction;
-use App\Domain\Fleet\Actions\UpdateVehicleAction;
-use App\Domain\Fleet\Actions\UpdateVehicleStatusAction;
-use App\Domain\Fleet\Exceptions\CannotDeactivateVehicleException;
+use App\Domain\Vehicles\Actions\CreateVehicleAction;
+use App\Domain\Vehicles\Actions\UpdateVehicleAction;
+use App\Domain\Vehicles\Actions\UpdateVehicleStatusAction;
+use App\Domain\Vehicles\Exceptions\CannotDeactivateVehicleException;
 use App\Exports\VehiclesExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Vehicles\StoreVehicleRequest;
@@ -140,7 +140,7 @@ class VehicleController extends Controller
             ->get();
 
         if ($request->query('format', 'xlsx') === 'pdf') {
-            $pdf = app('dompdf.wrapper')->loadView('exports.vehicles-pdf', ['vehicles' => $vehicles]);
+            $pdf = app('dompdf.wrapper')->loadView('tenant.vehicles.exports.vehicles-pdf', ['vehicles' => $vehicles]);
 
             return $pdf->download('vehicles.pdf');
         }
