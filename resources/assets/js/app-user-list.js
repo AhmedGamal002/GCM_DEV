@@ -52,10 +52,14 @@ $(function () {
     processing: true,
     serverSide: true,
     searchDelay: 500,
-    ajax: window.gcmServerSideAjax('/api/v1/users', () => ({
-      role: currentRole || undefined,
-      status: currentStatus || undefined
-    })),
+    ajax: window.gcmServerSideAjax(
+      '/api/v1/users',
+      () => ({
+        role: currentRole || undefined,
+        status: currentStatus || undefined
+      }),
+      t.no_permission
+    ),
     columns: [
       { data: 'id' },
       { data: 'id' },

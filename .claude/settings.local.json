@@ -94,7 +94,12 @@
       "Bash(findstr \":8000\")",
       "Bash(findstr LISTENING)",
       "Bash(grep -n \"DataTable\\\\|#\\\\|\\\\\\\\.\\\\[\" resources/assets/js/app-vehicle-list.js)",
-      "Bash(powershell -NoProfile -Command \"Get-Content postman/GCM-Portal.postman_collection.json -Raw | ConvertFrom-Json | Out-Null; Write-Output 'main OK'; Get-Content postman/GCM-Portal-Vehicles.postman_collection.json -Raw | ConvertFrom-Json | Out-Null; Write-Output 'vehicles OK'\")"
+      "Bash(powershell -NoProfile -Command \"Get-Content postman/GCM-Portal.postman_collection.json -Raw | ConvertFrom-Json | Out-Null; Write-Output 'main OK'; Get-Content postman/GCM-Portal-Vehicles.postman_collection.json -Raw | ConvertFrom-Json | Out-Null; Write-Output 'vehicles OK'\")",
+      "Bash(php -v)",
+      "Bash(grep -n \"^\\\\.env\\\\|^/\\\\.env\\\\|\\\\.env$\" .gitignore)",
+      "Bash(bash -n \"D:\\\\personal\\\\GCM\\\\cl\\\\scripts\\\\hostinger-sync-public.sh\")",
+      "Bash(rm -rf /tmp/sync-test)",
+      "Bash(awk '/^## 7\\\\./{print NR; exit}' ARCHITECTURE.md)"
     ]
   }
 }

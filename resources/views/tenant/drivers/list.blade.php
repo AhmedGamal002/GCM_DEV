@@ -20,6 +20,7 @@
 @section('page-script')
 <script>
   window.driverListTranslations = {
+    no_permission: @json(__("You don't have permission to view this data.")),
     all_statuses: @json(__('All statuses')),
     all_affiliations: @json(__('All affiliations')),
     active: @json(__('Active')),

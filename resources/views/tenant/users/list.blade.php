@@ -20,6 +20,7 @@
 @section('page-script')
 <script>
   window.userListTranslations = {
+    no_permission: @json(__("You don't have permission to view this data.")),
     all_roles: @json(__('All roles')),
     all_statuses: @json(__('All statuses')),
     active: @json(__('Active')),
