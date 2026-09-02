@@ -62,9 +62,10 @@ Route::prefix('v1')->group(function () {
         Route::get('/vehicles/{vehicle}/documents/{document}/download', [VehicleController::class, 'downloadDocument'])
             ->name('api.vehicles.documents.download');
 
-        // /drivers/export MUST be registered before /drivers/{driver} —
-        // same reasoning as /users/export (see above).
+        // /drivers/export and /drivers/stats MUST be registered before
+        // /drivers/{driver} — same reasoning as /users/export (see above).
         Route::get('/drivers/export', [DriverController::class, 'export']);
+        Route::get('/drivers/stats', [DriverController::class, 'stats']);
         Route::get('/drivers', [DriverController::class, 'index']);
         Route::post('/drivers', [DriverController::class, 'store']);
         Route::get('/drivers/{driver}', [DriverController::class, 'show']);

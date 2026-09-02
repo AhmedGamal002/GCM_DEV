@@ -6,7 +6,7 @@ use App\Domain\Vehicles\Actions\CreateVehicleAction;
 use App\Domain\Vehicles\Actions\UpdateVehicleAction;
 use App\Domain\Vehicles\Actions\UpdateVehicleStatusAction;
 use App\Domain\Vehicles\Exceptions\CannotDeactivateVehicleException;
-use App\Exports\VehiclesExport;
+use App\Domain\Vehicles\Exports\VehiclesExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Vehicles\StoreVehicleRequest;
 use App\Http\Requests\Vehicles\UpdateVehicleRequest;
@@ -32,9 +32,19 @@ class VehicleController extends Controller
 {
     private const LIST_WITH = ['tenant', 'category', 'embeddedCapacityCategory'];
 
+    /**
+     * Explicit allowlist for `sort_by` — never the raw request value
+     * itself, since that would let a caller name an arbitrary column.
+     */
+    private const SORTABLE_COLUMNS = ['plate_letters', 'operational_status', 'created_at'];
+
     public function index(Request $request)
     {
         Gate::authorize('viewAny', Vehicle::class);
+
+        $sortBy = $request->string('sort_by')->toString();
+        $sortDir = $request->string('sort_dir', 'asc')->lower()->toString() === 'desc' ? 'desc' : 'asc';
+        $sortBy = in_array($sortBy, self::SORTABLE_COLUMNS, true) ? $sortBy : 'plate_letters';
 
         $vehicles = Vehicle::query()
             ->with(self::LIST_WITH)
@@ -42,11 +52,28 @@ class VehicleController extends Controller
             ->when($request->filled('operational_status'), fn ($q) => $q->where('operational_status', $request->string('operational_status')))
             ->when($request->filled('affiliation'), fn ($q) => $q->where('affiliation', $request->string('affiliation')))
             ->when($request->filled('search'), function ($q) use ($request) {
+                // The UI shows/exposes the plate as "AAA 1234" (Vehicle::plate(),
+                // letters + space + numbers), but it's stored as two separate
+                // columns — a plain LIKE against either column alone never
+                // matches a search for the combined displayed string. Match
+                // against the DB-side concatenation (with and without the
+                // space) too, so searching what's on screen actually works.
                 $search = $request->string('search')->toString();
-                $q->where(fn ($q2) => $q2->where('plate_letters', 'like', "%{$search}%")
-                    ->orWhere('plate_numbers', 'like', "%{$search}%"));
+                $collapsed = trim(preg_replace('/\s+/', '', $search));
+                // MySQL (real usage) has CONCAT(); SQLite (the test suite's
+                // in-memory DB) doesn't — it uses the `||` operator instead.
+                [$withSpace, $noSpace] = $q->getConnection()->getDriverName() === 'sqlite'
+                    ? ["plate_letters || ' ' || plate_numbers", 'plate_letters || plate_numbers']
+                    : ["CONCAT(plate_letters, ' ', plate_numbers)", 'CONCAT(plate_letters, plate_numbers)'];
+                $q->where(function ($q2) use ($search, $collapsed, $withSpace, $noSpace) {
+                    $q2->where('plate_letters', 'like', "%{$search}%")
+                        ->orWhere('plate_numbers', 'like', "%{$search}%")
+                        ->orWhereRaw("{$withSpace} LIKE ?", ["%{$search}%"])
+                        ->orWhereRaw("{$noSpace} LIKE ?", ["%{$collapsed}%"]);
+                });
             })
-            ->latest()
+            ->orderBy($sortBy, $sortDir)
+            ->when($sortBy === 'plate_letters', fn ($q) => $q->orderBy('plate_numbers', $sortDir))
             ->paginate($request->integer('per_page', 15));
 
         return VehicleResource::collection($vehicles);

@@ -5,7 +5,10 @@ namespace Tests\Feature\Drivers;
 use App\Models\Driver;
 use App\Models\Tenant;
 use App\Models\User;
+use App\Models\Vehicle;
+use App\Models\VehicleCategory;
 use Database\Seeders\RoleSeeder;
+use Database\Seeders\VehicleCategorySeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -17,6 +20,10 @@ class DriverCreationTest extends TestCase
 
     private User $systemAdmin;
 
+    private VehicleCategory $vehicleCategory;
+
+    private Vehicle $vehicle;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -25,12 +32,16 @@ class DriverCreationTest extends TestCase
         Storage::fake('public');
 
         $this->seed(RoleSeeder::class);
+        $this->seed(VehicleCategorySeeder::class);
 
         $tenant = Tenant::create(['name' => 'Tenant A', 'slug' => 'tenant-a', 'status' => 'active']);
         app()->instance('tenant', $tenant);
 
         $this->systemAdmin = User::factory()->create();
         $this->systemAdmin->assignRole('system_admin');
+
+        $this->vehicleCategory = VehicleCategory::where('slug', 'dump_truck')->firstOrFail();
+        $this->vehicle = Vehicle::factory()->create(['vehicle_category_id' => $this->vehicleCategory->id]);
     }
 
     private function basePayload(): array
@@ -42,6 +53,8 @@ class DriverCreationTest extends TestCase
             'password' => 'a-secure-password',
             'password_confirmation' => 'a-secure-password',
             'status' => 'active',
+            'vehicle_category_ids' => [$this->vehicleCategory->id],
+            'default_vehicle_id' => $this->vehicle->id,
             'residence_number' => 'RES-001',
             'residence_valid_to' => '2030-01-01',
             'license_number' => 'LIC-001',
@@ -100,12 +113,49 @@ class DriverCreationTest extends TestCase
                 'password' => 'a-secure-password',
                 'password_confirmation' => 'a-secure-password',
                 'status' => 'active',
-                // missing residence/license/operational_license/insurance
+                // missing vehicle_category_ids/default_vehicle_id/residence/license/operational_license/insurance
             ]);
 
         $response->assertUnprocessable();
         $response->assertJsonValidationErrors([
+            'vehicle_category_ids', 'default_vehicle_id',
             'residence_number', 'license_number', 'operational_license_number', 'insurance_number',
         ]);
+    }
+
+    /**
+     * Regression test for a real bug found live in the browser: multipart
+     * form submissions (what every actual browser form sends — unlike
+     * postJson()'s JSON body, which keeps PHP array values as real ints)
+     * stringify every field, including array values. The category-match
+     * check originally used in_array(..., true) (strict) — "3" !== 3, so
+     * it rejected every submission, even ones that genuinely matched.
+     * postJson()-based tests never caught this because JSON preserves
+     * int types; this test deliberately passes string ids, like a real
+     * <form> submission would, to guard against it recurring.
+     */
+    public function test_creating_a_driver_succeeds_when_ids_are_submitted_as_strings_like_a_real_form_does(): void
+    {
+        $response = $this->actingAs($this->systemAdmin, 'web')
+            ->post('/api/v1/drivers', array_merge($this->basePayload(), [
+                'vehicle_category_ids' => [(string) $this->vehicleCategory->id],
+                'default_vehicle_id' => (string) $this->vehicle->id,
+            ]), ['Accept' => 'application/json']);
+
+        $response->assertCreated();
+    }
+
+    public function test_default_vehicle_must_belong_to_a_selected_qualified_category(): void
+    {
+        $otherCategory = VehicleCategory::where('slug', 'water_tanker')->firstOrFail();
+
+        $response = $this->actingAs($this->systemAdmin, 'web')
+            ->postJson('/api/v1/drivers', array_merge($this->basePayload(), [
+                // vehicle belongs to 'dump_truck' (see setUp), but only
+                // 'water_tanker' is selected as a qualified category.
+                'vehicle_category_ids' => [$otherCategory->id],
+            ]));
+
+        $response->assertUnprocessable()->assertJsonValidationErrors('default_vehicle_id');
     }
 }

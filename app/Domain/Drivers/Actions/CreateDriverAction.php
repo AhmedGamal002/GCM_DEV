@@ -46,6 +46,7 @@ class CreateDriverAction
 
             $driver = Driver::create([
                 'user_id' => $user->id,
+                'default_vehicle_id' => $data['default_vehicle_id'],
                 'residence_number' => $data['residence_number'],
                 'residence_valid_to' => $data['residence_valid_to'],
                 'residence_attachment' => $this->storeDocument($documents['residence'] ?? null),
@@ -69,7 +70,9 @@ class CreateDriverAction
                 ]);
             }
 
-            return $driver->load(['user.roles', 'entryPermits']);
+            $driver->qualifiedVehicleCategories()->sync($data['vehicle_category_ids']);
+
+            return $driver->load(['user.roles', 'entryPermits', 'defaultVehicle.category', 'qualifiedVehicleCategories']);
         });
     }
 

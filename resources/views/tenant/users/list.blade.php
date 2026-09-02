@@ -29,6 +29,8 @@
     view: @json(__('View')),
     actions: @json(__('Actions')),
     add_user: @json(__('Add User')),
+    add_gcm_staff: @json(__('GCM Staff (Data Entry / Auditor)')),
+    add_driver: @json(__('Driver')),
     search_user: @json(__('Search User')),
     no_users_found: @json(__('No users found.')),
     generic_error: @json(__('Something went wrong. Please try again.')),
@@ -37,11 +39,12 @@
     info_empty: @json(__('Showing 0 to 0 of 0 entries')),
     created: @json(__('User created successfully.')),
     add_user_url: @json(route('app-user-add')),
+    add_driver_url: @json(route('app-driver-add')),
     view_url_base: @json(url('/app/user/view')),
     edit_url_base: @json(url('/app/user/edit'))
   };
 </script>
-@vite('resources/assets/js/app-user-list.js')
+@vite(['resources/assets/js/datatables-server-side.js', 'resources/assets/js/app-user-list.js'])
 @endsection
 
 @section('content')

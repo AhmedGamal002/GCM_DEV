@@ -52,7 +52,7 @@
     }
   };
 </script>
-@vite('resources/assets/js/app-vehicle-list.js')
+@vite(['resources/assets/js/datatables-server-side.js', 'resources/assets/js/app-vehicle-list.js'])
 @endsection
 
 @section('content')

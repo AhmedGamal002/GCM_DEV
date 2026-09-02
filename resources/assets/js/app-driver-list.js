@@ -33,27 +33,32 @@ $(function () {
     return;
   }
 
-  function updateStats(drivers) {
-    const counts = { active: 0, on_vacation: 0, deactivated: 0 };
-    drivers.forEach(function (d) {
-      if (counts[d.status] !== undefined) counts[d.status]++;
-    });
+  // Stat cards — a real endpoint now (GET /api/v1/drivers/stats), not
+  // counted from whatever page of the table happened to be loaded. That
+  // used to silently under-count past the first ~1000 drivers — see
+  // datatables-server-side.js's docblock for the full story.
+  window.axios
+    .get('/api/v1/drivers/stats')
+    .then(function (response) {
+      const s = response.data.data;
+      document.getElementById('dl-stat-available').textContent = s.available;
+      document.getElementById('dl-stat-vacation').textContent = s.on_vacation;
+      document.getElementById('dl-stat-deactivated').textContent = s.deactivated;
+      // "On Trips" stays 0 — no Trips module yet (Week 7).
+    })
+    .catch(() => {});
 
-    document.getElementById('dl-stat-available').textContent = counts.active;
-    document.getElementById('dl-stat-vacation').textContent = counts.on_vacation;
-    document.getElementById('dl-stat-deactivated').textContent = counts.deactivated;
-    // "On Trips" stays 0 — no Trips module yet (Week 7).
-  }
+  let currentAffiliation = '';
+  let currentStatus = '';
 
   dtDriverTable.DataTable({
     processing: true,
-    ajax: {
-      url: '/api/v1/drivers?per_page=1000',
-      dataSrc: function (json) {
-        updateStats(json.data);
-        return json.data;
-      }
-    },
+    serverSide: true,
+    searchDelay: 500,
+    ajax: window.gcmServerSideAjax('/api/v1/drivers', () => ({
+      affiliation: currentAffiliation || undefined,
+      status: currentStatus || undefined
+    })),
     columns: [
       { data: 'id' },
       { data: 'id' },
@@ -100,19 +105,12 @@ $(function () {
       },
       {
         targets: 4,
-        render: function (data, type, full) {
-          // DataTables' column().search() matches against the RENDERED
-          // ('filter'-type) output for columns with a render callback,
-          // not the raw data — so filtering must get the raw enum value
-          // back here, or an anchored search for it never matches.
-          if (type === 'filter' || type === 'sort' || type === 'type') return full.affiliation;
-          return full.affiliation === 'gcm' ? 'GCM' : full.affiliation;
-        }
+        orderable: false,
+        render: (data, type, full) => (full.affiliation === 'gcm' ? 'GCM' : full.affiliation)
       },
       {
         targets: 5,
         render: function (data, type, full) {
-          if (type === 'filter' || type === 'sort' || type === 'type') return full.status;
           const status = statusObj[full.status] || { title: full.status, class: 'bg-label-secondary' };
           return '<span class="badge ' + status.class + '">' + status.title + '</span>';
         }
@@ -200,46 +198,36 @@ $(function () {
       }
     },
     initComplete: function () {
-      // Affiliation filter — FRD: "التبعية (للشركة / لمتعهد)"
-      this.api()
-        .columns(4)
-        .every(function () {
-          const column = this;
-          const select = $(
-            '<select class="form-select"><option value="">' + (t.all_affiliations || 'All affiliations') + '</option></select>'
-          )
-            .appendTo('.driver_affiliation')
-            .on('change', function () {
-              const val = $.fn.dataTable.util.escapeRegex($(this).val());
-              column.search(val ? '^' + val + '$' : '', true, false).draw();
-            });
+      const api = this.api();
 
-          const seen = new Set();
-          column.data().each((affiliation) => seen.add(affiliation));
-          Array.from(seen).sort().forEach((affiliation) => {
-            const label = affiliation === 'gcm' ? 'GCM' : affiliation;
-            select.append('<option value="' + affiliation + '">' + label + '</option>');
-          });
+      // Affiliation filter — FRD: "التبعية (للشركة / لمتعهد)". Fixed
+      // list now (server-side paging means the loaded page never has
+      // every affiliation value in it to build this from anymore).
+      const affiliationSelect = $(
+        '<select class="form-select"><option value="">' + (t.all_affiliations || 'All affiliations') + '</option></select>'
+      )
+        .appendTo('.driver_affiliation')
+        .on('change', function () {
+          currentAffiliation = $(this).val();
+          api.draw();
         });
+      ['gcm', 'contractor'].forEach((affiliation) => {
+        const label = affiliation === 'gcm' ? 'GCM' : affiliation;
+        affiliationSelect.append('<option value="' + affiliation + '">' + label + '</option>');
+      });
 
       // Availability filter — FRD: "توفر السائق"
-      this.api()
-        .columns(5)
-        .every(function () {
-          const column = this;
-          const select = $(
-            '<select class="form-select"><option value="">' + (t.all_statuses || 'All statuses') + '</option></select>'
-          )
-            .appendTo('.driver_status')
-            .on('change', function () {
-              const val = $.fn.dataTable.util.escapeRegex($(this).val());
-              column.search(val ? '^' + val + '$' : '', true, false).draw();
-            });
-
-          ['active', 'on_vacation', 'deactivated'].forEach((status) => {
-            select.append('<option value="' + status + '">' + statusObj[status].title + '</option>');
-          });
+      const statusSelect = $(
+        '<select class="form-select"><option value="">' + (t.all_statuses || 'All statuses') + '</option></select>'
+      )
+        .appendTo('.driver_status')
+        .on('change', function () {
+          currentStatus = $(this).val();
+          api.draw();
         });
+      ['active', 'on_vacation', 'deactivated'].forEach((status) => {
+        statusSelect.append('<option value="' + status + '">' + statusObj[status].title + '</option>');
+      });
     }
   });
 });

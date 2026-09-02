@@ -9,28 +9,28 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 
 /**
- * Per the FRD's "Create new user" form: only data_entry/auditor (GCM
- * staff) or driver are creatable here — system_admin is never offered
- * (exactly one per tenant, provisioned separately, not cloneable). This
- * is enforced server-side too, not just hidden in the UI.
+ * Per the FRD: only data_entry/auditor (GCM staff) are creatable here —
+ * system_admin is never offered (exactly one per tenant, provisioned
+ * separately, not cloneable). This is enforced server-side too, not
+ * just hidden in the UI.
  *
- * A driver created here gets an EMPTY `drivers` profile row (see
- * CreateUserAction) — residence/license/insurance are all nullable in
- * the schema and not required on this form, matching the FRD: those
- * details aren't mandatory at creation and are filled in later via the
- * dedicated Drivers edit page. This intentionally differs from
- * CreateDriverAction (POST /api/v1/drivers), where the same fields ARE
- * required — that's a second, more complete entry point for a driver's
- * full profile in one go, not the only way to create one. What both
- * paths guarantee is a matching Driver row so the user is never
- * invisible on the Drivers page — a real bug found live where a
- * driver-role User existed with no Driver row at all (even the seeded
- * demo driver had it — see DatabaseSeeder's fix).
+ * `driver` is NOT an allowed role here — confirmed directly against the
+ * FRD text (not just inferred): "إدارة وانشاء حسابات السائقين" is its
+ * own section with its own dedicated "انشاء مستخدم جديد (سائق)" page
+ * (separate Reference URL, its own complete field spec — Default
+ * Vehicle, residence, license, operational license, insurance, entry
+ * permits, ALL required except attachments) — not a category inside
+ * this general form. Driver accounts are created exclusively through
+ * POST /api/v1/drivers (CreateDriverAction). An earlier version of this
+ * file allowed 'driver' here (twice, in fact — this went back and forth
+ * before the FRD text settled it): first removed after a live bug (a
+ * driver-role User with no matching Driver row), then briefly restored
+ * on a mistaken assumption that the FRD offered driver as a form
+ * category with optional extra fields — it doesn't; that assumption was
+ * wrong, the FRD's driver fields are marked "لازم" (required).
  *
  * Company/Contractor-affiliated users aren't creatable yet — those
- * entities don't exist until Week 4-5. A driver's `affiliation` is
- * always 'gcm' for now (the FRD's "belongs to a Contractor" option is
- * deferred until Contractor exists).
+ * entities don't exist until Week 4-5.
  */
 class StoreUserRequest extends FormRequest
 {
@@ -50,7 +50,7 @@ class StoreUserRequest extends FormRequest
             'status' => ['required', Rule::in(['active', 'on_vacation', 'deactivated'])],
             'additional_data' => ['nullable', 'string'],
             'roles' => ['required', 'array', 'size:1', new OnlyOneSystemAdminPerTenantRule],
-            'roles.*' => ['string', Rule::in(['data_entry', 'auditor', 'driver'])],
+            'roles.*' => ['string', Rule::in(['data_entry', 'auditor'])],
         ];
     }
 }

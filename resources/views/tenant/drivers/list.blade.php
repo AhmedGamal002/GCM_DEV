@@ -41,7 +41,7 @@
     edit_url_base: @json(url('/app/driver/edit'))
   };
 </script>
-@vite('resources/assets/js/app-driver-list.js')
+@vite(['resources/assets/js/datatables-server-side.js', 'resources/assets/js/app-driver-list.js'])
 @endsection
 
 @section('content')

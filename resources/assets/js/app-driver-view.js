@@ -52,6 +52,9 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('dv-email').textContent = d.email;
     document.getElementById('dv-phone').textContent = d.phone;
     document.getElementById('dv-affiliation').textContent = d.affiliation === 'gcm' ? 'GCM' : d.affiliation;
+    document.getElementById('dv-default-vehicle').textContent = d.default_vehicle
+      ? d.default_vehicle.plate + (d.default_vehicle.category ? ' — ' + d.default_vehicle.category : '')
+      : (t.not_set || '—');
 
     if (d.additional_data) {
       document.getElementById('dv-additional').innerHTML = d.additional_data;

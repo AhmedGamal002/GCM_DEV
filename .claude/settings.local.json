@@ -73,7 +73,28 @@
       "Bash(git symbolic-ref *)",
       "Bash(git remote *)",
       "Bash(xargs -I{} basename {})",
-      "Bash(php -r \"var_dump\\(json_decode\\(file_get_contents\\('resources/menu/verticalMenu.json'\\)\\) !== null\\);\")"
+      "Bash(php -r \"var_dump\\(json_decode\\(file_get_contents\\('resources/menu/verticalMenu.json'\\)\\) !== null\\);\")",
+      "Bash(composer dump-autoload *)",
+      "Bash(mkdir -p app/Domain/Vehicles/Exports)",
+      "Bash(git mv *)",
+      "Bash(mv app/Domain/Users/Exports/VehiclesExport.php app/Domain/Vehicles/Exports/VehiclesExport.php)",
+      "Bash(cd \"D:\\\\personal\\\\GCM\\\\cl\" && find . -iname \"*V01.09*\" -o -iname \"*V1.09*\" 2>/dev/null | grep -v node_modules | grep -v vendor *)",
+      "Bash(php /tmp/frd109_extract/parse.php)",
+      "Bash(sed -i \"s|word/document.xml|C:\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Users\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Ahmed Gamal\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\AppData\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Local\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Temp\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\frd109_extract\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\word\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\document.xml|\" /tmp/frd109_extract/parse.php *)",
+      "Bash(diff /tmp/frd_full.txt /tmp/frd109_extract/frd109_full.txt > /tmp/frd_diff.txt 2>&1; wc -l /tmp/frd_diff.txt; head -100 /tmp/frd_diff.txt)",
+      "Bash(node -e ' *)",
+      "Bash(powershell -Command \"Stop-Process -Id 13120 -Force -ErrorAction SilentlyContinue; Start-Sleep -Milliseconds 500; 'done'\")",
+      "Bash(cp app/Http/Requests/Drivers/StoreDriverRequest.php /tmp/StoreDriverRequest.php.bak)",
+      "Bash(sed -i 's/if \\($vehicle && ! in_array\\(\\(int\\) $vehicle->vehicle_category_id, array_map\\('\\\\''intval'\\\\'', $categoryIds\\), true\\)\\) {/if \\($vehicle \\\\&\\\\& ! in_array\\($vehicle->vehicle_category_id, $categoryIds, true\\)\\) {/' app/Http/Requests/Drivers/StoreDriverRequest.php)",
+      "Bash(powershell -Command 'try { $j = Get-Content '\\\\''D:\\\\personal\\\\GCM\\\\cl\\\\postman\\\\GCM-Portal.postman_collection.json'\\\\'' -Raw | ConvertFrom-Json; Write-Output '\\\\''OK - valid JSON'\\\\'' } catch { Write-Output \"INVALID: $\\($_.Exception.Message\\)\" }')",
+      "Bash(powershell -Command \"Stop-Process -Id 13024 -Force -ErrorAction SilentlyContinue; Start-Sleep -Milliseconds 500; 'done'\")",
+      "Bash(xargs -I{} sh -c 'echo \"=== {} ===\"; cat \"{}\"')",
+      "Bash(grep -n \"class VehicleManagementTest\\\\|use App\\\\\\\\\\\\\\\\Models\\\\\\\\\\\\\\\\Vehicle\\\\|use Database\" tests/Feature/Vehicles/VehicleManagementTest.php)",
+      "Bash(netstat -ano)",
+      "Bash(findstr \":8000\")",
+      "Bash(findstr LISTENING)",
+      "Bash(grep -n \"DataTable\\\\|#\\\\|\\\\\\\\.\\\\[\" resources/assets/js/app-vehicle-list.js)",
+      "Bash(powershell -NoProfile -Command \"Get-Content postman/GCM-Portal.postman_collection.json -Raw | ConvertFrom-Json | Out-Null; Write-Output 'main OK'; Get-Content postman/GCM-Portal-Vehicles.postman_collection.json -Raw | ConvertFrom-Json | Out-Null; Write-Output 'vehicles OK'\")"
     ]
   }
 }

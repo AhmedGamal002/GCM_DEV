@@ -50,16 +50,26 @@ $(function () {
     return;
   }
 
+  let currentCategory = '';
+  let currentStatus = '';
+  let currentAffiliation = '';
+
   dt.DataTable({
     processing: true,
-    ajax: {
-      url: '/api/v1/vehicles?per_page=1000',
-      dataSrc: 'data'
-    },
+    serverSide: true,
+    searchDelay: 500,
+    ajax: window.gcmServerSideAjax('/api/v1/vehicles', () => ({
+      category: currentCategory || undefined,
+      operational_status: currentStatus || undefined,
+      affiliation: currentAffiliation || undefined
+    })),
     columns: [
       { data: 'id' },
       { data: 'id' },
-      { data: 'plate' },
+      // 'plate_letters' (a real sortable backend column), not 'plate' —
+      // the render below still shows full.plate regardless, this only
+      // changes what field name the sort click sends to the server.
+      { data: 'plate_letters' },
       { data: 'category' },
       { data: 'trips_count' },
       { data: 'affiliation' },
@@ -89,6 +99,7 @@ $(function () {
       },
       {
         targets: 3,
+        orderable: false,
         render: function (data, type, full) {
           const slug = full.category && full.category.slug;
           const label = (t.categories && t.categories[slug]) || (full.category && full.category.name) || slug || '';
@@ -97,10 +108,12 @@ $(function () {
       },
       {
         targets: 4,
+        orderable: false,
         render: (data, type, full) => full.trips_count || 0
       },
       {
         targets: 5,
+        orderable: false,
         render: (data, type, full) => (full.affiliation === 'gcm' ? t.gcm || 'GCM' : t.contractor || full.affiliation)
       },
       {
@@ -195,63 +208,49 @@ $(function () {
     initComplete: function () {
       const api = this.api();
 
-      // Category filter — matches on the rendered category label, same
-      // approach as the users table's role filter.
-      api.columns(3).every(function () {
-        const column = this;
-        const select = $(
-          '<select class="form-select"><option value="">' + (t.all_categories || 'All categories') + '</option></select>'
-        )
-          .appendTo('.vehicle_category')
-          .on('change', function () {
-            const val = $.fn.dataTable.util.escapeRegex($(this).val());
-            column.search(val ? '^' + val + '$' : '', true, false).draw();
-          });
-
-        const seen = new Set();
-        column.data().each((cat) => {
-          if (cat && cat.slug) seen.add(cat.slug);
+      // Category filter — fixed list of the 5 known categories (the
+      // slugs VehicleController::index() actually filters by), not
+      // built from the loaded page anymore. The old version's option
+      // *values* were the translated label text, only correct because
+      // client-side search matched rendered text — server-side needs
+      // the real slug.
+      const categorySelect = $(
+        '<select class="form-select"><option value="">' + (t.all_categories || 'All categories') + '</option></select>'
+      )
+        .appendTo('.vehicle_category')
+        .on('change', function () {
+          currentCategory = $(this).val();
+          api.draw();
         });
-        Array.from(seen)
-          .sort()
-          .forEach((slug) => {
-            const label = (t.categories && t.categories[slug]) || slug;
-            select.append('<option value="' + label + '">' + label + '</option>');
-          });
+      ['hook_lift', 'compactor', 'dump_truck', 'water_tanker', 'dyna_box'].forEach((slug) => {
+        const label = (t.categories && t.categories[slug]) || slug;
+        categorySelect.append('<option value="' + slug + '">' + label + '</option>');
       });
 
       // Status filter
-      api.columns(6).every(function () {
-        const column = this;
-        const select = $(
-          '<select class="form-select"><option value="">' + (t.all_statuses || 'All statuses') + '</option></select>'
-        )
-          .appendTo('.vehicle_status')
-          .on('change', function () {
-            const val = $.fn.dataTable.util.escapeRegex($(this).val());
-            column.search(val ? '^' + val + '$' : '', true, false).draw();
-          });
-
-        ['active', 'on_maintenance', 'deactivated'].forEach((status) => {
-          select.append('<option value="' + status + '">' + statusObj[status].title + '</option>');
+      const statusSelect = $(
+        '<select class="form-select"><option value="">' + (t.all_statuses || 'All statuses') + '</option></select>'
+      )
+        .appendTo('.vehicle_status')
+        .on('change', function () {
+          currentStatus = $(this).val();
+          api.draw();
         });
+      ['active', 'on_maintenance', 'deactivated'].forEach((status) => {
+        statusSelect.append('<option value="' + status + '">' + statusObj[status].title + '</option>');
       });
 
       // Affiliation filter
-      api.columns(5).every(function () {
-        const column = this;
-        const select = $(
-          '<select class="form-select"><option value="">' + (t.all_affiliations || 'All affiliations') + '</option></select>'
-        )
-          .appendTo('.vehicle_affiliation')
-          .on('change', function () {
-            const val = $.fn.dataTable.util.escapeRegex($(this).val());
-            column.search(val ? '^' + val + '$' : '', true, false).draw();
-          });
-
-        select.append('<option value="gcm">' + (t.gcm || 'GCM') + '</option>');
-        select.append('<option value="contractor">' + (t.contractor || 'Contractor') + '</option>');
-      });
+      const affiliationSelect = $(
+        '<select class="form-select"><option value="">' + (t.all_affiliations || 'All affiliations') + '</option></select>'
+      )
+        .appendTo('.vehicle_affiliation')
+        .on('change', function () {
+          currentAffiliation = $(this).val();
+          api.draw();
+        });
+      affiliationSelect.append('<option value="gcm">' + (t.gcm || 'GCM') + '</option>');
+      affiliationSelect.append('<option value="contractor">' + (t.contractor || 'Contractor') + '</option>');
     }
   });
 });

@@ -60,6 +60,7 @@
         <li class="mb-2"><span class="h6">{{ __('Email') }}:</span> <span id="dv-email"></span></li>
         <li class="mb-2"><span class="h6">{{ __('Mobile Number') }}:</span> <span id="dv-phone"></span></li>
         <li class="mb-2"><span class="h6">{{ __('Affiliation') }}:</span> <span id="dv-affiliation"></span></li>
+        <li class="mb-2"><span class="h6">{{ __('Default Vehicle') }}:</span> <span id="dv-default-vehicle"></span></li>
       </ul>
       <div id="dv-additional-wrapper" class="mb-6 d-none">
         <span class="h6 d-block mb-2">{{ __('Additional Data') }}:</span>

@@ -9,9 +9,70 @@ document.addEventListener('DOMContentLoaded', function () {
   const permitsList = document.getElementById('entry-permits-list');
   const permitTemplate = document.getElementById('entry-permit-row-template');
   const addPermitBtn = document.getElementById('add-entry-permit');
+  const categoryCheckboxes = document.getElementById('vehicle-category-checkboxes');
+  const defaultVehicleSelect = document.getElementById('default_vehicle_id');
 
   const editorEl = document.getElementById('additional-data-editor');
   const quill = new Quill(editorEl, { theme: 'snow', placeholder: '' });
+
+  // FRD's "Default Vehicle" section: the checked category(ies) determine
+  // which vehicles are offered as the default — a vehicle only shows up
+  // once qualification for its own category is checked.
+  function refreshVehicleOptions() {
+    const checked = Array.from(categoryCheckboxes.querySelectorAll('input:checked'));
+
+    if (checked.length === 0) {
+      defaultVehicleSelect.innerHTML = '<option value="">' + (t.select_types_first || 'Select vehicle type(s) first') + '</option>';
+      defaultVehicleSelect.disabled = true;
+      return;
+    }
+
+    defaultVehicleSelect.disabled = true;
+    defaultVehicleSelect.innerHTML = '<option value="">' + (t.loading || 'Loading...') + '</option>';
+
+    Promise.all(
+      checked.map((cb) => window.axios.get('/api/v1/vehicles', {
+        params: { category: cb.value, operational_status: 'active', per_page: 200 }
+      }))
+    )
+      .then(function (responses) {
+        const byId = new Map();
+        responses.forEach((res) => res.data.data.forEach((v) => byId.set(v.id, v)));
+
+        const previousValue = defaultVehicleSelect.value;
+        defaultVehicleSelect.innerHTML = '<option value="">' + (t.select_vehicle || 'Select a vehicle') + '</option>';
+        byId.forEach(function (v) {
+          const opt = document.createElement('option');
+          opt.value = v.id;
+          opt.textContent = v.plate + (v.category && v.category.name ? ' — ' + v.category.name : '');
+          defaultVehicleSelect.appendChild(opt);
+        });
+        if (byId.has(Number(previousValue))) {
+          defaultVehicleSelect.value = previousValue;
+        }
+        defaultVehicleSelect.disabled = false;
+      })
+      .catch(function () {
+        defaultVehicleSelect.innerHTML = '<option value="">' + (t.generic_error || 'Something went wrong. Please try again.') + '</option>';
+      });
+  }
+
+  window.axios
+    .get('/api/v1/vehicle-categories')
+    .then(function (response) {
+      response.data.data.forEach(function (category) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'form-check';
+        wrapper.innerHTML =
+          '<input class="form-check-input vehicle-category-checkbox" type="checkbox" value="' + category.slug + '" data-category-id="' + category.id + '" id="vc-' + category.slug + '">' +
+          '<label class="form-check-label" for="vc-' + category.slug + '">' + category.name + '</label>';
+        categoryCheckboxes.appendChild(wrapper);
+      });
+      categoryCheckboxes.querySelectorAll('input').forEach((cb) => cb.addEventListener('change', refreshVehicleOptions));
+    })
+    .catch(function () {
+      categoryCheckboxes.textContent = t.generic_error || 'Something went wrong. Please try again.';
+    });
 
   addPermitBtn.addEventListener('click', function () {
     const row = permitTemplate.content.cloneNode(true);
@@ -34,6 +95,11 @@ document.addEventListener('DOMContentLoaded', function () {
     data.append('password_confirmation', document.getElementById('password_confirmation').value);
     data.append('status', form.querySelector('input[name="status"]:checked').value);
     data.append('additional_data', quill.root.innerHTML);
+
+    categoryCheckboxes.querySelectorAll('input:checked').forEach(function (cb, i) {
+      data.append(`vehicle_category_ids[${i}]`, cb.dataset.categoryId);
+    });
+    data.append('default_vehicle_id', defaultVehicleSelect.value);
 
     const photo = document.getElementById('photo').files[0];
     if (photo) data.append('photo', photo);

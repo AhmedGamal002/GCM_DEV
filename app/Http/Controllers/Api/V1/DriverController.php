@@ -32,9 +32,23 @@ class DriverController extends Controller
         'insurance' => 'insurance_attachment',
     ];
 
+    /**
+     * name/code/status live on `users`, not `drivers` — same allowlist
+     * reasoning as UserController::SORTABLE_COLUMNS, but sorting by any
+     * of these three needs a join (whereHas() only filters, it can't
+     * ORDER BY a related table's column).
+     */
+    private const SORTABLE_COLUMNS = ['code', 'name', 'status', 'created_at'];
+
+    private const USER_TABLE_SORT_COLUMNS = ['code', 'name', 'status'];
+
     public function index(Request $request)
     {
         Gate::authorize('viewAny', Driver::class);
+
+        $sortBy = $request->string('sort_by')->toString();
+        $sortDir = $request->string('sort_dir', 'asc')->lower()->toString() === 'desc' ? 'desc' : 'asc';
+        $sortBy = in_array($sortBy, self::SORTABLE_COLUMNS, true) ? $sortBy : 'name';
 
         $drivers = Driver::query()
             ->with(['user' => fn ($q) => $q->with(['tenant', 'roles'])])
@@ -42,15 +56,61 @@ class DriverController extends Controller
                 'user',
                 fn ($q2) => $q2->where('status', $request->string('status'))
             ))
+            // Was client-side-only (the JS filter dropdown existed, but
+            // nothing on the server ever read it) — worked by accident
+            // while the list still fetched everything in one batch.
+            ->when($request->filled('affiliation'), fn ($q) => $q->whereHas(
+                'user',
+                fn ($q2) => $q2->where('affiliation', $request->string('affiliation'))
+            ))
             ->when($request->filled('search'), function ($q) use ($request) {
+                // Same reasoning as UserController's search fix — `code`
+                // (on `users`, same as name/email here) is the list's own
+                // first column, so it needs to be searchable too.
                 $search = $request->string('search')->toString();
                 $q->whereHas('user', fn ($q2) => $q2->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%"));
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('code', 'like', "%{$search}%"));
             })
-            ->latest()
+            ->when(
+                in_array($sortBy, self::USER_TABLE_SORT_COLUMNS, true),
+                fn ($q) => $q->join('users', 'users.id', '=', 'drivers.user_id')
+                    ->select('drivers.*')
+                    ->orderBy("users.{$sortBy}", $sortDir),
+                fn ($q) => $q->orderBy("drivers.{$sortBy}", $sortDir)
+            )
             ->paginate($request->integer('per_page', 15));
 
         return DriverResource::collection($drivers);
+    }
+
+    /**
+     * The 4 stat cards on the Drivers list — counted directly in SQL
+     * against the full tenant-scoped set, not from whatever page of
+     * results the table happens to have loaded (that was a real bug:
+     * the cards used to be computed client-side from the DataTables
+     * ajax response, so at a few thousand drivers they'd silently only
+     * count the first page's worth). "on_trips" stays 0 — no Trips
+     * module until Week 7, same as the DataTables column it mirrors.
+     */
+    public function stats()
+    {
+        Gate::authorize('viewAny', Driver::class);
+
+        $byStatus = Driver::query()
+            ->join('users', 'users.id', '=', 'drivers.user_id')
+            ->selectRaw('users.status, count(*) as total')
+            ->groupBy('users.status')
+            ->pluck('total', 'status');
+
+        return response()->json([
+            'data' => [
+                'available' => (int) ($byStatus['active'] ?? 0),
+                'on_trips' => 0,
+                'on_vacation' => (int) ($byStatus['on_vacation'] ?? 0),
+                'deactivated' => (int) ($byStatus['deactivated'] ?? 0),
+            ],
+        ]);
     }
 
     /**
@@ -68,6 +128,13 @@ class DriverController extends Controller
                 'user',
                 fn ($q2) => $q2->where('status', $request->string('status'))
             ))
+            ->when($request->filled('affiliation'), fn ($q) => $q->whereHas(
+                'user',
+                fn ($q2) => $q2->where('affiliation', $request->string('affiliation'))
+            ))
+            ->join('users', 'users.id', '=', 'drivers.user_id')
+            ->select('drivers.*')
+            ->orderBy('users.name')
             ->get();
 
         if ($request->query('format', 'xlsx') === 'pdf') {
@@ -105,7 +172,7 @@ class DriverController extends Controller
 
     public function show(int $driver)
     {
-        $driver = Driver::with(['user.tenant', 'user.roles', 'entryPermits'])->findOrFail($driver);
+        $driver = Driver::with(['user.tenant', 'user.roles', 'entryPermits', 'defaultVehicle.category', 'qualifiedVehicleCategories'])->findOrFail($driver);
 
         Gate::authorize('view', $driver);
 

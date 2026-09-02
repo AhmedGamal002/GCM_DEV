@@ -5,7 +5,10 @@ namespace Tests\Feature\Drivers;
 use App\Domain\Drivers\Actions\CreateDriverAction;
 use App\Models\Tenant;
 use App\Models\User;
+use App\Models\Vehicle;
+use App\Models\VehicleCategory;
 use Database\Seeders\RoleSeeder;
+use Database\Seeders\VehicleCategorySeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -20,12 +23,16 @@ class DriverExportTest extends TestCase
         parent::setUp();
 
         $this->seed(RoleSeeder::class);
+        $this->seed(VehicleCategorySeeder::class);
 
         $tenant = Tenant::create(['name' => 'Tenant A', 'slug' => 'tenant-a', 'status' => 'active']);
         app()->instance('tenant', $tenant);
 
         $this->systemAdmin = User::factory()->create();
         $this->systemAdmin->assignRole('system_admin');
+
+        $vehicleCategory = VehicleCategory::where('slug', 'dump_truck')->firstOrFail();
+        $vehicle = Vehicle::factory()->create(['vehicle_category_id' => $vehicleCategory->id]);
 
         app(CreateDriverAction::class)->execute(
             [
@@ -34,6 +41,8 @@ class DriverExportTest extends TestCase
                 'phone' => '01000000000',
                 'password' => 'a-secure-password',
                 'status' => 'active',
+                'vehicle_category_ids' => [$vehicleCategory->id],
+                'default_vehicle_id' => $vehicle->id,
                 'residence_number' => 'RES-1', 'residence_valid_to' => '2030-01-01',
                 'license_number' => 'LIC-1', 'license_valid_to' => '2030-01-01',
                 'operational_license_number' => 'OP-1', 'operational_license_valid_to' => '2030-01-01',

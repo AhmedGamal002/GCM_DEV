@@ -86,17 +86,6 @@
     <hr class="my-6 mx-n4" />
     <h6>2. {{ __('Role & Status') }}</h6>
     <div class="row g-6">
-      <div class="col-12">
-        <label class="form-label d-block">{{ __('User Category') }}</label>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="category" id="category-gcm" value="gcm" checked>
-          <label class="form-check-label" for="category-gcm">{{ __('GCM Staff') }}</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="category" id="category-driver" value="driver">
-          <label class="form-check-label" for="category-driver">{{ __('Driver') }}</label>
-        </div>
-      </div>
       <div class="col-md-6" id="job-role-wrapper">
         <label class="form-label d-block">{{ __('Job Role') }}</label>
         <div class="form-check form-check-inline">

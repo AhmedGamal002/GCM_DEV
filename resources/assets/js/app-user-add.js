@@ -7,8 +7,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const statusBox = document.getElementById('user-add-status');
   const errorBox = document.getElementById('user-add-error');
-  const categoryRadios = form.querySelectorAll('input[name="category"]');
-  const jobRoleWrapper = document.getElementById('job-role-wrapper');
 
   const editorEl = document.getElementById('additional-data-editor');
   const quill = new Quill(editorEl, {
@@ -16,25 +14,15 @@ document.addEventListener('DOMContentLoaded', function () {
     placeholder: ''
   });
 
-  function toggleJobRole() {
-    const isDriver = form.querySelector('input[name="category"]:checked').value === 'driver';
-    jobRoleWrapper.classList.toggle('d-none', isDriver);
-  }
-
-  categoryRadios.forEach((radio) => radio.addEventListener('change', toggleJobRole));
-  toggleJobRole();
-
   form.addEventListener('submit', function (e) {
     e.preventDefault();
 
     statusBox.classList.add('d-none');
     errorBox.classList.add('d-none');
 
-    // A driver created here gets an empty Driver profile row server-side
-    // (see CreateUserAction) — residence/license/insurance aren't
-    // required on this form, only filled in later via the Drivers page.
-    const category = form.querySelector('input[name="category"]:checked').value;
-    const role = category === 'driver' ? 'driver' : form.querySelector('input[name="role"]:checked').value;
+    // Only data_entry/auditor are creatable here — see StoreUserRequest's
+    // docblock for why 'driver' is deliberately not an option on this form.
+    const role = form.querySelector('input[name="role"]:checked').value;
 
     const data = new FormData();
     data.append('name', document.getElementById('name').value);

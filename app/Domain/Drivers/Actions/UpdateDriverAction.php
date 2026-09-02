@@ -35,6 +35,7 @@ class UpdateDriverAction
             $user->save();
 
             $driver->fill([
+                'default_vehicle_id' => $data['default_vehicle_id'],
                 'residence_number' => $data['residence_number'],
                 'residence_valid_to' => $data['residence_valid_to'],
                 'license_number' => $data['license_number'],
@@ -60,7 +61,9 @@ class UpdateDriverAction
 
             $driver->save();
 
-            return $driver->fresh(['user.roles', 'entryPermits']);
+            $driver->qualifiedVehicleCategories()->sync($data['vehicle_category_ids']);
+
+            return $driver->fresh(['user.roles', 'entryPermits', 'defaultVehicle.category', 'qualifiedVehicleCategories']);
         });
     }
 }

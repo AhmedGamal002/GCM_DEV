@@ -86,9 +86,12 @@
                 { "key": "category", "value": "hook_lift", "disabled": true },
                 { "key": "operational_status", "value": "active", "disabled": true },
                 { "key": "affiliation", "value": "gcm", "disabled": true },
-                { "key": "search", "value": "ABC", "disabled": true }
+                { "key": "search", "value": "ABC", "disabled": true, "description": "matches plate_letters, plate_numbers, or the combined displayed plate (\"ABC 1234\", with or without the space)" },
+                { "key": "sort_by", "value": "plate_letters", "disabled": true, "description": "plate_letters | operational_status | created_at" },
+                { "key": "sort_dir", "value": "asc", "disabled": true, "description": "asc | desc" }
               ]
-            }
+            },
+            "description": "Genuinely paginated server-side, same as /users and /drivers — see ARCHITECTURE.md's performance section."
           }
         },
         {

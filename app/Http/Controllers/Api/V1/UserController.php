@@ -32,6 +32,14 @@ use Maatwebsite\Excel\Facades\Excel;
  */
 class UserController extends Controller
 {
+    /**
+     * Columns the DataTables-driven list (and any other API caller) may
+     * sort by — an explicit allowlist, never the raw `sort_by` value
+     * itself, since that would otherwise let a request name an arbitrary
+     * column (SQL error at best, information disclosure at worst).
+     */
+    private const SORTABLE_COLUMNS = ['code', 'name', 'status', 'created_at'];
+
     public function index(Request $request)
     {
         Gate::authorize('viewAny', User::class);
@@ -50,11 +58,21 @@ class UserController extends Controller
             ->when($request->filled('status'), fn ($q) => $q->where('status', $request->string('status')))
             ->when($request->filled('role'), fn ($q) => $q->role($request->string('role')->toString()))
             ->when($request->filled('search'), function ($q) use ($request) {
+                // The list column shown first is `code` (see
+                // SORTABLE_COLUMNS's docblock and the Vehicles plate-search
+                // bug in ARCHITECTURE.md §6) — a search box that can't find
+                // a row by the value visibly sitting in its own first
+                // column is the same class of bug, so it's included here.
                 $search = $request->string('search')->toString();
                 $q->where(fn ($q2) => $q2->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%"));
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('code', 'like', "%{$search}%"));
             })
-            ->latest()
+            ->when(
+                in_array($request->string('sort_by')->toString(), self::SORTABLE_COLUMNS, true),
+                fn ($q) => $q->orderBy($request->string('sort_by')->toString(), $request->string('sort_dir', 'asc')->lower()->toString() === 'desc' ? 'desc' : 'asc'),
+                fn ($q) => $q->orderBy('name')
+            )
             ->paginate($request->integer('per_page', 15));
 
         return UserResource::collection($users);
@@ -116,6 +134,7 @@ class UserController extends Controller
             ->where('id', '!=', $request->user()->id)
             ->when($request->filled('status'), fn ($q) => $q->where('status', $request->string('status')))
             ->when($request->filled('role'), fn ($q) => $q->role($request->string('role')->toString()))
+            ->orderBy('name')
             ->get();
 
         if ($request->query('format', 'xlsx') === 'pdf') {
