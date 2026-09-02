@@ -99,7 +99,9 @@
       "Bash(grep -n \"^\\\\.env\\\\|^/\\\\.env\\\\|\\\\.env$\" .gitignore)",
       "Bash(bash -n \"D:\\\\personal\\\\GCM\\\\cl\\\\scripts\\\\hostinger-sync-public.sh\")",
       "Bash(rm -rf /tmp/sync-test)",
-      "Bash(awk '/^## 7\\\\./{print NR; exit}' ARCHITECTURE.md)"
+      "Bash(awk '/^## 7\\\\./{print NR; exit}' ARCHITECTURE.md)",
+      "Bash(composer validate *)",
+      "Bash(php -r ' *)"
     ]
   }
 }

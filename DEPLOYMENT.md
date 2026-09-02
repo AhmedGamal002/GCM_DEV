@@ -106,6 +106,8 @@ composer install --no-dev --optimize-autoloader
 
 `--no-dev` بيستبعد `phpunit`/`laravel/pint`/`spatie/laravel-ignition` (أدوات تطوير بس، مش محتاجة على السيرفر) — **إلا في بيئة `testing`** لو نويت تشغّل `php artisan test` عليها فعليًا (وقتها سيبها من غير `--no-dev`، أو ثبّت `phpunit` بشكل منفصل).
 
+**⚠️ باگ حقيقي اتلاقى بالتجربة الفعلية أثناء النشر (`php artisan db:seed` رمى `Call to undefined function Database\Factories\fake()`):** `fakerphp/faker` كان في `require-dev` (افتراض Laravel القياسي: الفاكتوريز أداة تستات بس) — لكن `DatabaseSeeder.php` بيستخدم `User::factory()->create(...)` فعليًا لزرع حسابات حقيقية (admin/data_entry/auditor/driver)، و`UserFactory::definition()` بيستخدم `fake()->name()`/`fake()->unique()->safeEmail()` حتى لو القيم دي هتتجاوز بعدين بالـ`create()` override — الدالة `definition()` بتتنفّذ كاملة قبل أي override. يعني `composer install --no-dev` (زي ما موصّى بيه فوق) كان بيكسر الزرع بالكامل على أي بيئة جديدة. **اتصلح** بنقل `fakerphp/faker` من `require-dev` لـ`require` في `composer.json` (`composer require fakerphp/faker` من غير `--dev`) — بقى متاح حتى مع `--no-dev`. **درس عام:** أي حزمة require-dev بتتستخدم فعليًا من كود بيشتغل بره التستات (Seeder بيتشغّل على بيئة حقيقية، مش بس `RefreshDatabase` في PHPUnit) لازم تبقى `require` عادية، مهما كان اسمها بيوحي إنها "أداة تطوير".
+
 ## 6. `.env` — لازم يتكتب من الصفر على السيرفر لكل بيئة، مش نسخة من المحلي ولا عن طريق الريبو
 
 القيم دي **مختلفة عن `.env` المحلي عمدًا، ومختلفة كمان بين كل بيئة والتانية** — انسخها وعدّل القيم بين `<>` (المثال هنا لبيئة `dev`):
