@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Vehicles;
 
+use App\Domain\Vehicles\Rules\EmbeddedCapacityFitsVehicleRule;
 use App\Models\Vehicle;
 use App\Models\VehicleDocument;
 use Illuminate\Foundation\Http\FormRequest;
@@ -46,6 +47,10 @@ class UpdateVehicleRequest extends FormRequest
             'embedded_asset_capacity_category_id' => [
                 'nullable', 'required_if:has_embedded_container,1,true',
                 Rule::exists('asset_capacity_categories', 'id')->where('tenant_id', $tenantId),
+                new EmbeddedCapacityFitsVehicleRule(
+                    $this->boolean('has_embedded_container') ? (int) $this->input('vehicle_category_id') : null,
+                    $this->boolean('has_embedded_container') ? $this->input('embedded_container_type') : null,
+                ),
             ],
 
             'photo_front' => ['nullable', 'image', 'max:4096'],

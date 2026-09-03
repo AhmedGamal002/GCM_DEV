@@ -167,7 +167,7 @@ class VehicleController extends Controller
             ->get();
 
         if ($request->query('format', 'xlsx') === 'pdf') {
-            $pdf = app('dompdf.wrapper')->loadView('tenant.vehicles.exports.vehicles-pdf', ['vehicles' => $vehicles]);
+            $pdf = app('dompdf.wrapper')->loadView('tenant.vehicles.export-pdf', ['vehicles' => $vehicles]);
 
             return $pdf->download('vehicles.pdf');
         }

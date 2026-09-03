@@ -2,21 +2,115 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Domain\Assets\Actions\CreateAssetCapacityCategoryAction;
+use App\Domain\Assets\Actions\UpdateAssetCapacityCategoryAction;
+use App\Domain\Assets\Exports\AssetCapacityCategoriesExport;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\AssetCapacityCategories\StoreAssetCapacityCategoryRequest;
+use App\Http\Requests\AssetCapacityCategories\UpdateAssetCapacityCategoryRequest;
 use App\Http\Resources\AssetCapacityCategoryResource;
 use App\Models\AssetCapacityCategory;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Maatwebsite\Excel\Facades\Excel;
 
 /**
- * Read-only for now — feeds the vehicle form's "embedded container
- * capacity" dropdown. Full CRUD arrives with the Assets module. Rows are
- * tenant-scoped by BelongsToTenant.
+ * FRD §1.7.2 — full CRUD for asset capacity categories (create/edit/view;
+ * no delete, no deactivate).
+ *
+ * `index` is deliberately NOT gated: it's read-only reference data every
+ * tenant role needs for the vehicle and asset form dropdowns (covered by
+ * AssetCapacityCategoryReadTest). The mutations and the single-row fetch
+ * behind the management pages go through AssetCapacityCategoryPolicy.
+ *
+ * Rows are tenant-scoped by BelongsToTenant. Raw-int `{category}` param,
+ * same reasoning as VehicleController's docblock.
  */
 class AssetCapacityCategoryController extends Controller
 {
-    public function index()
+    /**
+     * Explicit allowlist for `sort_by` — never the raw request value.
+     */
+    private const SORTABLE_COLUMNS = ['name', 'applies_to', 'capacity_cbm', 'capacity_ton', 'assets_count', 'created_at'];
+
+    public function index(Request $request)
     {
+        $sortBy = $request->string('sort_by')->toString();
+        $sortDir = $request->string('sort_dir', 'asc')->lower()->toString() === 'desc' ? 'desc' : 'asc';
+        $sortBy = in_array($sortBy, self::SORTABLE_COLUMNS, true) ? $sortBy : 'name';
+
+        $query = AssetCapacityCategory::query()
+            ->withCount('assets')
+            // The asset form asks for capacities matching a chosen asset
+            // type — `both` fits either.
+            ->when($request->filled('for_type'), fn ($q) => $q->whereIn('applies_to', [$request->string('for_type')->toString(), 'both']))
+            ->when($request->filled('applies_to'), fn ($q) => $q->where('applies_to', $request->string('applies_to')))
+            // The vehicle form's embedded-container dropdown: capacities the
+            // fleet can actually field for a given vehicle category +
+            // container/tank kind, derived through the asset pool
+            // (FRD §1.5.3). Both params required together.
+            ->when(
+                $request->filled('vehicle_category_id') && $request->filled('asset_type'),
+                fn ($q) => $q->compatibleWithVehicle(
+                    $request->integer('vehicle_category_id'),
+                    $request->string('asset_type')->toString(),
+                )
+            )
+            ->when($request->filled('search'), fn ($q) => $q->where('name', 'like', '%'.$request->string('search')->toString().'%'))
+            // `assets_count` is a valid orderable alias from withCount().
+            ->orderBy($sortBy, $sortDir);
+
+        // Genuine server-side paging for the management list page (same
+        // pattern as /vehicles) — it sends `per_page`. The vehicle & asset
+        // form dropdowns call this same endpoint WITHOUT `per_page` and
+        // need the full unpaginated reference list.
         return AssetCapacityCategoryResource::collection(
-            AssetCapacityCategory::orderBy('name')->get()
+            $request->filled('per_page')
+                ? $query->paginate($request->integer('per_page', 15))
+                : $query->get()
         );
+    }
+
+    public function store(StoreAssetCapacityCategoryRequest $request, CreateAssetCapacityCategoryAction $action)
+    {
+        $category = $action->execute($request->validated(), $request->user());
+
+        return AssetCapacityCategoryResource::make($category)->response()->setStatusCode(201);
+    }
+
+    public function show(int $category)
+    {
+        $category = AssetCapacityCategory::withCount('assets')->with('updatedBy')->findOrFail($category);
+
+        Gate::authorize('view', $category);
+
+        return AssetCapacityCategoryResource::make($category);
+    }
+
+    public function update(UpdateAssetCapacityCategoryRequest $request, int $category, UpdateAssetCapacityCategoryAction $action)
+    {
+        $category = AssetCapacityCategory::findOrFail($category);
+
+        $category = $action->execute($category, $request->validated(), $request->user());
+
+        return AssetCapacityCategoryResource::make($category->loadCount('assets'));
+    }
+
+    public function export(Request $request)
+    {
+        Gate::authorize('export', AssetCapacityCategory::class);
+
+        $categories = AssetCapacityCategory::query()
+            ->when($request->filled('applies_to'), fn ($q) => $q->where('applies_to', $request->string('applies_to')))
+            ->orderBy('name')
+            ->get();
+
+        if ($request->query('format', 'xlsx') === 'pdf') {
+            $pdf = app('dompdf.wrapper')->loadView('tenant.asset-categories.export-pdf', ['categories' => $categories]);
+
+            return $pdf->download('asset-capacity-categories.pdf');
+        }
+
+        return Excel::download(new AssetCapacityCategoriesExport($categories), 'asset-capacity-categories.xlsx');
     }
 }

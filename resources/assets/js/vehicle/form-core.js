@@ -111,6 +111,14 @@ export function initVehicleForm(opts) {
       }
 
       if (!el.value || (el.tagName === 'SELECT' && el.value === '')) {
+        // Empty embedded-capacity when the compatible list came back empty
+        // gets the specific "nothing compatible" message, not "required".
+        if (el === capSelect && capSelect.options.length <= 1) {
+          const { type } = embeddedInputs();
+          const typeLabel = type === 'tank' ? t.tank || 'tank' : t.container || 'container';
+          fail(el, (t.no_compatible_capacity || 'There is no compatible :type capacity recorded for the selected vehicle category.').replace(':type', typeLabel));
+          return;
+        }
         fail(el, t.required || REQUIRED_MSG);
         return;
       }
@@ -159,21 +167,68 @@ export function initVehicleForm(opts) {
   }
 
   // ---------------------------------------------------------- reference data
-  const refsReady = Promise.all([
-    window.axios.get('/api/v1/vehicle-categories'),
-    window.axios.get('/api/v1/asset-capacity-categories')
-  ]).then(([cats, caps]) => {
-    const catSelect = document.getElementById('vehicle_category_id');
+  const catSelect = document.getElementById('vehicle_category_id');
+  const capSelect = document.getElementById('embedded_asset_capacity_category_id');
+  const capHint = document.getElementById('embedded-capacity-hint');
+
+  const refsReady = window.axios.get('/api/v1/vehicle-categories').then((cats) => {
     cats.data.data.forEach((c) => catSelect.add(new Option(c.name, c.id)));
-    const capSelect = document.getElementById('embedded_asset_capacity_category_id');
-    caps.data.data.forEach((c) =>
-      capSelect.add(new Option(`${c.name} (${c.capacity_cbm} CBM / ${c.capacity_ton} TON)`, c.id))
-    );
   });
 
   // ------------------------------------------------------- embedded toggle
   const typeWrapper = document.getElementById('embedded-type-wrapper');
   const capacityWrapper = document.getElementById('embedded-capacity-wrapper');
+
+  // The embedded-capacity list is NOT the full set of capacity categories:
+  // per FRD §1.5.3 it's only the ones the fleet can actually field for the
+  // chosen (vehicle category + container/tank kind), derived through the
+  // asset pool. Empty result => an error, not a fallback to "all".
+  function embeddedInputs() {
+    const has = form.querySelector('input[name="has_embedded_container"]:checked').value === '1';
+    const typeEl = form.querySelector('input[name="embedded_container_type"]:checked');
+    return { has, type: typeEl ? typeEl.value : null, vehicleCategoryId: catSelect.value || null };
+  }
+
+  let capReqSeq = 0;
+
+  async function refreshEmbeddedCapacities(preserveValue) {
+    const seq = ++capReqSeq;
+    const keep = preserveValue != null ? preserveValue : capSelect.value;
+    const { has, type, vehicleCategoryId } = embeddedInputs();
+
+    clearFieldError(capSelect);
+    capSelect.innerHTML = '';
+    capSelect.add(new Option(t.select || 'Select...', ''));
+
+    if (!has || !type || !vehicleCategoryId) {
+      capHint.textContent = t.pick_category_and_type || 'Choose the vehicle category and container type first.';
+      capHint.classList.remove('d-none');
+      return;
+    }
+
+    try {
+      const res = await window.axios.get('/api/v1/asset-capacity-categories', {
+        params: { vehicle_category_id: vehicleCategoryId, asset_type: type }
+      });
+      // A newer change already fired — drop this stale response.
+      if (seq !== capReqSeq) return;
+      const caps = res.data.data;
+      caps.forEach((c) =>
+        capSelect.add(new Option(`${c.name} (${c.capacity_cbm} CBM / ${c.capacity_ton} TON)`, c.id))
+      );
+
+      if (caps.length === 0) {
+        capHint.classList.add('d-none');
+        const typeLabel = type === 'tank' ? t.tank || 'tank' : t.container || 'container';
+        showFieldError(capSelect, (t.no_compatible_capacity || 'There is no compatible :type capacity recorded for the selected vehicle category.').replace(':type', typeLabel));
+      } else {
+        capHint.classList.add('d-none');
+        if (keep && capSelect.querySelector(`option[value="${keep}"]`)) capSelect.value = keep;
+      }
+    } catch (e) {
+      capHint.classList.add('d-none');
+    }
+  }
 
   function toggleEmbedded() {
     const has = form.querySelector('input[name="has_embedded_container"]:checked').value === '1';
@@ -184,12 +239,19 @@ export function initVehicleForm(opts) {
         r.checked = false;
         clearFieldError(r);
       });
-      const cap = document.getElementById('embedded_asset_capacity_category_id');
-      cap.value = '';
-      clearFieldError(cap);
+      capSelect.value = '';
+      clearFieldError(capSelect);
+    } else {
+      refreshEmbeddedCapacities();
     }
   }
   form.querySelectorAll('input[name="has_embedded_container"]').forEach((r) => r.addEventListener('change', toggleEmbedded));
+  form.querySelectorAll('input[name="embedded_container_type"]').forEach((r) =>
+    r.addEventListener('change', () => refreshEmbeddedCapacities())
+  );
+  catSelect.addEventListener('change', () => {
+    if (embeddedInputs().has) refreshEmbeddedCapacities();
+  });
 
   // --------------------------------------------------------- entry permits
   const container = document.getElementById('entry-permits-container');
@@ -273,19 +335,20 @@ export function initVehicleForm(opts) {
     el.classList.remove('d-none');
   }
 
-  function prefill(v) {
+  async function prefill(v) {
     form.querySelector('#plate_letters').value = v.plate_letters;
     form.querySelector('#plate_numbers').value = v.plate_numbers;
-    form.querySelector('#vehicle_category_id').value = v.category.id;
+    catSelect.value = v.category.id;
 
     form.querySelector(`input[name="has_embedded_container"][value="${v.has_embedded_container ? '1' : '0'}"]`).checked = true;
     if (v.embedded_container_type) {
       form.querySelector(`input[name="embedded_container_type"][value="${v.embedded_container_type}"]`).checked = true;
     }
-    if (v.embedded_capacity_category) {
-      form.querySelector('#embedded_asset_capacity_category_id').value = v.embedded_capacity_category.id;
+    typeWrapper.classList.toggle('d-none', !v.has_embedded_container);
+    capacityWrapper.classList.toggle('d-none', !v.has_embedded_container);
+    if (v.has_embedded_container) {
+      await refreshEmbeddedCapacities(v.embedded_capacity_category ? String(v.embedded_capacity_category.id) : null);
     }
-    toggleEmbedded();
 
     quill.root.innerHTML = v.additional_data || '';
 
@@ -319,8 +382,8 @@ export function initVehicleForm(opts) {
     }
 
     Promise.all([refsReady, window.axios.get(`/api/v1/vehicles/${id}`)])
-      .then(([, res]) => {
-        prefill(res.data.data);
+      .then(([, res]) => prefill(res.data.data))
+      .then(() => {
         loading.classList.add('d-none');
         form.classList.remove('d-none');
       })
