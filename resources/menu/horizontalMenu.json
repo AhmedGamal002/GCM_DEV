@@ -1,6 +1,13 @@
 {
   "menu": [
     {
+      "url": "dashboard",
+      "name": "Dashboard",
+      "icon": "menu-icon tf-icons ti ti-smart-home",
+      "slug": "app-dashboard",
+      "roles": ["data_entry", "auditor", "driver"]
+    },
+    {
       "name": "Dashboards",
       "icon": "menu-icon tf-icons ti ti-smart-home",
       "slug": "dashboard",
@@ -310,6 +317,7 @@
           "name": "Users",
           "slug": "app-user",
           "icon": "menu-icon tf-icons ti ti-users",
+          "roles": ["system_admin"],
           "submenu": [
             {
               "url": "app/user/list",
@@ -353,7 +361,26 @@
           "url": "app/vehicle/list",
           "name": "Vehicles",
           "icon": "menu-icon tf-icons ti ti-truck",
-          "slug": "app-vehicle-list"
+          "slug": "app-vehicle-list",
+          "roles": ["system_admin", "data_entry", "auditor"]
+        },
+        {
+          "name": "Drivers",
+          "icon": "menu-icon tf-icons ti ti-steering-wheel",
+          "slug": "app-driver",
+          "roles": ["system_admin"],
+          "submenu": [
+            {
+              "url": "app/driver/list",
+              "name": "List",
+              "slug": "app-driver-list"
+            },
+            {
+              "url": "app/driver/add",
+              "name": "Add",
+              "slug": "app-driver-add"
+            }
+          ]
         },
         {
           "name": "Assets",

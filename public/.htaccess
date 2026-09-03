@@ -9,6 +9,17 @@
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
+    # Flag Vite's build output for the caching block below. build/assets/*
+    # filenames are content-hashed (e.g. app-XxU8kiOC.js) — a changed file
+    # always gets a new URL, so caching these as long/aggressively as
+    # possible is safe and standard practice, not stale-content risk. Not
+    # applied to the rest of public/ (e.g. public/assets/, Vuexy's static
+    # non-hashed files) — those CAN change without their URL changing, so
+    # they must keep normal (short/no) caching. No [L] here — this only
+    # tags the request, the routing rule below still needs to run.
+    RewriteCond %{REQUEST_URI} ^/build/assets/
+    RewriteRule .* - [E=IS_VITE_HASHED_ASSET:1]
+
     # Redirect Trailing Slashes If Not A Folder...
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_URI} (.+)/$
@@ -18,4 +29,12 @@
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
+</IfModule>
+
+<IfModule mod_headers.c>
+    # See the IS_VITE_HASHED_ASSET rule above — public/build's manifest.json
+    # is excluded implicitly (it's requested by nothing but Laravel's own
+    # server-side @vite() directive reading it off disk, never by the
+    # browser, so this env var never fires for it in practice regardless).
+    Header set Cache-Control "public, max-age=31536000, immutable" env=IS_VITE_HASHED_ASSET
 </IfModule>

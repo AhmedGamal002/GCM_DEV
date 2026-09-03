@@ -18,7 +18,7 @@
  * ARCHITECTURE.md's performance section for the full writeup.
  *
  * Usage:
- *   ajax: window.gcmServerSideAjax('/api/v1/users', () => ({ status: currentStatus, role: currentRole })),
+ *   ajax: window.gcmServerSideAjax('/api/v1/users', () => ({ status: currentStatus, role: currentRole }), t.no_permission),
  *   serverSide: true,
  *   searchDelay: 500,
  *
@@ -26,9 +26,18 @@
  * filter params the page's own (now server-driven, not data-driven)
  * filter dropdowns currently hold. Return `undefined`/omit a key to
  * leave that filter off.
+ *
+ * `noPermissionMessage` (optional, translated string) is shown in place
+ * of the table's normal "no data" text specifically on a 403 response.
+ * Menu items are now role-filtered (see MenuComposer) so a wrong-role
+ * user shouldn't normally land on these pages at all, but the page
+ * itself has no server-side gate (by design — see UserAccountController's
+ * docblock) and is reachable by a direct URL; without this, a 403 used to
+ * render exactly like "this list happens to be empty", which is
+ * indistinguishable from an actual permissions problem.
  */
-window.gcmServerSideAjax = function (url, getExtraParams) {
-  return function (requestData, callback) {
+window.gcmServerSideAjax = function (url, getExtraParams, noPermissionMessage) {
+  return function (requestData, callback, settings) {
     const params = {
       per_page: requestData.length > 0 ? requestData.length : 1000,
       page: requestData.length > 0 ? Math.floor(requestData.start / requestData.length) + 1 : 1
@@ -68,7 +77,11 @@ window.gcmServerSideAjax = function (url, getExtraParams) {
           data: response.data.data
         });
       })
-      .catch(function () {
+      .catch(function (error) {
+        if (noPermissionMessage && error.response && error.response.status === 403 && settings && settings.oLanguage) {
+          settings.oLanguage.sEmptyTable = noPermissionMessage;
+          settings.oLanguage.sZeroRecords = noPermissionMessage;
+        }
         callback({ draw: requestData.draw, recordsTotal: 0, recordsFiltered: 0, data: [] });
       });
   };

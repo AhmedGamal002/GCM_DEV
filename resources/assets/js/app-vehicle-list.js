@@ -58,11 +58,15 @@ $(function () {
     processing: true,
     serverSide: true,
     searchDelay: 500,
-    ajax: window.gcmServerSideAjax('/api/v1/vehicles', () => ({
-      category: currentCategory || undefined,
-      operational_status: currentStatus || undefined,
-      affiliation: currentAffiliation || undefined
-    })),
+    ajax: window.gcmServerSideAjax(
+      '/api/v1/vehicles',
+      () => ({
+        category: currentCategory || undefined,
+        operational_status: currentStatus || undefined,
+        affiliation: currentAffiliation || undefined
+      }),
+      t.no_permission
+    ),
     columns: [
       { data: 'id' },
       { data: 'id' },

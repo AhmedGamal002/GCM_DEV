@@ -2,6 +2,7 @@
 
 namespace App\View\Composers;
 
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 use Illuminate\View\View;
@@ -43,24 +44,66 @@ class MenuComposer
             $vertical = json_decode(file_get_contents(base_path('resources/menu/verticalMenu.json')));
             $horizontal = json_decode(file_get_contents(base_path('resources/menu/horizontalMenu.json')));
 
-            $vertical->menu = $this->filter($vertical->menu);
-            $horizontal->menu = $this->filter($horizontal->menu);
+            $user = Auth::guard('web')->user();
+
+            $vertical->menu = $this->filter($vertical->menu, $user);
+            $horizontal->menu = $this->filter($horizontal->menu, $user);
         }
 
         $view->with('menuData', [$vertical, $horizontal]);
     }
 
     /**
-     * Tenant-side menu, with any "platformOnly" node (and its children,
-     * recursively) removed — those are Super-Admin-only routes.
+     * Tenant-side menu, with any "platformOnly" node removed (Super-Admin
+     * routes) and every other node gated by role:
+     *  - a node carrying a "roles" allowlist is shown only to a user who
+     *    actually holds one of those roles;
+     *  - a node with NO "roles" key — every untouched Vuexy demo item
+     *    (Layouts, Front Pages, Email/Chat/Kanban/eCommerce, Components,
+     *    etc.) — defaults to **system_admin only**, not "everyone". That
+     *    default is deliberate, not an oversight: system_admin's menu
+     *    must stay exactly as it already is (nothing here changes what
+     *    admin sees), while every other role gets a menu containing only
+     *    what it's actually permitted to use — see the real "Users" node
+     *    bug this whole allowlist exists for, below.
+     *
+     * Real bug this fixes (originally): every logged-in tenant user —
+     * including `driver`, who has zero API access to Users/Drivers/
+     * Vehicles (see those Policies) — saw the exact same sidebar as
+     * system_admin. Clicking any of those links loaded a real page whose
+     * data fetch then silently 403'd into an empty-looking table (see
+     * datatables-server-side.js's catch), not a clear "no access" state.
+     * The demo-scaffold-defaults-to-admin-only rule above closes the same
+     * gap for the rest of the menu (none of which is functional for a
+     * non-admin role anyway).
+     *
+     * The "roles" key on a real node must mirror that page's actual
+     * Policy::viewAny() roles — kept in sync by hand, there being no
+     * single source of truth to derive it from automatically.
+     *
+     * A child does NOT inherit its parent's "roles" — a submenu item with
+     * no "roles" key of its own still falls back to system_admin-only,
+     * even under a parent open to other roles too. Not an issue for any
+     * node today (every non-admin-only parent is currently a leaf, no
+     * submenu), but a future "roles"-carrying parent with children needs
+     * those children tagged explicitly too, or they'll silently vanish
+     * for the exact roles the parent was just opened up to.
      */
-    private function filter(array $items): array
+    private function filter(array $items, ?User $user): array
     {
-        $items = array_values(array_filter($items, fn ($item) => empty($item->platformOnly)));
+        $items = array_values(array_filter($items, function ($item) use ($user) {
+            if (! empty($item->platformOnly)) {
+                return false;
+            }
+
+            $roles = $item->roles ?? ['system_admin'];
+
+            return $user && $user->hasAnyRole($roles);
+        }));
 
         foreach ($items as $item) {
             if (isset($item->submenu)) {
-                $item->submenu = $this->filter($item->submenu);
+                $item->submenu = $this->filter($item->submenu, $user);
             }
         }
 

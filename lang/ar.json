@@ -190,6 +190,7 @@
   "All statuses": "كل الحالات",
   "Search User": "ابحث عن مستخدم",
   "No users found.": "لا يوجد مستخدمين.",
+  "You don't have permission to view this data.": "لا تملك صلاحية عرض هذه البيانات.",
   "Something went wrong. Please try again.": "حدث خطأ ما. حاول مرة أخرى.",
   "Export": "تصدير",
   "Showing _START_ to _END_ of _TOTAL_ entries": "عرض _START_ إلى _END_ من _TOTAL_",
