@@ -35,6 +35,7 @@ class DatabaseSeeder extends Seeder
         // Tenant-scoped reference data — needs the bound tenant above.
         $this->call([
             AssetCapacityCategorySeeder::class,
+            AssetSeeder::class,
         ]);
 
         User::factory()->create(['name' => 'System Admin', 'email' => 'admin@gcm.test'])

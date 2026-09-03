@@ -2,7 +2,7 @@
   "info": {
     "name": "GCM Portal",
     "_postman_id": "b1e9d8b0-6f5a-4b0a-9c1a-gcmportal0001",
-    "description": "GCM Portal API + Platform (Super Admin) collection. Covers everything shipped through Week 3 (Driver Management): Tenant Auth, Users, Roles (read-only), Profile, Drivers, and Platform (Tenants/Roles/Permissions CRUD).\n\nSee postman/README.md in the repo for how the two auth flows work (Bearer token for /api/v1/*, session+CSRF for /platform/*) and the convention to follow when adding a new endpoint's request here.\n\nKeep this file updated alongside the code: every new API/Platform route gets a request added here in the same PR/session that adds the route.",
+    "description": "GCM Portal API + Platform (Super Admin) collection. Covers everything shipped through Week 3 (Assets, Vehicles + Driver Management): Tenant Auth, Users, Roles (read-only), Profile, Drivers, Vehicles, Assets & Supply Hub, and Platform (Tenants/Roles/Permissions CRUD).\n\nSee postman/README.md in the repo for how the two auth flows work (Bearer token for /api/v1/*, session+CSRF for /platform/*) and the convention to follow when adding a new endpoint's request here.\n\nKeep this file updated alongside the code: every new API/Platform route gets a request added here in the same PR/session that adds the route.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "auth": {
@@ -22,6 +22,10 @@
     { "key": "platform_csrf", "value": "", "type": "string" },
     { "key": "last_user_id", "value": "", "type": "string" },
     { "key": "last_driver_id", "value": "", "type": "string" },
+    { "key": "last_vehicle_id", "value": "", "type": "string" },
+    { "key": "last_vehicle_document_id", "value": "", "type": "string" },
+    { "key": "last_asset_id", "value": "", "type": "string" },
+    { "key": "last_asset_capacity_category_id", "value": "", "type": "string" },
     { "key": "last_tenant_id", "value": "", "type": "string" },
     { "key": "last_role_id", "value": "", "type": "string" },
     { "key": "last_permission_id", "value": "", "type": "string" }
@@ -167,7 +171,7 @@
             "method": "GET",
             "header": [{ "key": "Accept", "value": "application/json" }],
             "url": { "raw": "{{api_base}}/roles", "host": ["{{api_base}}"], "path": ["roles"] },
-            "description": "Available to every tenant role (e.g. for a role-assignment dropdown). No mutation route exists here — Role/Permission CRUD lives entirely under Platform (Super Admin), see folder 7-8."
+            "description": "Available to every tenant role (e.g. for a role-assignment dropdown). No mutation route exists here — Role/Permission CRUD lives entirely under Platform (Super Admin), see folder 10-11."
           }
         }
       ]
@@ -540,7 +544,467 @@
       ]
     },
     {
-      "name": "6. Platform Auth (Super Admin)",
+      "name": "6. Vehicles",
+      "item": [
+        {
+          "name": "List Vehicles",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{api_base}}/vehicles?per_page=15",
+              "host": ["{{api_base}}"],
+              "path": ["vehicles"],
+              "query": [
+                { "key": "per_page", "value": "15" },
+                { "key": "category", "value": "hook_lift", "disabled": true, "description": "vehicle_categories.slug: hook_lift | compactor | dump_truck | water_tanker | dyna_box" },
+                { "key": "operational_status", "value": "active", "disabled": true, "description": "active | on_maintenance | deactivated" },
+                { "key": "affiliation", "value": "gcm", "disabled": true, "description": "gcm | contractor" },
+                { "key": "search", "value": "ABC", "disabled": true, "description": "matches plate_letters, plate_numbers, or the combined displayed plate (\"ABC 1234\", with or without the space)" },
+                { "key": "sort_by", "value": "plate_letters", "disabled": true, "description": "plate_letters | operational_status | created_at" },
+                { "key": "sort_dir", "value": "asc", "disabled": true, "description": "asc | desc" }
+              ]
+            },
+            "description": "system_admin / data_entry / auditor (VehiclePolicy::viewAny). Genuinely paginated server-side, same as /users and /drivers — see ARCHITECTURE.md's performance section."
+          }
+        },
+        {
+          "name": "Export Vehicles (Excel)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/vehicles/export?format=xlsx",
+              "host": ["{{api_base}}"],
+              "path": ["vehicles", "export"],
+              "query": [{ "key": "format", "value": "xlsx" }]
+            }
+          }
+        },
+        {
+          "name": "Export Vehicles (PDF)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/vehicles/export?format=pdf",
+              "host": ["{{api_base}}"],
+              "path": ["vehicles", "export"],
+              "query": [{ "key": "format", "value": "pdf" }]
+            }
+          }
+        },
+        {
+          "name": "Vehicle Stats",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{api_base}}/vehicles/stats", "host": ["{{api_base}}"], "path": ["vehicles", "stats"] },
+            "description": "Counts for the list page cards: by_category (per slug) + availability (available/on_trip/on_maintenance/deactivated), computed in SQL against the full tenant-scoped set. on_trip is always 0 until the Trips module (Week 7)."
+          }
+        },
+        {
+          "name": "Reference — Vehicle Categories",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{api_base}}/vehicle-categories", "host": ["{{api_base}}"], "path": ["vehicle-categories"] },
+            "description": "The 5 fixed, global categories (not tenant-scoped, no CRUD). Use the ids/slugs here for vehicle_category_id on Create/Update Vehicle and for a driver's vehicle_category_ids[]."
+          }
+        },
+        {
+          "name": "Reference — Asset Capacity Categories",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{api_base}}/asset-capacity-categories", "host": ["{{api_base}}"], "path": ["asset-capacity-categories"] },
+            "description": "Tenant-scoped capacity list for the embedded-container dropdown. Read-only for now — full CRUD lands with the Assets module."
+          }
+        },
+        {
+          "name": "Create Vehicle",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "plate_letters", "value": "ABC", "type": "text" },
+                { "key": "plate_numbers", "value": "1234", "type": "text", "description": "digits only" },
+                { "key": "vehicle_category_id", "value": "1", "type": "text", "description": "vehicle_categories.id — see Reference — Vehicle Categories" },
+                { "key": "has_embedded_container", "value": "1", "type": "text", "description": "1 | 0" },
+                { "key": "embedded_container_type", "value": "container", "type": "text", "description": "container | tank — required when has_embedded_container=1" },
+                { "key": "embedded_asset_capacity_category_id", "value": "1", "type": "text", "description": "asset_capacity_categories.id — required when has_embedded_container=1" },
+                { "key": "operational_status", "value": "active", "type": "text", "description": "active | on_maintenance | deactivated (deactivated is system_admin only)" },
+                { "key": "affiliation", "value": "gcm", "type": "text", "description": "gcm | contractor (contractor deferred to Week 5)" },
+                { "key": "additional_data", "value": "<p>notes</p>", "type": "text", "disabled": true },
+                { "key": "photo_front", "type": "file", "src": [], "disabled": true },
+                { "key": "photo_back", "type": "file", "src": [], "disabled": true },
+                { "key": "documents[registration_card][number]", "value": "1001", "type": "text", "description": "digits only" },
+                { "key": "documents[registration_card][valid_to]", "value": "2027-01-01", "type": "text" },
+                { "key": "documents[registration_card][attachment]", "type": "file", "src": [], "disabled": true },
+                { "key": "documents[fitness_document][number]", "value": "1002", "type": "text" },
+                { "key": "documents[fitness_document][valid_to]", "value": "2027-01-01", "type": "text" },
+                { "key": "documents[fitness_document][attachment]", "type": "file", "src": [], "disabled": true },
+                { "key": "documents[inspection_certificate][number]", "value": "1003", "type": "text" },
+                { "key": "documents[inspection_certificate][valid_to]", "value": "2027-01-01", "type": "text" },
+                { "key": "documents[inspection_certificate][attachment]", "type": "file", "src": [], "disabled": true },
+                { "key": "documents[insurance][number]", "value": "1004", "type": "text" },
+                { "key": "documents[insurance][valid_to]", "value": "2027-01-01", "type": "text" },
+                { "key": "documents[insurance][attachment]", "type": "file", "src": [], "disabled": true },
+                { "key": "entry_permits[0][area_name]", "value": "Riyadh", "type": "text" },
+                { "key": "entry_permits[0][permit_number]", "value": "2001", "type": "text", "description": "digits only" },
+                { "key": "entry_permits[0][valid_to]", "value": "2027-01-01", "type": "text" },
+                { "key": "entry_permits[0][attachment]", "type": "file", "src": [], "disabled": true }
+              ]
+            },
+            "url": { "raw": "{{api_base}}/vehicles", "host": ["{{api_base}}"], "path": ["vehicles"] },
+            "description": "Creates the vehicle + its 4 single documents + any entry permits in one transaction. All *_number fields are digits-only. File fields are disabled by default — enable and pick a file to test uploads."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    if (body.data && body.data.id) {",
+                  "        pm.collectionVariables.set('last_vehicle_id', body.data.id);",
+                  "        console.log('last_vehicle_id saved:', body.data.id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Show Vehicle",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{api_base}}/vehicles/{{last_vehicle_id}}",
+              "host": ["{{api_base}}"],
+              "path": ["vehicles", "{{last_vehicle_id}}"]
+            },
+            "description": "Includes documents[] — grab a documents[].id for {{last_vehicle_document_id}} to test Download Document."
+          }
+        },
+        {
+          "name": "Update Vehicle",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "plate_letters", "value": "XYZ", "type": "text" },
+                { "key": "plate_numbers", "value": "9999", "type": "text" },
+                { "key": "vehicle_category_id", "value": "1", "type": "text" },
+                { "key": "has_embedded_container", "value": "0", "type": "text" },
+                { "key": "operational_status", "value": "active", "type": "text" },
+                { "key": "affiliation", "value": "gcm", "type": "text" },
+                { "key": "additional_data", "value": "<p>updated</p>", "type": "text", "disabled": true },
+                { "key": "photo_front", "type": "file", "src": [], "disabled": true },
+                { "key": "photo_back", "type": "file", "src": [], "disabled": true },
+                { "key": "documents[registration_card][number]", "value": "1001", "type": "text" },
+                { "key": "documents[registration_card][valid_to]", "value": "2027-01-01", "type": "text" },
+                { "key": "documents[fitness_document][number]", "value": "1002", "type": "text" },
+                { "key": "documents[fitness_document][valid_to]", "value": "2027-01-01", "type": "text" },
+                { "key": "documents[inspection_certificate][number]", "value": "1003", "type": "text" },
+                { "key": "documents[inspection_certificate][valid_to]", "value": "2027-01-01", "type": "text" },
+                { "key": "documents[insurance][number]", "value": "1004", "type": "text" },
+                { "key": "documents[insurance][valid_to]", "value": "2027-01-01", "type": "text" },
+                { "key": "entry_permits[0][id]", "value": "", "type": "text", "description": "existing entry_permits.id — keeps its attachment. Blank = new row. Omit a row entirely to delete it." },
+                { "key": "entry_permits[0][area_name]", "value": "Jeddah", "type": "text" },
+                { "key": "entry_permits[0][permit_number]", "value": "2002", "type": "text" },
+                { "key": "entry_permits[0][valid_to]", "value": "2027-01-01", "type": "text" },
+                { "key": "entry_permits[0][attachment]", "type": "file", "src": [], "disabled": true }
+              ]
+            },
+            "url": {
+              "raw": "{{api_base}}/vehicles/{{last_vehicle_id}}",
+              "host": ["{{api_base}}"],
+              "path": ["vehicles", "{{last_vehicle_id}}"]
+            },
+            "description": "Postman sends real multipart PATCH natively — no _method spoofing needed. Everything except operational_status is editable here; status changes go through Change Operational Status."
+          }
+        },
+        {
+          "name": "Change Operational Status",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"on_maintenance\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{api_base}}/vehicles/{{last_vehicle_id}}/status",
+              "host": ["{{api_base}}"],
+              "path": ["vehicles", "{{last_vehicle_id}}", "status"]
+            },
+            "description": "status: active | on_maintenance | deactivated. Setting or clearing `deactivated` is System Admin only (422 otherwise) — see CannotDeactivateVehicleException."
+          }
+        },
+        {
+          "name": "Download Document",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/vehicles/{{last_vehicle_id}}/documents/{{last_vehicle_document_id}}/download",
+              "host": ["{{api_base}}"],
+              "path": ["vehicles", "{{last_vehicle_id}}", "documents", "{{last_vehicle_document_id}}", "download"]
+            },
+            "description": "Set {{last_vehicle_document_id}} from Show Vehicle's documents[].id. Served from the private `local` disk via a policy-gated route; 404 if that document row has no uploaded file."
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Assets",
+      "item": [
+        {
+          "name": "List Assets",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{api_base}}/assets?per_page=15",
+              "host": ["{{api_base}}"],
+              "path": ["assets"],
+              "query": [
+                { "key": "per_page", "value": "15" },
+                { "key": "asset_type", "value": "container", "disabled": true, "description": "container | tank" },
+                { "key": "operational_status", "value": "active", "disabled": true, "description": "active | on_maintenance | deactivated" },
+                { "key": "affiliation", "value": "gcm", "disabled": true, "description": "gcm | contractor" },
+                { "key": "search", "value": "Container", "disabled": true, "description": "matches the asset name" },
+                { "key": "sort_by", "value": "name", "disabled": true, "description": "name | asset_type | operational_status | created_at" },
+                { "key": "sort_dir", "value": "asc", "disabled": true, "description": "asc | desc" }
+              ]
+            },
+            "description": "system_admin / data_entry / auditor (AssetPolicy::viewAny). Genuinely paginated server-side, same as /vehicles."
+          }
+        },
+        {
+          "name": "Export Assets (Excel)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/assets/export?format=xlsx",
+              "host": ["{{api_base}}"],
+              "path": ["assets", "export"],
+              "query": [{ "key": "format", "value": "xlsx" }]
+            }
+          }
+        },
+        {
+          "name": "Export Assets (PDF)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/assets/export?format=pdf",
+              "host": ["{{api_base}}"],
+              "path": ["assets", "export"],
+              "query": [{ "key": "format", "value": "pdf" }]
+            }
+          }
+        },
+        {
+          "name": "Asset Stats",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{api_base}}/assets/stats", "host": ["{{api_base}}"], "path": ["assets", "stats"] },
+            "description": "Containers and tanks counted separately (available / in_projects / on_maintenance / deactivated). in_projects is always 0 until the Projects module (Week 4)."
+          }
+        },
+        {
+          "name": "Reference — Capacity Categories",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{api_base}}/asset-capacity-categories",
+              "host": ["{{api_base}}"],
+              "path": ["asset-capacity-categories"],
+              "query": [
+                { "key": "for_type", "value": "container", "disabled": true, "description": "container | tank — returns capacities that fit that type (applies_to matches, or 'both')" },
+                { "key": "applies_to", "value": "both", "disabled": true, "description": "container | tank | both — exact match" },
+                { "key": "vehicle_category_id", "value": "1", "disabled": true, "description": "with asset_type — the vehicle form's embedded-container list: only capacities the fleet can field for that vehicle category + kind, derived from the asset pool. Both params required together." },
+                { "key": "asset_type", "value": "container", "disabled": true, "description": "container | tank — pair with vehicle_category_id" },
+                { "key": "search", "value": "skip", "disabled": true, "description": "matches the capacity name" },
+                { "key": "sort_by", "value": "name", "disabled": true, "description": "name | applies_to | capacity_cbm | capacity_ton | assets_count | created_at" },
+                { "key": "sort_dir", "value": "asc", "disabled": true, "description": "asc | desc" },
+                { "key": "per_page", "value": "15", "disabled": true, "description": "SEND this to get a paginated {data, meta} response (the management list page does). Omit it entirely — as the form dropdowns do — to get the full unpaginated array." }
+              ]
+            },
+            "description": "Open reference list (any tenant role). Without per_page it returns the full unpaginated array — that's what the vehicle & asset form dropdowns use. With per_page it's genuinely server-side paged/sorted/searched, same as /vehicles (the management list page). With vehicle_category_id + asset_type it returns only the capacities usable as that vehicle category's embedded container (see EmbeddedCapacityFitsVehicleRule)."
+          }
+        },
+        {
+          "name": "Create Capacity Category",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Roll-on/off {{$timestamp}}\",\n  \"applies_to\": \"container\",\n  \"capacity_cbm\": 20,\n  \"capacity_ton\": 8,\n  \"additional_data\": \"\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{api_base}}/asset-capacity-categories", "host": ["{{api_base}}"], "path": ["asset-capacity-categories"] },
+            "description": "system_admin / data_entry. `applies_to`: container | tank | both. Both CBM and TON are required."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    if (body.data && body.data.id) {",
+                  "        pm.collectionVariables.set('last_asset_capacity_category_id', body.data.id);",
+                  "        console.log('last_asset_capacity_category_id saved:', body.data.id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Show Capacity Category",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{api_base}}/asset-capacity-categories/{{last_asset_capacity_category_id}}",
+              "host": ["{{api_base}}"],
+              "path": ["asset-capacity-categories", "{{last_asset_capacity_category_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Capacity Category (name only)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Roll-on/off (renamed)\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{api_base}}/asset-capacity-categories/{{last_asset_capacity_category_id}}",
+              "host": ["{{api_base}}"],
+              "path": ["asset-capacity-categories", "{{last_asset_capacity_category_id}}"]
+            },
+            "description": "FRD §1.7.2 — only the name is editable. `applies_to` and the capacities are locked after creation (any other keys sent are ignored). No delete route."
+          }
+        },
+        {
+          "name": "Export Capacity Categories (Excel)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/asset-capacity-categories/export?format=xlsx",
+              "host": ["{{api_base}}"],
+              "path": ["asset-capacity-categories", "export"],
+              "query": [{ "key": "format", "value": "xlsx" }]
+            }
+          }
+        },
+        {
+          "name": "Create Asset",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Container A-{{$timestamp}}\",\n  \"asset_type\": \"container\",\n  \"asset_capacity_category_id\": 1,\n  \"compatible_vehicle_category_ids\": [1],\n  \"operational_status\": \"active\",\n  \"affiliation\": \"gcm\",\n  \"purchase_date\": \"2024-01-01\",\n  \"additional_data\": \"<p>notes</p>\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{api_base}}/assets", "host": ["{{api_base}}"], "path": ["assets"] },
+            "description": "asset_capacity_category_id must fit asset_type (its applies_to is that type or 'both'). compatible_vehicle_category_ids: vehicle_categories.id — at least one required (see Reference — Vehicle Categories in the Vehicles folder). deactivated status is System Admin only. contractor affiliation is rejected until Week 5."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    if (body.data && body.data.id) {",
+                  "        pm.collectionVariables.set('last_asset_id', body.data.id);",
+                  "        console.log('last_asset_id saved:', body.data.id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Show Asset",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{api_base}}/assets/{{last_asset_id}}",
+              "host": ["{{api_base}}"],
+              "path": ["assets", "{{last_asset_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Asset (name only)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Container A-01 (renamed)\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{api_base}}/assets/{{last_asset_id}}",
+              "host": ["{{api_base}}"],
+              "path": ["assets", "{{last_asset_id}}"]
+            },
+            "description": "FRD §1.7.3 — the name is the ONLY editable field. Type, capacity, affiliation, purchase date, notes and compatible vehicle categories are all locked (any other keys sent are ignored). operational_status changes via Change Operational Status."
+          }
+        },
+        {
+          "name": "Change Operational Status",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"on_maintenance\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{api_base}}/assets/{{last_asset_id}}/status",
+              "host": ["{{api_base}}"],
+              "path": ["assets", "{{last_asset_id}}", "status"]
+            },
+            "description": "status: active | on_maintenance | deactivated. Setting or clearing `deactivated` is System Admin only (422 otherwise) — see CannotDeactivateAssetException."
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. Platform Auth (Super Admin)",
       "item": [
         {
           "name": "Get Login Page (capture CSRF)",
@@ -585,7 +1049,7 @@
               ]
             },
             "url": { "raw": "{{base_url}}/platform/login", "host": ["{{base_url}}"], "path": ["platform", "login"] },
-            "description": "On success this redirects (302) to /platform/dashboard and sets the platform session cookie, which Postman's cookie jar then attaches to every request in folders 7-9 automatically."
+            "description": "On success this redirects (302) to /platform/dashboard and sets the platform session cookie, which Postman's cookie jar then attaches to every request in folders 9-11 automatically."
           },
           "event": [
             {
@@ -615,7 +1079,7 @@
       ]
     },
     {
-      "name": "7. Platform - Tenants",
+      "name": "9. Platform - Tenants",
       "auth": { "type": "noauth" },
       "item": [
         {
@@ -754,7 +1218,7 @@
       ]
     },
     {
-      "name": "8. Platform - Roles",
+      "name": "10. Platform - Roles",
       "auth": { "type": "noauth" },
       "item": [
         {
@@ -883,7 +1347,7 @@
       ]
     },
     {
-      "name": "9. Platform - Permissions",
+      "name": "11. Platform - Permissions",
       "auth": { "type": "noauth" },
       "item": [
         {

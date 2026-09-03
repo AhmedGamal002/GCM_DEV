@@ -22,6 +22,11 @@
     remove: @json(__('Remove')),
     required: @json(__('This field is required.')),
     numeric: @json(__('Only digits are allowed.')),
+    select: @json(__('Select...')),
+    container: @json(__('Container')),
+    tank: @json(__('Tank')),
+    pick_category_and_type: @json(__('Choose the vehicle category and container type first.')),
+    no_compatible_capacity: @json(__('There is no compatible :type capacity recorded for the selected vehicle category.')),
     list_url: @json(route('app-vehicle-list'))
   };
 </script>

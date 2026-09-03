@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Vehicles;
 
+use App\Models\Asset;
 use App\Models\AssetCapacityCategory;
 use App\Models\Tenant;
 use App\Models\User;
@@ -43,7 +44,16 @@ class VehicleManagementTest extends TestCase
         $this->dataEntry = User::factory()->create(['email' => 'de@gcm.test']);
         $this->dataEntry->assignRole('data_entry');
 
-        AssetCapacityCategory::factory()->create(['name' => 'Standard skip']);
+        // The embedded-container capacity in validPayload() must be one the
+        // fleet can field for a hook_lift vehicle + container kind — that's
+        // derived from the asset pool (see EmbeddedCapacityFitsVehicleRule),
+        // so a matching, compatible asset has to exist.
+        $capacity = AssetCapacityCategory::factory()->container()->create(['name' => 'Standard skip']);
+        $hookLift = VehicleCategory::where('slug', 'hook_lift')->firstOrFail();
+        Asset::factory()->create([
+            'asset_type' => 'container',
+            'asset_capacity_category_id' => $capacity->id,
+        ])->compatibleVehicleCategories()->attach($hookLift->id);
     }
 
     private function validPayload(array $overrides = []): array

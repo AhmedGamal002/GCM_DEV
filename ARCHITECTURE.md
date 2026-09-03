@@ -272,12 +272,13 @@ gcm-wms/
 │   │   │   └── Exceptions/
 │   │   │       └── CannotDeactivateVehicleException.php
 │   │   │
-│   │   ├── Assets/
+│   │   ├── Assets/                                  # ✅ أسبوع 3 — مبني (أصول + تصنيفات سعة الأصول)
 │   │   │   ├── Actions/
-│   │   │   │   ├── CreateAssetAction.php            # حاويات/صهاريج
-│   │   │   │   └── SetAssetMaintenanceAction.php     # الحالة الثالثة on_maintenance
-│   │   │   └── Rules/
-│   │   │       └── AssetCapacityImmutableAfterCreationRule.php  # الاسم فقط قابل للتعديل بعد الإنشاء
+│   │   │   │   ├── CreateAssetAction.php / UpdateAssetAction.php (اسم فقط) / UpdateAssetStatusAction.php
+│   │   │   │   └── CreateAssetCapacityCategoryAction.php / UpdateAssetCapacityCategoryAction.php (اسم فقط)
+│   │   │   ├── Exceptions/CannotDeactivateAssetException.php
+│   │   │   └── Exports/AssetsExport.php / AssetCapacityCategoriesExport.php
+│   │   │   # "الاسم فقط قابل للتعديل" مفروض في UpdateAssetRequest/UpdateAssetCapacityCategoryRequest (whitelist للـ name فقط)، مش Rule class
 │   │   │
 │   │   ├── Services/
 │   │   │   ├── Actions/
@@ -433,8 +434,8 @@ gcm-wms/
 │   ├── 006_create_project_user_table.php                      # + عمود scope (all/specific)
 │   ├── 007_create_vehicle_categories_table.php                # جدول عالمي بدون tenant_id — قائمة ثابتة (5 أنواع) مبذورة، نفس مبرر roles
 │   ├── 008_create_vehicles_table.php                          # + tenant_id + contractor_id (بدون FK أولاً)، هوية = اللوحة (لا code)
-│   ├── 009_create_asset_capacity_categories_table.php         # + tenant_id، capacity_cbm + capacity_ton معًا (نسخة مصغّرة في أسبوع 3، CRUD كامل مع الأصول)
-│   ├── 010_create_assets_table.php                             # + tenant_id + contractor_id (بدون FK أولاً)
+│   ├── 009_create_asset_capacity_categories_table.php         # + tenant_id، capacity_cbm + capacity_ton معًا. ✅ أسبوع 3: expand migration منفصلة أضافت applies_to (container/tank/both) + additional_data + updated_by
+│   ├── 010_create_assets_table.php                             # ✅ أسبوع 3: + tenant_id + contractor_id (بدون FK أولاً) + asset_type + asset_capacity_category_id + operational_status (3 حالات) + purchase_date + updated_by. هوية = الاسم (لا code). + جدول pivot asset_vehicle_categories (تصنيفات المركبات المتوافقة)
 │   ├── 011_create_main_services_table.php / 012_create_sub_services_table.php
 │   ├── 013_create_facilities_table.php
 │   ├── 014_add_contractor_fk_to_fleet_and_assets.php           # ⚠️ إضافة FK بعد إنشاء contractors
@@ -453,7 +454,7 @@ gcm-wms/
 │   │   ├── layouts/ + layouts/sections/ + _partials/             # سقالة Vuexy المشتركة — ما تتحركش
 │   │   ├── content/                                              # صفحات Vuexy الديمو — تفضل مكانها
 │   │   └── tenant/                                               # 🆕 صفحات GCM الحقيقية، مجلد لكل موديول:
-│   │       ├── vehicles/{list,add,edit,view,_form}.blade.php     #    + vehicles/exports/vehicles-pdf.blade.php
+│   │       ├── vehicles/{list,add,edit,view,_form}.blade.php     #    + vehicles/export-pdf.blade.php (نفس نمط users/drivers)
 │   │       └── users/ auth/ profile/  (على فرع الزميل — يتدمج)
 │   │   │   # كل صفحة هنا Shell رفيع يستدعي /api/v1/* عبر axios فقط
 │   ├── js/
@@ -504,7 +505,9 @@ gcm-wms/
 - **⚠️ قاعدة اتأكدت أهميتها فعليًا (أسبوع 2) — أي DataTables `render` callback في JS بيرجع HTML خام لازم يعمل escape للحقول اللي مصدرها بيانات مستخدم (اسم، إيميل، أي حقل self-service قابل للتعديل).** DataTables بتحقن النتيجة عبر `.html()` مش كـ نص، فأي حقل زي `full.name` (مستخدم عادي أي دور يقدر يغيّره بنفسه عن طريق `/api/v1/me`) لو اتحط في الـ HTML string من غير escaping بيبقى XSS مخزّن قابل للتنفيذ في جلسة أي حد بيشوف الجدول (زي system_admin وهو بيفتح صفحة المستخدمين). استخدم helper بسيط زي `$('<div>').text(value).html()` قبل أي تسلسل نصي HTML. الحقول اللي مصدرها الكود نفسه (roles enum ثابت، صور برابط متولّد من hash عشوائي server-side) مش محتاجة نفس المعاملة.
 - **⚠️ قاعدة اتأكدت أهميتها فعليًا (أسبوع 3، بعد 3 جولات تصحيح) — إنشاء سائق حصريًا عن طريق `/api/v1/drivers`، مش category جوه فورم المستخدمين العام.** الجولتين الأوليين ترددوا (استبعاد كامل ← ثم سماح مع إنشاء صف فاضي تلقائي)، لحد ما المستخدم راجع نص الـ FRD حرفيًا ولقى قسم منفصل تمامًا "إدارة وانشاء حسابات السائقين" بصفحة "انشاء مستخدم جديد (سائق)" خاصة بيها (Reference URL منفصل، فورم كامل خاص). القرار النهائي: `StoreUserRequest` بيرفض `driver` نهائيًا، و`UserPolicy::update()` بيرفض 403 أي تعديل على مستخدم `hasRole('driver')` — الإنشاء والتعديل للسائق **حصريًا** عن طريق موديول Drivers (`CreateDriverAction`/`UpdateDriverAction`)، مفيش استثناء. **الدرس الأعمق:** لما توثيق الـ FRD يبان غامض أو بيحتمل أكتر من تفسير، الرجوع للنص الأصلي حرفيًا (مش الافتراض المنطقي "الأسهل تقنيًا") هو الحسم — حصل هنا 3 مرات على نفس النقطة قبل ما يتأكد بالنص. راجع `WEEKLY_PLAN.md` (قسم الأسبوع 3) لتفاصيل الجولات التلاتة.
 - **⚠️ قاعدة اتأكدت أهميتها فعليًا (أسبوع 3) — أي تحقق (`in_array`, `==` صارم) على IDs جايين من فورم HTML حقيقي لازم يتعامل معاها كـ string، مش يفترض إنها int.** فورم حقيقي (`multipart/form-data` عبر `FormData` في الـ JS) بيبعت كل حاجة كـ string دايمًا، عكس `postJson()` في التستات اللي بتحافظ على نوع البيانات الأصلي (JSON encoding مش بيحوّل الأرقام لـ strings). باگ حقيقي اتكشف بالتجربة الفعلية بالمتصفح (مش بالتستات — التستات عدّت بنجاح رغم الباگ): تحقق "المركبة الافتراضية تنتمي لتصنيف مختار" في `StoreDriverRequest`/`UpdateDriverRequest` كان بيستخدم `in_array($int, $arrayOfStrings, true)` — `"3" !== 3` بمقارنة strict بتفشل دايمًا. الحل: `in_array((int) $x, array_map('intval', $ids), true)`. **درس اختبار عام:** أي تحقق من النوع ده لازم تست بـ `->post()` بقيم **string** صراحة كمان، مش `->postJson()` بس.
-- **⚠️ قاعدة اتأكدت أهميتها فعليًا (أسبوع 3) — `Auth::guard('sanctum')->user()` بتكاش المستخدم على مستوى الـ guard instance، مش الطلب.** `RequestGuard` (اللي `Auth::guard('sanctum')` بيرجعه) بيحتفظ بالمستخدم المُحلَّل في property داخلية بمجرد أول استدعاء — في التشغيل الحقيقي مفيش مشكلة (كل HTTP request عملية PHP جديدة كليًا)، لكن في PHPUnit Feature tests اللي بتعمل `actingAs($userA)` وبعدين `actingAs($userB)` **في نفس الـ test method**، الكاش بيفضل شايل $userA غلط لأي نداء تاني لـ `Auth::guard('sanctum')` — `actingAs()` بترجع بس الـ guard اللي انت مررته بالاسم (`web` مثلًا)، مش `sanctum`. اتكشف فعليًا من تست حقيقي (`VehicleUniquePlateTest`) كان بيفشل غلط. الحل في `EnsureTenant`: التحقق من guard `web` مباشرة + تحقق يدوي من bearer token (`PersonalAccessToken::findToken()`) بدل المرور بالـ guard المكاش. **درس عام:** أي كود بيعتمد على `Auth::guard()` لمسار مصادقة بديل (زي `sanctum`) لازم ينتبه إن التستات اللي بتبدّل المستخدم أكتر من مرة في نفس الـ method ممكن تدّي نتيجة غلط بصمت.
+- **⚠️ قاعدة اتأكدت أهميتها فعليًا (أسبوع 3) — `Auth::guard('sanctum')->user()` بتكاش المستخدم على مستوى الـ guard instance، مش الطلب.** `RequestGuard` (اللي `Auth::guard('sanctum')` بيرجعه) بيحتفظ بالمستخدم المُحلَّل في property داخلية بمجرد أول استدعاء — في التشغيل الحقيقي مفيش مشكلة (كل HTTP request عملية PHP جديدة كليًا)، لكن في PHPUnit Feature tests اللي بتعمل `actingAs($userA)` وبعدين `actingAs($userB)` **في نفس الـ test method**، الكاش بيفضل شايل $userA غلط لأي نداء تاني لـ `Auth::guard('sanctum')` — `actingAs()` بترجع بس الـ guard اللي انت مررته بالاسم (`web` مثلًا)، مش `sanctum`. اتكشف فعليًا من تست حقيقي (`VehicleUniquePlateTest`) كان بيفشل غلط. الحل في `EnsureTenant`: التحقق من guard `web` مباشرة + تحقق يدوي من bearer token (`PersonalAccessToken::findToken()`) بدل المرور بالـ guard المكاش. **درس عام:** أي كود بيعتمد على `Auth::guard()` لمسار مصادقة بديل (زي `sanctum`) لازم ينتبه إن التستات اللي بتبدّل المستخدم أكتر من مرة في نفس الـ method ممكن تدّي نتيجة غلط بصمت. **تطبيق عملي في موديول الأصول:** أي تست بيسوّي `create` بمستخدم و`update` بمستخدم تاني في نفس الـ method لازم يبني الكيان بالـ factory بدل نداء API تاني (راجع `AssetManagementTest`).
+
+- **"آخر تحديث بواسطة X — التاريخ/الوقت" (FRD على صفحات التعديل):** لسه مش عام. أسبوع 3 موديول الأصول ضاف عمود `updated_by` (FK nullable لـ `users`, `nullOnDelete`) على `assets` و`asset_capacity_categories` فقط، بيتعبّى في الـ Actions من `$request->user()`، ويتعرض على صفحتي التعديل + صفحة تفاصيل الأصل. **Users/Drivers/Vehicles لسه من غيره** — retrofit موحّد عبر `spatie/laravel-activitylog` (مذكور كإلزامي في §5) لسه مؤجّل؛ لو اتعمل، يستبدل الـ `updated_by` اليدوي ده.
 
 ## 6. الأداء
 
@@ -525,6 +528,8 @@ gcm-wms/
   **باگين إضافيين اتكشفوا أثناء الإصلاح (مش حاجة من الأصل، كانوا مستخبيين وراء الفلترة العميل-سايد):**
   1. **فلتر "Affiliation" في صفحة السائقين كان شكلي بالكامل** — الـ dropdown موجود في الواجهة، لكن `DriverController::index()` مكنش بيقرأ باراميتر `affiliation` خالص. كان "شغال" بالصدفة بس لإن الفلترة العميل-سايد على البيانات المحمّلة كانت بتعمل الشغل الحقيقي. اتصلح بإضافة الفلتر فعليًا في الـ query.
   2. **`$request->string('sort_dir')->lower() === 'desc'` بترجع `false` دايمًا** — `->lower()` بترجع كائن `Stringable` مش string خام، والمقارنة الصارمة `===` مع string حرفي بتفشل دايمًا (كائن مش string). يعني `sort_dir=desc` كان بيتجاهل تمامًا في الكود، الترتيب كان ascending دايمًا بغض النظر عن الطلب. اتصلح بـ `->lower()->toString() === 'desc'`. **درس عام:** أي مقارنة `===`/`==` مع نتيجة `$request->string(...)` لازم `->toString()` صريحة أول — الـ Stringable مقصود يتصرف كـ string في سياقات كتير (concatenation، إلخ) لكن **مش** في المقارنة الصارمة.
+
+  **امتداد (أسبوع 3، موديول الأصول):** جدولَي الأصول (`AssetController::index`) وتصنيفات سعة الأصول (`AssetCapacityCategoryController::index`) اتبنوا server-side من أول يوم بنفس الـ helper + allowlist. تصنيفات السعة فيها لفّة: نفس الـ `index` endpoint هو feed الـ dropdowns في فورم المركبة/الأصل واللي محتاج القائمة كاملة — فالـ pagination بيتفعّل **بس لو `per_page` مبعوت** (صفحة القائمة بتبعته عبر `gcmServerSideAjax`)، من غيره بيرجّع collection كاملة. `AssetListPaginationTest` + `AssetCapacityCategoryListPaginationTest` (فيه تست صريح إن غياب `per_page` بيرجّع القائمة كاملة بدون meta).
 
   **تحقق:** 10 تستات جديدة (`UserListPaginationTest`, `DriverListPaginationAndStatsTest`, `VehicleListPaginationTest`) بتتأكد إن `per_page` صغير لسه بيرجّع الـ total الصح، صفحة 2 مش بتكرر صفحة 1، الفرز `desc` فعليًا بيعكس الترتيب (اتأكدت الاختبارات دي فعليًا كانت بتفشل قبل إصلاح باگ الـ Stringable)، وإن `sort_by` غير مسموح بيه ميرميش 500. تحقق فعلي بالمتصفح كمان: تأكيد إن كل طلب فعليًا بيوصل بـ `per_page=10` (مش 1000) عبر `read_network_requests`، مش افتراض. **اتحقق منه بحجم واقعي فعليًا** — `database/seeders/DevVehicleVolumeSeeder.php` (أداة dev مؤقتة، مش جزء من `DatabaseSeeder`) بيزرع 3000 مركبة، واستخدمناه لتصفح صفحة Vehicles فعليًا بعنيك على حجم قريب من عميل الـ 7952 موظف.
 

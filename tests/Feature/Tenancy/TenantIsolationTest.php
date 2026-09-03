@@ -4,6 +4,8 @@ namespace Tests\Feature\Tenancy;
 
 use App\Concerns\BelongsToTenant;
 use App\Exceptions\TenantContextMissingException;
+use App\Models\Asset;
+use App\Models\AssetCapacityCategory;
 use App\Models\Tenant;
 use App\Models\User;
 use App\Models\Vehicle;
@@ -111,6 +113,19 @@ class TenantIsolationTest extends TestCase
         Vehicle::factory()->create();
 
         $this->assertCount(1, Vehicle::all());
+    }
+
+    public function test_asset_query_is_scoped_to_current_tenant_only(): void
+    {
+        app()->instance('tenant', $this->tenantB);
+        AssetCapacityCategory::factory()->create();
+        Asset::factory()->create();
+
+        app()->instance('tenant', $this->tenantA);
+        AssetCapacityCategory::factory()->create();
+        Asset::factory()->create();
+
+        $this->assertCount(1, Asset::all());
     }
 
     public function test_role_relationship_traversal_stays_scoped_by_tenant(): void

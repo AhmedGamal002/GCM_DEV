@@ -7,11 +7,14 @@ use Illuminate\Support\Facades\Schema;
 /**
  * Minimal version, built now only so the vehicle form's "embedded
  * container capacity" dropdown (FRD §1.5.3) has real data to select.
+ * Per the FRD, capacity carries CBM *and* TON together — not a choice
+ * of one unit.
  *
- * The full CRUD from FRD §1.7.2 (container/tank applicability, compatible
- * vehicle categories, the "name is the only editable field after
- * creation" policy) lands with the Assets module. Per the FRD, capacity
- * carries CBM *and* TON together — not a choice of one unit.
+ * The Assets module (FRD §1.7.2) extends this table in
+ * 2026_09_02_100000_expand_asset_capacity_categories_table.php:
+ * `applies_to` (container/tank/both), `additional_data`, `updated_by`.
+ * The "name is the only editable field after creation" policy lives in
+ * UpdateAssetCapacityCategoryRequest / UpdateAssetCapacityCategoryAction.
  */
 return new class extends Migration
 {

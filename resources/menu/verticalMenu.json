@@ -431,6 +431,23 @@
       ]
     },
     {
+      "name": "Assets",
+      "icon": "menu-icon tf-icons ti ti-box",
+      "slug": "app-asset",
+      "submenu": [
+        {
+          "url": "app/asset/list",
+          "name": "List",
+          "slug": "app-asset-list"
+        },
+        {
+          "url": "app/asset-category/list",
+          "name": "Categories",
+          "slug": "app-asset-category-list"
+        }
+      ]
+    },
+    {
       "name": "Roles & Permissions",
       "icon": "menu-icon tf-icons ti ti-settings",
       "slug": "app-access",
