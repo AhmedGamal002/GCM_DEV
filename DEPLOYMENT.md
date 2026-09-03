@@ -162,22 +162,43 @@ Business shared hosting مفيهوش Node.js غالبًا. ابنِ الأصول
 ```bash
 # محليًا
 npm run build
-# بيطلع public/build/ — ارفعه كامل جوه apps/gcm/<environment>/public/ على السيرفر (مش domains/)
+# بيطلع public/build/
 ```
 
-بعد الرفع، شغّل `scripts/hostinger-sync-public.sh <app_dir> <web_dir>` (§2) عشان الأصول الجديدة توصل فعليًا لـ `public_html` بتاعة الساب-دومين اللي هو المكان اللي بيتقدّم للزوار.
+**رفع الفولدر ده للسيرفر — بما إنك عندك SSH شغال، `scp` أبسط طريقة** (تشتغل من نفس الترمينال على جهازك، مش على السيرفر):
+
+```bash
+# محليًا، من جذر المشروع — بدّل <port> و<user>@<host> بالقيم من hPanel → Advanced → SSH Access
+scp -r -P <port> public/build u<...>@<host>:~/apps/gcm/dev/public/
+```
+
+- `-r` عشان `build/` فولدر فيه فولدرات فرعية (`assets/` إلخ)، مش ملف واحد.
+- `-P` (كابيتال) بورت الـ SSH — لاحظ الفرق عن أمر `ssh` نفسه اللي بيستخدم `-p` (سمول) لنفس الغرض، غلطة شائعة.
+- النتيجة هتبقى `~/apps/gcm/dev/public/build/...` — لو الفولدر مش موجود أصلًا هيتعمل تلقائي.
+- **البديل من غير SSH:** File Manager جوه hPanel — ارفع `public/build` كـ zip واحد وفكّه هناك (أسرع من رفع كل ملف لوحده لو الملفات كتير).
+
+بعد الرفع، شغّل السكريبت (مثال لبيئة `dev`، بدّل المسارين لأي بيئة تانية) عشان الأصول الجديدة توصل فعليًا لـ `public_html` بتاعة الساب-دومين اللي هو المكان اللي بيتقدّم للزوار:
+
+```bash
+bash ~/apps/gcm/dev/scripts/hostinger-sync-public.sh \
+  ~/apps/gcm/dev \
+  ~/domains/digitswat.com/public_html/gcm/dev
+```
 
 ## 9. Storage + الكاش
 
 ```bash
-php artisan storage:link
 php artisan config:cache
 php artisan route:cache      # كان بيفشل قبل إصلاح §3 — لازم يشتغل من غير error
 php artisan view:cache
-bash scripts/hostinger-sync-public.sh <app_dir> <web_dir>    # يعمل الـ symlink الفعلي اللي بيتقدّم للزوار
+
+# يعمل الـ symlink الفعلي اللي بيتقدّم للزوار — مثال لبيئة dev (زي §8)
+bash ~/apps/gcm/dev/scripts/hostinger-sync-public.sh \
+  ~/apps/gcm/dev \
+  ~/domains/digitswat.com/public_html/gcm/dev
 ```
 
-`storage:link` بينشئ symlink جوه `<app_dir>/public/storage` — مفيدة للأدوات اللي بتتوقعها، لكن **مش هي اللي بتتقدّم للزوار فعليًا** في الإعداد ده (`public_html` بتاعة الساب-دومين مختلفة عن `<app_dir>/public/`). السكريبت بينشئ symlink تاني منفصل عند المكان الحقيقي — لازم الاتنين.
+**`php artisan storage:link` مش مطلوب في الإعداد ده خالص — سيبه.** الأمر ده بينشئ symlink جوه `<app_dir>/public/storage` (زي `apps/gcm/dev/public/storage`)، لكن الفولدر ده **مش** اللي بيتقدّم للزوار في إعدادنا (ده `<web_dir>` — `public_html` بتاعة الساب-دومين، فولدر منسوخ منفصل تمامًا). حتى لو اشتغل الأمر بنجاح، الـsymlink بتاعه في مكان محدش بيشوفه. كمان بعض استضافات الشيرد بتقفل دالة PHP `symlink()` نفسها (`disable_functions`) لأسباب أمنية، فممكن يرمي error صريح بدل ما "يشتغل بلا فايدة" بس. السكريبت (`hostinger-sync-public.sh`) بيعمل الـsymlink الصح لوحده (`ln -s` shell-level، مش عن طريق PHP، فمش متأثر بنفس القيد) عند المكان الحقيقي — ده الوحيد المطلوب.
 
 ## 10. صلاحيات الملفات
 
