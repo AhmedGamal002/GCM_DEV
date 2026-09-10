@@ -23,7 +23,10 @@
     deactivated: @json(__('Deactivated')),
     generic_error: @json(__('Something went wrong. Please try again.')),
     add_permit: @json(__('Add Permit')),
-    remove: @json(__('Remove'))
+    remove: @json(__('Remove')),
+    loading: @json(__('Loading...')),
+    select_types_first: @json(__('Select vehicle type(s) first')),
+    select_vehicle: @json(__('Select a vehicle'))
   };
 </script>
 @vite('resources/assets/js/app-driver-add.js')
@@ -31,7 +34,7 @@
 
 @section('content')
 
-@include('_partials.breadcrumb', ['breadcrumbs' => [
+@include('_partials.breadcrumb', ['pageTitle' => __('Create New Driver'), 'breadcrumbs' => [
   ['title' => __('Drivers'), 'url' => route('app-driver-list')],
   ['title' => __('Add')],
 ]])
@@ -40,7 +43,6 @@
 
 <!-- Multi Column with Form Separator -->
 <div class="card mb-6">
-  <h5 class="card-header">{{ __('Create New Driver') }}</h5>
   <form class="card-body" id="driverAddForm">
 
     <h6>1. {{ __('Account Details') }}</h6>

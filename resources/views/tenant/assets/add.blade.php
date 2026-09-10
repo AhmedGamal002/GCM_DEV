@@ -29,7 +29,7 @@
 
 @section('content')
 
-@include('_partials.breadcrumb', ['breadcrumbs' => [
+@include('_partials.breadcrumb', ['pageTitle' => __('Create New Asset'), 'breadcrumbs' => [
   ['title' => __('Assets'), 'url' => route('app-asset-list')],
   ['title' => __('Create New Asset')],
 ]])

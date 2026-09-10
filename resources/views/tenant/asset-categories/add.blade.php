@@ -15,7 +15,7 @@
 
 @section('content')
 
-@include('_partials.breadcrumb', ['breadcrumbs' => [
+@include('_partials.breadcrumb', ['pageTitle' => __('Create Asset Category'), 'breadcrumbs' => [
   ['title' => __('Assets'), 'url' => route('app-asset-list')],
   ['title' => __('Asset capacity categories'), 'url' => route('app-asset-category-list')],
   ['title' => __('Create an asset capacity category')],

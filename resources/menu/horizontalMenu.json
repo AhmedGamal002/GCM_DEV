@@ -386,16 +386,19 @@
           "name": "Assets",
           "icon": "menu-icon tf-icons ti ti-box",
           "slug": "app-asset",
+          "roles": ["system_admin", "data_entry", "auditor"],
           "submenu": [
             {
               "url": "app/asset/list",
               "name": "List",
-              "slug": "app-asset-list"
+              "slug": "app-asset-list",
+              "roles": ["system_admin", "data_entry", "auditor"]
             },
             {
               "url": "app/asset-category/list",
               "name": "Categories",
-              "slug": "app-asset-category-list"
+              "slug": "app-asset-category-list",
+              "roles": ["system_admin", "data_entry", "auditor"]
             }
           ]
         },

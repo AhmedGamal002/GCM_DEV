@@ -1,7 +1,6 @@
 @php($isCreate = ($mode ?? 'create') === 'create')
 
 <div class="card mb-6">
-  <h5 class="card-header">{{ $isCreate ? __('Create New Asset') : __('Edit Asset') }}</h5>
 
   @unless($isCreate)
     <div class="card-body text-center py-6" id="asset-form-loading">

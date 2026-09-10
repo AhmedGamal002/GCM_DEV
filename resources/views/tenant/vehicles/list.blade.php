@@ -58,6 +58,11 @@
 
 @section('content')
 
+@include('_partials.breadcrumb', ['pageTitle' => __('Vehicle Fleet'), 'breadcrumbs' => [
+  ['title' => __('Vehicles'), 'url' => route('app-vehicle-list')],
+  ['title' => __('List')],
+]])
+
 <div id="vehicle-list-status" class="alert alert-success d-none"></div>
 
 @php($vehicleStatCards = [

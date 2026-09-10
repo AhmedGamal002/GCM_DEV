@@ -32,7 +32,7 @@
 
 @section('content')
 
-@include('_partials.breadcrumb', ['breadcrumbs' => [
+@include('_partials.breadcrumb', ['pageTitle' => __('Create New User'), 'breadcrumbs' => [
   ['title' => __('Users'), 'url' => route('app-user-list')],
   ['title' => __('Add')],
 ]])
@@ -42,7 +42,6 @@
 
 <!-- Multi Column with Form Separator -->
 <div class="card mb-6">
-  <h5 class="card-header">{{ __('Create New User') }}</h5>
   <form class="card-body" id="userAddForm">
 
     <h6>1. {{ __('Account Details') }}</h6>

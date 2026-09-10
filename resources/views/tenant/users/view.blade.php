@@ -25,7 +25,7 @@
 
 @section('content')
 
-@include('_partials.breadcrumb', ['breadcrumbs' => [
+@include('_partials.breadcrumb', ['pageTitle' => __('Account Details'), 'breadcrumbs' => [
   ['title' => __('Users'), 'url' => route('app-user-list')],
   ['title' => __('View')],
 ]])

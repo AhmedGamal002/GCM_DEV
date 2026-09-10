@@ -32,6 +32,11 @@
 
 @section('content')
 
+@include('_partials.breadcrumb', ['pageTitle' => __('Vehicle Details'), 'breadcrumbs' => [
+  ['title' => __('Vehicles'), 'url' => route('app-vehicle-list')],
+  ['title' => __('View')],
+]])
+
 <div id="vehicle-view-status" class="alert alert-success d-none"></div>
 <div id="vehicle-view-error" class="alert alert-danger d-none"></div>
 

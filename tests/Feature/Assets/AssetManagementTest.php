@@ -208,4 +208,20 @@ class AssetManagementTest extends TestCase
 
         $this->actingAs($this->admin, 'web')->get('/api/v1/assets/export?format=pdf')->assertOk();
     }
+
+    /**
+     * Same normalization as the equivalent Vehicles/Drivers tests — an
+     * untouched Quill editor submits `<p><br></p>`, not an empty string.
+     * Assets only take additional_data at create time (edit is name-only
+     * per FRD §1.7.3 — see UpdateAssetRequest's docblock), so this is the
+     * only place it needs covering for this module.
+     */
+    public function test_an_empty_quill_editor_is_stored_as_null_not_empty_markup(): void
+    {
+        $response = $this->actingAs($this->admin, 'web')
+            ->postJson('/api/v1/assets', $this->validPayload(['additional_data' => '<p><br></p>']));
+
+        $response->assertCreated();
+        $this->assertNull(Asset::firstOrFail()->additional_data);
+    }
 }

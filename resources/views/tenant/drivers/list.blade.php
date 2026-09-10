@@ -47,7 +47,7 @@
 
 @section('content')
 
-@include('_partials.breadcrumb', ['breadcrumbs' => [
+@include('_partials.breadcrumb', ['pageTitle' => __('Driver Management'), 'breadcrumbs' => [
   ['title' => __('Drivers'), 'url' => route('app-driver-list')],
   ['title' => __('List')],
 ]])

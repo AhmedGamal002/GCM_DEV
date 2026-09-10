@@ -29,7 +29,7 @@
 
 @section('content')
 
-@include('_partials.breadcrumb', ['breadcrumbs' => [
+@include('_partials.breadcrumb', ['pageTitle' => __('Account Details'), 'breadcrumbs' => [
   ['title' => __('Drivers'), 'url' => route('app-driver-list')],
   ['title' => __('View')],
 ]])

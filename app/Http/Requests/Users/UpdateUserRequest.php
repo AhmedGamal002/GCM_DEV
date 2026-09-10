@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Users;
 
 use App\Domain\Users\Rules\OnlyOneSystemAdminPerTenantRule;
+use App\Http\Requests\Concerns\NormalizesRichTextInput;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -24,7 +25,16 @@ use Illuminate\Validation\Rule;
  */
 class UpdateUserRequest extends FormRequest
 {
+    use NormalizesRichTextInput;
+
     private ?User $targetUser = null;
+
+    protected function prepareForValidation(): void
+    {
+        if ($this->has('additional_data')) {
+            $this->merge(['additional_data' => $this->normalizeRichText($this->input('additional_data'))]);
+        }
+    }
 
     /**
      * Not route-model-bound — the `{user}` route param is a raw id (see

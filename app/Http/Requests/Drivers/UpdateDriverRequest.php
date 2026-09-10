@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Drivers;
 
+use App\Http\Requests\Concerns\NormalizesRichTextInput;
 use App\Models\Driver;
 use App\Models\Vehicle;
 use Illuminate\Foundation\Http\FormRequest;
@@ -9,7 +10,16 @@ use Illuminate\Validation\Rule;
 
 class UpdateDriverRequest extends FormRequest
 {
+    use NormalizesRichTextInput;
+
     private ?Driver $targetDriver = null;
+
+    protected function prepareForValidation(): void
+    {
+        if ($this->has('additional_data')) {
+            $this->merge(['additional_data' => $this->normalizeRichText($this->input('additional_data'))]);
+        }
+    }
 
     /**
      * Not route-model-bound — same reason as every other {user}/{driver}
@@ -82,6 +92,19 @@ class UpdateDriverRequest extends FormRequest
                 $validator->errors()->add(
                     'default_vehicle_id',
                     __('The default vehicle must belong to one of the selected vehicle categories.')
+                );
+            }
+
+            // Same "one default driver per vehicle" rule as
+            // StoreDriverRequest — excluding this driver's own row so
+            // re-submitting the edit form with their existing default
+            // vehicle unchanged doesn't spuriously reject against itself.
+            if ($vehicleId && Driver::where('default_vehicle_id', $vehicleId)
+                ->where('id', '!=', $this->targetDriver()->id)
+                ->exists()) {
+                $validator->errors()->add(
+                    'default_vehicle_id',
+                    __('This vehicle is already set as another driver\'s default vehicle.')
                 );
             }
         });

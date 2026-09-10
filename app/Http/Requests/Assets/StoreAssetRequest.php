@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Assets;
 
+use App\Http\Requests\Concerns\NormalizesRichTextInput;
 use App\Models\Asset;
 use App\Models\AssetCapacityCategory;
 use Illuminate\Foundation\Http\FormRequest;
@@ -14,6 +15,15 @@ use Illuminate\Validation\Rule;
  */
 class StoreAssetRequest extends FormRequest
 {
+    use NormalizesRichTextInput;
+
+    protected function prepareForValidation(): void
+    {
+        if ($this->has('additional_data')) {
+            $this->merge(['additional_data' => $this->normalizeRichText($this->input('additional_data'))]);
+        }
+    }
+
     public function authorize(): bool
     {
         return $this->user()->can('create', Asset::class);

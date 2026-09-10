@@ -20,7 +20,10 @@
   window.driverEditTranslations = {
     saved: @json(__('Changes saved successfully.')),
     generic_error: @json(__('Something went wrong. Please try again.')),
-    view_url_base: @json(url('/app/driver/view'))
+    view_url_base: @json(url('/app/driver/view')),
+    loading: @json(__('Loading...')),
+    select_types_first: @json(__('Select vehicle type(s) first')),
+    select_vehicle: @json(__('Select a vehicle'))
   };
   window.driverEditId = {{ $driverId }};
 </script>
@@ -29,7 +32,7 @@
 
 @section('content')
 
-@include('_partials.breadcrumb', ['breadcrumbs' => [
+@include('_partials.breadcrumb', ['pageTitle' => __('Edit Account'), 'breadcrumbs' => [
   ['title' => __('Drivers'), 'url' => route('app-driver-list')],
   ['title' => __('Edit')],
 ]])
@@ -42,7 +45,6 @@
   </div>
 
   <div class="d-none" id="driver-edit-form-wrapper">
-    <h5 class="card-header">{{ __('Edit Driver') }}</h5>
     <form class="card-body" id="driverEditForm">
 
       <h6>1. {{ __('Account Details') }}</h6>

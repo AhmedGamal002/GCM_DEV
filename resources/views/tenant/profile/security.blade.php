@@ -7,6 +7,12 @@
 @endsection
 
 @section('content')
+
+@include('_partials.breadcrumb', ['breadcrumbs' => [
+  ['title' => __('My Profile'), 'url' => route('pages-account-settings-account')],
+  ['title' => __('Security')],
+]])
+
 <div class="row">
   <div class="col-md-12">
     <div class="nav-align-top">

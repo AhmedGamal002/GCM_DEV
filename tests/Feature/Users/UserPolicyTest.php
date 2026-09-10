@@ -73,6 +73,30 @@ class UserPolicyTest extends TestCase
         $this->assertDatabaseHas('users', ['email' => 'auditor@tenant-a.test']);
     }
 
+    /**
+     * Same normalization as the equivalent Vehicles/Drivers/Assets tests
+     * — an untouched Quill editor submits `<p><br></p>`, not an empty
+     * string, so it always got saved and always showed an empty-looking
+     * "Additional Data" section on the view page.
+     */
+    public function test_an_empty_quill_editor_is_stored_as_null_not_empty_markup(): void
+    {
+        $response = $this->actingAs($this->systemAdmin, 'web')
+            ->postJson('/api/v1/users', [
+                'name' => 'New Auditor',
+                'email' => 'auditor2@tenant-a.test',
+                'phone' => '01000000000',
+                'password' => 'a-secure-password',
+                'password_confirmation' => 'a-secure-password',
+                'status' => 'active',
+                'roles' => ['auditor'],
+                'additional_data' => '<p><br></p>',
+            ]);
+
+        $response->assertCreated();
+        $this->assertNull(User::where('email', 'auditor2@tenant-a.test')->firstOrFail()->additional_data);
+    }
+
     public function test_users_list_never_includes_the_caller_themselves(): void
     {
         $auditor = User::factory()->create(['email' => 'auditor@tenant-a.test']);

@@ -35,6 +35,11 @@
 
 @section('content')
 
+@include('_partials.breadcrumb', ['pageTitle' => __('Create New Vehicle'), 'breadcrumbs' => [
+  ['title' => __('Vehicles'), 'url' => route('app-vehicle-list')],
+  ['title' => __('Add')],
+]])
+
 <div id="vehicle-form-error" class="alert alert-danger d-none"></div>
 
 @include('tenant.vehicles._form', ['mode' => 'create'])

@@ -50,7 +50,7 @@
 
 @section('content')
 
-@include('_partials.breadcrumb', ['breadcrumbs' => [
+@include('_partials.breadcrumb', ['pageTitle' => __('User Management'), 'breadcrumbs' => [
   ['title' => __('Users'), 'url' => route('app-user-list')],
   ['title' => __('List')],
 ]])

@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Users;
 
 use App\Domain\Users\Rules\OnlyOneSystemAdminPerTenantRule;
+use App\Http\Requests\Concerns\NormalizesRichTextInput;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -34,6 +35,15 @@ use Illuminate\Validation\Rules\Password;
  */
 class StoreUserRequest extends FormRequest
 {
+    use NormalizesRichTextInput;
+
+    protected function prepareForValidation(): void
+    {
+        if ($this->has('additional_data')) {
+            $this->merge(['additional_data' => $this->normalizeRichText($this->input('additional_data'))]);
+        }
+    }
+
     public function authorize(): bool
     {
         return $this->user()->can('create', User::class);

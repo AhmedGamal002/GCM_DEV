@@ -35,7 +35,7 @@
 
 @section('content')
 
-@include('_partials.breadcrumb', ['breadcrumbs' => [
+@include('_partials.breadcrumb', ['pageTitle' => __('Edit Account'), 'breadcrumbs' => [
   ['title' => __('Users'), 'url' => route('app-user-list')],
   ['title' => __('Edit')],
 ]])
@@ -60,7 +60,6 @@
   </div>
 
   <div class="d-none" id="user-edit-form-wrapper">
-    <h5 class="card-header">{{ __('Edit Account') }}</h5>
     <form class="card-body" id="userEditForm">
 
       <h6>1. {{ __('Account Details') }}</h6>

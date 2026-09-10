@@ -101,7 +101,23 @@
       "Bash(rm -rf /tmp/sync-test)",
       "Bash(awk '/^## 7\\\\./{print NR; exit}' ARCHITECTURE.md)",
       "Bash(composer validate *)",
-      "Bash(php -r ' *)"
+      "Bash(php -r ' *)",
+      "Bash(git fetch *)",
+      "Bash(php -r \"json_decode\\(file_get_contents\\('lang/ar.json'\\)\\); echo json_last_error\\(\\) === JSON_ERROR_NONE ? 'ar.json valid' : 'INVALID: ' . json_last_error_msg\\(\\);\")",
+      "Bash(php -r \"json_decode\\(file_get_contents\\('lang/en.json'\\)\\); echo json_last_error\\(\\) === JSON_ERROR_NONE ? 'en.json valid' : 'INVALID';\")",
+      "Bash(awk '/^## المرحلة 2/{print NR; exit}' WEEKLY_PLAN.md)",
+      "PowerShell(wsl --list --running 2>&1)",
+      "PowerShell(Get-NetTCPConnection -LocalPort 3306 -ErrorAction SilentlyContinue)",
+      "PowerShell(Get-Process -Id 8908 -ErrorAction SilentlyContinue)",
+      "PowerShell(wsl -d Ubuntu -- bash -c \"sudo service --status-all 2>/dev/null | grep -iE 'mysql|maria'; echo '---ports---'; ss -tlnp 2>/dev/null | grep 3306; echo '---processes---'; ps aux | grep -iE 'mysqld|mariadb' | grep -v grep\" 2>&1)",
+      "PowerShell(wsl -d Ubuntu --exec bash -c \"ss -tlnp 2>/dev/null | grep ':3306' || netstat -tln 2>/dev/null | grep ':3306' || echo 'no-ss'; ps -eo comm 2>/dev/null | grep -iE 'mysqld|mariadbd' || echo 'no-mysql-proc'\")",
+      "Read(//d/Projects/server/apps/phpmyadmin5.2.1/**)",
+      "Read(//d/Projects/server/alias/**)",
+      "Bash(cp \"D:/Projects/server/apps/phpmyadmin5.2.1/config.inc.php\" \"D:/Projects/server/apps/phpmyadmin5.2.1/config.inc.php.bak\" && echo \"backup created: config.inc.php.bak\")",
+      "Bash(php -l \"D:/Projects/server/apps/phpmyadmin5.2.1/config.inc.php\")",
+      "Bash(grep -v '~\\\\$')",
+      "Bash(php -r \"json_decode\\(file_get_contents\\('lang/en.json'\\)\\); echo 'en:'.\\(json_last_error\\(\\)===JSON_ERROR_NONE?'OK':'BAD'\\).' '; json_decode\\(file_get_contents\\('lang/ar.json'\\)\\); echo 'ar:'.\\(json_last_error\\(\\)===JSON_ERROR_NONE?'OK':'BAD'\\).PHP_EOL;\")",
+      "Bash(php -r \"json_decode\\(file_get_contents\\('lang/ar.json'\\)\\); echo json_last_error\\(\\)===JSON_ERROR_NONE?'ar.json OK':'BAD';\")"
     ]
   }
 }

@@ -104,4 +104,45 @@ class VehicleListPaginationTest extends TestCase
             $this->assertSame([$target->id], $response->json('data.*.id'), "search term '{$search}' should match the vehicle");
         }
     }
+
+    /**
+     * Backs the driver form's "Default Vehicle" dropdown — a vehicle
+     * already claimed as another driver's default must not be offered.
+     * `exclude_default_of_driver` re-includes one specific driver's own
+     * already-assigned vehicle (the edit page's own case).
+     */
+    public function test_unassigned_as_default_hides_vehicles_already_taken_by_a_driver(): void
+    {
+        $tenant = Tenant::create(['name' => 'GCM', 'slug' => 'gcm', 'status' => 'active']);
+        app()->instance('tenant', $tenant);
+
+        $admin = User::factory()->create();
+        $admin->assignRole('system_admin');
+
+        $category = VehicleCategory::where('slug', 'dump_truck')->firstOrFail();
+        $free = Vehicle::factory()->create(['vehicle_category_id' => $category->id]);
+        $taken = Vehicle::factory()->create(['vehicle_category_id' => $category->id]);
+
+        $driverUser = User::factory()->create();
+        $driverUser->assignRole('driver');
+        $driver = \App\Models\Driver::create([
+            'user_id' => $driverUser->id,
+            'default_vehicle_id' => $taken->id,
+            'residence_number' => 'RES', 'residence_valid_to' => '2030-01-01',
+            'license_number' => 'LIC', 'license_valid_to' => '2030-01-01',
+            'operational_license_number' => 'OPL', 'operational_license_valid_to' => '2030-01-01',
+            'insurance_number' => 'INS', 'insurance_valid_to' => '2030-01-01',
+        ]);
+
+        $withoutExclusion = $this->actingAs($admin, 'web')
+            ->getJson('/api/v1/vehicles?unassigned_as_default=1')
+            ->json('data.*.id');
+        $this->assertContains($free->id, $withoutExclusion);
+        $this->assertNotContains($taken->id, $withoutExclusion, 'a vehicle already taken as a default must be hidden');
+
+        $keptForOwner = $this->actingAs($admin, 'web')
+            ->getJson('/api/v1/vehicles?unassigned_as_default=1&exclude_default_of_driver='.$driver->id)
+            ->json('data.*.id');
+        $this->assertContains($taken->id, $keptForOwner, "the owning driver's own edit form must still see their own vehicle");
+    }
 }

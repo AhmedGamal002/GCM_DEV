@@ -38,6 +38,11 @@
 
 @section('content')
 
+@include('_partials.breadcrumb', ['pageTitle' => __('Edit Vehicle Details'), 'breadcrumbs' => [
+  ['title' => __('Vehicles'), 'url' => route('app-vehicle-list')],
+  ['title' => __('Edit')],
+]])
+
 <div id="vehicle-form-error" class="alert alert-danger d-none"></div>
 
 @include('tenant.vehicles._form', ['mode' => 'edit'])

@@ -7,6 +7,11 @@
 @endsection
 
 @section('content')
+
+@include('_partials.breadcrumb', ['breadcrumbs' => [
+  ['title' => __('My Profile')],
+]])
+
 <div class="row">
   <div class="col-md-12">
     <div class="nav-align-top">

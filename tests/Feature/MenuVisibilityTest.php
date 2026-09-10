@@ -84,6 +84,7 @@ class MenuVisibilityTest extends TestCase
         $response->assertDontSee('>Users<', false);
         $response->assertDontSee('>Vehicles<', false);
         $response->assertDontSee('>Drivers<', false);
+        $response->assertDontSee('>Assets<', false);
     }
 
     public function test_an_auditor_sees_vehicles_but_not_users_or_drivers(): void
@@ -99,6 +100,39 @@ class MenuVisibilityTest extends TestCase
         $response->assertDontSee('>Drivers<', false);
     }
 
+    /**
+     * Regression for a real gap: the "Assets" menu node (added later, by
+     * the Assets module merge) had no "roles" key at all — under
+     * MenuComposer's admin-only-by-default rule that made it invisible to
+     * auditor/data_entry even though AssetPolicy::viewAny() grants both
+     * roles API access. They could reach the API but never see a link to
+     * it. User-flagged: "auditor/data_entry permissions aren't right."
+     */
+    public function test_an_auditor_sees_assets(): void
+    {
+        $auditor = User::factory()->create();
+        $auditor->assignRole('auditor');
+
+        $response = $this->actingAs($auditor, 'web')->get('/dashboard');
+
+        $response->assertOk();
+        $response->assertSee('>Assets<', false);
+    }
+
+    public function test_a_data_entry_user_sees_vehicles_and_assets_but_not_users_or_drivers(): void
+    {
+        $dataEntry = User::factory()->create();
+        $dataEntry->assignRole('data_entry');
+
+        $response = $this->actingAs($dataEntry, 'web')->get('/dashboard');
+
+        $response->assertOk();
+        $response->assertSee('>Vehicles<', false);
+        $response->assertSee('>Assets<', false);
+        $response->assertDontSee('>Users<', false);
+        $response->assertDontSee('>Drivers<', false);
+    }
+
     public function test_system_admin_still_sees_all_three_links(): void
     {
         $response = $this->actingAs($this->tenantAdmin, 'web')->get('/dashboard');
@@ -107,6 +141,7 @@ class MenuVisibilityTest extends TestCase
         $response->assertSee('>Users<', false);
         $response->assertSee('>Vehicles<', false);
         $response->assertSee('>Drivers<', false);
+        $response->assertSee('>Assets<', false);
     }
 
     /**

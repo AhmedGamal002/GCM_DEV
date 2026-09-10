@@ -345,4 +345,21 @@ class VehicleManagementTest extends TestCase
             ->get("/api/v1/vehicles/{$vehicle->id}/documents/{$doc->id}/download")
             ->assertOk();
     }
+
+    /**
+     * An untouched/cleared Quill editor submits `<p><br></p>`, not an
+     * empty string — `nullable|string`-valid, so it always got saved and
+     * always showed the "Additional Data" section with a heading over
+     * nothing on the view page. Real bug flagged by the user across every
+     * module using this same rich-text field (Users/Drivers/Vehicles/
+     * Assets) — this is the create-time normalization catching it.
+     */
+    public function test_an_empty_quill_editor_is_stored_as_null_not_empty_markup(): void
+    {
+        $this->actingAs($this->admin, 'web')
+            ->post('/api/v1/vehicles', $this->validPayload(['additional_data' => '<p><br></p>']), ['Accept' => 'application/json'])
+            ->assertCreated();
+
+        $this->assertNull(Vehicle::firstOrFail()->additional_data);
+    }
 }

@@ -158,4 +158,44 @@ class DriverCreationTest extends TestCase
 
         $response->assertUnprocessable()->assertJsonValidationErrors('default_vehicle_id');
     }
+
+    /**
+     * A vehicle can be "the default" for at most one driver — otherwise
+     * two drivers both showing the same truck as theirs is meaningless.
+     * Real gap flagged by the user: the vehicle dropdown had no such
+     * restriction at all, so a second driver could freely pick a vehicle
+     * already claimed by someone else.
+     */
+    public function test_a_vehicle_already_set_as_another_drivers_default_is_rejected(): void
+    {
+        $existingDriverUser = User::factory()->create();
+        $existingDriverUser->assignRole('driver');
+        Driver::create([
+            'user_id' => $existingDriverUser->id,
+            'default_vehicle_id' => $this->vehicle->id,
+            'residence_number' => 'RES-000', 'residence_valid_to' => '2030-01-01',
+            'license_number' => 'LIC-000', 'license_valid_to' => '2030-01-01',
+            'operational_license_number' => 'OPL-000', 'operational_license_valid_to' => '2030-01-01',
+            'insurance_number' => 'INS-000', 'insurance_valid_to' => '2030-01-01',
+        ]);
+
+        $response = $this->actingAs($this->systemAdmin, 'web')
+            ->postJson('/api/v1/drivers', $this->basePayload());
+
+        $response->assertUnprocessable()->assertJsonValidationErrors('default_vehicle_id');
+    }
+
+    /**
+     * Same normalization as VehicleManagementTest's equivalent test — see
+     * its docblock. An untouched Quill editor submits `<p><br></p>`, not
+     * an empty string.
+     */
+    public function test_an_empty_quill_editor_is_stored_as_null_not_empty_markup(): void
+    {
+        $response = $this->actingAs($this->systemAdmin, 'web')
+            ->postJson('/api/v1/drivers', array_merge($this->basePayload(), ['additional_data' => '<p><br></p>']));
+
+        $response->assertCreated();
+        $this->assertNull(Driver::firstOrFail()->user->additional_data);
+    }
 }

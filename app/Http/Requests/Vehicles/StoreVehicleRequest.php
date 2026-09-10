@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Vehicles;
 
 use App\Domain\Vehicles\Rules\EmbeddedCapacityFitsVehicleRule;
+use App\Http\Requests\Concerns\NormalizesRichTextInput;
 use App\Models\Vehicle;
 use App\Models\VehicleDocument;
 use Illuminate\Foundation\Http\FormRequest;
@@ -15,6 +16,8 @@ use Illuminate\Validation\Rule;
  */
 class StoreVehicleRequest extends FormRequest
 {
+    use NormalizesRichTextInput;
+
     public function authorize(): bool
     {
         return $this->user()->can('create', Vehicle::class);
@@ -115,6 +118,10 @@ class StoreVehicleRequest extends FormRequest
         // Plate letters are stored (and uniqueness-checked) upper-case.
         if ($this->filled('plate_letters')) {
             $this->merge(['plate_letters' => mb_strtoupper(trim($this->input('plate_letters')))]);
+        }
+
+        if ($this->has('additional_data')) {
+            $this->merge(['additional_data' => $this->normalizeRichText($this->input('additional_data'))]);
         }
     }
 }

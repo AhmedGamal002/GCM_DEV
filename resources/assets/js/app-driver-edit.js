@@ -43,7 +43,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
     Promise.all(
       checked.map((cb) => window.axios.get('/api/v1/vehicles', {
-        params: { category: cb.value, operational_status: 'active', per_page: 200 }
+        // unassigned_as_default hides vehicles already taken as another
+        // driver's default; exclude_default_of_driver keeps THIS driver's
+        // own currently-assigned vehicle visible (it's "taken", but by
+        // themselves — a re-submit without changing it must still work).
+        params: {
+          category: cb.value,
+          operational_status: 'active',
+          per_page: 200,
+          unassigned_as_default: 1,
+          exclude_default_of_driver: id
+        }
       }))
     )
       .then(function (responses) {

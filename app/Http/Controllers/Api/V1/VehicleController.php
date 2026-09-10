@@ -12,6 +12,7 @@ use App\Http\Requests\Vehicles\StoreVehicleRequest;
 use App\Http\Requests\Vehicles\UpdateVehicleRequest;
 use App\Http\Requests\Vehicles\UpdateVehicleStatusRequest;
 use App\Http\Resources\VehicleResource;
+use App\Models\Driver;
 use App\Models\Vehicle;
 use App\Models\VehicleDocument;
 use Illuminate\Http\Request;
@@ -71,6 +72,31 @@ class VehicleController extends Controller
                         ->orWhereRaw("{$withSpace} LIKE ?", ["%{$search}%"])
                         ->orWhereRaw("{$noSpace} LIKE ?", ["%{$collapsed}%"]);
                 });
+            })
+            // Used by the driver add/edit forms' "Default Vehicle" dropdown
+            // — a vehicle already set as another driver's default must not
+            // be selectable as anyone else's (see StoreDriverRequest/
+            // UpdateDriverRequest's matching server-side rejection; this is
+            // the proactive half, keeping already-taken vehicles out of
+            // the list in the first place instead of only rejecting after
+            // submit). `exclude_default_of_driver` re-includes one
+            // specific driver's own already-assigned vehicle — otherwise
+            // editing a driver would make their own current default
+            // vehicle vanish from their own dropdown (it's "taken", by
+            // themselves).
+            ->when($request->boolean('unassigned_as_default'), function ($q) use ($request) {
+                $keepDriverId = $request->integer('exclude_default_of_driver') ?: null;
+
+                // Driver::query() (not a raw `drivers` table reference)
+                // so this stays tenant-scoped via BelongsToTenant, same as
+                // the outer Vehicle query — explicit, not just relying on
+                // vehicle ids happening not to collide across tenants.
+                $takenVehicleIds = Driver::query()
+                    ->whereNotNull('default_vehicle_id')
+                    ->when($keepDriverId, fn ($d) => $d->where('id', '!=', $keepDriverId))
+                    ->pluck('default_vehicle_id');
+
+                $q->whereNotIn('id', $takenVehicleIds);
             })
             ->orderBy($sortBy, $sortDir)
             ->when($sortBy === 'plate_letters', fn ($q) => $q->orderBy('plate_numbers', $sortDir))
