@@ -86,3 +86,29 @@ window.gcmServerSideAjax = function (url, getExtraParams, noPermissionMessage) {
       });
   };
 };
+
+/**
+ * Export the list exactly as it is on screen: the current search box text
+ * and every active filter (the same `getExtraParams` the table's own
+ * requests use) go along with the format, so the file holds the filtered
+ * rows instead of the whole table.
+ *
+ * Usage (inside a DataTables Buttons action): `(e, dt) => window.gcmExport('/api/v1/users/export', 'pdf', dt, listParams)`
+ */
+window.gcmExport = function (url, format, dt, getExtraParams) {
+  const params = Object.assign({ format: format }, (getExtraParams && getExtraParams()) || {});
+
+  const search = dt && dt.search ? dt.search() : '';
+  if (search) {
+    params.search = search;
+  }
+
+  const query = new URLSearchParams();
+  Object.keys(params).forEach(function (key) {
+    if (params[key] !== undefined && params[key] !== null && params[key] !== '') {
+      query.append(key, params[key]);
+    }
+  });
+
+  return window.gcmDownload(url + '?' + query.toString());
+};

@@ -213,7 +213,12 @@
               "raw": "{{api_base}}/users/export?format=xlsx",
               "host": ["{{api_base}}"],
               "path": ["users", "export"],
-              "query": [{ "key": "format", "value": "xlsx" }]
+              "query": [
+                { "key": "format", "value": "xlsx" },
+                { "key": "search", "value": "", "disabled": true },
+                { "key": "status", "value": "", "disabled": true },
+                { "key": "role", "value": "", "disabled": true }
+              ]
             }
           }
         },
@@ -226,7 +231,12 @@
               "raw": "{{api_base}}/users/export?format=pdf",
               "host": ["{{api_base}}"],
               "path": ["users", "export"],
-              "query": [{ "key": "format", "value": "pdf" }]
+              "query": [
+                { "key": "format", "value": "pdf" },
+                { "key": "search", "value": "", "disabled": true },
+                { "key": "status", "value": "", "disabled": true },
+                { "key": "role", "value": "", "disabled": true }
+              ]
             }
           }
         },
@@ -357,7 +367,12 @@
               "raw": "{{api_base}}/drivers/export?format=xlsx",
               "host": ["{{api_base}}"],
               "path": ["drivers", "export"],
-              "query": [{ "key": "format", "value": "xlsx" }]
+              "query": [
+                { "key": "format", "value": "xlsx" },
+                { "key": "search", "value": "", "disabled": true },
+                { "key": "status", "value": "", "disabled": true },
+                { "key": "affiliation", "value": "", "disabled": true }
+              ]
             }
           }
         },
@@ -370,7 +385,12 @@
               "raw": "{{api_base}}/drivers/export?format=pdf",
               "host": ["{{api_base}}"],
               "path": ["drivers", "export"],
-              "query": [{ "key": "format", "value": "pdf" }]
+              "query": [
+                { "key": "format", "value": "pdf" },
+                { "key": "search", "value": "", "disabled": true },
+                { "key": "status", "value": "", "disabled": true },
+                { "key": "affiliation", "value": "", "disabled": true }
+              ]
             }
           }
         },
@@ -581,7 +601,13 @@
               "raw": "{{api_base}}/vehicles/export?format=xlsx",
               "host": ["{{api_base}}"],
               "path": ["vehicles", "export"],
-              "query": [{ "key": "format", "value": "xlsx" }]
+              "query": [
+                { "key": "format", "value": "xlsx" },
+                { "key": "search", "value": "", "disabled": true },
+                { "key": "category", "value": "", "disabled": true },
+                { "key": "operational_status", "value": "", "disabled": true },
+                { "key": "affiliation", "value": "", "disabled": true }
+              ]
             }
           }
         },
@@ -594,7 +620,13 @@
               "raw": "{{api_base}}/vehicles/export?format=pdf",
               "host": ["{{api_base}}"],
               "path": ["vehicles", "export"],
-              "query": [{ "key": "format", "value": "pdf" }]
+              "query": [
+                { "key": "format", "value": "pdf" },
+                { "key": "search", "value": "", "disabled": true },
+                { "key": "category", "value": "", "disabled": true },
+                { "key": "operational_status", "value": "", "disabled": true },
+                { "key": "affiliation", "value": "", "disabled": true }
+              ]
             }
           }
         },
@@ -864,7 +896,13 @@
               "raw": "{{api_base}}/assets/export?format=xlsx",
               "host": ["{{api_base}}"],
               "path": ["assets", "export"],
-              "query": [{ "key": "format", "value": "xlsx" }]
+              "query": [
+                { "key": "format", "value": "xlsx" },
+                { "key": "search", "value": "", "disabled": true },
+                { "key": "asset_type", "value": "", "disabled": true },
+                { "key": "operational_status", "value": "", "disabled": true },
+                { "key": "affiliation", "value": "", "disabled": true }
+              ]
             }
           }
         },
@@ -877,7 +915,13 @@
               "raw": "{{api_base}}/assets/export?format=pdf",
               "host": ["{{api_base}}"],
               "path": ["assets", "export"],
-              "query": [{ "key": "format", "value": "pdf" }]
+              "query": [
+                { "key": "format", "value": "pdf" },
+                { "key": "search", "value": "", "disabled": true },
+                { "key": "asset_type", "value": "", "disabled": true },
+                { "key": "operational_status", "value": "", "disabled": true },
+                { "key": "affiliation", "value": "", "disabled": true }
+              ]
             }
           }
         },
@@ -983,7 +1027,28 @@
               "raw": "{{api_base}}/asset-capacity-categories/export?format=xlsx",
               "host": ["{{api_base}}"],
               "path": ["asset-capacity-categories", "export"],
-              "query": [{ "key": "format", "value": "xlsx" }]
+              "query": [
+                { "key": "format", "value": "xlsx" },
+                { "key": "search", "value": "", "disabled": true },
+                { "key": "applies_to", "value": "", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Export Capacity Categories (PDF)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/asset-capacity-categories/export?format=pdf",
+              "host": ["{{api_base}}"],
+              "path": ["asset-capacity-categories", "export"],
+              "query": [
+                { "key": "format", "value": "pdf" },
+                { "key": "search", "value": "", "disabled": true },
+                { "key": "applies_to", "value": "", "disabled": true }
+              ]
             }
           }
         },

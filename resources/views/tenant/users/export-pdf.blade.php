@@ -1,39 +1,13 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <style>
-    body { font-family: sans-serif; font-size: 12px; }
-    table { width: 100%; border-collapse: collapse; }
-    th, td { border: 1px solid #ccc; padding: 6px 8px; text-align: left; }
-    th { background: #f0f0f0; }
-  </style>
-</head>
-<body>
-  <h3>Users</h3>
-  <table>
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Affiliation</th>
-        <th>Entity</th>
-        <th>Role</th>
-        <th>Status</th>
-      </tr>
-    </thead>
-    <tbody>
-      @foreach ($users as $user)
-        <tr>
-          <td>{{ $user->code }}</td>
-          <td>{{ $user->name }}</td>
-          <td>{{ $user->affiliation === 'gcm' ? 'GCM' : $user->affiliation }}</td>
-          <td>{{ $user->affiliation === 'gcm' ? $user->tenant->name : '' }}</td>
-          <td>{{ $user->getRoleNames()->implode(', ') }}</td>
-          <td>{{ $user->status }}</td>
-        </tr>
-      @endforeach
-    </tbody>
-  </table>
-</body>
-</html>
+@php use App\Support\PdfLabels; @endphp
+@include('exports.pdf-table', [
+  'title' => __('Users'),
+  'headers' => [__('ID'), __('Name'), __('Affiliation'), __('Entity'), __('Role'), __('Status')],
+  'rows' => $users->map(fn ($u) => [
+    $u->code,
+    $u->name,
+    PdfLabels::of($u->affiliation),
+    $u->affiliation === 'gcm' ? $u->tenant->name : '',
+    $u->getRoleNames()->map(fn ($r) => PdfLabels::of($r))->implode(', '),
+    PdfLabels::of($u->status),
+  ]),
+])

@@ -418,5 +418,20 @@
   "{1} :count asset|[2,*] :count assets": "{1} :count أصل|[2,*] :count أصول",
   "Delete": "حذف",
   "Accounts": "الحسابات",
-  "Fleet & Assets": "الأسطول والأصول"
+  "Fleet & Assets": "الأسطول والأصول",
+  "Working...": "جارٍ التنفيذ...",
+  "Uploading... :percent%": "جارٍ رفع الملفات... :percent%",
+  "Saving — please wait, this can take a moment...": "جارٍ الحفظ — من فضلك انتظر، قد يستغرق لحظات...",
+  "Preparing your file...": "جارٍ تجهيز الملف...",
+  "Large lists can take a while. Please keep this page open.": "القوائم الكبيرة قد تستغرق بعض الوقت. من فضلك اترك هذه الصفحة مفتوحة.",
+  "The export could not be created. Please try again, or use Excel for large lists.": "تعذّر إنشاء الملف. حاول مرة أخرى، أو استخدم Excel للقوائم الكبيرة.",
+  "The file \":file\" is :size MB — the limit is :max MB. Please choose a smaller file.": "الملف \":file\" حجمه :size ميجابايت — الحد الأقصى :max ميجابايت. من فضلك اختر ملفًا أصغر.",
+  "OK": "حسنًا",
+  "Name": "الاسم",
+  "Created At": "تاريخ الإنشاء",
+  "Capacity Category": "تصنيف السعة",
+  "Applies To": "ينطبق على",
+  "Both": "كلاهما",
+  "System Admin": "مدير النظام",
+  "Auditor": "مدقق"
 }

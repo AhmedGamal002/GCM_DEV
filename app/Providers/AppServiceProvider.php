@@ -28,6 +28,11 @@ class AppServiceProvider extends ServiceProvider
    */
   public function boot(): void
   {
+    // PDF exports use DejaVu Sans (the only bundled font with Arabic, see
+    // ArabicText). Without subsetting DomPDF embeds the whole ~750KB font
+    // file in every PDF, even a one-page one.
+    config()->set('dompdf.options.enable_font_subsetting', true);
+
     // See TenantUnawareEloquentUserProvider's docblock: auth's own
     // retrieveById/retrieveByCredentials/retrieveByToken lookups must
     // bypass BelongsToTenant, since they run before any tenant is bound.

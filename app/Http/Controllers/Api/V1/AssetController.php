@@ -13,6 +13,7 @@ use App\Http\Requests\Assets\UpdateAssetRequest;
 use App\Http\Requests\Assets\UpdateAssetStatusRequest;
 use App\Http\Resources\AssetResource;
 use App\Models\Asset;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Maatwebsite\Excel\Facades\Excel;
@@ -43,15 +44,7 @@ class AssetController extends Controller
         $sortDir = $request->string('sort_dir', 'asc')->lower()->toString() === 'desc' ? 'desc' : 'asc';
         $sortBy = in_array($sortBy, self::SORTABLE_COLUMNS, true) ? $sortBy : 'name';
 
-        $assets = Asset::query()
-            ->with(self::LIST_WITH)
-            ->when($request->filled('asset_type'), fn ($q) => $q->where('asset_type', $request->string('asset_type')))
-            ->when($request->filled('operational_status'), fn ($q) => $q->where('operational_status', $request->string('operational_status')))
-            ->when($request->filled('affiliation'), fn ($q) => $q->where('affiliation', $request->string('affiliation')))
-            ->when($request->filled('search'), function ($q) use ($request) {
-                $search = $request->string('search')->toString();
-                $q->where('name', 'like', "%{$search}%");
-            })
+        $assets = $this->filteredQuery($request)
             ->orderBy($sortBy, $sortDir)
             ->paginate($request->integer('per_page', 15));
 
@@ -129,20 +122,39 @@ class AssetController extends Controller
     {
         Gate::authorize('export', Asset::class);
 
-        $assets = Asset::query()
-            ->with(self::LIST_WITH)
-            ->when($request->filled('asset_type'), fn ($q) => $q->where('asset_type', $request->string('asset_type')))
-            ->when($request->filled('operational_status'), fn ($q) => $q->where('operational_status', $request->string('operational_status')))
-            ->when($request->filled('affiliation'), fn ($q) => $q->where('affiliation', $request->string('affiliation')))
+        $assets = $this->filteredQuery($request)
             ->orderBy('name')
             ->get();
 
         if ($request->query('format', 'xlsx') === 'pdf') {
+            // DomPDF is CPU-heavy on big lists; the default 30s cap on shared
+            // hosting turns a slow export into a 500. Excel is unaffected.
+            set_time_limit(180);
+
             $pdf = app('dompdf.wrapper')->loadView('tenant.assets.export-pdf', ['assets' => $assets]);
 
             return $pdf->download('assets.pdf');
         }
 
         return Excel::download(new AssetsExport($assets), 'assets.xlsx');
+    }
+
+    /**
+     * The list's filters (dropdowns + search box), shared by index() and
+     * export() so an export always contains exactly the rows the user sees
+     * on screen — they used to be two copies that drifted apart (export
+     * ignored the search box and any filter the UI didn't forward).
+     */
+    private function filteredQuery(Request $request): Builder
+    {
+        return Asset::query()
+            ->with(self::LIST_WITH)
+            ->when($request->filled('asset_type'), fn ($q) => $q->where('asset_type', $request->string('asset_type')))
+            ->when($request->filled('operational_status'), fn ($q) => $q->where('operational_status', $request->string('operational_status')))
+            ->when($request->filled('affiliation'), fn ($q) => $q->where('affiliation', $request->string('affiliation')))
+            ->when($request->filled('search'), function ($q) use ($request) {
+                $search = $request->string('search')->toString();
+                $q->where('name', 'like', "%{$search}%");
+            });
     }
 }

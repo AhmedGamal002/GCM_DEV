@@ -14,6 +14,7 @@ use App\Http\Requests\Users\UpdateUserRequest;
 use App\Http\Requests\Users\UpdateUserStatusRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Maatwebsite\Excel\Facades\Excel;
@@ -45,30 +46,7 @@ class UserController extends Controller
     {
         Gate::authorize('viewAny', User::class);
 
-        $users = User::query()
-            // 'roles' is eager-loaded too — UserResource::getRoleNames()
-            // otherwise lazy-loads it per row (Spatie's HasRoles trait
-            // calls loadMissing('roles')), an N+1 query per user on both
-            // the paginated list and the (unpaginated) export. Same
-            // reasoning for 'driver' — UserResource::driver_id touches it.
-            ->with(['tenant', 'roles', 'driver'])
-            // This is "manage other users", not self-service — the
-            // caller's own row is never listed here. Editing yourself
-            // goes through /api/v1/me (ProfileController) instead.
-            ->where('id', '!=', $request->user()->id)
-            ->when($request->filled('status'), fn ($q) => $q->where('status', $request->string('status')))
-            ->when($request->filled('role'), fn ($q) => $q->role($request->string('role')->toString()))
-            ->when($request->filled('search'), function ($q) use ($request) {
-                // The list column shown first is `code` (see
-                // SORTABLE_COLUMNS's docblock and the Vehicles plate-search
-                // bug in ARCHITECTURE.md §6) — a search box that can't find
-                // a row by the value visibly sitting in its own first
-                // column is the same class of bug, so it's included here.
-                $search = $request->string('search')->toString();
-                $q->where(fn ($q2) => $q2->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%")
-                    ->orWhere('code', 'like', "%{$search}%"));
-            })
+        $users = $this->filteredQuery($request)
             ->when(
                 in_array($request->string('sort_by')->toString(), self::SORTABLE_COLUMNS, true),
                 fn ($q) => $q->orderBy($request->string('sort_by')->toString(), $request->string('sort_dir', 'asc')->lower()->toString() === 'desc' ? 'desc' : 'asc'),
@@ -125,25 +103,54 @@ class UserController extends Controller
     {
         Gate::authorize('viewAny', User::class);
 
-        $users = User::query()
-            // 'roles' is eager-loaded too — UserResource::getRoleNames()
-            // otherwise lazy-loads it per row (Spatie's HasRoles trait
-            // calls loadMissing('roles')), an N+1 query per user on both
-            // the paginated list and the (unpaginated) export. Same
-            // reasoning for 'driver' — UserResource::driver_id touches it.
-            ->with(['tenant', 'roles', 'driver'])
-            ->where('id', '!=', $request->user()->id)
-            ->when($request->filled('status'), fn ($q) => $q->where('status', $request->string('status')))
-            ->when($request->filled('role'), fn ($q) => $q->role($request->string('role')->toString()))
+        $users = $this->filteredQuery($request)
             ->orderBy('name')
             ->get();
 
         if ($request->query('format', 'xlsx') === 'pdf') {
+            // DomPDF is CPU-heavy on big lists; the default 30s cap on shared
+            // hosting turns a slow export into a 500. Excel is unaffected.
+            set_time_limit(180);
+
             $pdf = app('dompdf.wrapper')->loadView('tenant.users.export-pdf', ['users' => $users]);
 
             return $pdf->download('users.pdf');
         }
 
         return Excel::download(new UsersExport($users), 'users.xlsx');
+    }
+
+    /**
+     * The list's filters (dropdowns + search box), shared by index() and
+     * export() so an export always contains exactly the rows the user sees
+     * on screen — they used to be two copies that drifted apart (export
+     * ignored the search box and any filter the UI didn't forward).
+     */
+    private function filteredQuery(Request $request): Builder
+    {
+        return User::query()
+            // 'roles' is eager-loaded too — UserResource::getRoleNames()
+            // otherwise lazy-loads it per row (Spatie's HasRoles trait
+            // calls loadMissing('roles')), an N+1 query per user on both
+            // the paginated list and the (unpaginated) export. Same
+            // reasoning for 'driver' — UserResource::driver_id touches it.
+            ->with(['tenant', 'roles', 'driver'])
+            // This is "manage other users", not self-service — the
+            // caller's own row is never listed here. Editing yourself
+            // goes through /api/v1/me (ProfileController) instead.
+            ->where('id', '!=', $request->user()->id)
+            ->when($request->filled('status'), fn ($q) => $q->where('status', $request->string('status')))
+            ->when($request->filled('role'), fn ($q) => $q->role($request->string('role')->toString()))
+            ->when($request->filled('search'), function ($q) use ($request) {
+                // The list column shown first is `code` (see
+                // SORTABLE_COLUMNS's docblock and the Vehicles plate-search
+                // bug in ARCHITECTURE.md §6) — a search box that can't find
+                // a row by the value visibly sitting in its own first
+                // column is the same class of bug, so it's included here.
+                $search = $request->string('search')->toString();
+                $q->where(fn ($q2) => $q2->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('code', 'like', "%{$search}%"));
+            });
     }
 }

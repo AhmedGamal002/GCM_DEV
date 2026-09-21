@@ -90,6 +90,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
     errorBox.classList.add('d-none');
 
+    // Server limits: photo 2 MB, every document 5 MB — checked here so a
+    // too-big file fails now, not after the whole upload.
+    const tooLarge = window.gcmFileGuard(form, { default: 5120, photo: 2048 });
+    if (tooLarge) {
+      errorBox.textContent = tooLarge;
+      errorBox.classList.remove('d-none');
+      window.scrollTo(0, 0);
+      return;
+    }
+
     const data = new FormData();
     data.append('name', document.getElementById('name').value);
     data.append('email', document.getElementById('email').value);
@@ -122,12 +132,18 @@ document.addEventListener('DOMContentLoaded', function () {
       if (file) data.append(`entry_permits[${i}][attachment]`, file);
     });
 
+    window.gcmBusy.start({ progress: true });
+
     window.axios
-      .post('/api/v1/drivers', data, { headers: { 'Content-Type': 'multipart/form-data' } })
+      .post('/api/v1/drivers', data, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+        onUploadProgress: window.gcmBusy.onUploadProgress
+      })
       .then(function () {
         window.location.href = '/app/driver/list?created=1';
       })
       .catch(function (error) {
+        window.gcmBusy.stop();
         const message =
           error.response && error.response.data && error.response.data.errors
             ? Object.values(error.response.data.errors).flat().join(' ')

@@ -10,6 +10,7 @@ use App\Http\Requests\AssetCapacityCategories\StoreAssetCapacityCategoryRequest;
 use App\Http\Requests\AssetCapacityCategories\UpdateAssetCapacityCategoryRequest;
 use App\Http\Resources\AssetCapacityCategoryResource;
 use App\Models\AssetCapacityCategory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Maatwebsite\Excel\Facades\Excel;
@@ -39,24 +40,8 @@ class AssetCapacityCategoryController extends Controller
         $sortDir = $request->string('sort_dir', 'asc')->lower()->toString() === 'desc' ? 'desc' : 'asc';
         $sortBy = in_array($sortBy, self::SORTABLE_COLUMNS, true) ? $sortBy : 'name';
 
-        $query = AssetCapacityCategory::query()
+        $query = $this->filteredQuery($request)
             ->withCount('assets')
-            // The asset form asks for capacities matching a chosen asset
-            // type — `both` fits either.
-            ->when($request->filled('for_type'), fn ($q) => $q->whereIn('applies_to', [$request->string('for_type')->toString(), 'both']))
-            ->when($request->filled('applies_to'), fn ($q) => $q->where('applies_to', $request->string('applies_to')))
-            // The vehicle form's embedded-container dropdown: capacities the
-            // fleet can actually field for a given vehicle category +
-            // container/tank kind, derived through the asset pool
-            // (FRD §1.5.3). Both params required together.
-            ->when(
-                $request->filled('vehicle_category_id') && $request->filled('asset_type'),
-                fn ($q) => $q->compatibleWithVehicle(
-                    $request->integer('vehicle_category_id'),
-                    $request->string('asset_type')->toString(),
-                )
-            )
-            ->when($request->filled('search'), fn ($q) => $q->where('name', 'like', '%'.$request->string('search')->toString().'%'))
             // `assets_count` is a valid orderable alias from withCount().
             ->orderBy($sortBy, $sortDir);
 
@@ -100,17 +85,47 @@ class AssetCapacityCategoryController extends Controller
     {
         Gate::authorize('export', AssetCapacityCategory::class);
 
-        $categories = AssetCapacityCategory::query()
-            ->when($request->filled('applies_to'), fn ($q) => $q->where('applies_to', $request->string('applies_to')))
+        $categories = $this->filteredQuery($request)
             ->orderBy('name')
             ->get();
 
         if ($request->query('format', 'xlsx') === 'pdf') {
+            // DomPDF is CPU-heavy on big lists; the default 30s cap on shared
+            // hosting turns a slow export into a 500. Excel is unaffected.
+            set_time_limit(180);
+
             $pdf = app('dompdf.wrapper')->loadView('tenant.asset-categories.export-pdf', ['categories' => $categories]);
 
             return $pdf->download('asset-capacity-categories.pdf');
         }
 
         return Excel::download(new AssetCapacityCategoriesExport($categories), 'asset-capacity-categories.xlsx');
+    }
+
+    /**
+     * The list's filters (dropdowns + search box), shared by index() and
+     * export() so an export always contains exactly the rows the user sees
+     * on screen — they used to be two copies that drifted apart (export
+     * ignored the search box and any filter the UI didn't forward).
+     */
+    private function filteredQuery(Request $request): Builder
+    {
+        return AssetCapacityCategory::query()
+            // The asset form asks for capacities matching a chosen asset
+            // type — `both` fits either.
+            ->when($request->filled('for_type'), fn ($q) => $q->whereIn('applies_to', [$request->string('for_type')->toString(), 'both']))
+            ->when($request->filled('applies_to'), fn ($q) => $q->where('applies_to', $request->string('applies_to')))
+            // The vehicle form's embedded-container dropdown: capacities the
+            // fleet can actually field for a given vehicle category +
+            // container/tank kind, derived through the asset pool
+            // (FRD §1.5.3). Both params required together.
+            ->when(
+                $request->filled('vehicle_category_id') && $request->filled('asset_type'),
+                fn ($q) => $q->compatibleWithVehicle(
+                    $request->integer('vehicle_category_id'),
+                    $request->string('asset_type')->toString(),
+                )
+            )
+            ->when($request->filled('search'), fn ($q) => $q->where('name', 'like', '%'.$request->string('search')->toString().'%'));
     }
 }

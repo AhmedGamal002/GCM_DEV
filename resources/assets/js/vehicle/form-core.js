@@ -292,6 +292,15 @@ export function initVehicleForm(opts) {
     e.preventDefault();
     if (!validate()) return;
 
+    // Server limit: 4 MB per photo/document — fail now, not after the upload.
+    const tooLarge = window.gcmFileGuard(form, { default: 4096 });
+    if (tooLarge) {
+      errorBox.textContent = tooLarge;
+      errorBox.classList.remove('d-none');
+      window.scrollTo(0, 0);
+      return;
+    }
+
     const data = new FormData(form);
     data.set('additional_data', quill.root.innerHTML);
     for (const [key, value] of Array.from(data.entries())) {
@@ -305,9 +314,13 @@ export function initVehicleForm(opts) {
     }
 
     submitBtn.disabled = true;
+    window.gcmBusy.start({ progress: true });
 
     window.axios
-      .post(url, data, { headers: { 'Content-Type': 'multipart/form-data' } })
+      .post(url, data, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+        onUploadProgress: window.gcmBusy.onUploadProgress
+      })
       .then(() => {
         if (mode === 'edit') {
           window.location.href = `${t.view_url_base || '/app/vehicle/view'}/${id}?saved=1`;
@@ -316,6 +329,7 @@ export function initVehicleForm(opts) {
         }
       })
       .catch((error) => {
+        window.gcmBusy.stop();
         submitBtn.disabled = false;
         const res = error.response;
         if (res && res.status === 422 && res.data && res.data.errors) {

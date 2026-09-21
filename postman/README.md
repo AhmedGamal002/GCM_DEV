@@ -45,6 +45,7 @@
 ## ملاحظات
 
 - كل الـ multipart requests (Create/Update User & Driver & Vehicle) فيها حقول `photo`/`photo_front`/`photo_back`/`*_attachment` معطّلة (`disabled`) بشكل افتراضي — فعّلها يدوي واختار ملف لو عايز تجرب رفع صورة/مستند فعليًا.
+- **الـ exports بتحترم نفس فلاتر القائمة وبحثها** (`search` + فلاتر كل قائمة — كلهم params معطّلة في الطلبات، فعّلهم عشان تجرّب)؛ نفس الـ`filteredQuery()` اللي بتستخدمه `index`، فالملف بيحتوي بالظبط الصفوف اللي تظهر على الشاشة.
 - الـ exports (`/users/export`, `/drivers/export`, `/vehicles/export`, `/assets/export`, `/asset-capacity-categories/export`) بترجّع binary (xlsx/pdf) — في Postman دوس "Save Response" أو استخدم تبويب "Send and Download" بدل "Send" العادي عشان تقدر تفتح الملف.
 - مستندات السائق/المركبة (`/drivers/{id}/documents/{type}`، `/vehicles/{id}/documents/{doc}/download`) بترجع 404 لو مفيش ملف مرفوع فعليًا للمستند ده — طبيعي، مش باگ.
 - كل حقول الأرقام في فورم المركبة (`plate_numbers`، أرقام الوثائق، رقم التصريح) بتقبل أرقام فقط — أي حروف بترجّع 422.

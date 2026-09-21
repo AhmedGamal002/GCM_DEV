@@ -16,6 +16,7 @@ use App\Models\Driver;
 use App\Models\Vehicle;
 use App\Models\VehicleCategory;
 use App\Models\VehicleDocument;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Gate;
@@ -48,32 +49,7 @@ class VehicleController extends Controller
         $sortDir = $request->string('sort_dir', 'asc')->lower()->toString() === 'desc' ? 'desc' : 'asc';
         $sortBy = in_array($sortBy, self::SORTABLE_COLUMNS, true) ? $sortBy : 'plate_letters';
 
-        $vehicles = Vehicle::query()
-            ->with(self::LIST_WITH)
-            ->when($request->filled('category'), fn ($q) => $q->whereHas('category', fn ($c) => $c->where('slug', $request->string('category'))))
-            ->when($request->filled('operational_status'), fn ($q) => $q->where('operational_status', $request->string('operational_status')))
-            ->when($request->filled('affiliation'), fn ($q) => $q->where('affiliation', $request->string('affiliation')))
-            ->when($request->filled('search'), function ($q) use ($request) {
-                // The UI shows/exposes the plate as "AAA 1234" (Vehicle::plate(),
-                // letters + space + numbers), but it's stored as two separate
-                // columns — a plain LIKE against either column alone never
-                // matches a search for the combined displayed string. Match
-                // against the DB-side concatenation (with and without the
-                // space) too, so searching what's on screen actually works.
-                $search = $request->string('search')->toString();
-                $collapsed = trim(preg_replace('/\s+/', '', $search));
-                // MySQL (real usage) has CONCAT(); SQLite (the test suite's
-                // in-memory DB) doesn't — it uses the `||` operator instead.
-                [$withSpace, $noSpace] = $q->getConnection()->getDriverName() === 'sqlite'
-                    ? ["plate_letters || ' ' || plate_numbers", 'plate_letters || plate_numbers']
-                    : ["CONCAT(plate_letters, ' ', plate_numbers)", 'CONCAT(plate_letters, plate_numbers)'];
-                $q->where(function ($q2) use ($search, $collapsed, $withSpace, $noSpace) {
-                    $q2->where('plate_letters', 'like', "%{$search}%")
-                        ->orWhere('plate_numbers', 'like', "%{$search}%")
-                        ->orWhereRaw("{$withSpace} LIKE ?", ["%{$search}%"])
-                        ->orWhereRaw("{$noSpace} LIKE ?", ["%{$collapsed}%"]);
-                });
-            })
+        $vehicles = $this->filteredQuery($request)
             // Used by the driver add/edit forms' "Default Vehicle" dropdown
             // — a vehicle already set as another driver's default must not
             // be selectable as anyone else's (see StoreDriverRequest/
@@ -193,14 +169,13 @@ class VehicleController extends Controller
     {
         Gate::authorize('export', Vehicle::class);
 
-        $vehicles = Vehicle::query()
-            ->with(self::LIST_WITH)
-            ->when($request->filled('category'), fn ($q) => $q->whereHas('category', fn ($c) => $c->where('slug', $request->string('category'))))
-            ->when($request->filled('operational_status'), fn ($q) => $q->where('operational_status', $request->string('operational_status')))
-            ->when($request->filled('affiliation'), fn ($q) => $q->where('affiliation', $request->string('affiliation')))
-            ->get();
+        $vehicles = $this->filteredQuery($request)->get();
 
         if ($request->query('format', 'xlsx') === 'pdf') {
+            // DomPDF is CPU-heavy on big lists; the default 30s cap on shared
+            // hosting turns a slow export into a 500. Excel is unaffected.
+            set_time_limit(180);
+
             $pdf = app('dompdf.wrapper')->loadView('tenant.vehicles.export-pdf', ['vehicles' => $vehicles]);
 
             return $pdf->download('vehicles.pdf');
@@ -251,5 +226,41 @@ class VehicleController extends Controller
             'documents' => $documents,
             'entry_permits' => $entryPermits,
         ];
+    }
+
+    /**
+     * The list's filters (dropdowns + search box), shared by index() and
+     * export() so an export always contains exactly the rows the user sees
+     * on screen — they used to be two copies that drifted apart (export
+     * ignored the search box and any filter the UI didn't forward).
+     */
+    private function filteredQuery(Request $request): Builder
+    {
+        return Vehicle::query()
+            ->with(self::LIST_WITH)
+            ->when($request->filled('category'), fn ($q) => $q->whereHas('category', fn ($c) => $c->where('slug', $request->string('category'))))
+            ->when($request->filled('operational_status'), fn ($q) => $q->where('operational_status', $request->string('operational_status')))
+            ->when($request->filled('affiliation'), fn ($q) => $q->where('affiliation', $request->string('affiliation')))
+            ->when($request->filled('search'), function ($q) use ($request) {
+                // The UI shows/exposes the plate as "AAA 1234" (Vehicle::plate(),
+                // letters + space + numbers), but it's stored as two separate
+                // columns — a plain LIKE against either column alone never
+                // matches a search for the combined displayed string. Match
+                // against the DB-side concatenation (with and without the
+                // space) too, so searching what's on screen actually works.
+                $search = $request->string('search')->toString();
+                $collapsed = trim(preg_replace('/\s+/', '', $search));
+                // MySQL (real usage) has CONCAT(); SQLite (the test suite's
+                // in-memory DB) doesn't — it uses the `||` operator instead.
+                [$withSpace, $noSpace] = $q->getConnection()->getDriverName() === 'sqlite'
+                    ? ["plate_letters || ' ' || plate_numbers", 'plate_letters || plate_numbers']
+                    : ["CONCAT(plate_letters, ' ', plate_numbers)", 'CONCAT(plate_letters, plate_numbers)'];
+                $q->where(function ($q2) use ($search, $collapsed, $withSpace, $noSpace) {
+                    $q2->where('plate_letters', 'like', "%{$search}%")
+                        ->orWhere('plate_numbers', 'like', "%{$search}%")
+                        ->orWhereRaw("{$withSpace} LIKE ?", ["%{$search}%"])
+                        ->orWhereRaw("{$noSpace} LIKE ?", ["%{$collapsed}%"]);
+                });
+            });
     }
 }

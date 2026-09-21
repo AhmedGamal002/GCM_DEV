@@ -51,18 +51,18 @@ $(function () {
   let currentAffiliation = '';
   let currentStatus = '';
 
+  // Filters currently applied to the list — the table's own requests AND the
+  // Excel/PDF export read this, so an export always matches what is on screen.
+  const listParams = () => ({
+    affiliation: currentAffiliation || undefined,
+    status: currentStatus || undefined
+  });
+
   dtDriverTable.DataTable({
     processing: true,
     serverSide: true,
     searchDelay: 500,
-    ajax: window.gcmServerSideAjax(
-      '/api/v1/drivers',
-      () => ({
-        affiliation: currentAffiliation || undefined,
-        status: currentStatus || undefined
-      }),
-      t.no_permission
-    ),
+    ajax: window.gcmServerSideAjax('/api/v1/drivers', listParams, t.no_permission),
     columns: [
       { data: 'id' },
       { data: 'id' },
@@ -169,12 +169,12 @@ $(function () {
           {
             text: '<i class="ti ti-file-spreadsheet me-2"></i>Excel',
             className: 'dropdown-item',
-            action: () => window.location.assign('/api/v1/drivers/export?format=xlsx')
+            action: (e, dt) => window.gcmExport('/api/v1/drivers/export', 'xlsx', dt, listParams)
           },
           {
             text: '<i class="ti ti-file-code-2 me-2"></i>Pdf',
             className: 'dropdown-item',
-            action: () => window.location.assign('/api/v1/drivers/export?format=pdf')
+            action: (e, dt) => window.gcmExport('/api/v1/drivers/export', 'pdf', dt, listParams)
           }
         ]
       },

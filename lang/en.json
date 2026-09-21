@@ -418,5 +418,20 @@
   "{1} :count asset|[2,*] :count assets": "{1} :count asset|[2,*] :count assets",
   "Delete": "Delete",
   "Accounts": "Accounts",
-  "Fleet & Assets": "Fleet & Assets"
+  "Fleet & Assets": "Fleet & Assets",
+  "Working...": "Working...",
+  "Uploading... :percent%": "Uploading... :percent%",
+  "Saving — please wait, this can take a moment...": "Saving — please wait, this can take a moment...",
+  "Preparing your file...": "Preparing your file...",
+  "Large lists can take a while. Please keep this page open.": "Large lists can take a while. Please keep this page open.",
+  "The export could not be created. Please try again, or use Excel for large lists.": "The export could not be created. Please try again, or use Excel for large lists.",
+  "The file \":file\" is :size MB — the limit is :max MB. Please choose a smaller file.": "The file \":file\" is :size MB — the limit is :max MB. Please choose a smaller file.",
+  "OK": "OK",
+  "Name": "Name",
+  "Created At": "Created At",
+  "Capacity Category": "Capacity Category",
+  "Applies To": "Applies To",
+  "Both": "Both",
+  "System Admin": "System Admin",
+  "Auditor": "Auditor"
 }

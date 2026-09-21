@@ -13,6 +13,7 @@ use App\Http\Requests\Drivers\UpdateDriverRequest;
 use App\Http\Resources\DriverResource;
 use App\Models\Driver;
 use App\Models\DriverEntryPermit;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
@@ -50,28 +51,7 @@ class DriverController extends Controller
         $sortDir = $request->string('sort_dir', 'asc')->lower()->toString() === 'desc' ? 'desc' : 'asc';
         $sortBy = in_array($sortBy, self::SORTABLE_COLUMNS, true) ? $sortBy : 'name';
 
-        $drivers = Driver::query()
-            ->with(['user' => fn ($q) => $q->with(['tenant', 'roles'])])
-            ->when($request->filled('status'), fn ($q) => $q->whereHas(
-                'user',
-                fn ($q2) => $q2->where('status', $request->string('status'))
-            ))
-            // Was client-side-only (the JS filter dropdown existed, but
-            // nothing on the server ever read it) — worked by accident
-            // while the list still fetched everything in one batch.
-            ->when($request->filled('affiliation'), fn ($q) => $q->whereHas(
-                'user',
-                fn ($q2) => $q2->where('affiliation', $request->string('affiliation'))
-            ))
-            ->when($request->filled('search'), function ($q) use ($request) {
-                // Same reasoning as UserController's search fix — `code`
-                // (on `users`, same as name/email here) is the list's own
-                // first column, so it needs to be searchable too.
-                $search = $request->string('search')->toString();
-                $q->whereHas('user', fn ($q2) => $q2->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%")
-                    ->orWhere('code', 'like', "%{$search}%"));
-            })
+        $drivers = $this->filteredQuery($request)
             ->when(
                 in_array($sortBy, self::USER_TABLE_SORT_COLUMNS, true),
                 fn ($q) => $q->join('users', 'users.id', '=', 'drivers.user_id')
@@ -122,22 +102,17 @@ class DriverController extends Controller
     {
         Gate::authorize('viewAny', Driver::class);
 
-        $drivers = Driver::query()
-            ->with(['user' => fn ($q) => $q->with(['tenant', 'roles'])])
-            ->when($request->filled('status'), fn ($q) => $q->whereHas(
-                'user',
-                fn ($q2) => $q2->where('status', $request->string('status'))
-            ))
-            ->when($request->filled('affiliation'), fn ($q) => $q->whereHas(
-                'user',
-                fn ($q2) => $q2->where('affiliation', $request->string('affiliation'))
-            ))
+        $drivers = $this->filteredQuery($request)
             ->join('users', 'users.id', '=', 'drivers.user_id')
             ->select('drivers.*')
             ->orderBy('users.name')
             ->get();
 
         if ($request->query('format', 'xlsx') === 'pdf') {
+            // DomPDF is CPU-heavy on big lists; the default 30s cap on shared
+            // hosting turns a slow export into a 500. Excel is unaffected.
+            set_time_limit(180);
+
             $pdf = app('dompdf.wrapper')->loadView('tenant.drivers.export-pdf', ['drivers' => $drivers]);
 
             return $pdf->download('drivers.pdf');
@@ -232,5 +207,37 @@ class DriverController extends Controller
         abort_if(is_null($permit->attachment) || ! Storage::disk('local')->exists($permit->attachment), 404);
 
         return Storage::disk('local')->response($permit->attachment);
+    }
+
+    /**
+     * The list's filters (dropdowns + search box), shared by index() and
+     * export() so an export always contains exactly the rows the user sees
+     * on screen — they used to be two copies that drifted apart (export
+     * ignored the search box and any filter the UI didn't forward).
+     */
+    private function filteredQuery(Request $request): Builder
+    {
+        return Driver::query()
+            ->with(['user' => fn ($q) => $q->with(['tenant', 'roles'])])
+            ->when($request->filled('status'), fn ($q) => $q->whereHas(
+                'user',
+                fn ($q2) => $q2->where('status', $request->string('status'))
+            ))
+            // Was client-side-only (the JS filter dropdown existed, but
+            // nothing on the server ever read it) — worked by accident
+            // while the list still fetched everything in one batch.
+            ->when($request->filled('affiliation'), fn ($q) => $q->whereHas(
+                'user',
+                fn ($q2) => $q2->where('affiliation', $request->string('affiliation'))
+            ))
+            ->when($request->filled('search'), function ($q) use ($request) {
+                // Same reasoning as UserController's search fix — `code`
+                // (on `users`, same as name/email here) is the list's own
+                // first column, so it needs to be searchable too.
+                $search = $request->string('search')->toString();
+                $q->whereHas('user', fn ($q2) => $q2->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('code', 'like', "%{$search}%"));
+            });
     }
 }

@@ -18,6 +18,19 @@
 
 <!-- END: Theme JS-->
 <!-- BEGIN: App JS (axios/Sanctum bootstrap) -->
+{{-- Translated texts for resources/js/busy.js (slow-save / export overlay). --}}
+<script>
+  window.gcmTexts = {
+    working: @json(__('Working...')),
+    uploading: @json(__('Uploading... :percent%')),
+    processing: @json(__('Saving — please wait, this can take a moment...')),
+    preparing: @json(__('Preparing your file...')),
+    preparingHint: @json(__('Large lists can take a while. Please keep this page open.')),
+    exportFailed: @json(__('The export could not be created. Please try again, or use Excel for large lists.')),
+    fileTooLarge: @json(__('The file ":file" is :size MB — the limit is :max MB. Please choose a smaller file.')),
+    close: @json(__('OK'))
+  };
+</script>
 @vite(['resources/js/app.js'])
 <!-- END: App JS-->
 <!-- Pricing Modal JS-->
