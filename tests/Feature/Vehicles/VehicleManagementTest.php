@@ -313,8 +313,16 @@ class VehicleManagementTest extends TestCase
 
         $response = $this->actingAs($this->admin, 'web')->getJson('/api/v1/vehicles/stats');
 
-        $response->assertOk()
-            ->assertJsonPath('data.by_category.hook_lift', 2)
+        $byCategory = collect($response->assertOk()->json('data.by_category'))->keyBy('slug');
+
+        // One entry per category the tenant has (all five defaults here,
+        // zero-count ones included), each with its real count.
+        $this->assertCount(5, $byCategory);
+        $this->assertSame(2, $byCategory['hook_lift']['count']);
+        $this->assertSame(1, $byCategory['dump_truck']['count']);
+        $this->assertSame(0, $byCategory['compactor']['count']);
+
+        $response
             ->assertJsonPath('data.availability.on_maintenance', 1)
             ->assertJsonPath('data.availability.on_trip', 0);
     }

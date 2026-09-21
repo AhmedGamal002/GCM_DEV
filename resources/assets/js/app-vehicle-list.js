@@ -30,6 +30,12 @@ $(function () {
     box.classList.remove('d-none');
   }
 
+  if (t.can_manage_categories) {
+    const manage = document.getElementById('manage-categories-link');
+    manage.href = t.manage_categories_url;
+    manage.classList.remove('d-none');
+  }
+
   // Stat cards
   window.axios
     .get('/api/v1/vehicles/stats')
@@ -39,10 +45,18 @@ $(function () {
         const el = document.querySelector(`#vehicle-stats [data-stat="${key}"]`);
         if (el) el.textContent = val;
       });
-      Object.entries(s.by_category).forEach(([slug, val]) => {
-        const el = document.querySelector(`#vehicle-category-stats [data-cat="${slug}"]`);
-        if (el) el.textContent = val;
-      });
+      // One card per category the tenant actually has (the API returns
+      // them all, zero-count ones included) — never a hardcoded list.
+      const cards = document.getElementById('vehicle-category-stats');
+      cards.innerHTML = s.by_category
+        .map(
+          (c) =>
+            '<div class="col-6 col-md-4 col-lg">' +
+            '<span class="d-block small text-muted" style="font-size: 15px">' + escapeHtml(c.name) + '</span>' +
+            '<span class="h5" data-cat="' + escapeHtml(c.slug) + '">' + c.count + '</span>' +
+            '</div>'
+        )
+        .join('');
     })
     .catch(() => {});
 
@@ -105,9 +119,7 @@ $(function () {
         targets: 3,
         orderable: false,
         render: function (data, type, full) {
-          const slug = full.category && full.category.slug;
-          const label = (t.categories && t.categories[slug]) || (full.category && full.category.name) || slug || '';
-          return escapeHtml(label);
+          return escapeHtml((full.category && (full.category.name || full.category.slug)) || '');
         }
       },
       {
@@ -212,12 +224,9 @@ $(function () {
     initComplete: function () {
       const api = this.api();
 
-      // Category filter — fixed list of the 5 known categories (the
-      // slugs VehicleController::index() actually filters by), not
-      // built from the loaded page anymore. The old version's option
-      // *values* were the translated label text, only correct because
-      // client-side search matched rendered text — server-side needs
-      // the real slug.
+      // Category filter — every category the tenant actually has, loaded
+      // from the API (option *values* are the slugs
+      // VehicleController::index() filters by; labels are locale-aware).
       const categorySelect = $(
         '<select class="form-select"><option value="">' + (t.all_categories || 'All categories') + '</option></select>'
       )
@@ -226,9 +235,10 @@ $(function () {
           currentCategory = $(this).val();
           api.draw();
         });
-      ['hook_lift', 'compactor', 'dump_truck', 'water_tanker', 'dyna_box'].forEach((slug) => {
-        const label = (t.categories && t.categories[slug]) || slug;
-        categorySelect.append('<option value="' + slug + '">' + label + '</option>');
+      window.axios.get('/api/v1/vehicle-categories').then((response) => {
+        response.data.data.forEach((c) => {
+          categorySelect.append('<option value="' + escapeHtml(c.slug) + '">' + escapeHtml(c.name) + '</option>');
+        });
       });
 
       // Status filter

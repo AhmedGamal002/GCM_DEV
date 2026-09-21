@@ -8,7 +8,7 @@ Data Entry is responsible for **creating and editing users, drivers, vehicles, a
 
 ## What you see in the sidebar
 
-5 items: **Dashboard** · **Users** · **Drivers** · **Vehicles** · **Assets** (with its Categories sub-item). Any other link (Roles & Permissions, and the demo template scaffold) is **hidden** — and if you open it manually it returns "You don't have permission to view this data."
+Dashboard, then an **Accounts** section (Users · Drivers) and a **Fleet & Assets** section (Vehicles · Assets — with a Categories sub-item under Assets). Any other link (Roles & Permissions, and the demo template scaffold) is **hidden** — and if you open it manually it returns "You don't have permission to view this data."
 
 ## 1. Sign in and profile
 
@@ -31,6 +31,8 @@ Data Entry is responsible for **creating and editing users, drivers, vehicles, a
 - **Status:** same as Users — "on vacation" only, deactivation is System Admin only.
 
 ## 4. Vehicles — `/app/vehicle/list`
+
+> Vehicle categories are managed by the **System Admin only** (Vehicles ← Categories is not shown to you), but categories appear normally in the filter and the vehicle form.
 
 - **View** the full list + stat cards + filters + **export** (Excel / PDF).
 - **Create** a new vehicle (the full form: basics + photos + documents + entry permits).

@@ -12,6 +12,13 @@ class Tenant extends Model
 
     protected $fillable = ['name', 'slug', 'domain', 'status'];
 
+    protected static function booted(): void
+    {
+        // Every tenant starts with the FRD's five vehicle categories
+        // (they're per-tenant data now, not a shared global list).
+        static::created(fn (Tenant $tenant) => VehicleCategory::seedDefaultsFor($tenant));
+    }
+
     public function users(): HasMany
     {
         return $this->hasMany(User::class);

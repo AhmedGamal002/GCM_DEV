@@ -70,9 +70,9 @@ public function update(User $actor, Driver $target): bool { return $actor->hasRo
 
 | البند | الحالة | ملاحظات |
 |---|---|---|
-| القائمة الجانبية + فلترة حسب الدور | ✅ | `MenuComposer`, موثّق بالتفصيل في `ARCHITECTURE.md §3` |
+| القائمة الجانبية + فلترة حسب الدور | ✅ | `MenuComposer`, موثّق بالتفصيل في `ARCHITECTURE.md §3`. متجمّعة تحت عنوانين (Accounts / Fleet & Assets) بطلب العميل — تنظيم بس، مش من الـFRD |
 | اللوجو | ✅ | سقالة Vuexy الأصلية |
-| **التاريخ والوقت الحالي** | ✅ | اتضاف الجلسة دي — `navbar.blade.php` + `app.js`، لايف كل 30 ثانية، عربي/إنجليزي حسب locale التينانت، إنجليزي ثابت في الـPlatform |
+| **التاريخ والوقت الحالي** | ✅ (مكانه ⚠️ بطلب العميل) | `navbar.blade.php` + `app.js`، لايف كل 30 ثانية، عربي/إنجليزي حسب locale التينانت، إنجليزي ثابت في الـPlatform. **الـFRD بيرتبه أول عنصر جنب باقي عناصر الشريط، لكن بطلب العميل بقى على الطرف المقابل لمجموعة الأيقونات** (مش متكوّم معاها) |
 | قائمة اللغة (عربي افتراضي / إنجليزي) | ✅ | موجودة وشغالة |
 | **تغيير الوضع (داكن/مضيء)** | ✅ **رجع اشتغل بطلب صريح من المستخدم** | كان مقفول (`hasCustomizer => false`)، اتأكد الأول من المستخدم إن القرار ساري، وبعدين اتغيّر الرأي فورًا وطلب تفعيله. `config/custom.php`: `hasCustomizer => true` (بيحمّل محرك الـtheme اللازم لزرار التبديل ويخليه يفضل محفوظ في `localStorage`)، مع الإبقاء على `displayCustomizer => false` (لوحة الـcustomizer الكاملة بالـRTL/الـlayout options لسه مقفولة — الطلب كان تحديدًا زرار داكن/مضيء بس، مش اللوحة كلها). زرار النافبار (شمس/قمر/جهاز) بقى شغال فعليًا: Light/Dark/System، محفوظ عبر الصفحات. |
 | قائمة الإشعارات (آخر 5 + رابط لكل الإشعارات) | ❌ **مؤجّل بقرار موثّق** | `navbar.blade.php` فيه dropdown فاضي بتعليق صريح: *"intentionally has no notification list yet. This will connect to a real notifications API in a later phase."* مفيش نظام إشعارات فعلي في الباك اند خالص لسه. |
@@ -118,7 +118,7 @@ public function update(User $actor, Driver $target): bool { return $actor->hasRo
 | حالة "في الصيانة" = system_admin/data_entry، التعطيل = system_admin بس | ✅ | `UpdateVehicleStatusAction` — النمط المرجعي لباقي الموديولات |
 | لوحة فريدة داخل نفس الـtenant | ✅ | DB constraint + validation، `VehicleUniquePlateTest` |
 | الحاوية المدمجة وفلترة السعة حسب مجمع الأصول | ✅ | `EmbeddedCapacityFitsVehicleRule`, `VehicleEmbeddedCapacityTest` |
-| تصنيفات المركبات الخمسة الثابتة | ✅ | `VehicleCategorySeeder` |
+| تصنيفات المركبات (§1.5.2: خمسة ثابتة) | ⚠️ **انحراف مقصود بطلب العميل** | الـFRD بيثبّت 5 تصنيفات بس. بطلب العميل بقت **خاصة بكل شركة** ومدير النظام بيضيف/يعدّل/يحذف (الحذف ممنوع لو مربوط بمركبات/سائقين/أصول). كل شركة بتبدأ بالخمسة الافتراضية (`Tenant::created`). راجع `WEEKLY_PLAN.md` |
 | "آخر تحديث بواسطة" | ✅ | اتضاف الجلسة اللي فاتت |
 
 ## §1.6 — قائمة السائقين

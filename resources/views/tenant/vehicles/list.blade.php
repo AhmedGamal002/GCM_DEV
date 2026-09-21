@@ -44,13 +44,8 @@
     add_vehicle_url: @json(route('app-vehicle-add')),
     view_url_base: @json(url('/app/vehicle/view')),
     edit_url_base: @json(url('/app/vehicle/edit')),
-    categories: {
-      hook_lift: @json(__('Hook lift system')),
-      compactor: @json(__('Compactor unit')),
-      dump_truck: @json(__('Dump truck')),
-      water_tanker: @json(__('Water tanker')),
-      dyna_box: @json(__('Dyna box'))
-    }
+    manage_categories_url: @json(route('app-vehicle-category-list')),
+    can_manage_categories: @json(auth()->user()?->hasRole('system_admin') ?? false)
   };
 </script>
 @vite(['resources/assets/js/datatables-server-side.js', 'resources/assets/js/app-vehicle-list.js'])
@@ -90,25 +85,14 @@
   @endforeach
 </div>
 
-@php($vehicleCategoryCards = [
-  'hook_lift'    => __('Hook lift system'),
-  'compactor'    => __('Compactor unit'),
-  'dump_truck'   => __('Dump truck'),
-  'water_tanker' => __('Water tanker'),
-  'dyna_box'     => __('Dyna box'),
-])
-
 <div class="card mb-6">
   <div class="card-header border-bottom">
-    <h5 class="card-title mb-0">{{ __('Vehicles by category') }}</h5>
-    <div class="row pt-4 g-4" id="vehicle-category-stats">
-      @foreach ($vehicleCategoryCards as $slug => $label)
-        <div class="col-6 col-md">
-          <span class="d-block small text-muted" style="font-size: 15px">{{ $label }}</span>
-          <span class="h5" data-cat="{{ $slug }}">0</span>
-        </div>
-      @endforeach
+    <div class="d-flex justify-content-between align-items-center">
+      <h5 class="card-title mb-0">{{ __('Vehicles by category') }}</h5>
+      <a href="#" id="manage-categories-link" class="small d-none">{{ __('Manage categories') }}</a>
     </div>
+    {{-- One card per category this tenant actually has — rendered by app-vehicle-list.js from GET /api/v1/vehicles/stats. --}}
+    <div class="row pt-4 g-4" id="vehicle-category-stats"></div>
   </div>
 </div>
 

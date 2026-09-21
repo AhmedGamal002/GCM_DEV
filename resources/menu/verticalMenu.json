@@ -8,6 +8,117 @@
       "roles": ["system_admin", "data_entry", "auditor", "driver"]
     },
     {
+      "menuHeader": "Accounts"
+    },
+    {
+      "name": "Users",
+      "icon": "menu-icon tf-icons ti ti-users",
+      "slug": "app-user",
+      "roles": ["system_admin", "data_entry"],
+      "submenu": [
+        {
+          "url": "app/user/list",
+          "name": "List",
+          "slug": "app-user-list",
+          "roles": ["system_admin", "data_entry"]
+        },
+        {
+          "name": "View",
+          "slug": "app-user-view",
+          "submenu": [
+            {
+              "url": "app/user/view/account",
+              "name": "Account",
+              "slug": "app-user-view-account"
+            },
+            {
+              "url": "app/user/view/security",
+              "name": "Security",
+              "slug": "app-user-view-security"
+            },
+            {
+              "url": "app/user/view/billing",
+              "name": "Billing & Plans",
+              "slug": "app-user-view-billing"
+            },
+            {
+              "url": "app/user/view/notifications",
+              "name": "Notifications",
+              "slug": "app-user-view-notifications"
+            },
+            {
+              "url": "app/user/view/connections",
+              "name": "Connections",
+              "slug": "app-user-view-connections"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Drivers",
+      "icon": "menu-icon tf-icons ti ti-steering-wheel",
+      "slug": "app-driver",
+      "roles": ["system_admin", "data_entry"],
+      "submenu": [
+        {
+          "url": "app/driver/list",
+          "name": "List",
+          "slug": "app-driver-list",
+          "roles": ["system_admin", "data_entry"]
+        },
+        {
+          "url": "app/driver/add",
+          "name": "Add",
+          "slug": "app-driver-add",
+          "roles": ["system_admin", "data_entry"]
+        }
+      ]
+    },
+    {
+      "menuHeader": "Fleet & Assets"
+    },
+    {
+      "name": "Vehicles",
+      "icon": "menu-icon tf-icons ti ti-truck",
+      "slug": "app-vehicle",
+      "roles": ["system_admin", "data_entry", "auditor"],
+      "submenu": [
+        {
+          "url": "app/vehicle/list",
+          "name": "List",
+          "slug": "app-vehicle-list",
+          "roles": ["system_admin", "data_entry", "auditor"]
+        },
+        {
+          "url": "app/vehicle-category/list",
+          "name": "Categories",
+          "slug": "app-vehicle-category-list",
+          "roles": ["system_admin"]
+        }
+      ]
+    },
+    {
+      "name": "Assets",
+      "icon": "menu-icon tf-icons ti ti-box",
+      "slug": "app-asset",
+      "roles": ["system_admin", "data_entry", "auditor"],
+      "submenu": [
+        {
+          "url": "app/asset/list",
+          "name": "List",
+          "slug": "app-asset-list",
+          "roles": ["system_admin", "data_entry", "auditor"]
+        },
+        {
+          "url": "app/asset-category/list",
+          "name": "Categories",
+          "slug": "app-asset-category-list",
+          "roles": ["system_admin", "data_entry", "auditor"]
+        }
+      ]
+    },
+    {
       "name": "Dashboards",
       "icon": "menu-icon tf-icons ti ti-smart-home",
       "slug": "dashboard",
@@ -368,98 +479,6 @@
           "url": "app/invoice/add",
           "name": "Add",
           "slug": "app-invoice-add"
-        }
-      ]
-    },
-    {
-      "name": "Users",
-      "icon": "menu-icon tf-icons ti ti-users",
-      "slug": "app-user",
-      "roles": ["system_admin", "data_entry"],
-      "submenu": [
-        {
-          "url": "app/user/list",
-          "name": "List",
-          "slug": "app-user-list",
-          "roles": ["system_admin", "data_entry"]
-        },
-        {
-          "name": "View",
-          "slug": "app-user-view",
-          "submenu": [
-            {
-              "url": "app/user/view/account",
-              "name": "Account",
-              "slug": "app-user-view-account"
-            },
-            {
-              "url": "app/user/view/security",
-              "name": "Security",
-              "slug": "app-user-view-security"
-            },
-            {
-              "url": "app/user/view/billing",
-              "name": "Billing & Plans",
-              "slug": "app-user-view-billing"
-            },
-            {
-              "url": "app/user/view/notifications",
-              "name": "Notifications",
-              "slug": "app-user-view-notifications"
-            },
-            {
-              "url": "app/user/view/connections",
-              "name": "Connections",
-              "slug": "app-user-view-connections"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "url": "app/vehicle/list",
-      "name": "Vehicles",
-      "icon": "menu-icon tf-icons ti ti-truck",
-      "slug": "app-vehicle-list",
-      "roles": ["system_admin", "data_entry", "auditor"]
-    },
-    {
-      "name": "Drivers",
-      "icon": "menu-icon tf-icons ti ti-steering-wheel",
-      "slug": "app-driver",
-      "roles": ["system_admin", "data_entry"],
-      "submenu": [
-        {
-          "url": "app/driver/list",
-          "name": "List",
-          "slug": "app-driver-list",
-          "roles": ["system_admin", "data_entry"]
-        },
-        {
-          "url": "app/driver/add",
-          "name": "Add",
-          "slug": "app-driver-add",
-          "roles": ["system_admin", "data_entry"]
-        }
-      ]
-    },
-    {
-      "name": "Assets",
-      "icon": "menu-icon tf-icons ti ti-box",
-      "slug": "app-asset",
-      "roles": ["system_admin", "data_entry", "auditor"],
-      "submenu": [
-        {
-          "url": "app/asset/list",
-          "name": "List",
-          "slug": "app-asset-list",
-          "roles": ["system_admin", "data_entry", "auditor"]
-        },
-        {
-          "url": "app/asset-category/list",
-          "name": "Categories",
-          "slug": "app-asset-category-list",
-          "roles": ["system_admin", "data_entry", "auditor"]
         }
       ]
     },

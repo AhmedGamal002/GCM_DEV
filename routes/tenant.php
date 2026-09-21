@@ -16,6 +16,7 @@ use App\Http\Controllers\Web\Users\UserAddController;
 use App\Http\Controllers\Web\Users\UserListController;
 use App\Http\Controllers\Web\Vehicles\VehicleAccountController;
 use App\Http\Controllers\Web\Vehicles\VehicleAddController;
+use App\Http\Controllers\Web\Vehicles\VehicleCategoryController;
 use App\Http\Controllers\Web\Vehicles\VehicleListController;
 use Illuminate\Support\Facades\Route;
 
@@ -64,6 +65,11 @@ Route::middleware(['auth', 'tenant'])->group(function () {
     Route::get('/app/vehicle/add', [VehicleAddController::class, 'index'])->name('app-vehicle-add');
     Route::get('/app/vehicle/view/{vehicle}', [VehicleAccountController::class, 'view'])->whereNumber('vehicle')->name('app-vehicle-view');
     Route::get('/app/vehicle/edit/{vehicle}', [VehicleAccountController::class, 'edit'])->whereNumber('vehicle')->name('app-vehicle-edit');
+
+    // Vehicle categories (system_admin only) — {category} is a raw numeric id too.
+    Route::get('/app/vehicle-category/list', [VehicleCategoryController::class, 'list'])->name('app-vehicle-category-list');
+    Route::get('/app/vehicle-category/add', [VehicleCategoryController::class, 'add'])->name('app-vehicle-category-add');
+    Route::get('/app/vehicle-category/edit/{category}', [VehicleCategoryController::class, 'edit'])->whereNumber('category')->name('app-vehicle-category-edit');
 
     // Assets & Supply Hub — {asset}/{category} kept as raw numeric ids.
     Route::get('/app/asset/list', [AssetListController::class, 'index'])->name('app-asset-list');

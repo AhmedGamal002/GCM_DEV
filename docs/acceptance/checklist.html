@@ -102,7 +102,7 @@
       <span>تم: <b id="s-pass">0</b></span>
       <span>فشل: <b id="s-fail" style="color:var(--bad)">0</b></span>
       <span>متبقي: <b id="s-left">0</b></span>
-      <span>من <b>51</b> بند</span>
+      <span>من <b>62</b> بند</span>
     </div>
     <div class="prog"><i class="p" id="b-pass"></i><i class="f" id="b-fail"></i></div>
     <div class="tools">
@@ -316,7 +316,7 @@
         <h3>كل دور يشوف بس اللي يخصّه</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>جداول الصلاحيات لكل قسم</dd></div><div class="row"><dt>الخطوات</dt><dd>سجّل دخول بالأربعة بالترتيب وسجّل اللي بيظهر في القائمة الجانبية.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd><ul><li><code>system_admin</code>: Dashboard + Users + Vehicles + Drivers + Assets <strong>فقط</strong> (سقالة القالب الديمو — Layouts/Email/Kanban/Charts... — مخفية عن الكل عمدًا لحد ما نعرض للعميل اللي اتبنى فعلًا).</li><li><code>data_entry</code>: Dashboard + Users + Drivers + Vehicles + Assets.</li><li><code>auditor</code>: Dashboard + Vehicles + Assets فقط.</li><li><code>driver</code>: Dashboard فقط.</li></ul></dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>MenuVisibilityTest</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>جداول الصلاحيات لكل قسم</dd></div><div class="row"><dt>الخطوات</dt><dd>سجّل دخول بالأربعة بالترتيب وسجّل اللي بيظهر في القائمة الجانبية.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd><ul><li><code>system_admin</code>: Dashboard + (عنوان <strong>Accounts</strong>: Users, Drivers) + (عنوان <strong>Fleet &amp; Assets</strong>: Vehicles, Assets) <strong>فقط</strong> (سقالة القالب الديمو — Layouts/Email/Kanban/Charts... — مخفية عن الكل عمدًا لحد ما نعرض للعميل اللي اتبنى فعلًا).</li><li><code>data_entry</code>: نفس الأدمن (Accounts + Fleet &amp; Assets) — من غير بند "Categories" تحت Vehicles.</li><li><code>auditor</code>: Dashboard + عنوان <strong>Fleet &amp; Assets</strong> (Vehicles, Assets) فقط — مفيش عنوان "Accounts".</li><li><code>driver</code>: Dashboard فقط.</li></ul></dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>MenuVisibilityTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-1-2-auth-users-roles#18" data-title="Breadcrumb + عنوان الصفحة مطابق للـ FRD على كل صفحة">
@@ -355,7 +355,7 @@
         <h3>التاريخ والوقت الحالي</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.2 جزء الشريط الأعلى ← "التاريخ والوقت الحالي"</dd></div><div class="row"><dt>الخطوات</dt><dd>سجّل دخول بأي حساب. بص على الشريط العلوي. بدّل اللغة لعربي وارجع لإنجليزي. بعدين سجّل دخول Super Admin على <code>/platform/login</code>.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>التاريخ والوقت الحاليين ظاهرين <strong>قبل</strong> أيقونة اللغة مباشرة، وبيتحدّثوا لوحدهم (كل نص دقيقة تقريبًا). في العربي الأرقام عربية (مثلاً <code>١٤/٠٩/٢٠٢٦، ٤:٢٢ م</code>)، وفي صفحات الـPlatform دايمًا إنجليزي حتى لو اللغة عربي.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd>يدوي فقط</dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.2 جزء الشريط الأعلى ← "التاريخ والوقت الحالي"</dd></div><div class="row"><dt>الخطوات</dt><dd>سجّل دخول بأي حساب. بص على الشريط العلوي. بدّل اللغة لعربي وارجع لإنجليزي. بعدين سجّل دخول Super Admin على <code>/platform/login</code>.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>التاريخ والوقت الحاليين ظاهرين على <strong>الطرف المقابل لمجموعة الأيقونات</strong> (في الإنجليزي: التاريخ شمال والأيقونات يمين، وفي العربي بالعكس) — بطلب العميل، عشان مايبقوش كلهم متكوّمين في ناحية واحدة — وبيتحدّثوا لوحدهم (كل نص دقيقة تقريبًا). في العربي الأرقام عربية (مثلاً <code>١٤/٠٩/٢٠٢٦، ٤:٢٢ م</code>)، وفي صفحات الـPlatform دايمًا إنجليزي حتى لو اللغة عربي.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd>يدوي فقط</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-frd-gap-review#2" data-title="تبديل الوضع الداكن / المضيء">
@@ -444,6 +444,120 @@
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
       <dl><div class="row"><dt>مرجع الـFRD</dt><dd>فورم إنشاء السائق ("الاسم" — حقل واحد، بنفس الشكل في كل الأدوار)</dd></div><div class="row"><dt>الخطوات</dt><dd>أنشئ سائق واكتب اسم واحد. افتح صفحة تفاصيله بالعربي والإنجليزي.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الاسم بيظهر كما هو في الحالتين (مفيش حقلين عربي/إنجليزي منفصلين — اتحسمت إنها نقطة نسخ/لصق في توثيق الـFRD).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Drivers/DriverCreationTest</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+    <details open class="group">
+      <summary>د) تصنيفات المركبات القابلة للإدارة (طلب العميل — خارج الـFRD) <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-3-frd-gap-review#10" data-title="القائمة الجانبية: Vehicles ← List + Categories">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">10</span></label>
+        <h3>القائمة الجانبية: Vehicles ← List + Categories</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>الخطوات</dt><dd>سجّل دخول بـ<code>admin@gcm.test</code> وبص على "Vehicles" في القائمة الجانبية. بعدين بـ<code>dataentry@gcm.test</code> ثم <code>auditor@gcm.test</code>.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الأدمن: "Vehicles" فيها بندين <strong>List</strong> و<strong>Categories</strong>. مدخل البيانات والمراقب: بند <strong>List</strong> بس، مفيش Categories.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>MenuVisibilityTest</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-frd-gap-review#11" data-title="إضافة تصنيف جديد">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">11</span></label>
+        <h3>إضافة تصنيف جديد</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>الخطوات</dt><dd>بالأدمن: Vehicles ← Categories ← "Add category". جرّب الأول تدوس Submit وهو فاضي. بعدين اكتب اسم إنجليزي موجود أصلًا (مثلاً <code>Dump truck</code>). بعدين اكتب اسمين جداد (إنجليزي + عربي) واحفظ.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الفاضي → "This field is required" على الحقلين. المكرر → رفض برسالة "The Name (English) has already been taken". الصح → يرجّعك للقائمة برسالة نجاح، والتصنيف الجديد ظاهر فيها بعدد مركبات 0.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleCategoryManagementTest</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-frd-gap-review#12" data-title="عدد كروت "Vehicles by category" = عدد التصنيفات الفعلي">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">12</span></label>
+        <h3>عدد كروت "Vehicles by category" = عدد التصنيفات الفعلي</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>الخطوات</dt><dd>افتح Vehicles ← List وعدّ الكروت في "Vehicles by category". أضف تصنيف جديد (بند 11) وارجع لصفحة المركبات. جرّب كمان قايمة فلتر "All categories" وفورم إضافة مركبة وفورم إضافة سائق وفورم إضافة أصل.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>عدد الكروت = عدد التصنيفات بالظبط (5 في الأول، 6 بعد الإضافة) وكل كارت عليه عدد مركباته الصح. التصنيف الجديد بيظهر كمان في الفلتر، وفي قايمة الفئة بفورم المركبة، وفي "أنواع المركبات المؤهل لقيادتها" بفورم السائق، وفي "تصنيف المركبات المتناسب" بفورم الأصل.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleCategoryManagementTest::test_vehicle_stats_follow_the_real_category_list</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-frd-gap-review#13" data-title="تعديل تصنيف">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">13</span></label>
+        <h3>تعديل تصنيف</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>الخطوات</dt><dd>Categories ← أيقونة التعديل على أي تصنيف ← غيّر الاسم الإنجليزي والعربي ← حفظ. بعدين افتح صفحة المركبات.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الاسم الجديد ظاهر في الكروت والفلتر وعمود "Category" بالجدول. المركبات المرتبطة بيه فضلت مرتبطة (مفيش مركبة فقدت تصنيفها). إعادة الحفظ بنفس الاسم من غير تغيير بتنجح.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleCategoryManagementTest::test_renaming_keeps_the_slug_stable</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-frd-gap-review#14" data-title="الحذف — مسموح لغير المستخدم فقط">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">14</span></label>
+        <h3>الحذف — مسموح لغير المستخدم فقط</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>الخطوات</dt><dd>(أ) أضف تصنيف جديد واحذفه من أيقونة الحذف ← أكّد في النافذة. (ب) بص على أي تصنيف مربوط بمركبة أو أصل أو سائق (كل الخمسة الأصليين مربوطين بأصول في البيانات التجريبية).</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>(أ) التصنيف بيتمسح والكارت بتاعه بيختفي من صفحة المركبات. (ب) أيقونة الحذف <strong>مقفولة</strong> وعليها تلميح "In use — can't be deleted"؛ ولو الحذف اتحاول من API مباشرة → 422 برسالة توضّح المربوط بإيه ("in use by 3 vehicles, 1 asset").</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleCategoryManagementTest</code> (<code>test_a_category_used_by_a_vehicle...</code>, <code>..._driver_or_an_asset...</code>, <code>test_an_unused_category_can_be_deleted</code>)</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-frd-gap-review#15" data-title="صلاحية مدير النظام فقط">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">15</span></label>
+        <h3>صلاحية مدير النظام فقط</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>الخطوات</dt><dd>سجّل دخول بـ<code>dataentry@gcm.test</code> ثم <code>auditor@gcm.test</code> ثم <code>driver@gcm.test</code>. جرّب تفتح <code>/app/vehicle-category/list</code> و<code>/app/vehicle-category/add</code> يدويًا. وافتح صفحة المركبات وبص على كروت التصنيفات.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الصفحتين بيرجّعوا <strong>403</strong>. مفيش لينك "Manage categories" في صفحة المركبات. قايمة التصنيفات في الفورمات (مركبة/سائق/أصل) لسه شغالة عادي لكل الأدوار (دي بيانات مرجعية للقراءة).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleCategoryManagementTest</code> (<code>test_only_the_system_admin_can_manage_categories</code>, <code>test_the_management_pages_are_forbidden_for_other_roles</code>)</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-frd-gap-review#16" data-title="عزل التصنيفات بين الشركات">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">16</span></label>
+        <h3>عزل التصنيفات بين الشركات</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>الخطوات</dt><dd>(يحتاج شركة تانية — أنشئها من Super Admin ← Tenants). سجّل دخول بمدير نظام الشركة الجديدة وافتح Vehicles ← Categories.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الشركة الجديدة بتبدأ بالخمس تصنيفات الافتراضية بس. اللي أضفته/عدّلته/حذفته في شركة GCM <strong>ماظهرش</strong> عندها، والعكس. نفس الاسم مسموح في شركتين مختلفتين.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleCategoryManagementTest::test_categories_are_isolated_between_tenants</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-frd-gap-review#17" data-title="الواجهة بالعربي">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">17</span></label>
+        <h3>الواجهة بالعربي</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>الخطوات</dt><dd>بدّل اللغة لعربي وافتح Vehicles ← Categories وصفحة الإضافة وصفحة التعديل ونافذة تأكيد الحذف.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>كل النصوص عربي (العنوان "تصنيفات المركبات"، الأعمدة، الأزرار، رسالة الحذف، تلميح القفل)، الصفحة RTL، وعنوان الحقل الإنجليزي ابتدائه من الشمال والعربي من اليمين.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd>يدوي فقط</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-frd-gap-review#18" data-title="القائمة الجانبية متجمّعة تحت عنوانين">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">18</span></label>
+        <h3>القائمة الجانبية متجمّعة تحت عنوانين</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>الخطوات</dt><dd>سجّل دخول بـ<code>admin@gcm.test</code> ثم <code>dataentry@gcm.test</code> ثم <code>auditor@gcm.test</code> ثم <code>driver@gcm.test</code> وبص على القائمة الجانبية. بدّل اللغة لعربي.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الأدمن ومدخل البيانات: Dashboard ثم عنوان <strong>Accounts</strong> (تحته Users وDrivers) ثم عنوان <strong>Fleet &amp; Assets</strong> (تحته Vehicles وAssets). المراقب: Dashboard + عنوان <strong>Fleet &amp; Assets</strong> بس (مفيش "Accounts" لأنه مالوش حاجة تحته). السائق: Dashboard بس ومفيش أي عنوان. بالعربي: "الحسابات" و"الأسطول والأصول".</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>MenuVisibilityTest</code> (<code>test_system_admin_and_data_entry_see_both_section_titles</code>, <code>test_an_auditor_sees_only_the_fleet_and_assets_title</code>, <code>test_a_driver_sees_no_section_titles_at_all</code>)</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-frd-gap-review#19" data-title="زر "Add category" مش لازق في خانة البحث">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">19</span></label>
+        <h3>زر "Add category" مش لازق في خانة البحث</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>الخطوات</dt><dd>افتح Vehicles ← Categories وقارن المسافة بين خانة البحث وزر الإضافة بصفحة Assets ← Categories.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>نفس المسافة بالظبط بين خانة البحث وأول زرار في الصفحتين.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd>يدوي فقط</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-frd-gap-review#20" data-title="المحتوى بعرض الشاشة كله (Wide) كوضع افتراضي">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">20</span></label>
+        <h3>المحتوى بعرض الشاشة كله (Wide) كوضع افتراضي</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>الخطوات</dt><dd>سجّل دخول وافتح أي صفحة (مثلاً Vehicles ← List) على شاشة عريضة (1400px فأكتر). قارنها بعرض المتصفح.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>المحتوى ممتد على عرض المساحة المتاحة كله (جنب القائمة الجانبية) من غير هوامش جانبية كبيرة، في كل الصفحات. (لو الشاشة فيها الوضع القديم متخزّن في المتصفح، امسح بيانات الموقع/localStorage.)</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd>يدوي فقط</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     </details>

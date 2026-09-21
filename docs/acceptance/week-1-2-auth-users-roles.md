@@ -146,9 +146,9 @@
 - **FRD:** جداول الصلاحيات لكل قسم
 - **الخطوات:** سجّل دخول بالأربعة بالترتيب وسجّل اللي بيظهر في القائمة الجانبية.
 - **المتوقع:**
-  - `system_admin`: Dashboard + Users + Vehicles + Drivers + Assets **فقط** (سقالة القالب الديمو — Layouts/Email/Kanban/Charts... — مخفية عن الكل عمدًا لحد ما نعرض للعميل اللي اتبنى فعلًا).
-  - `data_entry`: Dashboard + Users + Drivers + Vehicles + Assets.
-  - `auditor`: Dashboard + Vehicles + Assets فقط.
+  - `system_admin`: Dashboard + (عنوان **Accounts**: Users, Drivers) + (عنوان **Fleet & Assets**: Vehicles, Assets) **فقط** (سقالة القالب الديمو — Layouts/Email/Kanban/Charts... — مخفية عن الكل عمدًا لحد ما نعرض للعميل اللي اتبنى فعلًا).
+  - `data_entry`: نفس الأدمن (Accounts + Fleet & Assets) — من غير بند "Categories" تحت Vehicles.
+  - `auditor`: Dashboard + عنوان **Fleet & Assets** (Vehicles, Assets) فقط — مفيش عنوان "Accounts".
   - `driver`: Dashboard فقط.
 - **يغطيه آليًا:** `MenuVisibilityTest`
 - **النتيجة:** ⬜

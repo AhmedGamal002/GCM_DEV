@@ -446,7 +446,7 @@ gcm-wms/
 │   ├── 004_create_users_table.php                             # + tenant_id
 │   ├── 005_create_projects_table.php                          # + tenant_id
 │   ├── 006_create_project_user_table.php                      # + عمود scope (all/specific)
-│   ├── 007_create_vehicle_categories_table.php                # جدول عالمي بدون tenant_id — قائمة ثابتة (5 أنواع) مبذورة، نفس مبرر roles
+│   ├── 007_create_vehicle_categories_table.php                # (اتحوّل لاحقًا: 2026_09_22_100000 بيضيف tenant_id — تصنيفات لكل شركة، مدير النظام بيديرها؛ الأصل كان جدول عالمي بـ5 أنواع ثابتة زي roles)
 │   ├── 008_create_vehicles_table.php                          # + tenant_id + contractor_id (بدون FK أولاً)، هوية = اللوحة (لا code)
 │   ├── 009_create_asset_capacity_categories_table.php         # + tenant_id، capacity_cbm + capacity_ton معًا. ✅ أسبوع 3: expand migration منفصلة أضافت applies_to (container/tank/both) + additional_data + updated_by
 │   ├── 010_create_assets_table.php                             # ✅ أسبوع 3: + tenant_id + contractor_id (بدون FK أولاً) + asset_type + asset_capacity_category_id + operational_status (3 حالات) + purchase_date + updated_by. هوية = الاسم (لا code). + جدول pivot asset_vehicle_categories (تصنيفات المركبات المتوافقة)
@@ -459,7 +459,7 @@ gcm-wms/
 │
 ├── database/seeders/
 │   ├── DatabaseSeeder.php / RoleSeeder.php                     # 7 أدوار
-│   ├── VehicleCategorySeeder.php                                # 5 أنواع ثابتة
+│   ├── VehicleCategorySeeder.php                                # بتدّي كل شركة موجودة الخمسة الافتراضية (الشركات الجديدة بتاخدهم من Tenant::created)
 │   ├── UnitOfMeasureSeeder.php                                  # 🆕 بيانات ثابتة — لا Controller
 │   └── DemoDataSeeder.php                                       # local/staging فقط
 │

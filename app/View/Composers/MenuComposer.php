@@ -98,6 +98,13 @@ class MenuComposer
                 return false;
             }
 
+            // A section header ("Accounts", "Fleet & Assets", ...) has no
+            // roles of its own — whether it shows is decided below, by
+            // whether anything under it survives for this user.
+            if (isset($item->menuHeader)) {
+                return true;
+            }
+
             // No "roles" key = an untouched Vuexy demo item. Hidden from
             // everyone unless SHOW_DEMO_MENU is on (then system_admin only).
             $roles = $item->roles ?? (config('custom.custom.showDemoMenu') ? ['system_admin'] : []);
@@ -111,7 +118,32 @@ class MenuComposer
             }
         }
 
-        return $items;
+        return $this->dropEmptyHeaders($items);
+    }
+
+    /**
+     * A header stays only if a real item follows it before the next header
+     * (or the end) — so a role that can't see anything in a section never
+     * sees a dangling section title, and a future module needs no
+     * bookkeeping on its header.
+     */
+    private function dropEmptyHeaders(array $items): array
+    {
+        $kept = [];
+
+        foreach ($items as $i => $item) {
+            if (isset($item->menuHeader)) {
+                $next = $items[$i + 1] ?? null;
+
+                if ($next === null || isset($next->menuHeader)) {
+                    continue;
+                }
+            }
+
+            $kept[] = $item;
+        }
+
+        return $kept;
     }
 
     /**

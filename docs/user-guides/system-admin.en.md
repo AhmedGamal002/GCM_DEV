@@ -59,7 +59,7 @@ The only screen exclusive to the System Admin among tenant roles.
 The System Admin has **full access**: view, create, edit, export, and all status changes (including deactivate and reactivate-from-deactivated).
 
 ### List
-- Stat cards: available / on a trip (0 for now — arrives with the Trip module) / on maintenance / deactivated, plus per-category cards (5 categories).
+- Stat cards: available / on a trip (0 for now — arrives with the Trip module) / on maintenance / deactivated, plus per-category cards (**one card for every category your company actually has** — not a fixed number).
 - Full server-side table: a vehicle's identity is its **plate** (no `code`). Search finds it even if you type the full plate with a space (`AAA 1234`).
 - Filters: category / operational status / affiliation. Export button (Excel / PDF).
 - **Add Vehicle** button.
@@ -69,6 +69,12 @@ The System Admin has **full access**: view, create, edit, export, and all status
 - Photos (front/back) + documents (registration card / fitness / inspection certificate / insurance) with numbers and expiry dates.
 - Repeatable entry permits (area / number / expiry / attachment).
 - **All document and permit numbers are digits only.**
+
+### Vehicle categories — Vehicles ← Categories (`/app/vehicle-category/list`) — System Admin only
+- Your company starts with the 5 default categories, and you can **add new ones** and rename any of them (an English name + an Arabic name, each unique within your company).
+- **Deleting is blocked while a category is in use** by vehicles, by drivers (qualified types) or by assets (compatible category) — the delete icon is disabled and the message says what uses it (e.g. "3 vehicles, 1 asset"). Only an unused category can be deleted.
+- A new category automatically becomes a card on the Vehicles page, an option in the category filter, and an option in the vehicle, driver and asset forms. Renaming changes it everywhere (vehicles linked to it stay linked).
+- A "Manage categories" link above the category cards on the Vehicles page takes you to the same screen.
 
 ### Vehicle status
 - **System Admin**: "on maintenance" + **deactivate** + **reactivate from deactivated**.
@@ -85,7 +91,7 @@ System Admin only. **Drivers are created and edited exclusively here** — not f
 
 ### Create driver (single page, creates everything at once)
 1. **Account details:** name, email, phone, photo, password, status, additional data.
-2. **Default vehicle:** pick the vehicle type(s) the driver is qualified to drive (from 5 categories) + the default vehicle itself (the list filters by the selected types; the vehicle must belong to one of them).
+2. **Default vehicle:** pick the vehicle type(s) the driver is qualified to drive (from the vehicle categories you have) + the default vehicle itself (the list filters by the selected types; the vehicle must belong to one of them).
    - **One vehicle per one driver** as a default — vehicles already taken don't appear in the list at all.
 3. **Residence / driving license / operational license / insurance:** number + expiry + attachment for each.
 4. **Truck entry permits:** repeatable (area / number / expiry / attachment) — via "Add Permit".

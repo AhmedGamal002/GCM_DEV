@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function () {
         wrapper.className = 'form-check';
         wrapper.innerHTML =
           '<input class="form-check-input vehicle-category-checkbox" type="checkbox" value="' + category.slug + '" data-category-id="' + category.id + '" id="vc-' + category.slug + '">' +
-          '<label class="form-check-label" for="vc-' + category.slug + '">' + category.name + '</label>';
+          '<label class="form-check-label" for="vc-' + category.slug + '">' + $('<div>').text(category.name).html() + '</label>';
         categoryCheckboxes.appendChild(wrapper);
       });
       categoryCheckboxes.querySelectorAll('input').forEach((cb) => cb.addEventListener('change', function () {

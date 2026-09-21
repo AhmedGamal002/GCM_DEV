@@ -14,6 +14,7 @@ use App\Http\Requests\Vehicles\UpdateVehicleStatusRequest;
 use App\Http\Resources\VehicleResource;
 use App\Models\Driver;
 use App\Models\Vehicle;
+use App\Models\VehicleCategory;
 use App\Models\VehicleDocument;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
@@ -151,11 +152,24 @@ class VehicleController extends Controller
     {
         Gate::authorize('viewAny', Vehicle::class);
 
-        $byCategory = Vehicle::query()
-            ->selectRaw('vehicle_categories.slug as slug, count(*) as total')
-            ->join('vehicle_categories', 'vehicle_categories.id', '=', 'vehicles.vehicle_category_id')
-            ->groupBy('vehicle_categories.slug')
-            ->pluck('total', 'slug');
+        $countsByCategoryId = Vehicle::query()
+            ->selectRaw('vehicle_category_id, count(*) as total')
+            ->groupBy('vehicle_category_id')
+            ->pluck('total', 'vehicle_category_id');
+
+        // One entry per category that actually exists for this tenant
+        // (zero-count ones included) — the list page renders exactly this,
+        // so a newly added category shows up as a card immediately.
+        $byCategory = VehicleCategory::query()
+            ->orderBy('id')
+            ->get()
+            ->map(fn (VehicleCategory $c) => [
+                'id' => $c->id,
+                'slug' => $c->slug,
+                'name' => $c->name(),
+                'count' => (int) ($countsByCategoryId[$c->id] ?? 0),
+            ])
+            ->values();
 
         $byStatus = Vehicle::query()
             ->selectRaw('operational_status, count(*) as total')
@@ -164,13 +178,7 @@ class VehicleController extends Controller
 
         return response()->json([
             'data' => [
-                'by_category' => [
-                    'hook_lift' => (int) ($byCategory['hook_lift'] ?? 0),
-                    'compactor' => (int) ($byCategory['compactor'] ?? 0),
-                    'dump_truck' => (int) ($byCategory['dump_truck'] ?? 0),
-                    'water_tanker' => (int) ($byCategory['water_tanker'] ?? 0),
-                    'dyna_box' => (int) ($byCategory['dyna_box'] ?? 0),
-                ],
+                'by_category' => $byCategory,
                 'availability' => [
                     'available' => (int) ($byStatus['active'] ?? 0),
                     'on_trip' => 0,

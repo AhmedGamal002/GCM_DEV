@@ -139,6 +139,76 @@ class MenuVisibilityTest extends TestCase
         $response->assertSee('>Assets<', false);
     }
 
+    /** Vehicle categories management is system_admin only — the "Categories" item under Vehicles. */
+    public function test_only_the_system_admin_sees_the_vehicle_categories_menu_item(): void
+    {
+        $this->actingAs($this->tenantAdmin, 'web')->get('/dashboard')
+            ->assertOk()
+            ->assertSee('app/vehicle-category/list', false);
+
+        $dataEntry = User::factory()->create();
+        $dataEntry->assignRole('data_entry');
+        $this->actingAs($dataEntry, 'web')->get('/dashboard')
+            ->assertOk()
+            ->assertSee('app/vehicle/list', false)
+            ->assertDontSee('app/vehicle-category/list', false);
+    }
+
+    public function test_an_auditor_does_not_see_the_vehicle_categories_menu_item(): void
+    {
+        $auditor = User::factory()->create();
+        $auditor->assignRole('auditor');
+
+        $this->actingAs($auditor, 'web')->get('/dashboard')
+            ->assertOk()
+            ->assertSee('app/vehicle/list', false)
+            ->assertDontSee('app/vehicle-category/list', false);
+    }
+
+    /**
+     * The sidebar groups the built modules under two section titles:
+     * "Accounts" (Users, Drivers) and "Fleet & Assets" (Vehicles, Assets).
+     * A title only shows when something under it survives for the role.
+     */
+    private function headers(User $user): array
+    {
+        $html = $this->actingAs($user, 'web')->get('/dashboard')->assertOk()->getContent();
+        preg_match_all('#<span class="menu-header-text">([^<]+)</span>#', $html, $m);
+
+        return array_map('html_entity_decode', $m[1]);
+    }
+
+    public function test_system_admin_and_data_entry_see_both_section_titles(): void
+    {
+        $dataEntry = User::factory()->create();
+        $dataEntry->assignRole('data_entry');
+
+        $this->assertSame(['Accounts', 'Fleet & Assets'], $this->headers($this->tenantAdmin));
+        $this->assertSame(['Accounts', 'Fleet & Assets'], $this->headers($dataEntry));
+    }
+
+    public function test_an_auditor_sees_only_the_fleet_and_assets_title(): void
+    {
+        $auditor = User::factory()->create();
+        $auditor->assignRole('auditor');
+
+        $this->assertSame(['Fleet & Assets'], $this->headers($auditor));
+    }
+
+    public function test_a_driver_sees_no_section_titles_at_all(): void
+    {
+        $driver = User::factory()->create();
+        $driver->assignRole('driver');
+
+        $this->assertSame([], $this->headers($driver));
+    }
+
+    public function test_the_demo_scaffold_headers_never_show_without_the_demo_switch(): void
+    {
+        $this->assertNotContains('Apps & Pages', $this->headers($this->tenantAdmin));
+        $this->assertNotContains('Components', $this->headers($this->tenantAdmin));
+    }
+
     public function test_system_admin_still_sees_all_three_links(): void
     {
         $response = $this->actingAs($this->tenantAdmin, 'web')->get('/dashboard');

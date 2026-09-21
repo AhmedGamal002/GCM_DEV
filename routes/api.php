@@ -51,6 +51,10 @@ Route::prefix('v1')->group(function () {
         // VehicleController's docblock), so those literals would otherwise
         // be swallowed and 404 on findOrFail('export').
         Route::get('/vehicle-categories', [VehicleCategoryController::class, 'index']);
+        Route::post('/vehicle-categories', [VehicleCategoryController::class, 'store']);
+        Route::get('/vehicle-categories/{category}', [VehicleCategoryController::class, 'show'])->whereNumber('category');
+        Route::patch('/vehicle-categories/{category}', [VehicleCategoryController::class, 'update'])->whereNumber('category');
+        Route::delete('/vehicle-categories/{category}', [VehicleCategoryController::class, 'destroy'])->whereNumber('category');
 
         Route::get('/vehicles/export', [VehicleController::class, 'export']);
         Route::get('/vehicles/stats', [VehicleController::class, 'stats']);

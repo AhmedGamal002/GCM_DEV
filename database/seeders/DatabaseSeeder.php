@@ -18,8 +18,6 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             PermissionSeeder::class,
             PlatformAdminSeeder::class,
-            // Global reference data — no tenant context needed.
-            VehicleCategorySeeder::class,
         ]);
 
         $tenant = Tenant::create([
@@ -27,6 +25,9 @@ class DatabaseSeeder extends Seeder
             'slug' => 'gcm',
             'status' => 'active',
         ]);
+
+        // (Tenant::created has just seeded this tenant's five default
+        // vehicle categories.)
 
         // BelongsToTenant's creating() auto-stamp needs a bound tenant to
         // create rows outside an HTTP request/EnsureTenant context.

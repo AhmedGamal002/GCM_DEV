@@ -44,13 +44,10 @@ $navbarUserPhotoUrl = (Auth::check() && Auth::user() instanceof \App\Models\User
 
       <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
 
-       <ul class="navbar-nav flex-row align-items-center ms-auto">
-          <!-- Current date & time -->
-          <li class="nav-item d-flex align-items-center me-3">
-            <small id="navbar-datetime" class="text-muted text-nowrap"></small>
-          </li>
-          <!--/ Current date & time -->
+        <!-- Current date & time — pinned to the opposite end of the bar from the icon cluster (client preference; the FRD just lists it first) -->
+        <small id="navbar-datetime" class="text-muted text-nowrap"></small>
 
+       <ul class="navbar-nav flex-row align-items-center ms-auto">
           <!-- Language -->
           <li class="nav-item dropdown-language dropdown">
             <a class="nav-link btn btn-text-secondary btn-icon rounded-pill dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">

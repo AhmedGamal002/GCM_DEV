@@ -360,11 +360,24 @@
           ]
         },
         {
-          "url": "app/vehicle/list",
           "name": "Vehicles",
           "icon": "menu-icon tf-icons ti ti-truck",
-          "slug": "app-vehicle-list",
-          "roles": ["system_admin", "data_entry", "auditor"]
+          "slug": "app-vehicle",
+          "roles": ["system_admin", "data_entry", "auditor"],
+          "submenu": [
+            {
+              "url": "app/vehicle/list",
+              "name": "List",
+              "slug": "app-vehicle-list",
+              "roles": ["system_admin", "data_entry", "auditor"]
+            },
+            {
+              "url": "app/vehicle-category/list",
+              "name": "Categories",
+              "slug": "app-vehicle-category-list",
+              "roles": ["system_admin"]
+            }
+          ]
         },
         {
           "name": "Drivers",

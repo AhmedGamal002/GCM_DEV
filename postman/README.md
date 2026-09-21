@@ -21,7 +21,7 @@
 
 - شغّل **"1. Auth (Tenant) → Login"** الأول. Postman مش هيبقى أبدًا من ضمن `SANCTUM_STATEFUL_DOMAINS`، فالسيرفر هيرجّعله `token` (نفس المسار اللي هيتستخدم لموبايل السائق مستقبلًا) بدل session cookie. الـ test script بتاع الريكوست بيحفظ التوكن تلقائي في `tenant_token`.
 - من بعدها أي ريكوست في المجلدات 2-7 هيبعت الـ Authorization header تلقائي.
-- `last_user_id` و`last_driver_id` و`last_vehicle_id` و`last_asset_id` و`last_asset_capacity_category_id` بيتحفظوا تلقائيًا من ريسبونس "Create User"/"Create Driver"/"Create Vehicle"/"Create Asset"/"Create Capacity Category" عشان تقدر تكمل على طول بـ Show/Update من غير ما تنسخ id يدوي. (`last_vehicle_document_id` بيتحط يدوي من ريسبونس "Show Vehicle" عشان تجرب "Download Document".)
+- `last_user_id` و`last_driver_id` و`last_vehicle_id` و`last_vehicle_category_id` و`last_asset_id` و`last_asset_capacity_category_id` بيتحفظوا تلقائيًا من ريسبونس "Create User"/"Create Driver"/"Create Vehicle"/"Create Asset"/"Create Capacity Category" عشان تقدر تكمل على طول بـ Show/Update من غير ما تنسخ id يدوي. (`last_vehicle_document_id` بيتحط يدوي من ريسبونس "Show Vehicle" عشان تجرب "Download Document".)
 
 ### 2. Platform / Super Admin (`/platform/*`) — Session + CSRF
 
