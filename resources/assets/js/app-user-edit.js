@@ -47,6 +47,13 @@ document.addEventListener('DOMContentLoaded', function () {
       document.getElementById('phone').value = u.phone;
       quill.root.innerHTML = u.additional_data || '';
 
+      if (u.updated_by_name && t.last_updated_by) {
+        const at = u.updated_at ? new Date(u.updated_at).toLocaleString() : '';
+        document.getElementById('ue-updated-by').textContent = t.last_updated_by
+          .replace(':name', u.updated_by_name)
+          .replace(':at', at);
+      }
+
       const role = u.roles[0];
       const roleInput = form.querySelector(`input[name="role"][value="${role}"]`);
       if (roleInput) {
@@ -78,6 +85,12 @@ document.addEventListener('DOMContentLoaded', function () {
     data.append('additional_data', quill.root.innerHTML);
     data.append('roles[0]', role);
     data.append('_method', 'PATCH');
+
+    const newPassword = document.getElementById('password').value;
+    if (newPassword) {
+      data.append('password', newPassword);
+      data.append('password_confirmation', document.getElementById('password_confirmation').value);
+    }
 
     const photo = document.getElementById('photo').files[0];
     if (photo) {

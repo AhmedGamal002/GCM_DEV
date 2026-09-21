@@ -37,6 +37,7 @@ class CreateVehicleAction
 
             // operational_status is outside $fillable — set explicitly.
             $vehicle->operational_status = $data['operational_status'] ?? 'active';
+            $vehicle->updated_by = auth()->id();
 
             if (! empty($files['photo_front'])) {
                 $vehicle->photo_front = $files['photo_front']->store('vehicle-photos', 'public');

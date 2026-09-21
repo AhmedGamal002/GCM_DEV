@@ -88,6 +88,17 @@ class DriverCreationTest extends TestCase
         $this->assertCount(2, $driver->entryPermits);
     }
 
+    /** FRD: driver create/edit is (system_admin / data_entry), same line as Users. */
+    public function test_data_entry_can_create_a_driver(): void
+    {
+        $dataEntry = User::factory()->create();
+        $dataEntry->assignRole('data_entry');
+
+        $this->actingAs($dataEntry, 'web')
+            ->post('/api/v1/drivers', $this->basePayload())
+            ->assertCreated();
+    }
+
     public function test_driver_documents_are_stored_on_the_private_disk_not_public(): void
     {
         $response = $this->actingAs($this->systemAdmin, 'web')

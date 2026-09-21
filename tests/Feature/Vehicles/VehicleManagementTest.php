@@ -362,4 +362,39 @@ class VehicleManagementTest extends TestCase
 
         $this->assertNull(Vehicle::firstOrFail()->additional_data);
     }
+
+    /** FRD: every vehicle view/edit page shows "Last updated by X — <datetime>". */
+    public function test_updated_by_is_recorded_on_create(): void
+    {
+        $this->actingAs($this->admin, 'web')
+            ->post('/api/v1/vehicles', $this->validPayload(), ['Accept' => 'application/json'])
+            ->assertCreated();
+
+        $vehicle = Vehicle::firstOrFail();
+        $this->assertSame($this->admin->id, $vehicle->updated_by);
+
+        $response = $this->actingAs($this->admin, 'web')->getJson("/api/v1/vehicles/{$vehicle->id}");
+        $response->assertOk()->assertJsonPath('data.updated_by_name', $this->admin->name);
+    }
+
+    /**
+     * Same as above, but the update is done by a different actor than the
+     * one who created it — a separate test method (not a second actingAs()
+     * in the same method) on purpose: this project has an established,
+     * documented guard-caching gotcha (see EnsureTenant's docblock) when a
+     * single PHPUnit method calls actingAs() with two different users.
+     */
+    public function test_updated_by_is_recorded_on_update_by_a_different_actor(): void
+    {
+        $vehicle = Vehicle::factory()->create(['vehicle_category_id' => VehicleCategory::where('slug', 'hook_lift')->value('id')]);
+
+        $dataEntry = User::factory()->create();
+        $dataEntry->assignRole('data_entry');
+
+        $this->actingAs($dataEntry, 'web')
+            ->post("/api/v1/vehicles/{$vehicle->id}", array_merge($this->validPayload(), ['_method' => 'PATCH']), ['Accept' => 'application/json'])
+            ->assertOk();
+
+        $this->assertSame($dataEntry->id, $vehicle->fresh()->updated_by);
+    }
 }

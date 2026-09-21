@@ -119,7 +119,13 @@ class MenuVisibilityTest extends TestCase
         $response->assertSee('>Assets<', false);
     }
 
-    public function test_a_data_entry_user_sees_vehicles_and_assets_but_not_users_or_drivers(): void
+    /**
+     * FRD: "(انشاء / تعديل) الحسابات مسؤولية (مدير النظام / مدخل
+     * البيانات)" — same line repeated for Users, Drivers, Vehicles and
+     * Assets, so data_entry sees all four menu links, same as
+     * system_admin (auditor still doesn't, per the previous test).
+     */
+    public function test_a_data_entry_user_sees_users_drivers_vehicles_and_assets(): void
     {
         $dataEntry = User::factory()->create();
         $dataEntry->assignRole('data_entry');
@@ -127,10 +133,10 @@ class MenuVisibilityTest extends TestCase
         $response = $this->actingAs($dataEntry, 'web')->get('/dashboard');
 
         $response->assertOk();
+        $response->assertSee('>Users<', false);
+        $response->assertSee('>Drivers<', false);
         $response->assertSee('>Vehicles<', false);
         $response->assertSee('>Assets<', false);
-        $response->assertDontSee('>Users<', false);
-        $response->assertDontSee('>Drivers<', false);
     }
 
     public function test_system_admin_still_sees_all_three_links(): void
@@ -182,16 +188,44 @@ class MenuVisibilityTest extends TestCase
     }
 
     /**
-     * The explicit "leave admin as-is" half of the request — system_admin
-     * must keep seeing the full demo scaffold exactly as before, unchanged.
+     * Client-demo mode: the sidebar shows only what has actually been
+     * built — even system_admin no longer sees the Vuexy demo scaffold,
+     * but does get the real Dashboard link plus every built module.
      */
-    public function test_system_admin_still_sees_the_demo_scaffold_unchanged(): void
+    public function test_system_admin_sees_only_the_built_modules_by_default(): void
     {
         $response = $this->actingAs($this->tenantAdmin, 'web')->get('/dashboard');
 
         $response->assertOk();
-        $response->assertSee('>Layouts<', false);
-        $response->assertSee('>Email<', false);
-        $response->assertSee('>Kanban<', false);
+        foreach (['Dashboard', 'Users', 'Drivers', 'Vehicles', 'Assets'] as $link) {
+            $response->assertSee(">{$link}<", false);
+        }
+        foreach (['Layouts', 'Front Pages', 'Email', 'Kanban', 'eCommerce', 'Charts', 'Dashboards'] as $demo) {
+            $response->assertDontSee(">{$demo}<", false);
+        }
+    }
+
+    /** SHOW_DEMO_MENU=true (local development only) brings the scaffold back — for system_admin alone. */
+    public function test_the_demo_scaffold_can_be_switched_back_on_for_system_admin_only(): void
+    {
+        config(['custom.custom.showDemoMenu' => true]);
+
+        $this->actingAs($this->tenantAdmin, 'web')->get('/dashboard')
+            ->assertOk()
+            ->assertSee('>Layouts<', false)
+            ->assertSee('>Email<', false);
+    }
+
+    public function test_the_demo_scaffold_switch_never_exposes_it_to_other_roles(): void
+    {
+        config(['custom.custom.showDemoMenu' => true]);
+
+        $dataEntry = User::factory()->create();
+        $dataEntry->assignRole('data_entry');
+
+        $this->actingAs($dataEntry, 'web')->get('/dashboard')
+            ->assertOk()
+            ->assertDontSee('>Layouts<', false)
+            ->assertDontSee('>Email<', false);
     }
 }

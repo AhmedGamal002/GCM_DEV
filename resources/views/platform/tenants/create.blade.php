@@ -59,7 +59,7 @@
           <input type="email" id="admin_email" name="admin_email" class="form-control" value="{{ old('admin_email') }}" required>
         </div>
         <div class="col-md-6">
-          <label class="form-label" for="admin_phone">Mobile Number</label>
+          <label class="form-label" for="admin_phone">Mobile No. (with WhatsApp)</label>
           <input type="tel" id="admin_phone" name="admin_phone" class="form-control" value="{{ old('admin_phone') }}" required>
         </div>
         <div class="col-md-6"></div>

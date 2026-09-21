@@ -12,7 +12,7 @@ The System Admin has full control **within a single company** (Tenant). They can
 
 - URL: `/login`
 - Email + password.
-- The System Admin's password is changed from the **Profile page** (not the user-edit page). The email is **immutable** after creation.
+- There is no password change from the Profile for GCM staff and drivers (per the FRD) — if you forget yours use **Forgot Password** on the login page. The email is **immutable** after creation.
 
 ## 2. Dashboard
 
@@ -22,8 +22,7 @@ The System Admin has full control **within a single company** (Tenant). They can
 ## 3. Profile
 
 - Account menu (top bar) → **My Profile**.
-- **Account page:** edit your name only (email shown but read-only).
-- **Security page:** change password (asks for current password + confirmed new password).
+- **Change your profile photo only.** Name and email are read-only, and there is no "Security" page for changing your password (that is for client/contractor users, Week 4-5).
 
 ## 4. User management — `/app/user/list`
 
@@ -47,6 +46,7 @@ The only screen exclusive to the System Admin among tenant roles.
 
 ### View / edit user
 - Separate details and edit pages.
+- **New password (optional):** on the edit page you can set a new password + confirmation for any user or driver — leave it blank to keep the current one. This is the only way to change a GCM staff member's or driver's password.
 - If the user is a driver, the edit page shows a notice pointing you to the driver-edit page (residence/license/insurance details are edited there).
 - **Empty "Additional Data" does not render** as an empty heading on the details page.
 

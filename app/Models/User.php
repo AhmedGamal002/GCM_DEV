@@ -7,6 +7,7 @@ use App\Concerns\BelongsToTenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
@@ -83,5 +84,24 @@ class User extends Authenticatable
   public function driver(): HasOne
   {
     return $this->hasOne(Driver::class);
+  }
+
+  /** FRD: view/edit pages show "Last updated by X — <datetime>". */
+  public function updatedBy(): BelongsTo
+  {
+    return $this->belongsTo(User::class, 'updated_by');
+  }
+
+  /**
+   * FRD: GCM staff and drivers can't change their own password ("غير
+   * قابلة للتعديل من قبل المستخدم ولكن من قبل مدير النظام او مدخل
+   * البيانات") — only client/contractor users can, from their profile
+   * page. Those roles don't exist until Week 4-5, so today this is false
+   * for every real user; the names below are the ones RoleSeeder's
+   * docblock already reserves.
+   */
+  public function canChangeOwnPassword(): bool
+  {
+    return $this->hasAnyRole(['client_project_manager', 'client_project_auditor', 'contractor_user']);
   }
 }

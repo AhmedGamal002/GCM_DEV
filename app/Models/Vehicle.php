@@ -50,6 +50,12 @@ class Vehicle extends Model
         return $this->belongsTo(AssetCapacityCategory::class, 'embedded_asset_capacity_category_id');
     }
 
+    /** FRD: view/edit pages show "Last updated by X — <datetime>". */
+    public function updatedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
+
     public function documents(): HasMany
     {
         return $this->hasMany(VehicleDocument::class);

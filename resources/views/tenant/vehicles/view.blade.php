@@ -17,6 +17,7 @@
     generic_error: @json(__('Something went wrong. Please try again.')),
     gcm: @json(__('GCM')),
     edit_url_base: @json(url('/app/vehicle/edit')),
+    last_updated_by: @json(__('Last updated by :name — :at')),
     doc_labels: {
       registration_card: @json(__('Registration card')),
       fitness_document: @json(__('Fitness document')),
@@ -54,6 +55,7 @@
         </div>
 
         <h5 class="pb-4 border-bottom mb-4 mt-6">{{ __('Details') }}</h5>
+        <p class="small text-muted mb-4" id="vv-updated-by"></p>
         <ul class="list-unstyled mb-6">
           <li class="mb-2"><span class="h6">{{ __('Category') }}:</span> <span id="vv-category"></span></li>
           <li class="mb-2"><span class="h6">{{ __('Embedded container') }}:</span> <span id="vv-embedded"></span></li>

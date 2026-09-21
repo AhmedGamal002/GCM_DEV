@@ -43,8 +43,10 @@ class CreateDriverAction
                 'affiliation' => 'gcm',
             ]);
             $user->assignRole('driver');
+            $user->updated_by = auth()->id();
+            $user->save();
 
-            $driver = Driver::create([
+            $driver = new Driver([
                 'user_id' => $user->id,
                 'default_vehicle_id' => $data['default_vehicle_id'],
                 'residence_number' => $data['residence_number'],
@@ -60,6 +62,8 @@ class CreateDriverAction
                 'insurance_valid_to' => $data['insurance_valid_to'],
                 'insurance_attachment' => $this->storeDocument($documents['insurance'] ?? null),
             ]);
+            $driver->updated_by = auth()->id();
+            $driver->save();
 
             foreach ($entryPermits as $permit) {
                 $driver->entryPermits()->create([

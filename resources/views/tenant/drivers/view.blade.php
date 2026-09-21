@@ -17,6 +17,7 @@
     saved: @json(__('Changes saved successfully.')),
     generic_error: @json(__('Something went wrong. Please try again.')),
     edit_url_base: @json(url('/app/driver/edit')),
+    last_updated_by: @json(__('Last updated by :name — :at')),
     no_attachment: @json(__('No attachment')),
     download: @json(__('Download')),
     expired: @json(__('Expired')),
@@ -54,6 +55,7 @@
     </div>
 
     <h5 class="pb-4 border-bottom mb-4">{{ __('Details') }}</h5>
+    <p class="small text-muted mb-4" id="dv-updated-by"></p>
     <div class="info-container">
       <ul class="list-unstyled mb-6">
         <li class="mb-2"><span class="h6">{{ __('ID') }}:</span> <span id="dv-code"></span></li>

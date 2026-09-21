@@ -134,17 +134,19 @@
           }
         },
         {
-          "name": "Update Profile (Name)",
+          "name": "Update Profile (Photo)",
           "request": {
-            "method": "PATCH",
+            "method": "POST",
             "header": [{ "key": "Accept", "value": "application/json" }],
             "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"Updated Name\"\n}",
-              "options": { "raw": { "language": "json" } }
+              "mode": "formdata",
+              "formdata": [
+                { "key": "_method", "value": "PATCH", "type": "text" },
+                { "key": "photo", "type": "file", "src": [] }
+              ]
             },
             "url": { "raw": "{{api_base}}/me", "host": ["{{api_base}}"], "path": ["me"] },
-            "description": "Email is immutable — not part of this payload. See ARCHITECTURE.md for why."
+            "description": "FRD: the only thing a user changes from their own profile is the photo (multipart, POST + _method=PATCH). Name/email/everything else is admin-managed."
           }
         },
         {
@@ -157,7 +159,8 @@
               "raw": "{\n  \"current_password\": \"{{tenant_password}}\",\n  \"new_password\": \"NewPassword123!\",\n  \"new_password_confirmation\": \"NewPassword123!\"\n}",
               "options": { "raw": { "language": "json" } }
             },
-            "url": { "raw": "{{api_base}}/me/password", "host": ["{{api_base}}"], "path": ["me", "password"] }
+            "url": { "raw": "{{api_base}}/me/password", "host": ["{{api_base}}"], "path": ["me", "password"] },
+            "description": "403 for GCM staff and drivers (FRD: an admin sets their password via PATCH /users/{id} or /drivers/{id} with password + password_confirmation). Only client/contractor users (Week 4-5) can use this."
           }
         }
       ]

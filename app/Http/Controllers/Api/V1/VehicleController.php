@@ -114,7 +114,7 @@ class VehicleController extends Controller
 
     public function show(int $vehicle)
     {
-        $vehicle = Vehicle::with([...self::LIST_WITH, 'documents'])->findOrFail($vehicle);
+        $vehicle = Vehicle::with([...self::LIST_WITH, 'documents', 'updatedBy'])->findOrFail($vehicle);
 
         Gate::authorize('view', $vehicle);
 
@@ -127,7 +127,7 @@ class VehicleController extends Controller
 
         $vehicle = $action->execute($vehicle, $request->validated(), $this->extractFiles($request));
 
-        return VehicleResource::make($vehicle->load([...self::LIST_WITH, 'documents']));
+        return VehicleResource::make($vehicle->load([...self::LIST_WITH, 'documents', 'updatedBy']));
     }
 
     public function status(UpdateVehicleStatusRequest $request, int $vehicle, UpdateVehicleStatusAction $action)

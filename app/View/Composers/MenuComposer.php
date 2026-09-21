@@ -60,12 +60,14 @@ class MenuComposer
      *    actually holds one of those roles;
      *  - a node with NO "roles" key — every untouched Vuexy demo item
      *    (Layouts, Front Pages, Email/Chat/Kanban/eCommerce, Components,
-     *    etc.) — defaults to **system_admin only**, not "everyone". That
-     *    default is deliberate, not an oversight: system_admin's menu
-     *    must stay exactly as it already is (nothing here changes what
-     *    admin sees), while every other role gets a menu containing only
-     *    what it's actually permitted to use — see the real "Users" node
-     *    bug this whole allowlist exists for, below.
+     *    etc.) — is **hidden from everyone** by default, system_admin
+     *    included: the sidebar shows only what has actually been built
+     *    (client demos). Set SHOW_DEMO_MENU=true in .env (see
+     *    config/custom.php) to bring the scaffold back for system_admin
+     *    only while developing — it was system_admin's default view
+     *    before that flag existed. Every role's menu otherwise contains
+     *    only what it's actually permitted to use — see the real "Users"
+     *    node bug this whole allowlist exists for, below.
      *
      * Real bug this fixes (originally): every logged-in tenant user —
      * including `driver`, who has zero API access to Users/Drivers/
@@ -82,7 +84,7 @@ class MenuComposer
      * single source of truth to derive it from automatically.
      *
      * A child does NOT inherit its parent's "roles" — a submenu item with
-     * no "roles" key of its own still falls back to system_admin-only,
+     * no "roles" key of its own is hidden (see above),
      * even under a parent open to other roles too. Not an issue for any
      * node today (every non-admin-only parent is currently a leaf, no
      * submenu), but a future "roles"-carrying parent with children needs
@@ -96,7 +98,9 @@ class MenuComposer
                 return false;
             }
 
-            $roles = $item->roles ?? ['system_admin'];
+            // No "roles" key = an untouched Vuexy demo item. Hidden from
+            // everyone unless SHOW_DEMO_MENU is on (then system_admin only).
+            $roles = $item->roles ?? (config('custom.custom.showDemoMenu') ? ['system_admin'] : []);
 
             return $user && $user->hasAnyRole($roles);
         }));

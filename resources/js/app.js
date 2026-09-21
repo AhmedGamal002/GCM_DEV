@@ -21,3 +21,22 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 });
+
+// Navbar current date & time (FRD: topbar shows the current date and time
+// live) — see navbar.blade.php's #navbar-datetime.
+document.addEventListener('DOMContentLoaded', function () {
+  const el = document.getElementById('navbar-datetime');
+  if (!el) return;
+
+  // Platform (Super Admin) pages stay English regardless of the tenant-side
+  // session locale — see CLAUDE.md's Platform-pages-are-always-English rule.
+  const isPlatform = window.location.pathname.startsWith('/platform');
+  const locale = !isPlatform && document.documentElement.lang === 'ar' ? 'ar-EG' : 'en-US';
+
+  function render() {
+    el.textContent = new Date().toLocaleString(locale, { dateStyle: 'medium', timeStyle: 'short' });
+  }
+
+  render();
+  setInterval(render, 30000);
+});

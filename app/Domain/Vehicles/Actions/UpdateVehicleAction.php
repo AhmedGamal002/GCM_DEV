@@ -42,6 +42,7 @@ class UpdateVehicleAction
                 $vehicle->photo_back = $files['photo_back']->store('vehicle-photos', 'public');
             }
 
+            $vehicle->updated_by = auth()->id();
             $vehicle->save();
 
             $this->syncSingleDocuments($vehicle, $data['documents'] ?? [], $files['documents'] ?? []);

@@ -5,6 +5,7 @@ namespace App\Domain\Drivers\Actions;
 use App\Models\Driver;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 /**
  * Updates the driver's account basics (name/phone/photo/additional_data
@@ -28,10 +29,15 @@ class UpdateDriverAction
             $user->phone = $data['phone'];
             $user->additional_data = $data['additional_data'] ?? null;
 
+            if (! empty($data['password'])) {
+                $user->password = Hash::make($data['password']);
+            }
+
             if ($photo) {
                 $user->photo = $photo->store('avatars', 'public');
             }
 
+            $user->updated_by = auth()->id();
             $user->save();
 
             $driver->fill([
@@ -59,6 +65,7 @@ class UpdateDriverAction
                 $driver->insurance_attachment = $documents['insurance']->store('driver-documents', 'local');
             }
 
+            $driver->updated_by = auth()->id();
             $driver->save();
 
             $driver->qualifiedVehicleCategories()->sync($data['vehicle_category_ids']);

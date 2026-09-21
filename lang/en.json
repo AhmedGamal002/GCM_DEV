@@ -203,7 +203,7 @@
   "Account Details": "Account Details",
   "Role & Status": "Role & Status",
   "Additional Info": "Additional Info",
-  "Mobile Number": "Mobile Number",
+  "Mobile Number": "Mobile No. (with WhatsApp)",
   "Confirm Password": "Confirm Password",
   "Photo": "Photo",
   "User Category": "User Category",
@@ -350,7 +350,6 @@
   "Additional data": "Additional data",
   "The selected capacity does not apply to this asset type.": "The selected capacity does not apply to this asset type.",
   "Only a System Admin can deactivate an asset.": "Only a System Admin can deactivate an asset.",
-
   "Add Driver": "Add Driver",
   "Add Permit": "Add Permit",
   "Area Name": "Area Name",
@@ -387,7 +386,6 @@
   "Valid To": "Valid To",
   "Vehicle Types Qualified to Drive": "Vehicle Types Qualified to Drive",
   "page instead, where residence/license/insurance details are also editable.": "page instead, where residence/license/insurance details are also editable.",
-
   "Vehicle Fleet": "Vehicle Fleet",
   "Edit Vehicle Details": "Edit Vehicle Details",
   "Driver Management": "Driver Management",
@@ -395,5 +393,12 @@
   "Edit Asset Details": "Edit Asset Details",
   "Asset Capacity Categories": "Asset Capacity Categories",
   "Create Asset Category": "Create Asset Category",
-  "Edit Category": "Edit Category"
+  "Edit Category": "Edit Category",
+  "Upload new photo": "Upload new photo",
+  "Allowed JPG, PNG. Max size of 2MB.": "Allowed JPG, PNG. Max size of 2MB.",
+  "Choose a photo first.": "Choose a photo first.",
+  "Save photo": "Save photo",
+  "Your name and account details are managed by your administrator — only your photo can be changed here.": "Your name and account details are managed by your administrator — only your photo can be changed here.",
+  "New Password": "New Password",
+  "Leave blank to keep the current password.": "Leave blank to keep the current password."
 }

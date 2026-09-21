@@ -47,6 +47,13 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function render(d) {
+    if (d.updated_by_name && t.last_updated_by) {
+      const at = d.updated_at ? new Date(d.updated_at).toLocaleString() : '';
+      document.getElementById('dv-updated-by').textContent = t.last_updated_by
+        .replace(':name', d.updated_by_name)
+        .replace(':at', at);
+    }
+
     document.getElementById('dv-name').textContent = d.name;
     document.getElementById('dv-code').textContent = d.code;
     document.getElementById('dv-email').textContent = d.email;

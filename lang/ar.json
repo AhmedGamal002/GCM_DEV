@@ -203,7 +203,7 @@
   "Account Details": "تفاصيل الحساب",
   "Role & Status": "الدور والحالة",
   "Additional Info": "بيانات إضافية",
-  "Mobile Number": "رقم الموبايل",
+  "Mobile Number": "رقم الموبايل (حساب واتساب)",
   "Confirm Password": "تأكيد كلمة المرور",
   "Photo": "الصورة الشخصية",
   "User Category": "فئة المستخدم",
@@ -350,7 +350,6 @@
   "Additional data": "بيانات إضافية",
   "The selected capacity does not apply to this asset type.": "السعة المختارة لا تنطبق على نوع الأصل هذا.",
   "Only a System Admin can deactivate an asset.": "مدير النظام فقط يمكنه تعطيل الأصل.",
-
   "Add Driver": "إضافة سائق",
   "Add Permit": "إضافة تصريح",
   "Area Name": "اسم المنطقة",
@@ -387,7 +386,6 @@
   "Valid To": "صالح حتى",
   "Vehicle Types Qualified to Drive": "أنواع المركبات المؤهل لقيادتها",
   "page instead, where residence/license/insurance details are also editable.": "بدلاً من هنا، حيث يمكن أيضًا تعديل بيانات الإقامة/الرخصة/التأمين.",
-
   "Vehicle Fleet": "إدارة أسطول المركبات",
   "Edit Vehicle Details": "تعديل تفاصيل المركبة",
   "Driver Management": "إدارة السائقين",
@@ -395,5 +393,12 @@
   "Edit Asset Details": "تعديل تفاصيل الأصل",
   "Asset Capacity Categories": "تصنيفات سعة الأصول",
   "Create Asset Category": "إنشاء تصنيف للأصول",
-  "Edit Category": "تعديل التصنيف"
+  "Edit Category": "تعديل التصنيف",
+  "Upload new photo": "رفع صورة جديدة",
+  "Allowed JPG, PNG. Max size of 2MB.": "الصيغ المسموحة JPG وPNG، الحد الأقصى 2 ميجابايت.",
+  "Choose a photo first.": "اختر صورة أولًا.",
+  "Save photo": "حفظ الصورة",
+  "Your name and account details are managed by your administrator — only your photo can be changed here.": "اسمك وبيانات حسابك بتديرها الإدارة — الصورة الشخصية هي الوحيدة اللي تقدر تغيّرها من هنا.",
+  "New Password": "كلمة المرور الجديدة",
+  "Leave blank to keep the current password.": "اتركها فارغة للإبقاء على كلمة المرور الحالية."
 }

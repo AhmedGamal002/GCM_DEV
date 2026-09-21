@@ -110,6 +110,13 @@ document.addEventListener('DOMContentLoaded', function () {
       document.getElementById('phone').value = d.phone;
       quill.root.innerHTML = d.additional_data || '';
 
+      if (d.updated_by_name && t.last_updated_by) {
+        const at = d.updated_at ? new Date(d.updated_at).toLocaleString() : '';
+        document.getElementById('de-updated-by').textContent = t.last_updated_by
+          .replace(':name', d.updated_by_name)
+          .replace(':at', at);
+      }
+
       document.getElementById('residence_number').value = d.residence.number || '';
       document.getElementById('residence_valid_to').value = d.residence.valid_to || '';
 
@@ -140,6 +147,12 @@ document.addEventListener('DOMContentLoaded', function () {
     data.append('phone', document.getElementById('phone').value);
     data.append('additional_data', quill.root.innerHTML);
     data.append('_method', 'PATCH');
+
+    const newPassword = document.getElementById('password').value;
+    if (newPassword) {
+      data.append('password', newPassword);
+      data.append('password_confirmation', document.getElementById('password_confirmation').value);
+    }
 
     categoryCheckboxes.querySelectorAll('input:checked').forEach(function (cb, i) {
       data.append(`vehicle_category_ids[${i}]`, cb.dataset.categoryId);

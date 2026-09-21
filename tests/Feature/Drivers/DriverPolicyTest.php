@@ -30,8 +30,8 @@ class DriverPolicyTest extends TestCase
         $this->systemAdmin->assignRole('system_admin');
     }
 
-    #[DataProvider('nonAdminRolesProvider')]
-    public function test_non_system_admin_roles_cannot_list_drivers(string $role): void
+    #[DataProvider('nonManagerRolesProvider')]
+    public function test_non_manager_roles_cannot_list_drivers(string $role): void
     {
         $actor = User::factory()->create(['email' => "{$role}@tenant-a.test"]);
         $actor->assignRole($role);
@@ -41,10 +41,9 @@ class DriverPolicyTest extends TestCase
             ->assertForbidden();
     }
 
-    public static function nonAdminRolesProvider(): array
+    public static function nonManagerRolesProvider(): array
     {
         return [
-            ['data_entry'],
             ['auditor'],
             ['driver'],
         ];
@@ -53,6 +52,17 @@ class DriverPolicyTest extends TestCase
     public function test_system_admin_can_list_drivers(): void
     {
         $this->actingAs($this->systemAdmin, 'web')
+            ->getJson('/api/v1/drivers')
+            ->assertOk();
+    }
+
+    /** FRD: driver management is (system_admin / data_entry) — same line as Users. */
+    public function test_data_entry_can_list_drivers(): void
+    {
+        $dataEntry = User::factory()->create(['email' => 'dataentry@tenant-a.test']);
+        $dataEntry->assignRole('data_entry');
+
+        $this->actingAs($dataEntry, 'web')
             ->getJson('/api/v1/drivers')
             ->assertOk();
     }

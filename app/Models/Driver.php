@@ -66,6 +66,12 @@ class Driver extends Model
         return $this->belongsTo(Vehicle::class, 'default_vehicle_id');
     }
 
+    /** FRD: view/edit pages show "Last updated by X — <datetime>". */
+    public function updatedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
+
     /**
      * The vehicle categories (of the 5 fixed FRD categories) this driver
      * is qualified to drive — the Default Vehicle must belong to one of

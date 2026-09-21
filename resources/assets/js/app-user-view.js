@@ -40,6 +40,13 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('uv-entity').textContent = u.entity_name || '';
     document.getElementById('uv-role').textContent = u.roles.join(', ');
 
+    if (u.updated_by_name && t.last_updated_by) {
+      const at = u.updated_at ? new Date(u.updated_at).toLocaleString() : '';
+      document.getElementById('uv-updated-by').textContent = t.last_updated_by
+        .replace(':name', u.updated_by_name)
+        .replace(':at', at);
+    }
+
     if (u.additional_data) {
       document.getElementById('uv-additional').innerHTML = u.additional_data;
       document.getElementById('uv-additional-wrapper').classList.remove('d-none');

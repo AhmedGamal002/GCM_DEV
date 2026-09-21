@@ -6,29 +6,33 @@ use App\Models\Driver;
 use App\Models\User;
 
 /**
- * Same ownership rule as UserPolicy — driver management (tenant side) is
- * system_admin-only. A driver is still a User under the hood, so this
- * mirrors UserPolicy's shape exactly.
+ * Same rule as UserPolicy — driver management (tenant side) is
+ * (system_admin / data_entry), same FRD line repeated verbatim in the
+ * driver section ("جميع البيانات قابلة للتعديل من خلال مدير النظام او
+ * مدخل البيانات فقط"). A driver is still a User under the hood, so this
+ * mirrors UserPolicy's shape exactly — including status changes, which
+ * go through PATCH /api/v1/users/{id}/status (UpdateUserStatusAction),
+ * not a method here.
  */
 class DriverPolicy
 {
     public function viewAny(User $actor): bool
     {
-        return $actor->hasRole('system_admin');
+        return $actor->hasAnyRole(['system_admin', 'data_entry']);
     }
 
     public function view(User $actor, Driver $target): bool
     {
-        return $actor->hasRole('system_admin');
+        return $actor->hasAnyRole(['system_admin', 'data_entry']);
     }
 
     public function create(User $actor): bool
     {
-        return $actor->hasRole('system_admin');
+        return $actor->hasAnyRole(['system_admin', 'data_entry']);
     }
 
     public function update(User $actor, Driver $target): bool
     {
-        return $actor->hasRole('system_admin');
+        return $actor->hasAnyRole(['system_admin', 'data_entry']);
     }
 }

@@ -20,7 +20,7 @@ class CreateUserAction
     {
         // tenant_id is stamped automatically by BelongsToTenant's creating
         // hook — never set explicitly here.
-        $user = User::create([
+        $user = new User([
             'name' => $data['name'],
             'email' => $data['email'],
             'phone' => $data['phone'],
@@ -30,6 +30,9 @@ class CreateUserAction
             'photo' => $photo ? $photo->store('avatars', 'public') : null,
             'affiliation' => 'gcm',
         ]);
+        // FRD "اخر تحديث: تم بواسطة X" — audit field outside $fillable, same as assets.
+        $user->updated_by = auth()->id();
+        $user->save();
 
         $user->syncRoles($data['roles']);
 

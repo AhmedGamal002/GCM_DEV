@@ -62,6 +62,9 @@ class DriverResource extends JsonResource
                 'has_attachment' => (bool) $permit->attachment,
             ])),
 
+            // FRD: view/edit pages show "Last updated by X — <datetime>".
+            'updated_by_name' => $this->whenLoaded('updatedBy', fn () => $this->updatedBy?->name),
+            'updated_at' => $this->updated_at,
             'created_at' => $this->created_at,
         ];
     }

@@ -7,6 +7,7 @@ use App\Http\Requests\Concerns\NormalizesRichTextInput;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password;
 
 /**
  * Same 'driver' exclusion as StoreUserRequest — see its docblock. Editing
@@ -53,10 +54,20 @@ class UpdateUserRequest extends FormRequest
 
     public function rules(): array
     {
+        $tenantId = app('tenant')->id;
+
         return [
             'name' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'string', 'max:32'],
+            'phone' => [
+                'required', 'string', 'max:32',
+                Rule::unique('users', 'phone')
+                    ->where(fn ($q) => $q->where('tenant_id', $tenantId))
+                    ->ignore($this->targetUser()->id),
+            ],
             'photo' => ['nullable', 'image', 'max:2048'],
+            // FRD: GCM users can't change their own password — an admin
+            // (system_admin / data_entry) sets it here. Blank = unchanged.
+            'password' => ['nullable', 'string', 'confirmed', Password::defaults()],
             'additional_data' => ['nullable', 'string'],
             'roles' => ['required', 'array', 'min:1', new OnlyOneSystemAdminPerTenantRule($this->targetUser()->id)],
             'roles.*' => ['string', Rule::in(['data_entry', 'auditor'])],

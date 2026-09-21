@@ -352,6 +352,13 @@ export function initVehicleForm(opts) {
 
     quill.root.innerHTML = v.additional_data || '';
 
+    if (v.updated_by_name && t.last_updated_by) {
+      const at = v.updated_at ? new Date(v.updated_at).toLocaleString() : '';
+      document.getElementById('ve-updated-by').textContent = t.last_updated_by
+        .replace(':name', v.updated_by_name)
+        .replace(':at', at);
+    }
+
     if (v.photo_front_url) showCurrentFile('photo_front_current', v.photo_front_url);
     if (v.photo_back_url) showCurrentFile('photo_back_current', v.photo_back_url);
 

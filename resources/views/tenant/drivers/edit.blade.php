@@ -23,7 +23,8 @@
     view_url_base: @json(url('/app/driver/view')),
     loading: @json(__('Loading...')),
     select_types_first: @json(__('Select vehicle type(s) first')),
-    select_vehicle: @json(__('Select a vehicle'))
+    select_vehicle: @json(__('Select a vehicle')),
+    last_updated_by: @json(__('Last updated by :name — :at'))
   };
   window.driverEditId = {{ $driverId }};
 </script>
@@ -47,6 +48,8 @@
   <div class="d-none" id="driver-edit-form-wrapper">
     <form class="card-body" id="driverEditForm">
 
+      <p class="small text-muted mb-4" id="de-updated-by"></p>
+
       <h6>1. {{ __('Account Details') }}</h6>
       <div class="row g-6">
         <div class="col-md-6">
@@ -64,6 +67,25 @@
         <div class="col-md-6">
           <label class="form-label" for="photo">{{ __('Photo') }}</label>
           <input type="file" id="photo" class="form-control" accept="image/*" />
+        </div>
+        <div class="col-md-6">
+          <div class="form-password-toggle">
+            <label class="form-label" for="password">{{ __('New Password') }}</label>
+            <div class="input-group input-group-merge">
+              <input type="password" id="password" class="form-control" autocomplete="new-password" />
+              <span class="input-group-text cursor-pointer"><i class="ti ti-eye-off"></i></span>
+            </div>
+            <small class="text-muted">{{ __('Leave blank to keep the current password.') }}</small>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-password-toggle">
+            <label class="form-label" for="password_confirmation">{{ __('Confirm Password') }}</label>
+            <div class="input-group input-group-merge">
+              <input type="password" id="password_confirmation" class="form-control" autocomplete="new-password" />
+              <span class="input-group-text cursor-pointer"><i class="ti ti-eye-off"></i></span>
+            </div>
+          </div>
         </div>
       </div>
 

@@ -31,6 +31,9 @@ class UserResource extends JsonResource
             // edit page. Relies on 'driver' being eager-loaded wherever
             // this Resource is used in bulk — see UserController.
             'driver_id' => $this->driver?->id,
+            // FRD: view/edit pages show "Last updated by X — <datetime>".
+            'updated_by_name' => $this->whenLoaded('updatedBy', fn () => $this->updatedBy?->name),
+            'updated_at' => $this->updated_at,
             'created_at' => $this->created_at,
         ];
     }

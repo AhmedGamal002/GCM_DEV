@@ -12,9 +12,17 @@ return [
     'myStyle' => 'light', // Options[String]: light(default), dark & system mode
     'myRTLSupport' => true, // options[Boolean]: true(default), false // To provide RTLSupport or not
     'myRTLMode' => false, // options[Boolean]: false(default), true // To set layout to RTL layout  (myRTLSupport must be true for rtl mode)
-    // Locked: Light style + Semi Dark theme are the product's fixed look —
-    // the customizer (gear icon) is removed entirely per client request.
-    'hasCustomizer' => false, // options[Boolean]: true(default), false // Display customizer or not THIS WILL REMOVE INCLUDED JS FILE. SO LOCAL STORAGE WON'T WORK
+    // hasCustomizer=true loads the customizer engine (needed for the
+    // navbar's own dark/light toggle to work and persist via
+    // localStorage — FRD §1.2: "تغيير الوضع: داكن / مضيء"). The full
+    // gear-icon customizer panel (RTL, layout options, ...) stays hidden
+    // via displayCustomizer=false — client only wants the simple navbar
+    // toggle, not the whole customization panel.
+    'hasCustomizer' => true, // options[Boolean]: true(default), false // Display customizer or not THIS WILL REMOVE INCLUDED JS FILE. SO LOCAL STORAGE WON'T WORK
+    // Vuexy demo scaffold (Layouts, Email, Kanban, Charts, ...) in the sidebar.
+    // Off = the menu shows only what has actually been built. On = system_admin
+    // sees the whole scaffold again (local development reference only).
+    'showDemoMenu' => env('SHOW_DEMO_MENU', false),
     'displayCustomizer' => false, // options[Boolean]: true(default), false // Display customizer UI or not, THIS WON'T REMOVE INCLUDED JS FILE. SO LOCAL STORAGE WILL WORK
     'contentLayout' => 'compact', // options[String]: 'compact', 'wide' (compact=container-xxl, wide=container-fluid)
     'navbarType' => 'sticky', // options[String]: 'sticky', 'static', 'hidden' (Only for vertical Layout)

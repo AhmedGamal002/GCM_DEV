@@ -6,6 +6,7 @@ use App\Domain\Users\Actions\CreateUserAction;
 use App\Domain\Users\Actions\UpdateUserAction;
 use App\Domain\Users\Actions\UpdateUserStatusAction;
 use App\Domain\Users\Exceptions\CannotDeactivateSystemAdminException;
+use App\Domain\Users\Exceptions\CannotDeactivateUserException;
 use App\Domain\Users\Exports\UsersExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Users\StoreUserRequest;
@@ -91,7 +92,7 @@ class UserController extends Controller
         // driver_id (see UserResource) to detect a driver-role user and
         // redirect to the dedicated Drivers edit page instead of showing
         // the (policy-blocked, see UserPolicy::update()) generic form.
-        $user = User::with('driver')->findOrFail($user);
+        $user = User::with(['driver', 'updatedBy'])->findOrFail($user);
 
         Gate::authorize('view', $user);
 
@@ -104,7 +105,7 @@ class UserController extends Controller
 
         $user = $action->execute($user, $request->validated(), $request->file('photo'));
 
-        return UserResource::make($user);
+        return UserResource::make($user->load(['driver', 'updatedBy']));
     }
 
     public function status(UpdateUserStatusRequest $request, int $user, UpdateUserStatusAction $action)
@@ -112,12 +113,12 @@ class UserController extends Controller
         $user = User::findOrFail($user);
 
         try {
-            $user = $action->execute($user, $request->validated('status'));
-        } catch (CannotDeactivateSystemAdminException $e) {
+            $user = $action->execute($user, $request->validated('status'), $request->user());
+        } catch (CannotDeactivateSystemAdminException|CannotDeactivateUserException $e) {
             abort(422, $e->getMessage());
         }
 
-        return UserResource::make($user);
+        return UserResource::make($user->load(['driver', 'updatedBy']));
     }
 
     public function export(Request $request)

@@ -172,7 +172,7 @@ class DriverController extends Controller
 
     public function show(int $driver)
     {
-        $driver = Driver::with(['user.tenant', 'user.roles', 'entryPermits', 'defaultVehicle.category', 'qualifiedVehicleCategories'])->findOrFail($driver);
+        $driver = Driver::with(['user.tenant', 'user.roles', 'entryPermits', 'defaultVehicle.category', 'qualifiedVehicleCategories', 'updatedBy'])->findOrFail($driver);
 
         Gate::authorize('view', $driver);
 

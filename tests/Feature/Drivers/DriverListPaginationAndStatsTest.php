@@ -34,6 +34,8 @@ class DriverListPaginationAndStatsTest extends TestCase
 
     private int $vehicleId;
 
+    private int $phoneSequence = 0;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -63,7 +65,7 @@ class DriverListPaginationAndStatsTest extends TestCase
                 [
                     'name' => "Driver {$status} {$i}",
                     'email' => uniqid("driver.{$status}.{$i}.", true).'@gcm.test',
-                    'phone' => '01000000000',
+                    'phone' => '010'.str_pad((string) $this->phoneSequence++, 8, '0', STR_PAD_LEFT),
                     'password' => 'a-secure-password',
                     'status' => $status,
                     'vehicle_category_ids' => [$this->vehicleCategoryId],

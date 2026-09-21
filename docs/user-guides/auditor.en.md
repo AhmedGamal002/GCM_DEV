@@ -13,7 +13,7 @@ The Auditor is a **read-only** role over vehicles and assets: view and export, n
 ## 1. Sign in and profile
 
 - `/login` with email + password.
-- **My Profile**: edit name + change password. Email is immutable.
+- **My Profile**: change your profile photo only. Name, password and everything else are managed by the administration (System Admin / Data Entry).
 
 ## 2. Vehicles — `/app/vehicle/list`
 

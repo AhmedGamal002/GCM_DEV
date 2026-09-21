@@ -50,6 +50,9 @@ class VehicleResource extends JsonResource
 
             'documents' => VehicleDocumentResource::collection($this->whenLoaded('documents')),
 
+            // FRD: view/edit pages show "Last updated by X — <datetime>".
+            'updated_by_name' => $this->whenLoaded('updatedBy', fn () => $this->updatedBy?->name),
+            'updated_at' => $this->updated_at,
             'created_at' => $this->created_at,
         ];
     }

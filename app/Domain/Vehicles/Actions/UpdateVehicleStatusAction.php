@@ -27,6 +27,7 @@ class UpdateVehicleStatusAction
 
         // operational_status is outside $fillable — set explicitly.
         $vehicle->operational_status = $status;
+        $vehicle->updated_by = $actor->id;
         $vehicle->save();
 
         return $vehicle;

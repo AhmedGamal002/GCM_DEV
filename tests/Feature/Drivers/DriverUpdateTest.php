@@ -105,4 +105,51 @@ class DriverUpdateTest extends TestCase
 
         $response->assertUnprocessable()->assertJsonValidationErrors('default_vehicle_id');
     }
+
+    /** FRD: drivers can't change their own password — an admin sets it from the driver edit form. */
+    public function test_admin_can_set_a_drivers_password_and_blank_keeps_it(): void
+    {
+        $driver = $this->makeDriver($this->vehicleA->id);
+        $driver->user->update(['password' => bcrypt('old-password')]);
+
+        $this->actingAs($this->systemAdmin, 'web')
+            ->post("/api/v1/drivers/{$driver->id}", array_merge($this->updatePayload($this->vehicleA->id), ['_method' => 'PATCH']), ['Accept' => 'application/json'])
+            ->assertOk();
+        $this->assertTrue(\Illuminate\Support\Facades\Hash::check('old-password', $driver->user->fresh()->password));
+
+        $this->actingAs($this->systemAdmin, 'web')
+            ->post("/api/v1/drivers/{$driver->id}", array_merge($this->updatePayload($this->vehicleA->id), [
+                '_method' => 'PATCH', 'password' => 'brand-new-password', 'password_confirmation' => 'brand-new-password',
+            ]), ['Accept' => 'application/json'])
+            ->assertOk();
+        $this->assertTrue(\Illuminate\Support\Facades\Hash::check('brand-new-password', $driver->user->fresh()->password));
+    }
+
+    /** FRD: driver create/edit is (system_admin / data_entry), same line as Users. */
+    public function test_data_entry_can_update_a_driver(): void
+    {
+        $driver = $this->makeDriver($this->vehicleA->id);
+        $dataEntry = User::factory()->create();
+        $dataEntry->assignRole('data_entry');
+
+        $response = $this->actingAs($dataEntry, 'web')
+            ->post("/api/v1/drivers/{$driver->id}", array_merge($this->updatePayload($this->vehicleA->id), ['_method' => 'PATCH']), ['Accept' => 'application/json']);
+
+        $response->assertOk();
+    }
+
+    /** FRD: driver view/edit pages show "Last updated by X — <datetime>". */
+    public function test_updated_by_is_recorded_on_update(): void
+    {
+        $driver = $this->makeDriver($this->vehicleA->id);
+
+        $this->actingAs($this->systemAdmin, 'web')
+            ->post("/api/v1/drivers/{$driver->id}", array_merge($this->updatePayload($this->vehicleA->id), ['_method' => 'PATCH']), ['Accept' => 'application/json'])
+            ->assertOk();
+
+        $this->assertSame($this->systemAdmin->id, $driver->fresh()->updated_by);
+
+        $response = $this->actingAs($this->systemAdmin, 'web')->getJson("/api/v1/drivers/{$driver->id}");
+        $response->assertOk()->assertJsonPath('data.updated_by_name', $this->systemAdmin->name);
+    }
 }

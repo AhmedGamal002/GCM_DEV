@@ -39,9 +39,20 @@ class LoginController extends Controller
             ->where('email', $credentials['email'])
             ->first();
 
-        if (! $user || ! Hash::check($credentials['password'], $user->password) || $user->status === 'deactivated') {
+        if (! $user || ! Hash::check($credentials['password'], $user->password)) {
             throw ValidationException::withMessages([
                 'email' => __('auth.failed'),
+            ]);
+        }
+
+        // Checked only after the credentials themselves are confirmed
+        // correct — revealing "this account is deactivated" to someone
+        // who doesn't actually know the password would leak account
+        // status to an unauthenticated caller (FRD: deactivated accounts
+        // get their own distinct message, not the generic failure one).
+        if ($user->status === 'deactivated') {
+            throw ValidationException::withMessages([
+                'email' => __('auth.deactivated'),
             ]);
         }
 

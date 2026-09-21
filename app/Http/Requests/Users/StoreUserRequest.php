@@ -51,10 +51,15 @@ class StoreUserRequest extends FormRequest
 
     public function rules(): array
     {
+        $tenantId = app('tenant')->id;
+
         return [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
-            'phone' => ['required', 'string', 'max:32'],
+            'phone' => [
+                'required', 'string', 'max:32',
+                Rule::unique('users', 'phone')->where(fn ($q) => $q->where('tenant_id', $tenantId)),
+            ],
             'photo' => ['nullable', 'image', 'max:2048'],
             'password' => ['required', 'string', 'confirmed', Password::defaults()],
             'status' => ['required', Rule::in(['active', 'on_vacation', 'deactivated'])],

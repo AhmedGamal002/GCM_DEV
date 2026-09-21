@@ -7,6 +7,7 @@ use App\Models\Driver;
 use App\Models\Vehicle;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password;
 
 class UpdateDriverRequest extends FormRequest
 {
@@ -43,8 +44,16 @@ class UpdateDriverRequest extends FormRequest
 
         return [
             'name' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'string', 'max:32'],
+            'phone' => [
+                'required', 'string', 'max:32',
+                Rule::unique('users', 'phone')
+                    ->where(fn ($q) => $q->where('tenant_id', $tenantId))
+                    ->ignore($this->targetDriver()->user_id),
+            ],
             'photo' => ['nullable', 'image', 'max:2048'],
+            // FRD: drivers can't change their own password — an admin
+            // (system_admin / data_entry) sets it here. Blank = unchanged.
+            'password' => ['nullable', 'string', 'confirmed', Password::defaults()],
             'additional_data' => ['nullable', 'string'],
 
             'vehicle_category_ids' => ['required', 'array', 'min:1'],

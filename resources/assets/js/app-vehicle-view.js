@@ -67,6 +67,13 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('vv-affiliation').textContent = v.affiliation === 'gcm' ? t.gcm || 'GCM' : v.affiliation;
     document.getElementById('vv-entity').textContent = v.entity_name || '';
 
+    if (v.updated_by_name && t.last_updated_by) {
+      const at = v.updated_at ? new Date(v.updated_at).toLocaleString() : '';
+      document.getElementById('vv-updated-by').textContent = t.last_updated_by
+        .replace(':name', v.updated_by_name)
+        .replace(':at', at);
+    }
+
     if (v.additional_data) {
       document.getElementById('vv-additional').innerHTML = v.additional_data;
       document.getElementById('vv-additional-wrapper').classList.remove('d-none');

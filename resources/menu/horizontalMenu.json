@@ -5,7 +5,7 @@
       "name": "Dashboard",
       "icon": "menu-icon tf-icons ti ti-smart-home",
       "slug": "app-dashboard",
-      "roles": ["data_entry", "auditor", "driver"]
+      "roles": ["system_admin", "data_entry", "auditor", "driver"]
     },
     {
       "name": "Dashboards",
@@ -85,6 +85,7 @@
     },
     {
       "name": "Apps",
+      "roles": ["system_admin", "data_entry", "auditor"],
       "icon": "menu-icon tf-icons ti ti-layout-grid-add",
       "slug": [
         "app",
@@ -317,12 +318,13 @@
           "name": "Users",
           "slug": "app-user",
           "icon": "menu-icon tf-icons ti ti-users",
-          "roles": ["system_admin"],
+          "roles": ["system_admin", "data_entry"],
           "submenu": [
             {
               "url": "app/user/list",
               "name": "List",
-              "slug": "app-user-list"
+              "slug": "app-user-list",
+              "roles": ["system_admin", "data_entry"]
             },
             {
               "name": "View",
@@ -368,17 +370,19 @@
           "name": "Drivers",
           "icon": "menu-icon tf-icons ti ti-steering-wheel",
           "slug": "app-driver",
-          "roles": ["system_admin"],
+          "roles": ["system_admin", "data_entry"],
           "submenu": [
             {
               "url": "app/driver/list",
               "name": "List",
-              "slug": "app-driver-list"
+              "slug": "app-driver-list",
+              "roles": ["system_admin", "data_entry"]
             },
             {
               "url": "app/driver/add",
               "name": "Add",
-              "slug": "app-driver-add"
+              "slug": "app-driver-add",
+              "roles": ["system_admin", "data_entry"]
             }
           ]
         },
