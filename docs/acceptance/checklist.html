@@ -490,14 +490,14 @@
       <dl><div class="row"><dt>الخطوات</dt><dd>Categories ← أيقونة التعديل على أي تصنيف ← غيّر الاسم الإنجليزي والعربي ← حفظ. بعدين افتح صفحة المركبات.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الاسم الجديد ظاهر في الكروت والفلتر وعمود "Category" بالجدول. المركبات المرتبطة بيه فضلت مرتبطة (مفيش مركبة فقدت تصنيفها). إعادة الحفظ بنفس الاسم من غير تغيير بتنجح.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleCategoryManagementTest::test_renaming_keeps_the_slug_stable</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
-    <article class="item" data-id="week-3-frd-gap-review#14" data-title="الحذف — مسموح لغير المستخدم فقط">
+    <article class="item" data-id="week-3-frd-gap-review#14" data-title="الحذف — مسموح لتصنيف مضاف يدويًا وغير مستخدم فقط">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
           <span class="num">14</span></label>
-        <h3>الحذف — مسموح لغير المستخدم فقط</h3>
+        <h3>الحذف — مسموح لتصنيف مضاف يدويًا وغير مستخدم فقط</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>الخطوات</dt><dd>(أ) أضف تصنيف جديد واحذفه من أيقونة الحذف ← أكّد في النافذة. (ب) بص على أي تصنيف مربوط بمركبة أو أصل أو سائق (كل الخمسة الأصليين مربوطين بأصول في البيانات التجريبية).</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>(أ) التصنيف بيتمسح والكارت بتاعه بيختفي من صفحة المركبات. (ب) أيقونة الحذف <strong>مقفولة</strong> وعليها تلميح "In use — can't be deleted"؛ ولو الحذف اتحاول من API مباشرة → 422 برسالة توضّح المربوط بإيه ("in use by 3 vehicles, 1 asset").</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleCategoryManagementTest</code> (<code>test_a_category_used_by_a_vehicle...</code>, <code>..._driver_or_an_asset...</code>, <code>test_an_unused_category_can_be_deleted</code>)</dd></div></dl>
+      <dl><div class="row"><dt>الخطوات</dt><dd>(أ) أضف تصنيف جديد واحذفه من أيقونة الحذف ← أكّد في النافذة. (ب) بص على تصنيف مربوط بمركبة أو أصل أو سائق. (ج) بص على أي تصنيف من الستة الأساسيين (بما فيهم شاحنة جرّارة) حتى لو مش مربوط بحاجة.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>(أ) التصنيف بيتمسح والكارت بتاعه بيختفي من صفحة المركبات. (ب) أيقونة الحذف <strong>مقفولة</strong> وعليها تلميح "In use — can't be deleted"؛ ولو الحذف اتحاول من API مباشرة → 422 برسالة توضّح المربوط بإيه ("in use by 3 vehicles, 1 asset"). (ج) أيقونة الحذف <strong>مقفولة دايمًا</strong> على الستة الأساسيين وعليها تلميح "Primary category — can't be deleted"؛ والـAPI بيرجّع 422 "This is a primary category and can't be deleted." (الاسم بس هو اللي بيتعدّل).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleCategoryManagementTest</code> (<code>test_a_category_used_by_a_vehicle...</code>, <code>..._driver_or_an_asset...</code>, <code>test_an_unused_custom_category_can_be_deleted</code>, <code>test_a_primary_category_cannot_be_deleted_even_when_unused</code>, <code>test_the_list_flags_primary_categories_so_the_ui_can_disable_delete</code>)</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-frd-gap-review#15" data-title="صلاحية مدير النظام فقط">
@@ -517,7 +517,7 @@
         <h3>عزل التصنيفات بين الشركات</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>الخطوات</dt><dd>(يحتاج شركة تانية — أنشئها من Super Admin ← Tenants). سجّل دخول بمدير نظام الشركة الجديدة وافتح Vehicles ← Categories.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الشركة الجديدة بتبدأ بالخمس تصنيفات الافتراضية بس. اللي أضفته/عدّلته/حذفته في شركة GCM <strong>ماظهرش</strong> عندها، والعكس. نفس الاسم مسموح في شركتين مختلفتين.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleCategoryManagementTest::test_categories_are_isolated_between_tenants</code></dd></div></dl>
+      <dl><div class="row"><dt>الخطوات</dt><dd>(يحتاج شركة تانية — أنشئها من Super Admin ← Tenants). سجّل دخول بمدير نظام الشركة الجديدة وافتح Vehicles ← Categories.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الشركة الجديدة بتبدأ بالست تصنيفات الافتراضية بس. اللي أضفته/عدّلته/حذفته في شركة GCM <strong>ماظهرش</strong> عندها، والعكس. نفس الاسم مسموح في شركتين مختلفتين.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleCategoryManagementTest::test_categories_are_isolated_between_tenants</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-frd-gap-review#17" data-title="الواجهة بالعربي">
@@ -540,14 +540,14 @@
       <dl><div class="row"><dt>الخطوات</dt><dd>سجّل دخول بـ<code>admin@gcm.test</code> ثم <code>dataentry@gcm.test</code> ثم <code>auditor@gcm.test</code> ثم <code>driver@gcm.test</code> وبص على القائمة الجانبية. بدّل اللغة لعربي.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الأدمن ومدخل البيانات: Dashboard ثم عنوان <strong>Accounts</strong> (تحته Users وDrivers) ثم عنوان <strong>Fleet &amp; Assets</strong> (تحته Vehicles وAssets). المراقب: Dashboard + عنوان <strong>Fleet &amp; Assets</strong> بس (مفيش "Accounts" لأنه مالوش حاجة تحته). السائق: Dashboard بس ومفيش أي عنوان. بالعربي: "الحسابات" و"الأسطول والأصول".</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>MenuVisibilityTest</code> (<code>test_system_admin_and_data_entry_see_both_section_titles</code>, <code>test_an_auditor_sees_only_the_fleet_and_assets_title</code>, <code>test_a_driver_sees_no_section_titles_at_all</code>)</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
-    <article class="item" data-id="week-3-frd-gap-review#19" data-title="زر "Add category" مش لازق في خانة البحث">
+    <article class="item" data-id="week-3-frd-gap-review#19" data-title="زر "Add category" مش لازق في خانة البحث + زر Export">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
           <span class="num">19</span></label>
-        <h3>زر "Add category" مش لازق في خانة البحث</h3>
+        <h3>زر "Add category" مش لازق في خانة البحث + زر Export</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>الخطوات</dt><dd>افتح Vehicles ← Categories وقارن المسافة بين خانة البحث وزر الإضافة بصفحة Assets ← Categories.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>نفس المسافة بالظبط بين خانة البحث وأول زرار في الصفحتين.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd>يدوي فقط</dd></div></dl>
+      <dl><div class="row"><dt>الخطوات</dt><dd>افتح Vehicles ← Categories وقارن المسافة بين خانة البحث وأزرار <strong>Export</strong> و<strong>Add category</strong> بصفحة Assets ← Categories.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>نفس الترتيب والمسافات بالظبط في الصفحتين (بحث ← Export ← Add). زر Export بيفتح قايمة Excel / Pdf.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>ExportFiltersTest::test_vehicle_category_export_*</code> (الصفوف المصدّرة مع البحث + PDF + أدمن فقط). الترتيب والمسافات يدوي.</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-frd-gap-review#20" data-title="المحتوى بعرض الشاشة كله (Wide) كوضع افتراضي">
@@ -591,7 +591,7 @@
         <h3>التصدير (خصوصًا PDF) بيوضّح إنه شغّال</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>الخطوات</dt><dd>في أي قائمة (Users / Drivers / Vehicles / Assets / Asset Categories) دوس Export ← Pdf. جرّب كمان Excel. (الأنسب لقائمة كبيرة: زوّد بيانات — مثلاً <code>php artisan db:seed --class=DevVehicleVolumeSeeder</code> بيزرع 3000 مركبة — وبعدين <code>php artisan migrate:fresh --seed</code> في الآخر.)</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>أول ما تدوس تظهر نافذة "جارٍ تجهيز الملف..." مع تلميح "القوائم الكبيرة قد تستغرق بعض الوقت. من فضلك اترك هذه الصفحة مفتوحة." ودايرة تحميل، وبتختفي لما الملف ينزل (<code>vehicles.pdf</code> / <code>vehicles.xlsx</code>...). لو حصل خطأ بتظهر رسالة حمرا بزرار "حسنًا" بدل ما الصفحة تفضل معلّقة. الـ PDF بيتقسم صفحات، كل صفحة فيها هيدر الجدول.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>ExportPdfLayoutTest</code> (بنية الـPDF: 40 صف لكل جدول، الصفحات، الـescape)</dd></div></dl>
+      <dl><div class="row"><dt>الخطوات</dt><dd>في أي قائمة (Users / Drivers / Vehicles / Vehicle Categories / Assets / Asset Categories) دوس Export ← Pdf. جرّب كمان Excel. (الأنسب لقائمة كبيرة: زوّد بيانات — مثلاً <code>php artisan db:seed --class=DevVehicleVolumeSeeder</code> بيزرع 3000 مركبة — وبعدين <code>php artisan migrate:fresh --seed</code> في الآخر.)</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>أول ما تدوس تظهر نافذة "جارٍ تجهيز الملف..." مع تلميح "القوائم الكبيرة قد تستغرق بعض الوقت. من فضلك اترك هذه الصفحة مفتوحة." ودايرة تحميل، وبتختفي لما الملف ينزل (<code>vehicles.pdf</code> / <code>vehicles.xlsx</code>...). لو حصل خطأ بتظهر رسالة حمرا بزرار "حسنًا" بدل ما الصفحة تفضل معلّقة. الـ PDF بيتقسم صفحات، كل صفحة فيها هيدر الجدول.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>ExportPdfLayoutTest</code> (بنية الـPDF: 40 صف لكل جدول، الصفحات، الـescape)</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-frd-gap-review#24" data-title="تصدير PDF بالعربي">
@@ -601,7 +601,7 @@
         <h3>تصدير PDF بالعربي</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>الخطوات</dt><dd>بدّل اللغة للعربية من الـnavbar. من قائمة <strong>المستخدمين</strong> ثم <strong>السائقين</strong> ثم <strong>المركبات</strong> ثم <strong>الأصول</strong> ثم <strong>تصنيفات سعة الأصول</strong> دوس تصدير ← PDF وافتح الملف. (لو مفيش بيانات عربية: أنشئ سائق/مستخدم باسم عربي، ومركبة بلوحة حروفها عربي مثل "أ ب ج".) بعدها بدّل للإنجليزي وصدّر نفس القائمة.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>بالعربي — العنوان والأعمدة <strong>عربي</strong> والجدول بيبدأ من <strong>اليمين</strong> (أول عمود "الرقم التعريفي" في أقصى اليمين)، والأسماء والتصنيفات العربية <strong>حروفها متوصّلة وقراءتها صح</strong> (مش علامات استفهام ولا حروف مفصولة/معكوسة)، والقيم مترجمة (نشط / في الصيانة / متعهد / مدير النظام) مش <code>on_maintenance</code>. بالإنجليزي — الأعمدة والعناوين إنجليزي بترتيبها العادي، لكن أي اسم عربي في البيانات لسه بيظهر صح. حجم الملف صغير (عشرات الكيلوبايت مش ~1 ميجا).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>ArabicTextTest</code> (الربط والاتجاه) + <code>ExportPdfLayoutTest</code> (عكس الأعمدة، ترجمة القيم، PDF عربي حقيقي). العرض البصري يدوي.</dd></div></dl>
+      <dl><div class="row"><dt>الخطوات</dt><dd>بدّل اللغة للعربية من الـnavbar. من قائمة <strong>المستخدمين</strong> ثم <strong>السائقين</strong> ثم <strong>المركبات</strong> ثم <strong>الأصول</strong> ثم <strong>تصنيفات سعة الأصول</strong> ثم <strong>تصنيفات المركبات</strong> دوس تصدير ← PDF وافتح الملف. (لو مفيش بيانات عربية: أنشئ سائق/مستخدم باسم عربي، ومركبة بلوحة حروفها عربي مثل "أ ب ج".) بعدها بدّل للإنجليزي وصدّر نفس القائمة.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>بالعربي — العنوان والأعمدة <strong>عربي</strong> والجدول بيبدأ من <strong>اليمين</strong> (أول عمود "الرقم التعريفي" في أقصى اليمين)، والأسماء والتصنيفات العربية <strong>حروفها متوصّلة وقراءتها صح</strong> (مش علامات استفهام ولا حروف مفصولة/معكوسة)، والقيم مترجمة (نشط / في الصيانة / متعهد / مدير النظام) مش <code>on_maintenance</code>. بالإنجليزي — الأعمدة والعناوين إنجليزي بترتيبها العادي، لكن أي اسم عربي في البيانات لسه بيظهر صح. حجم الملف صغير (عشرات الكيلوبايت مش ~1 ميجا).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>ArabicTextTest</code> (الربط والاتجاه) + <code>ExportPdfLayoutTest</code> (عكس الأعمدة، ترجمة القيم، PDF عربي حقيقي). العرض البصري يدوي.</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-frd-gap-review#25" data-title="التصدير بيطابق الفلاتر والبحث اللي على الشاشة">
@@ -611,7 +611,7 @@
         <h3>التصدير بيطابق الفلاتر والبحث اللي على الشاشة</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>الخطوات</dt><dd>في كل قائمة (Users / Drivers / Vehicles / Assets / Asset Categories) — (1) اختار فلتر واحد على الأقل (مثلًا الحالة أو التصنيف) واكتب حاجة في مربع البحث بحيث الجدول يعرض جزء بس من الصفوف. (2) دوس Export ← Excel، وبعدين Export ← Pdf. (3) امسح الفلاتر والبحث ودوس Export تاني.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الملف (Excel والـPDF) فيه <strong>نفس الصفوف اللي بتظهر في الجدول بالظبط</strong> (نفس الفلاتر ونفس البحث) — مش القائمة كلها. بعد مسح الفلاتر والبحث الملف بيحتوي كل الصفوف. البحث بيشتغل على نفس الأعمدة اللي بيشتغل عليها في الجدول (مثلًا لوحة المركبة بالشكل المعروض، أو كود المستخدم).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>ExportFiltersTest</code> (الصفوف المصدّرة لكل قائمة مع كل فلتر والبحث، وPDF مفلتر). سلوك الأزرار في المتصفح يدوي.</dd></div></dl>
+      <dl><div class="row"><dt>الخطوات</dt><dd>في كل قائمة (Users / Drivers / Vehicles / Vehicle Categories / Assets / Asset Categories) — (1) اختار فلتر واحد على الأقل (مثلًا الحالة أو التصنيف) واكتب حاجة في مربع البحث بحيث الجدول يعرض جزء بس من الصفوف. (2) دوس Export ← Excel، وبعدين Export ← Pdf. (3) امسح الفلاتر والبحث ودوس Export تاني.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الملف (Excel والـPDF) فيه <strong>نفس الصفوف اللي بتظهر في الجدول بالظبط</strong> (نفس الفلاتر ونفس البحث) — مش القائمة كلها. بعد مسح الفلاتر والبحث الملف بيحتوي كل الصفوف. البحث بيشتغل على نفس الأعمدة اللي بيشتغل عليها في الجدول (مثلًا لوحة المركبة بالشكل المعروض، أو كود المستخدم).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>ExportFiltersTest</code> (الصفوف المصدّرة لكل قائمة مع كل فلتر والبحث، وPDF مفلتر). سلوك الأزرار في المتصفح يدوي.</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     </details>
@@ -857,7 +857,7 @@
     </article>
     </details>
   </section>
-  <p class="foot">اتولّد تلقائيًا من ملفات <code>docs/acceptance/week-*.md</code> بتاريخ 2026-09-21 — للتحديث: <code>node docs/acceptance/build-checklist.mjs</code>. متعدّلش الملف ده بإيدك.</p>
+  <p class="foot">اتولّد تلقائيًا من ملفات <code>docs/acceptance/week-*.md</code> بتاريخ 2026-09-24 — للتحديث: <code>node docs/acceptance/build-checklist.mjs</code>. متعدّلش الملف ده بإيدك.</p>
 </div>
 
 <script>

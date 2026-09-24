@@ -117,7 +117,31 @@
       "Bash(php -l \"D:/Projects/server/apps/phpmyadmin5.2.1/config.inc.php\")",
       "Bash(grep -v '~\\\\$')",
       "Bash(php -r \"json_decode\\(file_get_contents\\('lang/en.json'\\)\\); echo 'en:'.\\(json_last_error\\(\\)===JSON_ERROR_NONE?'OK':'BAD'\\).' '; json_decode\\(file_get_contents\\('lang/ar.json'\\)\\); echo 'ar:'.\\(json_last_error\\(\\)===JSON_ERROR_NONE?'OK':'BAD'\\).PHP_EOL;\")",
-      "Bash(php -r \"json_decode\\(file_get_contents\\('lang/ar.json'\\)\\); echo json_last_error\\(\\)===JSON_ERROR_NONE?'ar.json OK':'BAD';\")"
+      "Bash(php -r \"json_decode\\(file_get_contents\\('lang/ar.json'\\)\\); echo json_last_error\\(\\)===JSON_ERROR_NONE?'ar.json OK':'BAD';\")",
+      "PowerShell(Start-Process -FilePath \"F:\\\\KKMA\\\\MOODLE_5\\\\wamp\\\\bin\\\\mariadb\\\\mariadb10.6.21\\\\bin\\\\mysqld.exe\" -ArgumentList '--defaults-file=F:\\\\KKMA\\\\MOODLE_5\\\\wamp\\\\bin\\\\mariadb\\\\mariadb10.6.21\\\\my.ini' -WindowStyle Hidden)",
+      "PowerShell(Test-NetConnection -ComputerName 127.0.0.1 -Port 3306 -WarningAction SilentlyContinue)",
+      "PowerShell(Get-Process mysqld,mariadbd -ErrorAction SilentlyContinue)",
+      "PowerShell(\\(Get-CimInstance Win32_Service -Filter \"Name='wampmysqld64'\"\\).PathName; Select-String -Path \"F:\\\\Maaloum_projects_2026\\\\GCM\\\\main\\\\.env\" -Pattern '^DB_\\(PORT|HOST\\)' | ForEach-Object { $_.Line }; Get-Process mysqld,mariadbd -ErrorAction SilentlyContinue | Select-Object Id,ProcessName,Path)",
+      "Bash(rm -f public/hot)",
+      "Bash(grep -n 'assertCount\\(6\\\\|assertCount\\(4\\\\|assertSame\\(5\\\\|assertJsonCount\\(5\\\\|assertCount\\(5, $byCategory' tests/Feature/Vehicles/VehicleCategoryManagementTest.php tests/Feature/Vehicles/VehicleManagementTest.php)",
+      "Bash(sed -i '74s/the 5 default categories/the 6 default categories/' docs/user-guides/system-admin.en.md)",
+      "Bash(sed -i '74s/بالـ5 تصنيفات الافتراضية/بالـ6 تصنيفات الافتراضية/' docs/user-guides/system-admin.ar.md)",
+      "Bash(sed -i '113s/كل الخمسة الأصليين مربوطين بأصول/كل الأصليين \\(5 من 6؛ \"شاحنة جرّارة\" مش مربوطة بأصول\\) مربوطين بأصول/' docs/acceptance/week-3-frd-gap-review.md)",
+      "Bash(sed -i '126s/بالخمس تصنيفات الافتراضية بس/بالست تصنيفات الافتراضية بس/' docs/acceptance/week-3-frd-gap-review.md)",
+      "Bash(sed -i '121s/الـFRD بيثبّت 5 تصنيفات بس\\\\./الـFRD بيثبّت 5 تصنيفات بس \\(والعميل ضاف سادس: شاحنة جرّارة \\\\/ Tractor truck — `VehicleCategory::DEFAULTS`\\)./; 121s/كل شركة بتبدأ بالخمسة الافتراضية/كل شركة بتبدأ بالستة الافتراضية/' docs/frd-gap-analysis.md)",
+      "Bash(sed -i '288s|.*|&\\\\n  \"Tractor truck\": \"Tractor truck\",|' lang/en.json)",
+      "Bash(sed -i '288s|.*|&\\\\n  \"Tractor truck\": \"شاحنة جرّارة \\(رأس مقطورة\\)\",|' lang/ar.json)",
+      "Bash(node -e \"['lang/en.json','lang/ar.json'].forEach\\(f=>{JSON.parse\\(require\\('fs'\\).readFileSync\\(f,'utf8'\\)\\);console.log\\('OK',f\\)}\\)\")",
+      "Bash(sed -i 's/\\(client request, outside the FRD.s fixed five\\)\\\\. Covers/\\(client request, outside the FRD'\"'\"'s fixed five; a sixth default, Tractor truck, was added later\\). Covers/' tests/Feature/Vehicles/VehicleCategoryManagementTest.php)",
+      "Bash(sed -i \"202s/can't be deleted/can\\\\\\\\\\\\\\\\'t be deleted/\" tests/Feature/Vehicles/VehicleCategoryManagementTest.php)",
+      "Bash(php -l tests/Feature/Vehicles/VehicleCategoryManagementTest.php)",
+      "Bash(node \"C:\\\\Users\\\\MOHAME~1\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\F--Maaloum-projects-2026-GCM-main\\\\393c5939-916c-4f7f-ad5f-66569f7250ba\\\\scratchpad\\\\doc-edits.cjs\")",
+      "Bash(node docs/acceptance/build-checklist.mjs)",
+      "PowerShell(Get-Process node -ErrorAction SilentlyContinue | Select-Object Id,StartTime,@{n='CPUs';e={[int]$_.CPU}})",
+      "Bash(php -d xdebug.mode=off artisan test tests/Feature/ExportFiltersTest.php)",
+      "Bash(php -d xdebug.mode=off artisan test tests/Feature/ExportFiltersTest.php tests/Feature/Vehicles/VehicleCategoryManagementTest.php)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:8000/login)",
+      "Bash(php -d xdebug.mode=off artisan test)"
     ]
   }
 }

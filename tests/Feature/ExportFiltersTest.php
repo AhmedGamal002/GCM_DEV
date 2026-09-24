@@ -125,6 +125,29 @@ class ExportFiltersTest extends TestCase
         $this->assertSame(['Small Box'], $this->exported('/api/v1/asset-capacity-categories/export?format=xlsx&search=Small', 'asset-capacity-categories.xlsx')->pluck('name')->all());
     }
 
+    public function test_vehicle_category_export_honours_search_in_both_languages(): void
+    {
+        // The tenant already holds the primary defaults (Tenant::created).
+        $all = $this->exported('/api/v1/vehicle-categories/export?format=xlsx', 'vehicle-categories.xlsx');
+        $this->assertCount(count(VehicleCategory::DEFAULTS), $all);
+
+        $this->assertSame(['tractor_truck'], $this->exported('/api/v1/vehicle-categories/export?format=xlsx&search=Tractor', 'vehicle-categories.xlsx')->pluck('slug')->all());
+        $this->assertSame(['tractor_truck'], $this->exported('/api/v1/vehicle-categories/export?format=xlsx&search='.urlencode('جرّارة'), 'vehicle-categories.xlsx')->pluck('slug')->all());
+        $this->assertCount(0, $this->exported('/api/v1/vehicle-categories/export?format=xlsx&search=zzz-nothing', 'vehicle-categories.xlsx'));
+    }
+
+    public function test_vehicle_category_export_pdf_works(): void
+    {
+        $this->actingAs($this->admin, 'web')->get('/api/v1/vehicle-categories/export?format=pdf&search=Tractor')->assertOk();
+    }
+
+    public function test_vehicle_category_export_is_admin_only(): void
+    {
+        $auditor = User::factory()->create();
+        $auditor->assignRole('auditor');
+        $this->actingAs($auditor, 'web')->get('/api/v1/vehicle-categories/export?format=xlsx')->assertForbidden();
+    }
+
     public function test_driver_export_honours_search_and_filters(): void
     {
         $this->makeDriver('Zed Driver', 'zed@t.test', '01000000001', 'active');

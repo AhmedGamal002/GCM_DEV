@@ -5,14 +5,18 @@ namespace App\Http\Controllers\Api\V1;
 use App\Domain\Vehicles\Actions\CreateVehicleCategoryAction;
 use App\Domain\Vehicles\Actions\DeleteVehicleCategoryAction;
 use App\Domain\Vehicles\Actions\UpdateVehicleCategoryAction;
+use App\Domain\Vehicles\Exceptions\PrimaryVehicleCategoryException;
 use App\Domain\Vehicles\Exceptions\VehicleCategoryInUseException;
+use App\Domain\Vehicles\Exports\VehicleCategoriesExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\VehicleCategories\StoreVehicleCategoryRequest;
 use App\Http\Requests\VehicleCategories\UpdateVehicleCategoryRequest;
 use App\Http\Resources\VehicleCategoryResource;
 use App\Models\VehicleCategory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Maatwebsite\Excel\Facades\Excel;
 
 /**
  * Vehicle categories — tenant-scoped, managed by the system_admin only
@@ -39,14 +43,10 @@ class VehicleCategoryController extends Controller
 
         $paged = $request->filled('per_page');
 
-        $query = VehicleCategory::query()
+        $query = $this->filteredQuery($request)
             // Usage counts only for the management list; the dropdown
             // calls (no per_page) skip the extra sub-selects.
             ->when($paged, fn ($q) => $q->withCount(['vehicles', 'drivers', 'assets']))
-            ->when($request->filled('search'), function ($q) use ($request) {
-                $term = '%'.$request->string('search')->toString().'%';
-                $q->where(fn ($w) => $w->where('name_en', 'like', $term)->orWhere('name_ar', 'like', $term));
-            })
             ->orderBy($sortBy === 'vehicles_count' && ! $paged ? 'id' : $sortBy, $sortDir);
 
         return VehicleCategoryResource::collection(
@@ -85,10 +85,45 @@ class VehicleCategoryController extends Controller
 
         try {
             $action->execute($category);
-        } catch (VehicleCategoryInUseException $e) {
+        } catch (PrimaryVehicleCategoryException|VehicleCategoryInUseException $e) {
             abort(422, $e->getMessage());
         }
 
         return response()->noContent();
+    }
+
+    public function export(Request $request)
+    {
+        Gate::authorize('export', VehicleCategory::class);
+
+        $categories = $this->filteredQuery($request)
+            ->withCount('vehicles')
+            ->orderBy('id')
+            ->get();
+
+        if ($request->query('format', 'xlsx') === 'pdf') {
+            // DomPDF is CPU-heavy on big lists; the default 30s cap on shared
+            // hosting turns a slow export into a 500. Excel is unaffected.
+            set_time_limit(180);
+
+            $pdf = app('dompdf.wrapper')->loadView('tenant.vehicle-categories.export-pdf', ['categories' => $categories]);
+
+            return $pdf->download('vehicle-categories.pdf');
+        }
+
+        return Excel::download(new VehicleCategoriesExport($categories), 'vehicle-categories.xlsx');
+    }
+
+    /**
+     * The list's search box, shared by index() and export() so an export
+     * always holds exactly the rows the user sees on screen.
+     */
+    private function filteredQuery(Request $request): Builder
+    {
+        return VehicleCategory::query()
+            ->when($request->filled('search'), function ($q) use ($request) {
+                $term = '%'.$request->string('search')->toString().'%';
+                $q->where(fn ($w) => $w->where('name_en', 'like', $term)->orWhere('name_ar', 'like', $term));
+            });
     }
 }

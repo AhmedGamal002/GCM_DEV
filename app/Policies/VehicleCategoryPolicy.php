@@ -22,6 +22,11 @@ class VehicleCategoryPolicy
         return $actor->hasRole('system_admin');
     }
 
+    public function export(User $actor): bool
+    {
+        return $actor->hasRole('system_admin');
+    }
+
     public function view(User $actor, VehicleCategory $category): bool
     {
         return $actor->hasRole('system_admin');

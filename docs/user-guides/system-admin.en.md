@@ -71,9 +71,10 @@ The System Admin has **full access**: view, create, edit, export, and all status
 - **All document and permit numbers are digits only.**
 
 ### Vehicle categories — Vehicles ← Categories (`/app/vehicle-category/list`) — System Admin only
-- Your company starts with the 5 default categories, and you can **add new ones** and rename any of them (an English name + an Arabic name, each unique within your company).
-- **Deleting is blocked while a category is in use** by vehicles, by drivers (qualified types) or by assets (compatible category) — the delete icon is disabled and the message says what uses it (e.g. "3 vehicles, 1 asset"). Only an unused category can be deleted.
+- Your company starts with the 6 default categories, and you can **add new ones** and rename any of them (an English name + an Arabic name, each unique within your company).
+- **Deleting is blocked while a category is in use** by vehicles, by drivers (qualified types) or by assets (compatible category) — the delete icon is disabled and the message says what uses it (e.g. "3 vehicles, 1 asset"). The six **primary** categories (the five FRD ones plus Tractor truck) can be renamed but **never deleted**, even when unused (their delete icon is always disabled). Only a category you added yourself, and only while unused, can be deleted.
 - A new category automatically becomes a card on the Vehicles page, an option in the category filter, and an option in the vehicle, driver and asset forms. Renaming changes it everywhere (vehicles linked to it stay linked).
+- **Export** (Excel / PDF) button on the list — the file holds the rows matching the search box.
 - A "Manage categories" link above the category cards on the Vehicles page takes you to the same screen.
 
 ### Vehicle status

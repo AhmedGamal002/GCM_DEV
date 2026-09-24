@@ -17,6 +17,8 @@ class VehicleCategoryResource extends JsonResource
             'name' => $this->name(),
             'name_en' => $this->name_en,
             'name_ar' => $this->name_ar,
+            // Primary (built-in) category: renamable, never deletable.
+            'is_default' => $this->isDefault(),
             // Only present when the controller asked for usage counts
             // (the management list / single fetch) — the plain dropdown
             // call skips the three sub-selects.

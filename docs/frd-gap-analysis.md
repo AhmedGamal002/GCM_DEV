@@ -118,7 +118,7 @@ public function update(User $actor, Driver $target): bool { return $actor->hasRo
 | حالة "في الصيانة" = system_admin/data_entry، التعطيل = system_admin بس | ✅ | `UpdateVehicleStatusAction` — النمط المرجعي لباقي الموديولات |
 | لوحة فريدة داخل نفس الـtenant | ✅ | DB constraint + validation، `VehicleUniquePlateTest` |
 | الحاوية المدمجة وفلترة السعة حسب مجمع الأصول | ✅ | `EmbeddedCapacityFitsVehicleRule`, `VehicleEmbeddedCapacityTest` |
-| تصنيفات المركبات (§1.5.2: خمسة ثابتة) | ⚠️ **انحراف مقصود بطلب العميل** | الـFRD بيثبّت 5 تصنيفات بس. بطلب العميل بقت **خاصة بكل شركة** ومدير النظام بيضيف/يعدّل/يحذف (الحذف ممنوع لو مربوط بمركبات/سائقين/أصول). كل شركة بتبدأ بالخمسة الافتراضية (`Tenant::created`). راجع `WEEKLY_PLAN.md` |
+| تصنيفات المركبات (§1.5.2: خمسة ثابتة) | ⚠️ **انحراف مقصود بطلب العميل** | الـFRD بيثبّت 5 تصنيفات بس (والعميل ضاف سادس: شاحنة جرّارة / Tractor truck — `VehicleCategory::DEFAULTS`). بطلب العميل بقت **خاصة بكل شركة** ومدير النظام بيضيف/يعدّل/يحذف (الحذف ممنوع لو مربوط بمركبات/سائقين/أصول). كل شركة بتبدأ بالستة الافتراضية (`Tenant::created`). راجع `WEEKLY_PLAN.md` |
 | "آخر تحديث بواسطة" | ✅ | اتضاف الجلسة اللي فاتت |
 
 ## §1.6 — قائمة السائقين

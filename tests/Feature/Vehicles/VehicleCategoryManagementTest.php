@@ -15,7 +15,7 @@ use Tests\TestCase;
 
 /**
  * Vehicle categories are tenant-scoped and managed by the system_admin
- * (client request, outside the FRD's fixed five). Covers the CRUD, the
+ * (client request, outside the FRD's fixed five; a sixth default, Tractor truck, was added later). Covers the CRUD, the
  * admin-only rule, the delete-blocked-while-in-use rule, per-tenant
  * isolation, and that the vehicle list's stats follow the real category
  * count.
@@ -53,13 +53,48 @@ class VehicleCategoryManagementTest extends TestCase
         return array_merge(['name_en' => 'Crane truck', 'name_ar' => 'مركبات رافعة'], $overrides);
     }
 
-    public function test_a_new_tenant_starts_with_the_five_default_categories(): void
+    public function test_a_new_tenant_starts_with_the_default_categories(): void
     {
-        $this->assertSame(5, VehicleCategory::count());
+        $this->assertSame(count(VehicleCategory::DEFAULTS), VehicleCategory::count());
         $this->assertEqualsCanonicalizing(
             array_keys(VehicleCategory::DEFAULTS),
             VehicleCategory::pluck('slug')->all()
         );
+    }
+
+    /** Client request: a sixth default on top of the FRD's five. */
+    public function test_tractor_truck_is_a_default_with_its_arabic_name(): void
+    {
+        $tractor = VehicleCategory::where('slug', 'tractor_truck')->firstOrFail();
+
+        $this->assertSame('Tractor truck', $tractor->name_en);
+        $this->assertSame('شاحنة جرّارة (رأس مقطورة)', $tractor->name_ar);
+        $this->assertCount(6, VehicleCategory::DEFAULTS);
+    }
+
+    /** Tenants that predate a new default get it from the (idempotent) seeder path. */
+    public function test_seeding_defaults_backfills_a_missing_default_without_duplicating(): void
+    {
+        VehicleCategory::where('slug', 'tractor_truck')->delete();
+        $this->assertSame(count(VehicleCategory::DEFAULTS) - 1, VehicleCategory::count());
+
+        VehicleCategory::seedDefaultsFor($this->tenantA);
+        VehicleCategory::seedDefaultsFor($this->tenantA);
+
+        $this->assertSame(count(VehicleCategory::DEFAULTS), VehicleCategory::count());
+        $this->assertSame(1, VehicleCategory::where('slug', 'tractor_truck')->count());
+    }
+
+    /** An admin who already hand-made "Tractor truck" must not trip the per-tenant unique names. */
+    public function test_seeding_defaults_skips_a_default_whose_name_the_tenant_already_used(): void
+    {
+        VehicleCategory::where('slug', 'tractor_truck')->delete();
+        VehicleCategory::create(['slug' => 'my_tractors', 'name_en' => 'Tractor truck', 'name_ar' => 'جرارات']);
+
+        VehicleCategory::seedDefaultsFor($this->tenantA);
+
+        $this->assertSame(0, VehicleCategory::where('slug', 'tractor_truck')->count());
+        $this->assertSame(1, VehicleCategory::where('name_en', 'Tractor truck')->count());
     }
 
     public function test_admin_can_create_a_category_and_it_appears_in_the_list(): void
@@ -71,8 +106,8 @@ class VehicleCategoryManagementTest extends TestCase
             ->assertJsonPath('data.name_ar', 'مركبات رافعة')
             ->assertJsonPath('data.slug', 'crane_truck');
 
-        $this->assertSame(6, VehicleCategory::count());
-        $this->assertCount(6, $this->actingAs($this->admin, 'web')->getJson('/api/v1/vehicle-categories')->json('data'));
+        $this->assertSame(count(VehicleCategory::DEFAULTS) + 1, VehicleCategory::count());
+        $this->assertCount(count(VehicleCategory::DEFAULTS) + 1, $this->actingAs($this->admin, 'web')->getJson('/api/v1/vehicle-categories')->json('data'));
     }
 
     public function test_renaming_keeps_the_slug_stable(): void
@@ -129,7 +164,7 @@ class VehicleCategoryManagementTest extends TestCase
         $this->actingAs($actor, 'web')->deleteJson("/api/v1/vehicle-categories/{$category->id}")->assertForbidden();
         $this->actingAs($actor, 'web')->getJson("/api/v1/vehicle-categories/{$category->id}")->assertForbidden();
 
-        $this->assertSame(5, VehicleCategory::count());
+        $this->assertSame(count(VehicleCategory::DEFAULTS), VehicleCategory::count());
     }
 
     public static function nonAdminRolesProvider(): array
@@ -144,21 +179,47 @@ class VehicleCategoryManagementTest extends TestCase
         $this->actingAs($this->userWithRole($role, "{$role}@a.test"), 'web')
             ->getJson('/api/v1/vehicle-categories')
             ->assertOk()
-            ->assertJsonCount(5, 'data');
+            ->assertJsonCount(count(VehicleCategory::DEFAULTS), 'data');
     }
 
-    public function test_an_unused_category_can_be_deleted(): void
+    public function test_an_unused_custom_category_can_be_deleted(): void
     {
-        $category = VehicleCategory::where('slug', 'dyna_box')->firstOrFail();
+        $category = VehicleCategory::create(['slug' => 'crane', 'name_en' => 'Crane truck', 'name_ar' => 'رافعة']);
 
         $this->actingAs($this->admin, 'web')->deleteJson("/api/v1/vehicle-categories/{$category->id}")->assertNoContent();
 
-        $this->assertSame(4, VehicleCategory::count());
+        $this->assertSame(count(VehicleCategory::DEFAULTS), VehicleCategory::count());
+    }
+
+    /** Primary categories (the six defaults) can be renamed but never deleted — even when nothing uses them. */
+    public function test_a_primary_category_cannot_be_deleted_even_when_unused(): void
+    {
+        foreach (array_keys(VehicleCategory::DEFAULTS) as $slug) {
+            $category = VehicleCategory::where('slug', $slug)->firstOrFail();
+
+            $this->actingAs($this->admin, 'web')->deleteJson("/api/v1/vehicle-categories/{$category->id}")
+                ->assertUnprocessable()
+                ->assertJsonPath('message', "This is a primary category and can't be deleted.");
+        }
+
+        $this->assertSame(count(VehicleCategory::DEFAULTS), VehicleCategory::count());
+    }
+
+    public function test_the_list_flags_primary_categories_so_the_ui_can_disable_delete(): void
+    {
+        VehicleCategory::create(['slug' => 'crane', 'name_en' => 'Crane truck', 'name_ar' => 'رافعة']);
+
+        $rows = collect($this->actingAs($this->admin, 'web')->getJson('/api/v1/vehicle-categories?per_page=20')->json('data'))->keyBy('slug');
+
+        $this->assertTrue($rows['tractor_truck']['is_default']);
+        $this->assertTrue($rows['hook_lift']['is_default']);
+        $this->assertFalse($rows['crane']['is_default']);
     }
 
     public function test_a_category_used_by_a_vehicle_cannot_be_deleted(): void
     {
-        $category = VehicleCategory::where('slug', 'dump_truck')->firstOrFail();
+        // A custom category — the primary ones are protected regardless of use.
+        $category = VehicleCategory::create(['slug' => 'crane', 'name_en' => 'Crane truck', 'name_ar' => 'رافعة']);
         Vehicle::factory()->count(2)->create(['vehicle_category_id' => $category->id]);
 
         $this->actingAs($this->admin, 'web')->deleteJson("/api/v1/vehicle-categories/{$category->id}")
@@ -175,8 +236,8 @@ class VehicleCategoryManagementTest extends TestCase
      */
     public function test_a_category_used_by_a_driver_or_an_asset_cannot_be_deleted(): void
     {
-        $forDriver = VehicleCategory::where('slug', 'compactor')->firstOrFail();
-        $forAsset = VehicleCategory::where('slug', 'water_tanker')->firstOrFail();
+        $forDriver = VehicleCategory::create(['slug' => 'crane', 'name_en' => 'Crane truck', 'name_ar' => 'رافعة']);
+        $forAsset = VehicleCategory::create(['slug' => 'lowbed', 'name_en' => 'Lowbed', 'name_ar' => 'منخفضة']);
 
         $vehicle = Vehicle::factory()->create(['vehicle_category_id' => VehicleCategory::where('slug', 'hook_lift')->value('id')]);
         $driverUser = User::factory()->create();
@@ -233,19 +294,19 @@ class VehicleCategoryManagementTest extends TestCase
         Vehicle::factory()->count(3)->create(['vehicle_category_id' => $crane->id]);
 
         $byCategory = collect($this->actingAs($this->admin, 'web')->getJson('/api/v1/vehicles/stats')->json('data.by_category'));
-        $this->assertCount(6, $byCategory);
+        $this->assertCount(count(VehicleCategory::DEFAULTS) + 1, $byCategory);
         $this->assertSame(3, $byCategory->firstWhere('slug', 'crane')['count']);
     }
 
     public function test_deleting_a_category_removes_its_card(): void
     {
-        $unused = VehicleCategory::where('slug', 'dyna_box')->firstOrFail();
+        $unused = VehicleCategory::create(['slug' => 'crane_2', 'name_en' => 'Crane two', 'name_ar' => 'رافعة ٢']);
 
         $this->actingAs($this->admin, 'web')->deleteJson("/api/v1/vehicle-categories/{$unused->id}")->assertNoContent();
 
         $slugs = collect($this->actingAs($this->admin, 'web')->getJson('/api/v1/vehicles/stats')->json('data.by_category'))->pluck('slug');
-        $this->assertCount(4, $slugs);
-        $this->assertFalse($slugs->contains('dyna_box'));
+        $this->assertCount(count(VehicleCategory::DEFAULTS), $slugs);
+        $this->assertFalse($slugs->contains('crane_2'));
     }
 
     public function test_categories_are_isolated_between_tenants(): void
@@ -255,8 +316,8 @@ class VehicleCategoryManagementTest extends TestCase
         $adminB = $this->userWithRole('system_admin', 'admin@b.test');
         $foreignId = VehicleCategory::where('slug', 'dump_truck')->value('id');
 
-        // B has its own five, and an admin of A can't reach B's row.
-        $this->assertSame(5, VehicleCategory::count());
+        // B has its own set of defaults, and an admin of A can't reach B's row.
+        $this->assertSame(count(VehicleCategory::DEFAULTS), VehicleCategory::count());
         app()->instance('tenant', $this->tenantA);
         $this->assertNotSame($foreignId, VehicleCategory::where('slug', 'dump_truck')->value('id'));
 
