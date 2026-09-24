@@ -30,13 +30,13 @@ class DevVehicleVolumeSeeder extends Seeder
         $statuses = ['active', 'active', 'active', 'on_maintenance', 'deactivated'];
         $affiliations = ['gcm', 'gcm', 'gcm', 'contractor'];
 
-        $count = 3000;
+        $count = 50000;
         $now = now();
         $letters = range('A', 'Z');
 
         $batch = [];
         for ($i = 0; $i < $count; $i++) {
-            $plateLetters = $letters[intdiv($i, 26 * 26) % 26].$letters[intdiv($i, 26) % 26].$letters[$i % 26];
+            $plateLetters = $letters[intdiv($i, 26 * 26) % 26] . $letters[intdiv($i, 26) % 26] . $letters[$i % 26];
             $plateNumbers = str_pad((string) (($i % 9999) + 1), 4, '0', STR_PAD_LEFT);
 
             $batch[] = [
