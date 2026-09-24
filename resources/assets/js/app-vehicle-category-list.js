@@ -61,11 +61,15 @@ $(function () {
       });
   });
 
+  // No dropdown filters on this list (search only) — kept as one function so the
+  // table's own requests and the Excel/PDF export read the same params, like the other lists.
+  const listParams = () => ({});
+
   table = dt.DataTable({
     processing: true,
     serverSide: true,
     searchDelay: 500,
-    ajax: window.gcmServerSideAjax('/api/v1/vehicle-categories'),
+    ajax: window.gcmServerSideAjax('/api/v1/vehicle-categories', listParams),
     columns: [
       { data: 'id' },
       { data: 'name_en' },
@@ -103,8 +107,8 @@ $(function () {
             '<a href="' + editUrl + '" class="btn btn-icon btn-text-secondary waves-effect waves-light rounded-pill" title="' +
             escapeHtml(t.edit || 'Edit') + '"><i class="ti ti-edit ti-md"></i></a>';
 
-          const del = full.in_use
-            ? '<span class="btn btn-icon btn-text-secondary rounded-pill disabled" title="' + escapeHtml(t.in_use_hint) +
+          const del = full.is_default || full.in_use
+            ? '<span class="btn btn-icon btn-text-secondary rounded-pill disabled" title="' + escapeHtml(full.is_default ? t.primary_hint : t.in_use_hint) +
               '"><i class="ti ti-trash ti-md opacity-50"></i></span>'
             : '<button type="button" class="btn btn-icon btn-text-danger waves-effect waves-light rounded-pill delete-category" data-id="' +
               full.id + '" data-name="' + escapeHtml(full.name) + '" title="' + escapeHtml(t.delete || 'Delete') +
@@ -138,10 +142,25 @@ $(function () {
       '>',
     buttons: [
       {
+        extend: 'collection',
+        className: 'btn btn-label-secondary dropdown-toggle mx-4 waves-effect waves-light',
+        text: '<i class="ti ti-upload me-2 ti-xs"></i>' + (t.export || 'Export'),
+        buttons: [
+          {
+            text: '<i class="ti ti-file-spreadsheet me-2"></i>Excel',
+            className: 'dropdown-item',
+            action: (e, dt) => window.gcmExport('/api/v1/vehicle-categories/export', 'xlsx', dt, listParams)
+          },
+          {
+            text: '<i class="ti ti-file-code-2 me-2"></i>Pdf',
+            className: 'dropdown-item',
+            action: (e, dt) => window.gcmExport('/api/v1/vehicle-categories/export', 'pdf', dt, listParams)
+          }
+        ]
+      },
+      {
         text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">' + (t.add_category || 'Add category') + '</span>',
-        // ms-4: other lists get their gap from the Export button's mx-4;
-        // this page has no export, so without it Add touches the search box.
-        className: 'add-new btn btn-primary ms-4 waves-effect waves-light',
+        className: 'add-new btn btn-primary waves-effect waves-light',
         action: () => window.location.assign(t.add_category_url || '/app/vehicle-category/add')
       }
     ],

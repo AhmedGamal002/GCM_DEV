@@ -581,7 +581,7 @@
               "path": ["vehicles"],
               "query": [
                 { "key": "per_page", "value": "15" },
-                { "key": "category", "value": "hook_lift", "disabled": true, "description": "vehicle_categories.slug: hook_lift | compactor | dump_truck | water_tanker | dyna_box" },
+                { "key": "category", "value": "hook_lift", "disabled": true, "description": "vehicle_categories.slug: hook_lift | compactor | dump_truck | water_tanker | dyna_box | tractor_truck" },
                 { "key": "operational_status", "value": "active", "disabled": true, "description": "active | on_maintenance | deactivated" },
                 { "key": "affiliation", "value": "gcm", "disabled": true, "description": "gcm | contractor" },
                 { "key": "search", "value": "ABC", "disabled": true, "description": "matches plate_letters, plate_numbers, or the combined displayed plate (\"ABC 1234\", with or without the space)" },
@@ -645,7 +645,7 @@
             "method": "GET",
             "header": [{ "key": "Accept", "value": "application/json" }],
             "url": { "raw": "{{api_base}}/vehicle-categories", "host": ["{{api_base}}"], "path": ["vehicle-categories"] },
-            "description": "Plain list of this tenant's vehicle categories (starts as the FRD's five; the system_admin can add/rename/delete — see the Vehicle Categories requests below). Readable by EVERY tenant role (form dropdowns). Use the ids/slugs here for vehicle_category_id on Create/Update Vehicle and for a driver's vehicle_category_ids[]. Add ?per_page=10&search=&sort_by=&sort_dir= for the paginated management list (includes vehicles_count/drivers_count/assets_count/in_use)."
+            "description": "Plain list of this tenant's vehicle categories (starts as the six defaults; the system_admin can add/rename/delete — see the Vehicle Categories requests below). Readable by EVERY tenant role (form dropdowns). Use the ids/slugs here for vehicle_category_id on Create/Update Vehicle and for a driver's vehicle_category_ids[]. Add ?per_page=10&search=&sort_by=&sort_dir= for the paginated management list (includes vehicles_count/drivers_count/assets_count/in_use)."
           }
         },
         {
@@ -706,7 +706,41 @@
             "method": "DELETE",
             "header": [{ "key": "Accept", "value": "application/json" }],
             "url": { "raw": "{{api_base}}/vehicle-categories/{{last_vehicle_category_id}}", "host": ["{{api_base}}"], "path": ["vehicle-categories", "{{last_vehicle_category_id}}"] },
-            "description": "system_admin only. 204 on success. 422 with a clear message if the category is still used by vehicles, drivers' qualified categories or assets' compatible categories (e.g. \"in use by 3 vehicles, 1 asset\")."
+            "description": "system_admin only. 204 on success. 422 (\"This is a primary category and can't be deleted.\") for the six primary categories (the FRD five + Tractor truck) even when unused. 422 with a clear message if a custom category is still used by vehicles, drivers' qualified categories or assets' compatible categories (e.g. \"in use by 3 vehicles, 1 asset\")."
+          }
+        },
+        {
+          "name": "Export Vehicle Categories (Excel)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/vehicle-categories/export?format=xlsx",
+              "host": ["{{api_base}}"],
+              "path": ["vehicle-categories", "export"],
+              "query": [
+                { "key": "format", "value": "xlsx" },
+                { "key": "search", "value": "", "disabled": true }
+              ]
+            },
+            "description": "system_admin only. Honours the same `search` (name EN/AR) as the list."
+          }
+        },
+        {
+          "name": "Export Vehicle Categories (PDF)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/vehicle-categories/export?format=pdf",
+              "host": ["{{api_base}}"],
+              "path": ["vehicle-categories", "export"],
+              "query": [
+                { "key": "format", "value": "pdf" },
+                { "key": "search", "value": "", "disabled": true }
+              ]
+            },
+            "description": "system_admin only. Arabic names render joined/RTL via ArabicText."
           }
         },
         {

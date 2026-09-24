@@ -14,7 +14,7 @@ class Tenant extends Model
 
     protected static function booted(): void
     {
-        // Every tenant starts with the FRD's five vehicle categories
+        // Every tenant starts with the default vehicle categories (VehicleCategory::DEFAULTS)
         // (they're per-tenant data now, not a shared global list).
         static::created(fn (Tenant $tenant) => VehicleCategory::seedDefaultsFor($tenant));
     }

@@ -459,7 +459,7 @@ gcm-wms/
 │
 ├── database/seeders/
 │   ├── DatabaseSeeder.php / RoleSeeder.php                     # 7 أدوار
-│   ├── VehicleCategorySeeder.php                                # بتدّي كل شركة موجودة الخمسة الافتراضية (الشركات الجديدة بتاخدهم من Tenant::created)
+│   ├── VehicleCategorySeeder.php                                # بتدّي كل شركة موجودة الستة الافتراضية (الشركات الجديدة بتاخدهم من Tenant::created)
 │   ├── UnitOfMeasureSeeder.php                                  # 🆕 بيانات ثابتة — لا Controller
 │   └── DemoDataSeeder.php                                       # local/staging فقط
 │
