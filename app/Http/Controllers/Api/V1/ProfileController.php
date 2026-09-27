@@ -10,10 +10,12 @@ use Illuminate\Support\Facades\Hash;
 
 /**
  * Self-service only — separate from MeController (pure "who am I" read)
- * and from UserController (system_admin managing OTHER users). Email is
- * deliberately not editable here: LoginController looks users up by
- * email globally (before the tenant is known), so email changes have
- * session/token implications out of this week's scope — see the plan.
+ * and from UserController (admins managing OTHER users). Per the FRD the
+ * only thing changed from one's own profile is the photo (name/email/
+ * everything else is admin-managed), plus the password for client/
+ * contractor users only (User::canChangeOwnPassword()). Email is also
+ * immutable for a technical reason: LoginController looks users up by
+ * email globally (before the tenant is known).
  */
 class ProfileController extends Controller
 {
@@ -21,7 +23,8 @@ class ProfileController extends Controller
     {
         $user = $request->user();
 
-        $user->update(['name' => $request->validated('name')]);
+        $user->photo = $request->file('photo')->store('avatars', 'public');
+        $user->save();
 
         return UserResource::make($user);
     }

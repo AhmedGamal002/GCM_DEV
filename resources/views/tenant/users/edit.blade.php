@@ -20,13 +20,14 @@
   window.userEditTranslations = {
     data_entry: @json(__('Data Entry')),
     system_auditor: @json(__('System Auditor')),
-    driver: @json(__('Driver')),
     active: @json(__('Active')),
     on_vacation: @json(__('On Vacation')),
     deactivated: @json(__('Deactivated')),
     saved: @json(__('Changes saved successfully.')),
     generic_error: @json(__('Something went wrong. Please try again.')),
-    view_url_base: @json(url('/app/user/view'))
+    view_url_base: @json(url('/app/user/view')),
+    driver_edit_url_base: @json(url('/app/driver/edit')),
+    last_updated_by: @json(__('Last updated by :name — :at'))
   };
   window.userEditId = {{ $userId }};
 </script>
@@ -35,7 +36,7 @@
 
 @section('content')
 
-@include('_partials.breadcrumb', ['breadcrumbs' => [
+@include('_partials.breadcrumb', ['pageTitle' => __('Edit Account'), 'breadcrumbs' => [
   ['title' => __('Users'), 'url' => route('app-user-list')],
   ['title' => __('Edit')],
 ]])
@@ -48,9 +49,21 @@
     <div class="spinner-border" role="status"></div>
   </div>
 
+  <div class="card-body d-none" id="user-edit-driver-redirect">
+    <div class="alert alert-info d-flex align-items-center mb-0" role="alert">
+      <i class="ti ti-info-circle me-2"></i>
+      <span>
+        {{ __('This account is a Driver — edit it from the') }}
+        <a href="#" id="user-edit-driver-link">{{ __('Drivers') }}</a>
+        {{ __('page instead, where residence/license/insurance details are also editable.') }}
+      </span>
+    </div>
+  </div>
+
   <div class="d-none" id="user-edit-form-wrapper">
-    <h5 class="card-header">{{ __('Edit Account') }}</h5>
     <form class="card-body" id="userEditForm">
+
+      <p class="small text-muted mb-4" id="ue-updated-by"></p>
 
       <h6>1. {{ __('Account Details') }}</h6>
       <div class="row g-6">
@@ -70,6 +83,25 @@
           <label class="form-label" for="photo">{{ __('Photo') }}</label>
           <input type="file" id="photo" class="form-control" accept="image/*" />
         </div>
+        <div class="col-md-6">
+          <div class="form-password-toggle">
+            <label class="form-label" for="password">{{ __('New Password') }}</label>
+            <div class="input-group input-group-merge">
+              <input type="password" id="password" class="form-control" autocomplete="new-password" />
+              <span class="input-group-text cursor-pointer"><i class="ti ti-eye-off"></i></span>
+            </div>
+            <small class="text-muted">{{ __('Leave blank to keep the current password.') }}</small>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-password-toggle">
+            <label class="form-label" for="password_confirmation">{{ __('Confirm Password') }}</label>
+            <div class="input-group input-group-merge">
+              <input type="password" id="password_confirmation" class="form-control" autocomplete="new-password" />
+              <span class="input-group-text cursor-pointer"><i class="ti ti-eye-off"></i></span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <hr class="my-6 mx-n4" />
@@ -84,10 +116,6 @@
           <div class="form-check form-check-inline">
             <input class="form-check-input" type="radio" name="role" id="role-auditor" value="auditor">
             <label class="form-check-label" for="role-auditor">{{ __('System Auditor') }}</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="role" id="role-driver" value="driver">
-            <label class="form-check-label" for="role-driver">{{ __('Driver') }}</label>
           </div>
         </div>
         <div class="col-md-6">

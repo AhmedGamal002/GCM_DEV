@@ -23,6 +23,16 @@ class DriverResource extends JsonResource
             'entity_name' => $this->user->affiliation === 'gcm' ? $this->user->tenant->name : null,
             'additional_data' => $this->user->additional_data,
 
+            'qualified_vehicle_category_ids' => $this->whenLoaded(
+                'qualifiedVehicleCategories',
+                fn () => $this->qualifiedVehicleCategories->pluck('id')
+            ),
+            'default_vehicle' => $this->whenLoaded('defaultVehicle', fn () => $this->defaultVehicle ? [
+                'id' => $this->defaultVehicle->id,
+                'plate' => $this->defaultVehicle->plate(),
+                'category' => $this->defaultVehicle->category?->name(),
+            ] : null),
+
             'residence' => [
                 'number' => $this->residence_number,
                 'valid_to' => $this->residence_valid_to?->toDateString(),
@@ -52,6 +62,9 @@ class DriverResource extends JsonResource
                 'has_attachment' => (bool) $permit->attachment,
             ])),
 
+            // FRD: view/edit pages show "Last updated by X — <datetime>".
+            'updated_by_name' => $this->whenLoaded('updatedBy', fn () => $this->updatedBy?->name),
+            'updated_at' => $this->updated_at,
             'created_at' => $this->created_at,
         ];
     }

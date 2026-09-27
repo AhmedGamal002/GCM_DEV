@@ -23,7 +23,10 @@
     deactivated: @json(__('Deactivated')),
     generic_error: @json(__('Something went wrong. Please try again.')),
     add_permit: @json(__('Add Permit')),
-    remove: @json(__('Remove'))
+    remove: @json(__('Remove')),
+    loading: @json(__('Loading...')),
+    select_types_first: @json(__('Select vehicle type(s) first')),
+    select_vehicle: @json(__('Select a vehicle'))
   };
 </script>
 @vite('resources/assets/js/app-driver-add.js')
@@ -31,7 +34,7 @@
 
 @section('content')
 
-@include('_partials.breadcrumb', ['breadcrumbs' => [
+@include('_partials.breadcrumb', ['pageTitle' => __('Create New Driver'), 'breadcrumbs' => [
   ['title' => __('Drivers'), 'url' => route('app-driver-list')],
   ['title' => __('Add')],
 ]])
@@ -40,7 +43,6 @@
 
 <!-- Multi Column with Form Separator -->
 <div class="card mb-6">
-  <h5 class="card-header">{{ __('Create New Driver') }}</h5>
   <form class="card-body" id="driverAddForm">
 
     <h6>1. {{ __('Account Details') }}</h6>
@@ -97,7 +99,22 @@
     </div>
 
     <hr class="my-6 mx-n4" />
-    <h6>2. {{ __('Residence') }}</h6>
+    <h6>2. {{ __('Default Vehicle') }}</h6>
+    <div class="row g-6">
+      <div class="col-12">
+        <label class="form-label d-block">{{ __('Vehicle Types Qualified to Drive') }}</label>
+        <div id="vehicle-category-checkboxes" class="d-flex flex-wrap gap-4"></div>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label" for="default_vehicle_id">{{ __('Default Vehicle') }}</label>
+        <select id="default_vehicle_id" class="form-select" required>
+          <option value="">{{ __('Select vehicle type(s) first') }}</option>
+        </select>
+      </div>
+    </div>
+
+    <hr class="my-6 mx-n4" />
+    <h6>3. {{ __('Residence') }}</h6>
     <div class="row g-6">
       <div class="col-md-4">
         <label class="form-label" for="residence_number">{{ __('Residence Number') }}</label>
@@ -114,7 +131,7 @@
     </div>
 
     <hr class="my-6 mx-n4" />
-    <h6>3. {{ __('Driving License') }}</h6>
+    <h6>4. {{ __('Driving License') }}</h6>
     <div class="row g-6">
       <div class="col-md-4">
         <label class="form-label" for="license_number">{{ __('License Number') }}</label>
@@ -131,7 +148,7 @@
     </div>
 
     <hr class="my-6 mx-n4" />
-    <h6>4. {{ __('Operational License') }}</h6>
+    <h6>5. {{ __('Operational License') }}</h6>
     <div class="row g-6">
       <div class="col-md-4">
         <label class="form-label" for="operational_license_number">{{ __('License Number') }}</label>
@@ -148,7 +165,7 @@
     </div>
 
     <hr class="my-6 mx-n4" />
-    <h6>5. {{ __('Driver Insurance') }}</h6>
+    <h6>6. {{ __('Driver Insurance') }}</h6>
     <div class="row g-6">
       <div class="col-md-4">
         <label class="form-label" for="insurance_number">{{ __('Insurance Number') }}</label>
@@ -165,14 +182,14 @@
     </div>
 
     <hr class="my-6 mx-n4" />
-    <h6>6. {{ __('Truck Entry Permits') }}</h6>
+    <h6>7. {{ __('Truck Entry Permits') }}</h6>
     <div id="entry-permits-list"></div>
     <button type="button" id="add-entry-permit" class="btn btn-label-secondary btn-sm mt-2">
       <i class="ti ti-plus me-1"></i>{{ __('Add Permit') }}
     </button>
 
     <hr class="my-6 mx-n4" />
-    <h6>7. {{ __('Additional Info') }}</h6>
+    <h6>8. {{ __('Additional Info') }}</h6>
     <div class="row g-6">
       <div class="col-12">
         <label class="form-label">{{ __('Additional Data') }}</label>

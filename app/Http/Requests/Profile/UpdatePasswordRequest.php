@@ -9,7 +9,7 @@ class UpdatePasswordRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->canChangeOwnPassword();
     }
 
     public function rules(): array

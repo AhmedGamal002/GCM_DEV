@@ -20,6 +20,7 @@
 @section('page-script')
 <script>
   window.driverListTranslations = {
+    no_permission: @json(__("You don't have permission to view this data.")),
     all_statuses: @json(__('All statuses')),
     all_affiliations: @json(__('All affiliations')),
     active: @json(__('Active')),
@@ -41,12 +42,12 @@
     edit_url_base: @json(url('/app/driver/edit'))
   };
 </script>
-@vite('resources/assets/js/app-driver-list.js')
+@vite(['resources/assets/js/datatables-server-side.js', 'resources/assets/js/app-driver-list.js'])
 @endsection
 
 @section('content')
 
-@include('_partials.breadcrumb', ['breadcrumbs' => [
+@include('_partials.breadcrumb', ['pageTitle' => __('Driver Management'), 'breadcrumbs' => [
   ['title' => __('Drivers'), 'url' => route('app-driver-list')],
   ['title' => __('List')],
 ]])

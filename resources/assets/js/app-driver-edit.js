@@ -9,6 +9,8 @@ document.addEventListener('DOMContentLoaded', function () {
   const errorBox = document.getElementById('driver-edit-error');
   const form = document.getElementById('driverEditForm');
   const cancelLink = document.getElementById('driver-edit-cancel');
+  const categoryCheckboxes = document.getElementById('vehicle-category-checkboxes');
+  const defaultVehicleSelect = document.getElementById('default_vehicle_id');
 
   cancelLink.href = t.view_url_base + '/' + id;
 
@@ -23,15 +25,97 @@ document.addEventListener('DOMContentLoaded', function () {
     window.scrollTo(0, 0);
   }
 
-  window.axios
-    .get(`/api/v1/drivers/${id}`)
-    .then(function (response) {
-      const d = response.data.data;
+  // Same "checked category(ies) filter which vehicles are offered" logic
+  // as the Add page — see that file for the full explanation. Accepts an
+  // optional vehicle id to pre-select once the options are loaded (used
+  // right after the driver's existing data comes in).
+  function refreshVehicleOptions(preselectId) {
+    const checked = Array.from(categoryCheckboxes.querySelectorAll('input:checked'));
+
+    if (checked.length === 0) {
+      defaultVehicleSelect.innerHTML = '<option value="">' + (t.select_types_first || 'Select vehicle type(s) first') + '</option>';
+      defaultVehicleSelect.disabled = true;
+      return;
+    }
+
+    defaultVehicleSelect.disabled = true;
+    defaultVehicleSelect.innerHTML = '<option value="">' + (t.loading || 'Loading...') + '</option>';
+
+    Promise.all(
+      checked.map((cb) => window.axios.get('/api/v1/vehicles', {
+        // unassigned_as_default hides vehicles already taken as another
+        // driver's default; exclude_default_of_driver keeps THIS driver's
+        // own currently-assigned vehicle visible (it's "taken", but by
+        // themselves — a re-submit without changing it must still work).
+        params: {
+          category: cb.value,
+          operational_status: 'active',
+          per_page: 200,
+          unassigned_as_default: 1,
+          exclude_default_of_driver: id
+        }
+      }))
+    )
+      .then(function (responses) {
+        const byId = new Map();
+        responses.forEach((res) => res.data.data.forEach((v) => byId.set(v.id, v)));
+
+        const wanted = preselectId != null ? preselectId : Number(defaultVehicleSelect.value);
+        defaultVehicleSelect.innerHTML = '<option value="">' + (t.select_vehicle || 'Select a vehicle') + '</option>';
+        byId.forEach(function (v) {
+          const opt = document.createElement('option');
+          opt.value = v.id;
+          opt.textContent = v.plate + (v.category && v.category.name ? ' — ' + v.category.name : '');
+          defaultVehicleSelect.appendChild(opt);
+        });
+        if (byId.has(wanted)) {
+          defaultVehicleSelect.value = wanted;
+        }
+        defaultVehicleSelect.disabled = false;
+      })
+      .catch(function () {
+        defaultVehicleSelect.innerHTML = '<option value="">' + (t.generic_error || 'Something went wrong. Please try again.') + '</option>';
+      });
+  }
+
+  Promise.all([
+    window.axios.get('/api/v1/vehicle-categories'),
+    window.axios.get(`/api/v1/drivers/${id}`)
+  ])
+    .then(function ([categoriesRes, driverRes]) {
+      const d = driverRes.data.data;
+
+      categoriesRes.data.data.forEach(function (category) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'form-check';
+        wrapper.innerHTML =
+          '<input class="form-check-input vehicle-category-checkbox" type="checkbox" value="' + category.slug + '" data-category-id="' + category.id + '" id="vc-' + category.slug + '">' +
+          '<label class="form-check-label" for="vc-' + category.slug + '">' + $('<div>').text(category.name).html() + '</label>';
+        categoryCheckboxes.appendChild(wrapper);
+      });
+      categoryCheckboxes.querySelectorAll('input').forEach((cb) => cb.addEventListener('change', function () {
+        refreshVehicleOptions();
+      }));
+
+      const qualifiedIds = d.qualified_vehicle_category_ids || [];
+      categoryCheckboxes.querySelectorAll('input').forEach(function (cb) {
+        cb.checked = qualifiedIds.includes(Number(cb.dataset.categoryId));
+      });
+      if (qualifiedIds.length > 0) {
+        refreshVehicleOptions(d.default_vehicle ? d.default_vehicle.id : null);
+      }
 
       document.getElementById('name').value = d.name;
       document.getElementById('email').value = d.email;
       document.getElementById('phone').value = d.phone;
       quill.root.innerHTML = d.additional_data || '';
+
+      if (d.updated_by_name && t.last_updated_by) {
+        const at = d.updated_at ? new Date(d.updated_at).toLocaleString() : '';
+        document.getElementById('de-updated-by').textContent = t.last_updated_by
+          .replace(':name', d.updated_by_name)
+          .replace(':at', at);
+      }
 
       document.getElementById('residence_number').value = d.residence.number || '';
       document.getElementById('residence_valid_to').value = d.residence.valid_to || '';
@@ -58,11 +142,32 @@ document.addEventListener('DOMContentLoaded', function () {
 
     errorBox.classList.add('d-none');
 
+    // Server limits: photo 2 MB, every document 5 MB — checked here so a
+    // too-big file fails now, not after the whole upload.
+    const tooLarge = window.gcmFileGuard(form, { default: 5120, photo: 2048 });
+    if (tooLarge) {
+      errorBox.textContent = tooLarge;
+      errorBox.classList.remove('d-none');
+      window.scrollTo(0, 0);
+      return;
+    }
+
     const data = new FormData();
     data.append('name', document.getElementById('name').value);
     data.append('phone', document.getElementById('phone').value);
     data.append('additional_data', quill.root.innerHTML);
     data.append('_method', 'PATCH');
+
+    const newPassword = document.getElementById('password').value;
+    if (newPassword) {
+      data.append('password', newPassword);
+      data.append('password_confirmation', document.getElementById('password_confirmation').value);
+    }
+
+    categoryCheckboxes.querySelectorAll('input:checked').forEach(function (cb, i) {
+      data.append(`vehicle_category_ids[${i}]`, cb.dataset.categoryId);
+    });
+    data.append('default_vehicle_id', defaultVehicleSelect.value);
 
     ['residence', 'license', 'operational_license', 'insurance'].forEach(function (prefix) {
       data.append(`${prefix}_number`, document.getElementById(`${prefix}_number`).value);
@@ -74,12 +179,18 @@ document.addEventListener('DOMContentLoaded', function () {
     const photo = document.getElementById('photo').files[0];
     if (photo) data.append('photo', photo);
 
+    window.gcmBusy.start({ progress: true });
+
     window.axios
-      .post(`/api/v1/drivers/${id}`, data, { headers: { 'Content-Type': 'multipart/form-data' } })
+      .post(`/api/v1/drivers/${id}`, data, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+        onUploadProgress: window.gcmBusy.onUploadProgress
+      })
       .then(function () {
         window.location.href = `${t.view_url_base}/${id}?saved=1`;
       })
       .catch(function (error) {
+        window.gcmBusy.stop();
         const message =
           error.response && error.response.data && error.response.data.errors
             ? Object.values(error.response.data.errors).flat().join(' ')

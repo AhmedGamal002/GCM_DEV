@@ -76,6 +76,7 @@ class TenantLoginTest extends TestCase
         $this->assertFalse(Auth::guard('web')->check());
     }
 
+    /** FRD: a deactivated account gets its own distinct message, not the generic "credentials don't match" one. */
     public function test_deactivated_user_cannot_login(): void
     {
         User::factory()->create([
@@ -90,6 +91,31 @@ class TenantLoginTest extends TestCase
         ]);
 
         $response->assertJsonValidationErrors('email');
+        $this->assertStringContainsString('deactivated', $response->json('errors.email.0'));
+        $this->assertFalse(Auth::guard('web')->check());
+    }
+
+    /**
+     * A wrong password for a deactivated account must still get the
+     * generic failure message — revealing "this account is deactivated"
+     * before the password is even confirmed correct would leak account
+     * status to someone who doesn't actually know the password.
+     */
+    public function test_deactivated_user_with_wrong_password_gets_the_generic_message_not_the_deactivated_one(): void
+    {
+        User::factory()->create([
+            'email' => 'deactivated2@gcm.test',
+            'password' => bcrypt('secret-password'),
+            'status' => 'deactivated',
+        ]);
+
+        $response = $this->postAsFrontend('/api/v1/auth/login', [
+            'email' => 'deactivated2@gcm.test',
+            'password' => 'wrong-password',
+        ]);
+
+        $response->assertJsonValidationErrors('email');
+        $this->assertStringNotContainsString('deactivated', $response->json('errors.email.0'));
         $this->assertFalse(Auth::guard('web')->check());
     }
 

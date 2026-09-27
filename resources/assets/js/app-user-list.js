@@ -39,12 +39,27 @@ $(function () {
     return;
   }
 
+  // Server-side now (see datatables-server-side.js's docblock for why —
+  // this used to fetch up to 1000 rows once and filter/sort/page them
+  // all in the browser, which silently dropped anyone past row 1000).
+  // The role/status dropdowns used to be built FROM that loaded data;
+  // now they're a fixed list of the actual possible values and just
+  // trigger a fresh server request instead of a client-side re-filter.
+  let currentRole = '';
+  let currentStatus = '';
+
+  // Filters currently applied to the list — the table's own requests AND the
+  // Excel/PDF export read this, so an export always matches what is on screen.
+  const listParams = () => ({
+    role: currentRole || undefined,
+    status: currentStatus || undefined
+  });
+
   dtUserTable.DataTable({
     processing: true,
-    ajax: {
-      url: '/api/v1/users?per_page=1000',
-      dataSrc: 'data'
-    },
+    serverSide: true,
+    searchDelay: 500,
+    ajax: window.gcmServerSideAjax('/api/v1/users', listParams, t.no_permission),
     columns: [
       { data: 'id' },
       { data: 'id' },
@@ -94,27 +109,22 @@ $(function () {
       },
       {
         targets: 4,
-        render: function (data, type, full) {
-          // DataTables' column().search() matches against the RENDERED
-          // ('filter'-type) output for columns with a render callback,
-          // not the raw data — so filtering must get the raw enum value
-          // back here, or an anchored search for it never matches.
-          if (type === 'filter' || type === 'sort' || type === 'type') return full.affiliation;
-          return full.affiliation === 'gcm' ? 'GCM' : full.affiliation;
-        }
+        orderable: false,
+        render: (data, type, full) => (full.affiliation === 'gcm' ? 'GCM' : full.affiliation)
       },
       {
         targets: 5,
+        orderable: false,
         render: (data, type, full) => full.entity_name || ''
       },
       {
         targets: 6,
+        orderable: false,
         render: (data, type, full) => full.roles.join(', ')
       },
       {
         targets: 7,
         render: function (data, type, full) {
-          if (type === 'filter' || type === 'sort' || type === 'type') return full.status;
           const status = statusObj[full.status] || { title: full.status, class: 'bg-label-secondary' };
           return '<span class="badge ' + status.class + '">' + status.title + '</span>';
         }
@@ -171,19 +181,36 @@ $(function () {
           {
             text: '<i class="ti ti-file-spreadsheet me-2"></i>Excel',
             className: 'dropdown-item',
-            action: () => window.location.assign('/api/v1/users/export?format=xlsx')
+            action: (e, dt) => window.gcmExport('/api/v1/users/export', 'xlsx', dt, listParams)
           },
           {
             text: '<i class="ti ti-file-code-2 me-2"></i>Pdf',
             className: 'dropdown-item',
-            action: () => window.location.assign('/api/v1/users/export?format=pdf')
+            action: (e, dt) => window.gcmExport('/api/v1/users/export', 'pdf', dt, listParams)
           }
         ]
       },
       {
+        // Per the FRD: "Add User" opens a menu of the main user
+        // categories, each with its own dedicated form — not a single
+        // shared form with a role picker. Only 2 categories exist so far
+        // (GCM staff, driver); Client/Contractor slot into this same
+        // menu once those entities land (Week 4-5), no restructuring.
+        extend: 'collection',
+        className: 'add-new btn btn-primary dropdown-toggle waves-effect waves-light',
         text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">' + (t.add_user || 'Add User') + '</span>',
-        className: 'add-new btn btn-primary waves-effect waves-light',
-        action: () => window.location.assign(t.add_user_url || '/app/user/add')
+        buttons: [
+          {
+            text: '<i class="ti ti-users me-2"></i>' + (t.add_gcm_staff || 'GCM Staff'),
+            className: 'dropdown-item',
+            action: () => window.location.assign(t.add_user_url || '/app/user/add')
+          },
+          {
+            text: '<i class="ti ti-steering-wheel me-2"></i>' + (t.add_driver || 'Driver'),
+            className: 'dropdown-item',
+            action: () => window.location.assign(t.add_driver_url || '/app/driver/add')
+          }
+        ]
       }
     ],
     responsive: {
@@ -204,48 +231,36 @@ $(function () {
       }
     },
     initComplete: function () {
-      // Role filter, built from whatever roles are actually present in
-      // the loaded data — same mechanism the original template used.
-      this.api()
-        .columns(6)
-        .every(function () {
-          const column = this;
-          const select = $(
-            '<select class="form-select text-capitalize"><option value="">' + (t.all_roles || 'All roles') + '</option></select>'
-          )
-            .appendTo('.user_role')
-            .on('change', function () {
-              const val = $.fn.dataTable.util.escapeRegex($(this).val());
-              column.search(val ? val : '', true, false).draw();
-            });
+      const api = this.api();
 
-          const seen = new Set();
-          column
-            .data()
-            .each(function (roles) {
-              roles.forEach((role) => seen.add(role));
-            });
-          Array.from(seen).sort().forEach((role) => select.append('<option value="' + role + '">' + role + '</option>'));
+      // Both filters used to be built from whatever roles/statuses were
+      // present in the client-side-loaded batch — with server-side
+      // paging that data is never all in the browser at once, so these
+      // are now a fixed list of the actual possible values, and changing
+      // either just asks the server for a fresh filtered page.
+      const roleSelect = $(
+        '<select class="form-select text-capitalize"><option value="">' + (t.all_roles || 'All roles') + '</option></select>'
+      )
+        .appendTo('.user_role')
+        .on('change', function () {
+          currentRole = $(this).val();
+          api.draw();
         });
+      ['data_entry', 'auditor', 'driver'].forEach((role) => {
+        roleSelect.append('<option value="' + role + '">' + role + '</option>');
+      });
 
-      // Status filter
-      this.api()
-        .columns(7)
-        .every(function () {
-          const column = this;
-          const select = $(
-            '<select class="form-select"><option value="">' + (t.all_statuses || 'All statuses') + '</option></select>'
-          )
-            .appendTo('.user_status')
-            .on('change', function () {
-              const val = $.fn.dataTable.util.escapeRegex($(this).val());
-              column.search(val ? '^' + val + '$' : '', true, false).draw();
-            });
-
-          ['active', 'on_vacation', 'deactivated'].forEach((status) => {
-            select.append('<option value="' + status + '">' + (statusObj[status].title) + '</option>');
-          });
+      const statusSelect = $(
+        '<select class="form-select"><option value="">' + (t.all_statuses || 'All statuses') + '</option></select>'
+      )
+        .appendTo('.user_status')
+        .on('change', function () {
+          currentStatus = $(this).val();
+          api.draw();
         });
+      ['active', 'on_vacation', 'deactivated'].forEach((status) => {
+        statusSelect.append('<option value="' + status + '">' + statusObj[status].title + '</option>');
+      });
     }
   });
 });

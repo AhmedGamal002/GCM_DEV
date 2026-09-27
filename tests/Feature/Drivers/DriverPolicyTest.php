@@ -30,8 +30,8 @@ class DriverPolicyTest extends TestCase
         $this->systemAdmin->assignRole('system_admin');
     }
 
-    #[DataProvider('nonAdminRolesProvider')]
-    public function test_non_system_admin_roles_cannot_list_drivers(string $role): void
+    #[DataProvider('nonManagerRolesProvider')]
+    public function test_non_manager_roles_cannot_list_drivers(string $role): void
     {
         $actor = User::factory()->create(['email' => "{$role}@tenant-a.test"]);
         $actor->assignRole($role);
@@ -41,11 +41,9 @@ class DriverPolicyTest extends TestCase
             ->assertForbidden();
     }
 
-    public static function nonAdminRolesProvider(): array
+    public static function nonManagerRolesProvider(): array
     {
         return [
-            ['data_entry'],
-            ['auditor'],
             ['driver'],
         ];
     }
@@ -55,5 +53,29 @@ class DriverPolicyTest extends TestCase
         $this->actingAs($this->systemAdmin, 'web')
             ->getJson('/api/v1/drivers')
             ->assertOk();
+    }
+
+    /** FRD: driver management is (system_admin / data_entry) — same line as Users. */
+    public function test_data_entry_can_list_drivers(): void
+    {
+        $dataEntry = User::factory()->create(['email' => 'dataentry@tenant-a.test']);
+        $dataEntry->assignRole('data_entry');
+
+        $this->actingAs($dataEntry, 'web')
+            ->getJson('/api/v1/drivers')
+            ->assertOk();
+    }
+
+    /** FRD V01.14: auditor gets (عرض/تصدير) على كل الصفحات — was fully blocked under V01.09. */
+    public function test_auditor_can_list_and_view_but_not_update_drivers(): void
+    {
+        $auditor = User::factory()->create(['email' => 'auditor@tenant-a.test']);
+        $auditor->assignRole('auditor');
+
+        $this->actingAs($auditor, 'web')->getJson('/api/v1/drivers')->assertOk();
+
+        $this->actingAs($auditor, 'web')
+            ->postJson('/api/v1/drivers', ['name' => 'Blocked'])
+            ->assertForbidden();
     }
 }

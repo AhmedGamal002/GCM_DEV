@@ -25,6 +25,15 @@ class UserResource extends JsonResource
             // and Contractor affiliations land in Week 4-5.
             'affiliation' => $this->affiliation,
             'entity_name' => $this->affiliation === 'gcm' ? $this->tenant->name : null,
+            // Only present for a driver-role user — lets the frontend
+            // deep-link straight to /app/driver/edit/{driver_id} instead
+            // of the generic (and, for a driver, policy-blocked) user
+            // edit page. Relies on 'driver' being eager-loaded wherever
+            // this Resource is used in bulk — see UserController.
+            'driver_id' => $this->driver?->id,
+            // FRD: view/edit pages show "Last updated by X — <datetime>".
+            'updated_by_name' => $this->whenLoaded('updatedBy', fn () => $this->updatedBy?->name),
+            'updated_at' => $this->updated_at,
             'created_at' => $this->created_at,
         ];
     }

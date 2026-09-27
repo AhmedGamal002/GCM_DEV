@@ -20,7 +20,11 @@
   window.driverEditTranslations = {
     saved: @json(__('Changes saved successfully.')),
     generic_error: @json(__('Something went wrong. Please try again.')),
-    view_url_base: @json(url('/app/driver/view'))
+    view_url_base: @json(url('/app/driver/view')),
+    loading: @json(__('Loading...')),
+    select_types_first: @json(__('Select vehicle type(s) first')),
+    select_vehicle: @json(__('Select a vehicle')),
+    last_updated_by: @json(__('Last updated by :name — :at'))
   };
   window.driverEditId = {{ $driverId }};
 </script>
@@ -29,7 +33,7 @@
 
 @section('content')
 
-@include('_partials.breadcrumb', ['breadcrumbs' => [
+@include('_partials.breadcrumb', ['pageTitle' => __('Edit Account'), 'breadcrumbs' => [
   ['title' => __('Drivers'), 'url' => route('app-driver-list')],
   ['title' => __('Edit')],
 ]])
@@ -42,8 +46,9 @@
   </div>
 
   <div class="d-none" id="driver-edit-form-wrapper">
-    <h5 class="card-header">{{ __('Edit Driver') }}</h5>
     <form class="card-body" id="driverEditForm">
+
+      <p class="small text-muted mb-4" id="de-updated-by"></p>
 
       <h6>1. {{ __('Account Details') }}</h6>
       <div class="row g-6">
@@ -63,10 +68,44 @@
           <label class="form-label" for="photo">{{ __('Photo') }}</label>
           <input type="file" id="photo" class="form-control" accept="image/*" />
         </div>
+        <div class="col-md-6">
+          <div class="form-password-toggle">
+            <label class="form-label" for="password">{{ __('New Password') }}</label>
+            <div class="input-group input-group-merge">
+              <input type="password" id="password" class="form-control" autocomplete="new-password" />
+              <span class="input-group-text cursor-pointer"><i class="ti ti-eye-off"></i></span>
+            </div>
+            <small class="text-muted">{{ __('Leave blank to keep the current password.') }}</small>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-password-toggle">
+            <label class="form-label" for="password_confirmation">{{ __('Confirm Password') }}</label>
+            <div class="input-group input-group-merge">
+              <input type="password" id="password_confirmation" class="form-control" autocomplete="new-password" />
+              <span class="input-group-text cursor-pointer"><i class="ti ti-eye-off"></i></span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <hr class="my-6 mx-n4" />
-      <h6>2. {{ __('Residence') }}</h6>
+      <h6>2. {{ __('Default Vehicle') }}</h6>
+      <div class="row g-6">
+        <div class="col-12">
+          <label class="form-label d-block">{{ __('Vehicle Types Qualified to Drive') }}</label>
+          <div id="vehicle-category-checkboxes" class="d-flex flex-wrap gap-4"></div>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label" for="default_vehicle_id">{{ __('Default Vehicle') }}</label>
+          <select id="default_vehicle_id" class="form-select" required>
+            <option value="">{{ __('Select vehicle type(s) first') }}</option>
+          </select>
+        </div>
+      </div>
+
+      <hr class="my-6 mx-n4" />
+      <h6>3. {{ __('Residence') }}</h6>
       <div class="row g-6">
         <div class="col-md-4">
           <label class="form-label" for="residence_number">{{ __('Residence Number') }}</label>
@@ -83,7 +122,7 @@
       </div>
 
       <hr class="my-6 mx-n4" />
-      <h6>3. {{ __('Driving License') }}</h6>
+      <h6>4. {{ __('Driving License') }}</h6>
       <div class="row g-6">
         <div class="col-md-4">
           <label class="form-label" for="license_number">{{ __('License Number') }}</label>
@@ -100,7 +139,7 @@
       </div>
 
       <hr class="my-6 mx-n4" />
-      <h6>4. {{ __('Operational License') }}</h6>
+      <h6>5. {{ __('Operational License') }}</h6>
       <div class="row g-6">
         <div class="col-md-4">
           <label class="form-label" for="operational_license_number">{{ __('License Number') }}</label>
@@ -117,7 +156,7 @@
       </div>
 
       <hr class="my-6 mx-n4" />
-      <h6>5. {{ __('Driver Insurance') }}</h6>
+      <h6>6. {{ __('Driver Insurance') }}</h6>
       <div class="row g-6">
         <div class="col-md-4">
           <label class="form-label" for="insurance_number">{{ __('Insurance Number') }}</label>
@@ -134,7 +173,7 @@
       </div>
 
       <hr class="my-6 mx-n4" />
-      <h6>6. {{ __('Additional Info') }}</h6>
+      <h6>7. {{ __('Additional Info') }}</h6>
       <div class="row g-6">
         <div class="col-12">
           <label class="form-label">{{ __('Additional Data') }}</label>

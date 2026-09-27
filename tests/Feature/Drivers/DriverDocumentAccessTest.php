@@ -6,7 +6,10 @@ use App\Domain\Drivers\Actions\CreateDriverAction;
 use App\Models\Driver;
 use App\Models\Tenant;
 use App\Models\User;
+use App\Models\Vehicle;
+use App\Models\VehicleCategory;
 use Database\Seeders\RoleSeeder;
+use Database\Seeders\VehicleCategorySeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -28,12 +31,16 @@ class DriverDocumentAccessTest extends TestCase
         Storage::fake('public');
 
         $this->seed(RoleSeeder::class);
+        $this->seed(VehicleCategorySeeder::class);
 
         $tenant = Tenant::create(['name' => 'Tenant A', 'slug' => 'tenant-a', 'status' => 'active']);
         app()->instance('tenant', $tenant);
 
         $this->systemAdmin = User::factory()->create();
         $this->systemAdmin->assignRole('system_admin');
+
+        $vehicleCategory = VehicleCategory::where('slug', 'dump_truck')->firstOrFail();
+        $vehicle = Vehicle::factory()->create(['vehicle_category_id' => $vehicleCategory->id]);
 
         $this->driver = app(CreateDriverAction::class)->execute(
             [
@@ -42,6 +49,8 @@ class DriverDocumentAccessTest extends TestCase
                 'phone' => '01000000000',
                 'password' => 'a-secure-password',
                 'status' => 'active',
+                'vehicle_category_ids' => [$vehicleCategory->id],
+                'default_vehicle_id' => $vehicle->id,
                 'residence_number' => 'RES-001', 'residence_valid_to' => '2030-01-01',
                 'license_number' => 'LIC-001', 'license_valid_to' => '2030-01-01',
                 'operational_license_number' => 'OP-001', 'operational_license_valid_to' => '2030-01-01',
@@ -61,14 +70,25 @@ class DriverDocumentAccessTest extends TestCase
         $response->assertOk();
     }
 
-    public function test_a_non_system_admin_cannot_download_a_driver_document(): void
+    public function test_a_driver_cannot_download_another_drivers_document(): void
+    {
+        $otherDriver = User::factory()->create(['email' => 'other-driver@tenant-a.test']);
+        $otherDriver->assignRole('driver');
+
+        $this->actingAs($otherDriver, 'web')
+            ->get("/api/v1/drivers/{$this->driver->id}/documents/license")
+            ->assertForbidden();
+    }
+
+    /** FRD V01.14: auditor gets (عرض/تصدير) على كل الصفحات — can view a driver's details, documents included. */
+    public function test_an_auditor_can_download_a_driver_document(): void
     {
         $auditor = User::factory()->create(['email' => 'auditor@tenant-a.test']);
         $auditor->assignRole('auditor');
 
         $this->actingAs($auditor, 'web')
             ->get("/api/v1/drivers/{$this->driver->id}/documents/license")
-            ->assertForbidden();
+            ->assertOk();
     }
 
     public function test_an_unknown_document_type_404s(): void

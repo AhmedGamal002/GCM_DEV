@@ -17,6 +17,7 @@
     saved: @json(__('Changes saved successfully.')),
     generic_error: @json(__('Something went wrong. Please try again.')),
     edit_url_base: @json(url('/app/driver/edit')),
+    last_updated_by: @json(__('Last updated by :name — :at')),
     no_attachment: @json(__('No attachment')),
     download: @json(__('Download')),
     expired: @json(__('Expired')),
@@ -29,7 +30,7 @@
 
 @section('content')
 
-@include('_partials.breadcrumb', ['breadcrumbs' => [
+@include('_partials.breadcrumb', ['pageTitle' => __('Account Details'), 'breadcrumbs' => [
   ['title' => __('Drivers'), 'url' => route('app-driver-list')],
   ['title' => __('View')],
 ]])
@@ -54,12 +55,14 @@
     </div>
 
     <h5 class="pb-4 border-bottom mb-4">{{ __('Details') }}</h5>
+    <p class="small text-muted mb-4" id="dv-updated-by"></p>
     <div class="info-container">
       <ul class="list-unstyled mb-6">
         <li class="mb-2"><span class="h6">{{ __('ID') }}:</span> <span id="dv-code"></span></li>
         <li class="mb-2"><span class="h6">{{ __('Email') }}:</span> <span id="dv-email"></span></li>
         <li class="mb-2"><span class="h6">{{ __('Mobile Number') }}:</span> <span id="dv-phone"></span></li>
         <li class="mb-2"><span class="h6">{{ __('Affiliation') }}:</span> <span id="dv-affiliation"></span></li>
+        <li class="mb-2"><span class="h6">{{ __('Default Vehicle') }}:</span> <span id="dv-default-vehicle"></span></li>
       </ul>
       <div id="dv-additional-wrapper" class="mb-6 d-none">
         <span class="h6 d-block mb-2">{{ __('Additional Data') }}:</span>

@@ -4,6 +4,7 @@ namespace App\Domain\Users\Actions;
 
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
 class UpdateUserAction
@@ -21,10 +22,15 @@ class UpdateUserAction
         $user->phone = $data['phone'];
         $user->additional_data = $data['additional_data'] ?? null;
 
+        if (! empty($data['password'])) {
+            $user->password = Hash::make($data['password']);
+        }
+
         if ($photo) {
             $user->photo = $photo->store('avatars', 'public');
         }
 
+        $user->updated_by = auth()->id();
         $user->save();
         $user->syncRoles($data['roles']);
 

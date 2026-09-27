@@ -47,11 +47,21 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function render(d) {
+    if (d.updated_by_name && t.last_updated_by) {
+      const at = d.updated_at ? new Date(d.updated_at).toLocaleString() : '';
+      document.getElementById('dv-updated-by').textContent = t.last_updated_by
+        .replace(':name', d.updated_by_name)
+        .replace(':at', at);
+    }
+
     document.getElementById('dv-name').textContent = d.name;
     document.getElementById('dv-code').textContent = d.code;
     document.getElementById('dv-email').textContent = d.email;
     document.getElementById('dv-phone').textContent = d.phone;
     document.getElementById('dv-affiliation').textContent = d.affiliation === 'gcm' ? 'GCM' : d.affiliation;
+    document.getElementById('dv-default-vehicle').textContent = d.default_vehicle
+      ? d.default_vehicle.plate + (d.default_vehicle.category ? ' — ' + d.default_vehicle.category : '')
+      : (t.not_set || '—');
 
     if (d.additional_data) {
       document.getElementById('dv-additional').innerHTML = d.additional_data;

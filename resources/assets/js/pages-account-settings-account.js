@@ -6,6 +6,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const statusBox = document.getElementById('account-status');
   const errorBox = document.getElementById('account-error');
+  const photoInput = document.getElementById('photo');
+  const photoPreview = document.getElementById('account-photo-preview');
+
+  photoInput.addEventListener('change', function () {
+    const file = photoInput.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      photoPreview.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
 
   form.addEventListener('submit', function (e) {
     e.preventDefault();
@@ -13,17 +26,27 @@ document.addEventListener('DOMContentLoaded', function () {
     statusBox.classList.add('d-none');
     errorBox.classList.add('d-none');
 
+    const photo = photoInput.files[0];
+    if (!photo) {
+      errorBox.textContent = form.dataset.noPhotoMessage;
+      errorBox.classList.remove('d-none');
+      return;
+    }
+
+    const data = new FormData();
+    data.append('_method', 'PATCH');
+    data.append('photo', photo);
+
     window.axios
-      .patch('/api/v1/me', { name: document.getElementById('name').value })
+      .post('/api/v1/me', data, { headers: { 'Content-Type': 'multipart/form-data' } })
       .then(function () {
-        statusBox.textContent = 'Saved.';
-        statusBox.classList.remove('d-none');
+        window.location.reload();
       })
       .catch(function (error) {
         const message =
           error.response && error.response.data && error.response.data.errors
             ? Object.values(error.response.data.errors).flat().join(' ')
-            : 'Something went wrong. Please try again.';
+            : form.dataset.genericError;
 
         errorBox.textContent = message;
         errorBox.classList.remove('d-none');

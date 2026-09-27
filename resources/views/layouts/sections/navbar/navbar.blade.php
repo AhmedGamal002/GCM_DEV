@@ -1,8 +1,12 @@
 @php
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 $containerNav = ($configData['contentLayout'] === 'compact') ? 'container-xxl' : 'container-fluid';
 $navbarDetached = ($navbarDetached ?? '');
+$navbarUserPhotoUrl = (Auth::check() && Auth::user() instanceof \App\Models\User && Auth::user()->photo)
+  ? Storage::disk('public')->url(Auth::user()->photo)
+  : asset('assets/img/avatars/1.png');
 @endphp
 
 <!-- Navbar -->
@@ -39,6 +43,9 @@ $navbarDetached = ($navbarDetached ?? '');
       @endif
 
       <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+
+        <!-- Current date & time — pinned to the opposite end of the bar from the icon cluster (client preference; the FRD just lists it first) -->
+        <small id="navbar-datetime" class="text-muted text-nowrap"></small>
 
        <ul class="navbar-nav flex-row align-items-center ms-auto">
           <!-- Language -->
@@ -118,7 +125,7 @@ $navbarDetached = ($navbarDetached ?? '');
           <li class="nav-item navbar-dropdown dropdown-user dropdown">
             <a class="nav-link dropdown-toggle hide-arrow p-0" href="javascript:void(0);" data-bs-toggle="dropdown">
               <div class="avatar avatar-online">
-                <img src="{{ asset('assets/img/avatars/1.png') }}" alt class="rounded-circle">
+                <img src="{{ $navbarUserPhotoUrl }}" alt class="rounded-circle">
               </div>
             </a>
             <ul class="dropdown-menu dropdown-menu-end">
@@ -133,7 +140,7 @@ $navbarDetached = ($navbarDetached ?? '');
                   <div class="d-flex align-items-center">
                     <div class="flex-shrink-0 me-2">
                       <div class="avatar avatar-online">
-                        <img src="{{ asset('assets/img/avatars/1.png') }}" alt class="rounded-circle">
+                        <img src="{{ $navbarUserPhotoUrl }}" alt class="rounded-circle">
                       </div>
                     </div>
                     <div class="flex-grow-1">

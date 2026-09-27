@@ -128,6 +128,20 @@
 
 **⚠️ فخ اكتُشف عمليًا (أسبوع 2) — القائمة الجانبية وقت وجود جلستين معًا:** Laravel بيحتفظ بتسجيل دخول كل guard (`web` و`platform`) **بشكل مستقل تمامًا في نفس session/متصفح** — يعني مستخدم سجّل دخول Super Admin وبعدين سجّل دخول Tenant admin (أو العكس) من غير logout صريح من الأول، الاتنين بيفضلوا شغالين في نفس الوقت. قرار "أعرض قائمة السوبر أدمن ولا لأ؟" **لازم** يعتمد على الرابط الحالي (`Request::is('platform*')`) **مع** `Auth::guard('platform')->check()` معًا — الاعتماد على `Auth::guard('platform')->check()` لوحدها (من غير فحص الرابط) بيوري قائمة Super Admin حتى وإنت فاتح صفحة تينانت عادية. راجع `App\View\Composers\MenuComposer`.
 
+**⚠️ باگ حقيقي اتكشف بسؤال مباشر من المستخدم (أسبوع 3) — القائمة الجانبية ماكنتش بتفلتر بالدور خالص، بس بـ `platformOnly`.** يعني أي مستخدم تينانت مسجّل دخول — **حتى `driver`، اللي مالوش أي وصول API لـ Users/Drivers/Vehicles خالص** (راجع `UserPolicy`/`DriverPolicy`/`VehiclePolicy`) — كان بيشوف بالظبط نفس قائمة `system_admin` الكاملة. مكنش ده ثغرة أمنية فعلية (البيانات الحقيقية محمية صح على مستوى الـ API عبر الـ Policies)، لكن تجربة استخدام مضلّلة: الدخول على أي رابط منها كان بيحمّل صفحة حقيقية (200) وبعدين طلب البيانات بيرجع 403 بصمت — الجدول بيظهر فاضي "No data available" زي أي جدول فاضي عادي، من غير أي إشارة إن السبب هو الصلاحيات مش عدم وجود بيانات.
+
+**الحل:** إضافة مفتاح `"roles": [...]` اختياري لأي عنصر في `resources/menu/verticalMenu.json`/`horizontalMenu.json` (لازم يتطابق يدويًا مع `Policy::viewAny()` بتاعة نفس الصفحة — مفيش مصدر واحد مشترك يُشتق منه تلقائي)، و`MenuComposer::filter()` بيستبعد أي عنصر لو المستخدم الحالي مالوش أي دور من القايمة دي. عنصر من غير `roles` (كل سقالة Vuexy الديمو) يفضل زي ما هو — مش جزء من الإصلاح ده. كمان `horizontalMenu.json` كان ناقص عنصر "Drivers" بالكامل (اتضاف كمان، حتى لو `myLayout` الافتراضي في `config/custom.php` هو `vertical` مش `horizontal` حاليًا).
+
+**دفاع إضافي (defense-in-depth):** `datatables-server-side.js`'s `gcmServerSideAjax()` بقى بياخد باراميتر تالت اختياري (رسالة مترجمة) بيستبدل بيه نص "مفيش بيانات" الافتراضي لو الطلب رجع 403 تحديدًا — عشان حتى لو حد فتح الرابط مباشرة (بدل ما يدوس من القائمة)، هيشوف رسالة واضحة "لا تملك صلاحية عرض هذه البيانات" مش جدول فاضي غامض.
+
+**تحقق:** 5 تستات جديدة/محدّثة في `MenuVisibilityTest` (driver ميشوفش Users/Vehicles/Drivers، auditor يشوف Vehicles بس، system_admin يشوف التلاتة). تحقق فعلي بالمتصفح: تسجيل دخول بالتلات الأدوار فعليًا، تأكيد نص القائمة الظاهر عبر `get_page_text`، ومحاولة فتح `/app/user/list` مباشرة كـ driver — اتأكد الطلب رجع فعليًا `403 Forbidden` (عبر `read_network_requests`) والجدول عرض رسالة الصلاحية مش "لا يوجد بيانات".
+
+**⚠️ تحديث لاحق (وضع عرض العميل):** القاعدة الافتراضية اللي تحت اتقلبت تاني بطلب صريح — عنصر من غير `"roles"` بقى **مخفي عن الكل حتى `system_admin`** (`MenuComposer::filter()`)، عشان القائمة تعرض بس اللي اتبنى فعلًا (Dashboard/Users/Vehicles/Drivers/Assets). مفتاح `SHOW_DEMO_MENU=true` في `.env` (`config/custom.php` → `showDemoMenu`) بيرجّع السقالة لـ`system_admin` بس للتطوير المحلي. عنصر "Dashboard" الحقيقي بقى معاه `system_admin` كمان (كان بيوصله من خلال "Dashboards" الديمو). في `horizontalMenu.json` عقدة "Apps" (اللي جواها Users/Vehicles/...) اتضاف لها `roles` عشان العناصر الحقيقية ماتختفيش معاها.
+
+**تعميق لاحق، بطلب صريح من المستخدم ("المستخدمين دول ما عدا الأدمن، يفضل زي ما هو، القايمة تبقى فيها اللي مسموح يشوفوا بس"):** الإصلاح فوق كان بيغطي Users/Vehicles/Drivers بس — باقي سقالة Vuexy الديمو (Layouts, Front Pages, Email/Chat/Calendar/Kanban, Components, Forms & Tables, Charts & Maps, ...) كانت لسه ظاهرة لأي دور، من غير أي معنى فعلي ليها. **قلب `MenuComposer::filter()` الافتراضي:** أي عنصر من غير مفتاح `"roles"` بقى **يظهر لـ `system_admin` بس افتراضيًا** (مش "يظهر للكل" زي الأول) — ده بيخلي قائمة admin **زي ما هي بالظبط من غير أي تغيير مرئي** (كل عنصر ديمو مالوش `roles` أصلًا، فبيفضل يشوفه)، بينما أي دور تاني بيشوف بس العناصر اللي عليها `roles` صريحة ومطابقة لدوره. **عنصر جديد "Dashboard"** (`roles: [data_entry, auditor, driver]`, بيوّدي لـ `/dashboard` الحقيقي) اتضاف عشان الأدوار دي يبقى ليها نقطة رجوع واضحة بعد ما اختفت سقالة "Dashboards" الديمو من قائمتهم (`admin` مش من ضمن `roles` العنصر ده عمدًا — يفضل معتمد على عنصر "Dashboards" الديمو الموجود أصلًا، زي ما هو). **ملاحظة للمستقبل:** العنصر الابن ميرثش `roles` أبوه — أي عنصر أب جديد بـ `roles` غير system_admin وليه أبناء، لازم الأبناء تتعلّم بـ `roles` صريحة كمان وإلا هتختفي حتى للأدوار المفروض تشوف الأب.
+
+**تحقق إضافي:** 3 تستات جديدة في `MenuVisibilityTest` (driver/auditor مايشوفوش أي عنصر ديمو لكن يشوفوا "Dashboard"، system_admin لسه شايف السقالة كاملة). تحقق فعلي بالمتصفح بالأربع حسابات (system_admin/data_entry/auditor/driver) — تأكيد نص القائمة كامل لكل واحد عبر `get_page_text`.
+
 **مسارات إضافية:**
 ```
 routes/
@@ -207,7 +221,7 @@ render: function (data, type, full) {
 **الحل (فايلين + تصحيح middleware):**
 - [`app/Models/PersonalAccessToken.php`](app/Models/PersonalAccessToken.php) — موديل جديد بيورث من `Laravel\Sanctum\PersonalAccessToken`، بيعمل override لـ `tokenable()` بإضافة `->withoutGlobalScope(BelongsToTenant::class)` — بالظبط نفس منطق `TenantUnawareEloquentUserProvider` لكن لمسار الـ token.
 - مُسجّل في `AppServiceProvider::boot()` عن طريق `Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class)`.
-- [`app/Http/Middleware/EnsureTenant.php`](app/Http/Middleware/EnsureTenant.php) — اتصلح عشان يجيب المستخدم عن طريق `Auth::guard('sanctum')->user()` بدل `Auth::guard('web')` مباشرة. الـ guard `sanctum` بيغطي الحالتين تلقائيًا: طلب stateful (كوكي) بيرجع لـ guard `web` زي ما كان بالظبط، وطلب بتوكن بيتحقق من التوكن ويرجّع صاحبه — فمفيش فرق سلوك للمسار القديم، وبس اتضاف المسار الناقص.
+- [`app/Http/Middleware/EnsureTenant.php`](app/Http/Middleware/EnsureTenant.php) — اتصلح عشان يجيب المستخدم عن طريق دالة `currentUser()` جديدة بدل `Auth::guard('web')` مباشرة: بتتحقق من guard `web` الأول (طلب stateful/كوكي)، ولو مفيش، بتتحقق يدويًا من bearer token (`PersonalAccessToken::findToken()`). **ملحوظة:** أول نسخة من الإصلاح ده استخدمت `Auth::guard('sanctum')->user()` بدل التحقق اليدوي — اتصلحت لاحقًا بعد ما اتكشف إنها بتكاش المستخدم على مستوى الـ guard instance عبر تستات متعددة في نفس الـ method (راجع §5 لتفاصيل الباگ ده والدرس المستفاد منه).
 - دالة `revokeAuthentication()` جديدة جوه نفس الـ middleware: لو تم اكتشاف تعارض tenant (نفس منطق الحماية الموجود قبل كده)، بترفض بـ logout+session invalidate لو الطلب كان بكوكي، أو **تحذف الـ access token نفسه** لو كان بتوكن (مفيش session تتلغي أصلاً) — عشان التوكن المرفوض ميتقدرش يتستخدم تاني.
 
 **تست الحماية:** [`tests/Feature/Auth/BearerTokenTenantAccessTest.php`](tests/Feature/Auth/BearerTokenTenantAccessTest.php) — 3 تستات بتستخدم توكن حقيقي فعليًا (مش `actingAs`) عبر `Authorization: Bearer` header حقيقي: وصول ناجح، عزل تينانت لسه شغال بالتوكن، وتينانت متعطل بيرفض الطلب **ويمسح التوكن**. اتأكد فعليًا إن الـ 3 تستات دول بيفشلوا (بنفس الـ exception) لو رجّعنا الفيكس (`git stash` مؤقت) — مش افتراض.
@@ -264,20 +278,21 @@ gcm-wms/
 │   │   │   └── Scopes/
 │   │   │       └── ContractorVisibilityScope.php
 │   │   │
-│   │   ├── Fleet/
+│   │   ├── Vehicles/                              # موديول مستقل (زي Users) — مش تحت "Fleet"
 │   │   │   ├── Actions/
 │   │   │   │   ├── CreateVehicleAction.php
-│   │   │   │   ├── SetVehicleMaintenanceAction.php
-│   │   │   │   └── AssignDefaultDriverAction.php
-│   │   │   └── Rules/
-│   │   │       └── VehicleCategoryMatchesDriverLicenseRule.php
+│   │   │   │   ├── UpdateVehicleAction.php
+│   │   │   │   └── UpdateVehicleStatusAction.php
+│   │   │   └── Exceptions/
+│   │   │       └── CannotDeactivateVehicleException.php
 │   │   │
-│   │   ├── Assets/
+│   │   ├── Assets/                                  # ✅ أسبوع 3 — مبني (أصول + تصنيفات سعة الأصول)
 │   │   │   ├── Actions/
-│   │   │   │   ├── CreateAssetAction.php            # حاويات/صهاريج
-│   │   │   │   └── SetAssetMaintenanceAction.php     # الحالة الثالثة on_maintenance
-│   │   │   └── Rules/
-│   │   │       └── AssetCapacityImmutableAfterCreationRule.php  # الاسم فقط قابل للتعديل بعد الإنشاء
+│   │   │   │   ├── CreateAssetAction.php / UpdateAssetAction.php (اسم فقط) / UpdateAssetStatusAction.php
+│   │   │   │   └── CreateAssetCapacityCategoryAction.php / UpdateAssetCapacityCategoryAction.php (اسم فقط)
+│   │   │   ├── Exceptions/CannotDeactivateAssetException.php
+│   │   │   └── Exports/AssetsExport.php / AssetCapacityCategoriesExport.php
+│   │   │   # "الاسم فقط قابل للتعديل" مفروض في UpdateAssetRequest/UpdateAssetCapacityCategoryRequest (whitelist للـ name فقط)، مش Rule class
 │   │   │
 │   │   ├── Services/
 │   │   │   ├── Actions/
@@ -361,9 +376,10 @@ gcm-wms/
 │   │   │   │       ├── AggregatedDocumentsReportController.php
 │   │   │   │       └── RecycleRateReportController.php
 │   │   │   │
-│   │   │   └── Web/                                       # Blade shell فقط — بدون بيانات حقيقية
+│   │   │   └── Web/                                       # Blade shell فقط — بدون بيانات حقيقية، مجلد لكل موديول
 │   │   │       ├── DashboardController.php
-│   │   │       └── AuthenticatedSessionController.php     # صفحة دخول Vuexy بجلسة Cookie
+│   │   │       ├── AuthenticatedSessionController.php     # صفحة دخول Vuexy بجلسة Cookie
+│   │   │       └── Vehicles/Vehicle{List,Add,Account}Controller.php   # 🆕 (Users/Drivers/... زيّها — يتدمجوا من فرع الزميل)
 │   │   │
 │   │   ├── Requests/
 │   │   │   ├── Users/{Store,Update}UserRequest.php
@@ -430,10 +446,10 @@ gcm-wms/
 │   ├── 004_create_users_table.php                             # + tenant_id
 │   ├── 005_create_projects_table.php                          # + tenant_id
 │   ├── 006_create_project_user_table.php                      # + عمود scope (all/specific)
-│   ├── 007_create_vehicle_categories_table.php                # + tenant_id
-│   ├── 008_create_vehicles_table.php                          # + tenant_id + contractor_id (بدون FK أولاً)
-│   ├── 009_create_asset_capacities_table.php                  # + tenant_id، capacity_cbm + capacity_ton معًا
-│   ├── 010_create_assets_table.php                             # + tenant_id + contractor_id (بدون FK أولاً)
+│   ├── 007_create_vehicle_categories_table.php                # (اتحوّل لاحقًا: 2026_09_22_100000 بيضيف tenant_id — تصنيفات لكل شركة، مدير النظام بيديرها؛ الأصل كان جدول عالمي بـ5 أنواع ثابتة زي roles)
+│   ├── 008_create_vehicles_table.php                          # + tenant_id + contractor_id (بدون FK أولاً)، هوية = اللوحة (لا code)
+│   ├── 009_create_asset_capacity_categories_table.php         # + tenant_id، capacity_cbm + capacity_ton معًا. ✅ أسبوع 3: expand migration منفصلة أضافت applies_to (container/tank/both) + additional_data + updated_by
+│   ├── 010_create_assets_table.php                             # ✅ أسبوع 3: + tenant_id + contractor_id (بدون FK أولاً) + asset_type + asset_capacity_category_id + operational_status (3 حالات) + purchase_date + updated_by. هوية = الاسم (لا code). + جدول pivot asset_vehicle_categories (تصنيفات المركبات المتوافقة)
 │   ├── 011_create_main_services_table.php / 012_create_sub_services_table.php
 │   ├── 013_create_facilities_table.php
 │   ├── 014_add_contractor_fk_to_fleet_and_assets.php           # ⚠️ إضافة FK بعد إنشاء contractors
@@ -443,17 +459,17 @@ gcm-wms/
 │
 ├── database/seeders/
 │   ├── DatabaseSeeder.php / RoleSeeder.php                     # 7 أدوار
-│   ├── VehicleCategorySeeder.php                                # 5 أنواع ثابتة
+│   ├── VehicleCategorySeeder.php                                # بتدّي كل شركة موجودة الستة الافتراضية (الشركات الجديدة بتاخدهم من Tenant::created)
 │   ├── UnitOfMeasureSeeder.php                                  # 🆕 بيانات ثابتة — لا Controller
 │   └── DemoDataSeeder.php                                       # local/staging فقط
 │
 ├── resources/
-│   ├── views/                                                    # لوحة Vuexy Blade
-│   │   ├── layouts/panel.blade.php
-│   │   ├── auth/{login,forgot-password}.blade.php
-│   │   ├── dashboard.blade.php
-│   │   ├── users/ companies/ projects/ contractors/ fleet/ assets/
-│   │   ├── services/ facilities/ purchase-orders/ trips/ reports/
+│   ├── views/
+│   │   ├── layouts/ + layouts/sections/ + _partials/             # سقالة Vuexy المشتركة — ما تتحركش
+│   │   ├── content/                                              # صفحات Vuexy الديمو — تفضل مكانها
+│   │   └── tenant/                                               # 🆕 صفحات GCM الحقيقية، مجلد لكل موديول:
+│   │       ├── vehicles/{list,add,edit,view,_form}.blade.php     #    + vehicles/export-pdf.blade.php (نفس نمط users/drivers)
+│   │       └── users/ auth/ profile/  (على فرع الزميل — يتدمج)
 │   │   │   # كل صفحة هنا Shell رفيع يستدعي /api/v1/* عبر axios فقط
 │   ├── js/
 │   │   ├── api/client.js                                        # axios instance + Sanctum CSRF bootstrap
@@ -463,7 +479,8 @@ gcm-wms/
 ├── routes/
 │   ├── platform.php                                               # 🆕 Super Admin — auth:platform
 │   ├── api.php                                                    # /api/v1/* — اللوحة والموبايل معًا لاحقًا
-│   ├── web.php                                                    # Blade shell فقط
+│   ├── web.php                                                    # سقالة Vuexy الديمو فقط — require tenant.php في آخره
+│   ├── tenant.php                                                 # 🆕 راوتات صفحات GCM الحقيقية (Web\{Module}\* controllers)
 │   └── console.php
 │
 ├── tests/
@@ -500,6 +517,11 @@ gcm-wms/
 - HTTPS إجباري، تشفير الحقول الحساسة.
 - **Global Scope للـ tenant إلزامي على كل query** — هذا هو خط الدفاع الأول ضد تسريب بيانات بين الشركات المشتركة في المنتج.
 - **⚠️ قاعدة اتأكدت أهميتها فعليًا (أسبوع 2) — أي DataTables `render` callback في JS بيرجع HTML خام لازم يعمل escape للحقول اللي مصدرها بيانات مستخدم (اسم، إيميل، أي حقل self-service قابل للتعديل).** DataTables بتحقن النتيجة عبر `.html()` مش كـ نص، فأي حقل زي `full.name` (مستخدم عادي أي دور يقدر يغيّره بنفسه عن طريق `/api/v1/me`) لو اتحط في الـ HTML string من غير escaping بيبقى XSS مخزّن قابل للتنفيذ في جلسة أي حد بيشوف الجدول (زي system_admin وهو بيفتح صفحة المستخدمين). استخدم helper بسيط زي `$('<div>').text(value).html()` قبل أي تسلسل نصي HTML. الحقول اللي مصدرها الكود نفسه (roles enum ثابت، صور برابط متولّد من hash عشوائي server-side) مش محتاجة نفس المعاملة.
+- **⚠️ قاعدة اتأكدت أهميتها فعليًا (أسبوع 3، بعد 3 جولات تصحيح) — إنشاء سائق حصريًا عن طريق `/api/v1/drivers`، مش category جوه فورم المستخدمين العام.** الجولتين الأوليين ترددوا (استبعاد كامل ← ثم سماح مع إنشاء صف فاضي تلقائي)، لحد ما المستخدم راجع نص الـ FRD حرفيًا ولقى قسم منفصل تمامًا "إدارة وانشاء حسابات السائقين" بصفحة "انشاء مستخدم جديد (سائق)" خاصة بيها (Reference URL منفصل، فورم كامل خاص). القرار النهائي: `StoreUserRequest` بيرفض `driver` نهائيًا، و`UserPolicy::update()` بيرفض 403 أي تعديل على مستخدم `hasRole('driver')` — الإنشاء والتعديل للسائق **حصريًا** عن طريق موديول Drivers (`CreateDriverAction`/`UpdateDriverAction`)، مفيش استثناء. **الدرس الأعمق:** لما توثيق الـ FRD يبان غامض أو بيحتمل أكتر من تفسير، الرجوع للنص الأصلي حرفيًا (مش الافتراض المنطقي "الأسهل تقنيًا") هو الحسم — حصل هنا 3 مرات على نفس النقطة قبل ما يتأكد بالنص. راجع `WEEKLY_PLAN.md` (قسم الأسبوع 3) لتفاصيل الجولات التلاتة.
+- **⚠️ قاعدة اتأكدت أهميتها فعليًا (أسبوع 3) — أي تحقق (`in_array`, `==` صارم) على IDs جايين من فورم HTML حقيقي لازم يتعامل معاها كـ string، مش يفترض إنها int.** فورم حقيقي (`multipart/form-data` عبر `FormData` في الـ JS) بيبعت كل حاجة كـ string دايمًا، عكس `postJson()` في التستات اللي بتحافظ على نوع البيانات الأصلي (JSON encoding مش بيحوّل الأرقام لـ strings). باگ حقيقي اتكشف بالتجربة الفعلية بالمتصفح (مش بالتستات — التستات عدّت بنجاح رغم الباگ): تحقق "المركبة الافتراضية تنتمي لتصنيف مختار" في `StoreDriverRequest`/`UpdateDriverRequest` كان بيستخدم `in_array($int, $arrayOfStrings, true)` — `"3" !== 3` بمقارنة strict بتفشل دايمًا. الحل: `in_array((int) $x, array_map('intval', $ids), true)`. **درس اختبار عام:** أي تحقق من النوع ده لازم تست بـ `->post()` بقيم **string** صراحة كمان، مش `->postJson()` بس.
+- **⚠️ قاعدة اتأكدت أهميتها فعليًا (أسبوع 3) — `Auth::guard('sanctum')->user()` بتكاش المستخدم على مستوى الـ guard instance، مش الطلب.** `RequestGuard` (اللي `Auth::guard('sanctum')` بيرجعه) بيحتفظ بالمستخدم المُحلَّل في property داخلية بمجرد أول استدعاء — في التشغيل الحقيقي مفيش مشكلة (كل HTTP request عملية PHP جديدة كليًا)، لكن في PHPUnit Feature tests اللي بتعمل `actingAs($userA)` وبعدين `actingAs($userB)` **في نفس الـ test method**، الكاش بيفضل شايل $userA غلط لأي نداء تاني لـ `Auth::guard('sanctum')` — `actingAs()` بترجع بس الـ guard اللي انت مررته بالاسم (`web` مثلًا)، مش `sanctum`. اتكشف فعليًا من تست حقيقي (`VehicleUniquePlateTest`) كان بيفشل غلط. الحل في `EnsureTenant`: التحقق من guard `web` مباشرة + تحقق يدوي من bearer token (`PersonalAccessToken::findToken()`) بدل المرور بالـ guard المكاش. **درس عام:** أي كود بيعتمد على `Auth::guard()` لمسار مصادقة بديل (زي `sanctum`) لازم ينتبه إن التستات اللي بتبدّل المستخدم أكتر من مرة في نفس الـ method ممكن تدّي نتيجة غلط بصمت. **تطبيق عملي في موديول الأصول:** أي تست بيسوّي `create` بمستخدم و`update` بمستخدم تاني في نفس الـ method لازم يبني الكيان بالـ factory بدل نداء API تاني (راجع `AssetManagementTest`).
+
+- **"آخر تحديث بواسطة X — التاريخ/الوقت" (FRD على صفحات التعديل):** لسه مش عام. أسبوع 3 موديول الأصول ضاف عمود `updated_by` (FK nullable لـ `users`, `nullOnDelete`) على `assets` و`asset_capacity_categories` فقط، بيتعبّى في الـ Actions من `$request->user()`، ويتعرض على صفحتي التعديل + صفحة تفاصيل الأصل. **Users/Drivers/Vehicles لسه من غيره** — retrofit موحّد عبر `spatie/laravel-activitylog` (مذكور كإلزامي في §5) لسه مؤجّل؛ لو اتعمل، يستبدل الـ `updated_by` اليدوي ده.
 
 ## 6. الأداء
 
@@ -509,6 +531,34 @@ gcm-wms/
 - Pagination بـ Laravel القياسي (limit/offset) كما هو محدد في BRD.
 - فهرسة `tenant_id` على كل جدول (أداء العزل).
 - **⚠️ فخ N+1 اتأكد عمليًا مع Spatie Permission (أسبوع 2):** أي `Resource` بيستخدم `getRoleNames()`/`getPermissionNames()` من `HasRoles` trait، الدالة دي بتعمل `loadMissing('roles')` — يعني لو الـ query الأساسي مجابش `roles` ضمن `->with([...])`، كل صف في القائمة هيسبب query منفصل لجلب أدواره (N+1 كامل). لازم أي `index()`/`export()` بيرجّع مجموعة `User` (أو أي Model عليه `HasRoles`) يضيف الـ relation المطلوبة صراحة في `->with([...])` — اتأكد منها بتست بيعد عدد الـ queries الفعلي (`DB::enableQueryLog()`) بدل الاعتماد على المراجعة البصرية للكود بس.
+- **⚠️ باگ أداء حرج اتكشف بسؤال مباشر من المستخدم (أسبوع 3) — DataTables كانت client-side بالكامل على الصفحات التلاتة (Users/Drivers/Vehicles).** كل جدول كان بيعمل `ajax` مرة واحدة بـ `per_page=1000` ثابت، وDataTables بتعمل الباقي (بحث/فرز/فلترة/pagination) في المتصفح على البيانات المحمّلة بس. مع عميل عنده ~8000 موظف، ده مش مجرد "بطء" — **فقدان بيانات فعلي**: أي حد بعد أول 1000 صف مش هيظهر خالص، مش في الجدول ولا في نتائج البحث ولا في قوائم فلترة الدور/الحالة (اللي كانت بتتبني من البيانات المحمّلة نفسها عبر `column(N).data()`). صفحة السائقين كان فيها إضافة: **الكروت الإحصائية الأربعة كانت بتتحسب من نفس البيانات المحمّلة العميل-سايد** (مش من endpoint حقيقي) — نفس المشكلة بالظبط.
+
+  **الحل:** تحويل الجداول التلاتة لـ **server-side processing** حقيقي:
+  - `resources/assets/js/datatables-server-side.js` — helper مشترك واحد (`window.gcmServerSideAjax(url, getExtraParams)`) بيترجم طلب DataTables (`draw`/`start`/`length`/`search`/`order`) لباراميترات الـ API الموجودة أصلاً (`page`/`per_page`/`search`/`sort_by`/`sort_dir`) بدل ما نعيد تصميم شكل استجابة الـ API نفسه — أي مستهلك تاني (Postman، إلخ) لسه شغال زي ما هو.
+  - `UserController`/`DriverController`/`VehicleController::index()`: إضافة `sort_by`/`sort_dir` بقائمة أعمدة مسموحة صراحة (`SORTABLE_COLUMNS` allowlist) — **لا تقبل اسم عمود من الطلب مباشرة أبدًا** (SQL error على الأقل، تسريب معلومات على الأكتر). `DriverController` محتاجة `join('users', ...)` لإن code/name/status بيانات على جدول `users` مش `drivers`.
+  - `GET /api/v1/drivers/stats` endpoint جديد (بنفس نمط `VehicleController::stats()` الموجود بالفعل) — الكروت الأربعة بتتحسب في SQL على المجموعة الكاملة، مش على صفحة الجدول المحمّلة.
+  - فلاتر الـ dropdown (دور/حالة/تبعية/تصنيف) بقت قوائم ثابتة (القيم المعروفة مسبقًا) بدل ما تتبني من البيانات المحمّلة، وبتبعت طلب جديد للسيرفر عند التغيير بدل فلترة العميل-سايد.
+
+  **باگين إضافيين اتكشفوا أثناء الإصلاح (مش حاجة من الأصل، كانوا مستخبيين وراء الفلترة العميل-سايد):**
+  1. **فلتر "Affiliation" في صفحة السائقين كان شكلي بالكامل** — الـ dropdown موجود في الواجهة، لكن `DriverController::index()` مكنش بيقرأ باراميتر `affiliation` خالص. كان "شغال" بالصدفة بس لإن الفلترة العميل-سايد على البيانات المحمّلة كانت بتعمل الشغل الحقيقي. اتصلح بإضافة الفلتر فعليًا في الـ query.
+  2. **`$request->string('sort_dir')->lower() === 'desc'` بترجع `false` دايمًا** — `->lower()` بترجع كائن `Stringable` مش string خام، والمقارنة الصارمة `===` مع string حرفي بتفشل دايمًا (كائن مش string). يعني `sort_dir=desc` كان بيتجاهل تمامًا في الكود، الترتيب كان ascending دايمًا بغض النظر عن الطلب. اتصلح بـ `->lower()->toString() === 'desc'`. **درس عام:** أي مقارنة `===`/`==` مع نتيجة `$request->string(...)` لازم `->toString()` صريحة أول — الـ Stringable مقصود يتصرف كـ string في سياقات كتير (concatenation، إلخ) لكن **مش** في المقارنة الصارمة.
+
+  **امتداد (أسبوع 3، موديول الأصول):** جدولَي الأصول (`AssetController::index`) وتصنيفات سعة الأصول (`AssetCapacityCategoryController::index`) اتبنوا server-side من أول يوم بنفس الـ helper + allowlist. تصنيفات السعة فيها لفّة: نفس الـ `index` endpoint هو feed الـ dropdowns في فورم المركبة/الأصل واللي محتاج القائمة كاملة — فالـ pagination بيتفعّل **بس لو `per_page` مبعوت** (صفحة القائمة بتبعته عبر `gcmServerSideAjax`)، من غيره بيرجّع collection كاملة. `AssetListPaginationTest` + `AssetCapacityCategoryListPaginationTest` (فيه تست صريح إن غياب `per_page` بيرجّع القائمة كاملة بدون meta).
+
+  **تحقق:** 10 تستات جديدة (`UserListPaginationTest`, `DriverListPaginationAndStatsTest`, `VehicleListPaginationTest`) بتتأكد إن `per_page` صغير لسه بيرجّع الـ total الصح، صفحة 2 مش بتكرر صفحة 1، الفرز `desc` فعليًا بيعكس الترتيب (اتأكدت الاختبارات دي فعليًا كانت بتفشل قبل إصلاح باگ الـ Stringable)، وإن `sort_by` غير مسموح بيه ميرميش 500. تحقق فعلي بالمتصفح كمان: تأكيد إن كل طلب فعليًا بيوصل بـ `per_page=10` (مش 1000) عبر `read_network_requests`، مش افتراض. **اتحقق منه بحجم واقعي فعليًا** — `database/seeders/DevVehicleVolumeSeeder.php` (أداة dev مؤقتة، مش جزء من `DatabaseSeeder`) بيزرع 3000 مركبة، واستخدمناه لتصفح صفحة Vehicles فعليًا بعنيك على حجم قريب من عميل الـ 7952 موظف.
+
+- **⚠️ باگ بحث اتكشف بنفس اختبار الحجم الواقعي (3000 مركبة): البحث بالقيمة المعروضة بالظبط (`AAA 0001`) مكنش بيرجّع نتيجة.** `Vehicle::plate()` بيعرض اللوحة كـ`plate_letters` + مسافة + `plate_numbers`، لكن البحث في `VehicleController::index()` كان بيقارن كل عمود لوحده (`plate_letters LIKE` أو `plate_numbers LIKE` منفصلين) — مفيش عمود فيه القيمة المجمّعة بالمسافة، فالبحث بالشكل المعروض بالظبط كان بيفشل دايمًا. **الحل:** إضافة مطابقة على التجميع (`CONCAT(plate_letters, ' ', plate_numbers)`) وعلى النسخة بدون مسافة كمان، مع فرع صريح للفرق بين MySQL (`CONCAT`) وSQLite بتاع التستات (`||` operator — `CONCAT` مش موجودة فيه أصلًا، بترمي `no such function` لو استخدمتها زي ما هي). تست `test_searching_the_displayed_plate_with_a_space_finds_the_vehicle` بيغطي 4 صيغ بحث. **درس عام:** أي عمودين بيتعرضوا للمستخدم مجمّعين (`concat` في الـ UI/الـ Resource) لازم يبقى فيه مسار بحث سيرفر-سايد يقارن نفس التجميع، مش بس الأعمدة الخام لوحدها — وأي `whereRaw` بيستخدم دالة DB-specific لازم فرع لـ SQLite (بيئة التستات) صراحة.
+
+  **نفس فئة الباگ اتلاقت كمان في Users وDrivers بعد المراجعة:** عمود `code` هو أول عمود معروض في الجدولين، لكن `UserController`/`DriverController::index()` كان البحث فيهم بيقارن `name`/`email` بس، من غير `code` خالص — بحث بالقيمة المعروضة في أول عمود كان بيفشل دايمًا. اتصلح بإضافة `orWhere('code', 'like', ...)` (Users) و`orWhere('code', ...)` جوه نفس `whereHas('user', ...)` (Drivers، لإن `code` عمود على `users` مش `drivers`). تستات جديدة `test_searching_by_the_displayed_code_finds_the_user`/`_driver` في نفس ملفات الـ pagination tests. تحقق فعلي بالمتصفح كمان (بحث بكود مستخدم/سائق حقيقي، تأكيد الطلب والنتيجة عبر `read_network_requests`).
+
+- **⚠️ باگ أداء منفصل تمامًا (frontend مش backend) اتكشف بسؤال مباشر من المستخدم أثناء نقاش النشر: "هل `npm run build` ممكن يكون سبب بطء؟"** — قياس فعلي عبر `performance.getEntriesByType('resource')` في المتصفح (مش افتراض) على صفحة Users list كشف: **4.8 ميجابايت** إجمالي وزن الصفحة، منها **2.4 ميجابايت في ملف واحد بس** (`datatables-bootstrap5-*.js` — تجميعة DataTables+Bootstrap5+الإضافات بتاعتها من Vuexy). أخطر من الحجم نفسه: **الملف ده كان بيتنزّل من جديد بالكامل في كل تنقّل بين صفحات** (Users → Vehicles → Drivers) — `fetch()` مباشر أكّد صفر headers خاصة بالكاش (`Cache-Control`/`ETag`/`Last-Modified` كلهم `null`)، يعني المتصفح مالوش أي طريقة يعرف إنه نفس الملف من غير ما يعيد تحميله بالكامل تاني. **ده باگ مختلف تمامًا عن باگ الـ per_page=1000 الموثق فوق** — ده وزن الـ JS نفسه اللي بيتحمّل قبل حتى أي طلب API، مش سرعة استجابة الـ API.
+
+  **الحل:** إضافة قاعدة caching في `public/.htaccess` (الملف الرئيسي المتتبّع بـ git — **مش** جوه `public/build/` نفسها لإنها متولّدة ومتمسحة بالكامل في كل `npm run build`، أي حاجة تتحط جواها هتضيع). القاعدة بتحدد الطلبات اللي مسارها `/build/assets/` (عبر `RewriteRule` بتحط environment variable، مش `<FilesMatch>` بامتداد الملف — عشان متأثرش على `public/assets/` غير المُهشّرة اللي ممكن تتغيّر من غير ما يتغيّر اسمها) وتحط عليها `Cache-Control: public, max-age=31536000, immutable`. آمن 100% لإن Vite بيحط hash في اسم كل ملف (`app-XxU8kiOC.js`) — أي تعديل في المحتوى بيغيّر الاسم نفسه، فالكاش الطويل مايعنيش أبدًا محتوى قديم.
+
+  **ملاحظتين مهمتين للسياق:**
+  1. القياس ده كان على `php artisan serve` محليًا (بيئة تطوير)، اللي **مالوش أي ضغط (gzip/brotli) ولا أي cache headers أصلًا** — بيانات `npm run build`'s الأصلية سجّلت نفس الملف كـ2.3 ميجا خام مقابل ~1 ميجا بعد gzip، يعني الحجم الحقيقي على Apache/Hostinger (اللي فيه ضغط افتراضي غالبًا) هيبقى تقريبًا نص الرقم ده — لكن مشكلة الكاش المفقود لسه موجودة برضه بغض النظر عن الضغط.
+  2. **الإصلاح ده متتأكدش فعليًا بالمتصفح** — `.htaccess` ملف خاص بـ Apache فقط، و`php artisan serve` (سيرفر PHP المدمج البسيط) بيتجاهله تمامًا. لازم يتحقق منه بـ `curl -I` على السيرفر الحقيقي (Hostinger) بعد النشر، مش قبل كده — راجع `DEPLOYMENT.md §12`.
+  3. **حجم الـ2.4 ميجا نفسه لسه فرصة تحسين منفصلة، لسه ماتحلتش**: على الأغلب `datatables-bootstrap5` بتجمع إضافات أكتر مما الصفحات التلاتة (Users/Drivers/Vehicles) فعليًا مستخدماه — يحتاج مراجعة دقيقة لملف `resources/assets/vendor/libs/datatables-bootstrap5/` قبل أي تقليم، عشان الوظائف الحالية (Export buttons، Responsive، إلخ) متتكسرش. مؤجل، مش أولوية فورية.
 
 ## 7. خطة الشهرين — 3 مراحل
 
@@ -585,12 +635,16 @@ gcm-wms/
 | Views | `resources/views/tenant/{module}/` | `resources/views/tenant/users/list.blade.php` |
 | Controllers | `App\Http\Controllers\Web\{Module}\` | `App\Http\Controllers\Web\Users\UserListController` |
 | Routes | `routes/tenant.php` (مش `routes/web.php`) | يتحمّل عبر `require` في آخر `web.php`، بيورث middleware group `web` تلقائي |
+| Exports (PDF/Excel) | `app/Domain/{Module}/Exports/` | `app/Domain/Users/Exports/UsersExport.php` |
+| قالب الـ PDF بتاع الـ Export | `resources/views/tenant/{module}/export-pdf.blade.php` | `resources/views/tenant/users/export-pdf.blade.php` |
 
 - **`routes/web.php` يفضل زي ما هو** — سقالة Vuexy الأصلية بالكامل، بدون أي تعديل تاني غير حذف السطور اللي اتنقلت. أي حد بيدور على راوت GCM حقيقي يفتح `routes/tenant.php` (~45 سطر) مش يدور وسط 380 سطر ديمو.
 - **مسارات الراوت (`/app/user/list`) وأسماؤها (`app-user-list`) متغيّرتش خالص** — بس مكان ملف الكنترولر والـ view اتغيّر. يعني أي حاجة بتربط بالاسم (menu JSON، breadcrumbs، `route()` calls، الـ 89 تست) اشتغلت من غير أي تعديل.
 - **اكتشاف مهم أثناء النقل:** بعض ملفات "الديمو" مش نسخة منفصلة — هي **الصفحة الحقيقية نفسها بدون تكرار** (مثلاً `content/authentications/auth-login-basic.blade.php` كانت الصفحة الحقيقية لـ `/login` **وكمان** صفحة الديمو `/auth/login-basic` في نفس الوقت، عن طريق كنترولرين مختلفين بيرجّعوا نفس اسم الـ view). لما الملف اتنقل لـ `tenant/auth/login.blade.php`، الكنترولر الديمو (`App\Http\Controllers\authentications\LoginBasic`) اتحدّث يشاور على المكان الجديد بدل ما يتكسر — **مفيش نسخ**، نفس الملف لسه بيخدم الاتنين. نفس الشيء لصفحات forgot/reset password. **درس عام:** قبل نقل أي ملف "ديمو"، لازم تتأكد الأول إنه مش بيتستخدم فعليًا من كنترولر حقيقي، مش تفترض بالاسم بس.
 - **تم التحقق فعليًا** (مش افتراض): كل صفحة اتنقلت جُرّبت بمتصفح حقيقي بعد تسجيل دخول فعلي (login → users list → driver add form)، + `curl` على كل route بمصادقة session حقيقية، + الـ 89 تست شغالين، + تأكيد إن صفحات الديمو المرتبطة (login-basic gallery, إلخ) لسه شغالة.
 - **موجود من قبل، مبيتأثرش:** `resources/views/platform/` (بالفعل مكان مستقل لصفحات الـ Platform) اتوسّع بـ `platform/auth/login.blade.php` بس (كان قاعد لوحده وسط `content/authentications/` بدون داعي).
+- **إضافة لاحقة (نفس الجلسة):** `app/Exports/` (كان فيه `UsersExport.php`/`DriversExport.php` بس، مش مختلط بديمو، لكن برّه أي "موديول" — نقلوا لـ `app/Domain/{Module}/Exports/` عشان يبقوا مع باقي منطق نفس الموديول (Actions/Rules/Exceptions)، وده استكمال طبيعي لنفس القاعدة مش استثناء ليها. قوالب الـ PDF (`resources/views/exports/*-pdf.blade.php`) نقلت بنفس المنطق لـ `resources/views/tenant/{module}/export-pdf.blade.php`. بلاست ريديوس صغير جدًا (2 كنترولر بس بيستوردوا `App\Exports\*`) فاتنقلت مباشرة من غير الحاجة لسؤال.
+- **قرار مقصود بعدم النقل: `app/Models/`** — 6 موديولز (`User`, `Driver`, `DriverEntryPermit`, `Tenant`, `PlatformAdmin`, `PersonalAccessToken`) قاعدين flat، **وده مقصود يفضل كده**. الفرق عن Views/Controllers/Exports: مفيش أي تلوث ديمو هنا (كل الملفات بتاعتنا 100%)، والـ Laravel convention القياسي فعلاً flat `app/Models/` (مش استثناء غريب). أهم من كده: `App\Models\User` لوحده متستخدم في **43 ملف** عبر المشروع (Actions, Requests, Policies, Controllers, Seeders, Factories, config/auth.php, تستات) — نقله لموديول Domain هيحتاج تحديث الـ 43 ملف دول كلهم لمجرد فايدة تنظيمية، بلاست ريديوس أكبر بكتير من أي نقل تاني اتعمل، من غير حل مشكلة حقيقية زي مشكلة الديمو. لو الموديلز كبرت لـ 15-20 موديول لاحقًا (مرحلة 2-3) يستاهل نعيد التقييم، لكن دلوقتي مش مبرر.
 
 ## 10. Postman Collection
 

@@ -5,6 +5,7 @@ namespace App\Domain\Drivers\Actions;
 use App\Models\Driver;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 /**
  * Updates the driver's account basics (name/phone/photo/additional_data
@@ -28,13 +29,19 @@ class UpdateDriverAction
             $user->phone = $data['phone'];
             $user->additional_data = $data['additional_data'] ?? null;
 
+            if (! empty($data['password'])) {
+                $user->password = Hash::make($data['password']);
+            }
+
             if ($photo) {
                 $user->photo = $photo->store('avatars', 'public');
             }
 
+            $user->updated_by = auth()->id();
             $user->save();
 
             $driver->fill([
+                'default_vehicle_id' => $data['default_vehicle_id'],
                 'residence_number' => $data['residence_number'],
                 'residence_valid_to' => $data['residence_valid_to'],
                 'license_number' => $data['license_number'],
@@ -58,9 +65,12 @@ class UpdateDriverAction
                 $driver->insurance_attachment = $documents['insurance']->store('driver-documents', 'local');
             }
 
+            $driver->updated_by = auth()->id();
             $driver->save();
 
-            return $driver->fresh(['user.roles', 'entryPermits']);
+            $driver->qualifiedVehicleCategories()->sync($data['vehicle_category_ids']);
+
+            return $driver->fresh(['user.roles', 'entryPermits', 'defaultVehicle.category', 'qualifiedVehicleCategories']);
         });
     }
 }

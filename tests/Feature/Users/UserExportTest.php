@@ -16,7 +16,22 @@ class UserExportTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_export_is_forbidden_for_non_system_admin(): void
+    public function test_export_is_forbidden_for_driver(): void
+    {
+        $this->seed(RoleSeeder::class);
+        $tenant = Tenant::create(['name' => 'Tenant A', 'slug' => 'tenant-a', 'status' => 'active']);
+        app()->instance('tenant', $tenant);
+
+        $driver = User::factory()->create();
+        $driver->assignRole('driver');
+
+        $this->actingAs($driver, 'web')
+            ->get('/api/v1/users/export')
+            ->assertForbidden();
+    }
+
+    /** FRD V01.14: auditor gets (عرض/تصدير) on every page, Users included — was fully blocked under V01.09. */
+    public function test_export_succeeds_for_auditor(): void
     {
         $this->seed(RoleSeeder::class);
         $tenant = Tenant::create(['name' => 'Tenant A', 'slug' => 'tenant-a', 'status' => 'active']);
@@ -26,8 +41,8 @@ class UserExportTest extends TestCase
         $auditor->assignRole('auditor');
 
         $this->actingAs($auditor, 'web')
-            ->get('/api/v1/users/export')
-            ->assertForbidden();
+            ->get('/api/v1/users/export?format=pdf')
+            ->assertOk();
     }
 
     public function test_export_succeeds_for_system_admin(): void

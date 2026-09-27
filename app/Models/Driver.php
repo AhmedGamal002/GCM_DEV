@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Concerns\BelongsToTenant;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
@@ -13,9 +14,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * permits) — deliberately a separate table 1:1 with `users` rather than
  * more columns on `users`, since none of this applies to any other role.
  *
- * "Default Vehicle" (from the FRD's driver form) is deliberately not
- * modeled yet — it needs `vehicles`/`vehicle_categories`, which are the
- * Fleet half of Week 3, not built yet.
+ * "Default Vehicle" + qualified vehicle categories (FRD's "المركبة
+ * الافتراضية" section) were deferred until `vehicles`/`vehicle_categories`
+ * existed (the Fleet half of Week 3) — now built, see
+ * defaultVehicle()/qualifiedVehicleCategories() below.
  */
 class Driver extends Model
 {
@@ -24,6 +26,7 @@ class Driver extends Model
     protected $fillable = [
         'user_id',
         'contractor_id',
+        'default_vehicle_id',
         'residence_number',
         'residence_valid_to',
         'residence_attachment',
@@ -56,5 +59,27 @@ class Driver extends Model
     public function entryPermits(): HasMany
     {
         return $this->hasMany(DriverEntryPermit::class);
+    }
+
+    public function defaultVehicle(): BelongsTo
+    {
+        return $this->belongsTo(Vehicle::class, 'default_vehicle_id');
+    }
+
+    /** FRD: view/edit pages show "Last updated by X — <datetime>". */
+    public function updatedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    /**
+     * The vehicle categories (of the 5 fixed FRD categories) this driver
+     * is qualified to drive — the Default Vehicle must belong to one of
+     * these, enforced in StoreDriverRequest/UpdateDriverRequest, not at
+     * the DB level.
+     */
+    public function qualifiedVehicleCategories(): BelongsToMany
+    {
+        return $this->belongsToMany(VehicleCategory::class, 'driver_vehicle_categories');
     }
 }
