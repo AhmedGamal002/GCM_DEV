@@ -78,14 +78,11 @@
             <input class="form-check-input" type="radio" name="operational_status" id="os-maintenance" value="on_maintenance">
             <label class="form-check-label" for="os-maintenance">{{ __('On Maintenance') }}</label>
           </div>
-          @if(auth()->user()?->hasRole('system_admin'))
-            {{-- FRD lists "deactivated" on the create form, but deactivation
-                 is System Admin only — so data_entry never sees it. --}}
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="operational_status" id="os-deactivated" value="deactivated">
-              <label class="form-check-label" for="os-deactivated">{{ __('Deactivated') }}</label>
-            </div>
-          @endif
+          {{-- FRD V01.14: deactivation is (system_admin / data_entry) now, same as create/edit — was system_admin-only under V01.09. --}}
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="operational_status" id="os-deactivated" value="deactivated">
+            <label class="form-check-label" for="os-deactivated">{{ __('Deactivated') }}</label>
+          </div>
           <div class="text-danger small mt-1 d-none" data-feedback></div>
         </div>
       @endif

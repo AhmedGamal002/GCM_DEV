@@ -270,15 +270,17 @@ class VehicleManagementTest extends TestCase
         $this->assertSame('deactivated', Vehicle::firstOrFail()->operational_status);
     }
 
-    public function test_data_entry_cannot_create_a_deactivated_vehicle(): void
+    /** FRD V01.14: data_entry now has admin-parity ("كل الصلاحيات") on Resource Management, deactivation included. */
+    public function test_data_entry_can_create_a_deactivated_vehicle(): void
     {
         $this->actingAs($this->dataEntry, 'web')
             ->post('/api/v1/vehicles', $this->validPayload(['operational_status' => 'deactivated']), ['Accept' => 'application/json'])
-            ->assertStatus(422)
-            ->assertJsonValidationErrors(['operational_status']);
+            ->assertCreated();
+
+        $this->assertSame('deactivated', Vehicle::firstOrFail()->operational_status);
     }
 
-    public function test_data_entry_can_set_maintenance_but_not_deactivate(): void
+    public function test_data_entry_can_set_maintenance_and_deactivate(): void
     {
         $vehicle = Vehicle::factory()->create();
 
@@ -289,8 +291,8 @@ class VehicleManagementTest extends TestCase
 
         $this->actingAs($this->dataEntry, 'web')
             ->patchJson("/api/v1/vehicles/{$vehicle->id}/status", ['status' => 'deactivated'])
-            ->assertStatus(422);
-        $this->assertSame('on_maintenance', $vehicle->refresh()->operational_status);
+            ->assertOk();
+        $this->assertSame('deactivated', $vehicle->refresh()->operational_status);
     }
 
     public function test_system_admin_can_deactivate(): void

@@ -44,7 +44,6 @@ class DriverPolicyTest extends TestCase
     public static function nonManagerRolesProvider(): array
     {
         return [
-            ['auditor'],
             ['driver'],
         ];
     }
@@ -65,5 +64,18 @@ class DriverPolicyTest extends TestCase
         $this->actingAs($dataEntry, 'web')
             ->getJson('/api/v1/drivers')
             ->assertOk();
+    }
+
+    /** FRD V01.14: auditor gets (عرض/تصدير) على كل الصفحات — was fully blocked under V01.09. */
+    public function test_auditor_can_list_and_view_but_not_update_drivers(): void
+    {
+        $auditor = User::factory()->create(['email' => 'auditor@tenant-a.test']);
+        $auditor->assignRole('auditor');
+
+        $this->actingAs($auditor, 'web')->getJson('/api/v1/drivers')->assertOk();
+
+        $this->actingAs($auditor, 'web')
+            ->postJson('/api/v1/drivers', ['name' => 'Blocked'])
+            ->assertForbidden();
     }
 }

@@ -142,7 +142,7 @@
       <div class="card-body">
         <div class="alert alert-warning">
           <h5 class="alert-heading mb-1">{{ __('Change this vehicle\'s operational status?') }}</h5>
-          <p class="mb-0">{{ __('A vehicle on maintenance or deactivated cannot be selected for a trip. Deactivation is System Admin only.') }}</p>
+          <p class="mb-0">{{ __('A vehicle on maintenance or deactivated cannot be selected for a trip.') }}</p>
         </div>
         <form id="vehicleStatusForm">
           <div class="mb-6">

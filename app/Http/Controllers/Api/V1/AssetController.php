@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api\V1;
 use App\Domain\Assets\Actions\CreateAssetAction;
 use App\Domain\Assets\Actions\UpdateAssetAction;
 use App\Domain\Assets\Actions\UpdateAssetStatusAction;
-use App\Domain\Assets\Exceptions\CannotDeactivateAssetException;
 use App\Domain\Assets\Exports\AssetsExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Assets\StoreAssetRequest;
@@ -79,12 +78,7 @@ class AssetController extends Controller
     public function status(UpdateAssetStatusRequest $request, int $asset, UpdateAssetStatusAction $action)
     {
         $asset = Asset::findOrFail($asset);
-
-        try {
-            $asset = $action->execute($asset, $request->validated('status'), $request->user());
-        } catch (CannotDeactivateAssetException $e) {
-            abort(422, $e->getMessage());
-        }
+        $asset = $action->execute($asset, $request->validated('status'), $request->user());
 
         return AssetResource::make($asset->load(self::LIST_WITH));
     }

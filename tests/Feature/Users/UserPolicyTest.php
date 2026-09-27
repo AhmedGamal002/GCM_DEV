@@ -47,9 +47,33 @@ class UserPolicyTest extends TestCase
     public static function nonManagerRolesProvider(): array
     {
         return [
-            ['auditor'],
             ['driver'],
         ];
+    }
+
+    /** FRD V01.14: auditor gets (عرض/تصدير) على كل الصفحات — was fully blocked under V01.09. */
+    public function test_auditor_can_list_and_view_but_not_create_users(): void
+    {
+        app()->instance('tenant', $this->tenantA);
+        $auditor = User::factory()->create(['email' => 'auditor@tenant-a.test']);
+        $auditor->assignRole('auditor');
+        $target = User::factory()->create(['email' => 'target@tenant-a.test']);
+        $target->assignRole('data_entry');
+
+        $this->actingAs($auditor, 'web')->getJson('/api/v1/users')->assertOk();
+        $this->actingAs($auditor, 'web')->getJson("/api/v1/users/{$target->id}")->assertOk();
+
+        $this->actingAs($auditor, 'web')
+            ->postJson('/api/v1/users', [
+                'name' => 'Blocked',
+                'email' => 'blocked@tenant-a.test',
+                'phone' => '01000000099',
+                'password' => 'a-secure-password',
+                'password_confirmation' => 'a-secure-password',
+                'status' => 'active',
+                'roles' => ['auditor'],
+            ])
+            ->assertForbidden();
     }
 
     public function test_system_admin_can_list_and_create_users(): void
@@ -158,8 +182,8 @@ class UserPolicyTest extends TestCase
         $this->assertSame('active', $this->systemAdmin->fresh()->status);
     }
 
-    /** FRD: vacation status change is (system_admin / data_entry); deactivation is system_admin only. */
-    public function test_data_entry_can_set_vacation_but_not_deactivate(): void
+    /** FRD V01.14: vacation AND deactivation are both (system_admin / data_entry) now — data_entry has admin parity here (except touching system_admin itself, see below). */
+    public function test_data_entry_can_set_vacation_and_deactivate(): void
     {
         $dataEntry = User::factory()->create(['email' => 'dataentry@tenant-a.test']);
         $dataEntry->assignRole('data_entry');
@@ -174,8 +198,8 @@ class UserPolicyTest extends TestCase
 
         $this->actingAs($dataEntry, 'web')
             ->patchJson("/api/v1/users/{$target->id}/status", ['status' => 'deactivated'])
-            ->assertStatus(422);
-        $this->assertSame('on_vacation', $target->refresh()->status);
+            ->assertOk();
+        $this->assertSame('deactivated', $target->refresh()->status);
     }
 
     /**

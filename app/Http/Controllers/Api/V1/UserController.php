@@ -6,7 +6,6 @@ use App\Domain\Users\Actions\CreateUserAction;
 use App\Domain\Users\Actions\UpdateUserAction;
 use App\Domain\Users\Actions\UpdateUserStatusAction;
 use App\Domain\Users\Exceptions\CannotDeactivateSystemAdminException;
-use App\Domain\Users\Exceptions\CannotDeactivateUserException;
 use App\Domain\Users\Exports\UsersExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Users\StoreUserRequest;
@@ -92,7 +91,7 @@ class UserController extends Controller
 
         try {
             $user = $action->execute($user, $request->validated('status'), $request->user());
-        } catch (CannotDeactivateSystemAdminException|CannotDeactivateUserException $e) {
+        } catch (CannotDeactivateSystemAdminException $e) {
             abort(422, $e->getMessage());
         }
 

@@ -73,14 +73,6 @@ class StoreAssetRequest extends FormRequest
                     );
                 }
             }
-
-            // The FRD's create form lists "deactivated" as a status option,
-            // but deactivation is System Admin only (same rule as the
-            // status endpoint) — the UI hides it from data_entry; this
-            // rejects a hand-crafted request too.
-            if ($this->input('operational_status') === 'deactivated' && ! $this->user()->hasRole('system_admin')) {
-                $validator->errors()->add('operational_status', __('Only a System Admin can deactivate an asset.'));
-            }
         });
     }
 }

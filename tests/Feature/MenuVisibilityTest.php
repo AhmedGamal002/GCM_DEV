@@ -87,7 +87,8 @@ class MenuVisibilityTest extends TestCase
         $response->assertDontSee('>Assets<', false);
     }
 
-    public function test_an_auditor_sees_vehicles_but_not_users_or_drivers(): void
+    /** FRD V01.14: auditor gets (عرض/تصدير) على كل الصفحات — sees every built module's menu link now, Users/Drivers included (was blocked from those two under V01.09). */
+    public function test_an_auditor_sees_vehicles_users_and_drivers(): void
     {
         $auditor = User::factory()->create();
         $auditor->assignRole('auditor');
@@ -96,8 +97,8 @@ class MenuVisibilityTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('>Vehicles<', false);
-        $response->assertDontSee('>Users<', false);
-        $response->assertDontSee('>Drivers<', false);
+        $response->assertSee('>Users<', false);
+        $response->assertSee('>Drivers<', false);
     }
 
     /**
@@ -120,10 +121,11 @@ class MenuVisibilityTest extends TestCase
     }
 
     /**
-     * FRD: "(انشاء / تعديل) الحسابات مسؤولية (مدير النظام / مدخل
+     * FRD: "(انشاء / تعديل / تعطيل) الحسابات مسؤولية (مدير النظام / مدخل
      * البيانات)" — same line repeated for Users, Drivers, Vehicles and
      * Assets, so data_entry sees all four menu links, same as
-     * system_admin (auditor still doesn't, per the previous test).
+     * system_admin (auditor sees all four too now, per the previous test —
+     * V01.14 gave it view/export everywhere).
      */
     public function test_a_data_entry_user_sees_users_drivers_vehicles_and_assets(): void
     {
@@ -187,12 +189,13 @@ class MenuVisibilityTest extends TestCase
         $this->assertSame(['Accounts', 'Fleet & Assets'], $this->headers($dataEntry));
     }
 
-    public function test_an_auditor_sees_only_the_fleet_and_assets_title(): void
+    /** FRD V01.14: auditor now sees Users/Drivers too, so it gets the "Accounts" header as well — same set as data_entry/system_admin. */
+    public function test_an_auditor_sees_both_section_titles_too(): void
     {
         $auditor = User::factory()->create();
         $auditor->assignRole('auditor');
 
-        $this->assertSame(['Fleet & Assets'], $this->headers($auditor));
+        $this->assertSame(['Accounts', 'Fleet & Assets'], $this->headers($auditor));
     }
 
     public function test_a_driver_sees_no_section_titles_at_all(): void

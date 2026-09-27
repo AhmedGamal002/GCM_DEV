@@ -12,11 +12,15 @@ use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 /**
- * FRD: GCM staff and drivers can't change their own password (an admin
- * sets it); client/contractor users can, from their profile page. Those
- * roles don't exist until Week 4-5 (RoleSeeder), so the "allowed" half is
- * covered with a contractor_user created here — the gate itself is
- * User::canChangeOwnPassword().
+ * FRD V01.09: GCM staff and drivers can't change their own password (an
+ * admin sets it); client/contractor users can, from their profile page.
+ * Those roles don't exist until Week 4-5 (RoleSeeder), so that "allowed"
+ * half is covered with a contractor_user created here.
+ *
+ * FRD V01.14 (changed): auditor specifically gets self-service password
+ * change too now ("لا يملك المراقب تعديل أي بيانات من خلال صفحة الملف
+ * الشخصي الا صورته او كلمة المرور") — data_entry/system_admin/driver stay
+ * exactly as before. The gate itself is User::canChangeOwnPassword().
  */
 class PasswordChangeTest extends TestCase
 {
@@ -76,7 +80,6 @@ class PasswordChangeTest extends TestCase
         return [
             ['system_admin'],
             ['data_entry'],
-            ['auditor'],
             ['driver'],
         ];
     }
@@ -87,6 +90,33 @@ class PasswordChangeTest extends TestCase
             ->get('/pages/account-settings-account')
             ->assertOk()
             ->assertDontSee('account-settings-security', false);
+    }
+
+    /** FRD V01.14: auditor is the one GCM-staff exception — self-service password change, same as client/contractor roles. */
+    public function test_an_auditor_changes_their_own_password(): void
+    {
+        $user = $this->userWithRole('auditor');
+
+        $this->actingAs($user, 'web')
+            ->patchJson('/api/v1/me/password', $this->payload())
+            ->assertNoContent();
+
+        $this->assertTrue(Hash::check('brand-new-password', $user->fresh()->password));
+    }
+
+    public function test_the_security_page_is_available_to_an_auditor(): void
+    {
+        $this->actingAs($this->userWithRole('auditor'), 'web')
+            ->get('/pages/account-settings-security')
+            ->assertOk();
+    }
+
+    public function test_the_profile_page_shows_the_security_tab_for_an_auditor(): void
+    {
+        $this->actingAs($this->userWithRole('auditor'), 'web')
+            ->get('/pages/account-settings-account')
+            ->assertOk()
+            ->assertSee('account-settings-security', false);
     }
 
     public function test_a_contractor_user_changes_their_password_with_the_correct_current_password(): void

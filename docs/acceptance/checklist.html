@@ -102,7 +102,7 @@
       <span>تم: <b id="s-pass">0</b></span>
       <span>فشل: <b id="s-fail" style="color:var(--bad)">0</b></span>
       <span>متبقي: <b id="s-left">0</b></span>
-      <span>من <b>67</b> بند</span>
+      <span>من <b>70</b> بند</span>
     </div>
     <div class="prog"><i class="p" id="b-pass"></i><i class="f" id="b-fail"></i></div>
     <div class="tools">
@@ -130,7 +130,7 @@
         <h3>دخول مستخدم شركة</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.1.1 صفحة تسجيل الدخول</dd></div><div class="row"><dt>الخطوات</dt><dd>افتح <code>/login</code> → <code>admin@gcm.test</code> / <code>password</code> → دخول.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>تتحوّل للوحة التحكم، وفوق مكتوب اسمك ودورك واسم الشركة ("System Admin — GCM").</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Auth/TenantLoginTest</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.1.1 صفحة تسجيل الدخول</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح صفحة تسجيل الدخول (<code>/login</code>).</li><li>اكتب البريد <code>admin@gcm.test</code> وكلمة المرور <code>password</code>.</li><li>دوس دخول.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>تتحوّل للوحة التحكم، وفوق مكتوب اسمك ودورك واسم الشركة (&quot;System Admin — GCM&quot;).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Auth/TenantLoginTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-1-2-auth-users-roles#2" data-title="البريد ثابت بعد الإنشاء">
@@ -140,7 +140,7 @@
         <h3>البريد ثابت بعد الإنشاء</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.3.1 إدارة الملف الشخصي / §1.4 المستخدمين</dd></div><div class="row"><dt>الخطوات</dt><dd>من My Profile → صفحة الحساب، جرّب تعدّل خانة البريد أو الاسم.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>البريد والاسم للعرض فقط (disabled) — الصورة الشخصية هي الوحيدة القابلة للتغيير من الملف الشخصي.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Profile/ProfileUpdateTest</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.3.1 إدارة الملف الشخصي / §1.4 المستخدمين</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح My Profile.</li><li>جرّب تعدّل خانة البريد أو الاسم.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>البريد والاسم للعرض فقط (disabled) — الصورة الشخصية هي الوحيدة القابلة للتغيير من الملف الشخصي.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Profile/ProfileUpdateTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-1-2-auth-users-roles#3" data-title="موظفو GCM والسائقون مايغيّروش كلمة السر بنفسهم — الإدارة هي اللي بتغيّرها">
@@ -150,7 +150,7 @@
         <h3>موظفو GCM والسائقون مايغيّروش كلمة السر بنفسهم — الإدارة هي اللي بتغيّرها</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.4 ("كلمة المرور غير قابلة للتعديل من قبل المستخدم ولكن من قبل مدير النظام او مدخل البيانات")</dd></div><div class="row"><dt>الخطوات</dt><dd>(أ) سجّل دخول بـ<code>dataentry@gcm.test</code> → My Profile: مفيش تابات "Account/Security"، والاسم للقراءة فقط، وفتح <code>/pages/account-settings-security</code> يدويًا يرجّع 403. (ب) من <code>admin@gcm.test</code> أو <code>dataentry@gcm.test</code>: Users → تعديل <code>auditor@gcm.test</code> → اكتب كلمة سر جديدة + تأكيد → حفظ. سجّل دخول بالمراقب بالكلمة الجديدة. (ج) كرّر على سائق من صفحة تعديل السائق. (د) سيب خانة كلمة السر فاضية وعدّل الاسم → كلمة السر القديمة لسه شغالة.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>(أ) صورة فقط. (ب)+(ج) الكلمة القديمة ترفض والجديدة تدخل. (د) مفيش تغيير في كلمة السر.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Profile/PasswordChangeTest</code>, <code>Profile/ProfileUpdateTest</code>, <code>Users/UserPolicyTest</code>, <code>Drivers/DriverUpdateTest</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.4 (&quot;كلمة المرور غير قابلة للتعديل من قبل المستخدم ولكن من قبل مدير النظام او مدخل البيانات&quot;)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>(أ) سجّل دخول بـ<code>dataentry@gcm.test</code> وافتح My Profile — لازم تلاقي مفيش تابات &quot;Account/Security&quot; والاسم للقراءة فقط. جرّب كمان تفتح <code>/pages/account-settings-security</code> يدويًا (المفروض يرجّع 403).</li><li>(ب) من <code>admin@gcm.test</code> أو <code>dataentry@gcm.test</code> افتح Users وعدّل <code>auditor@gcm.test</code> — اكتب كلمة سر جديدة مع تأكيدها واحفظ. بعدين سجّل دخول بالمراقب بالكلمة الجديدة.</li><li>(ج) كرّر نفس خطوة (ب) على سائق من صفحة تعديل السائق.</li><li>(د) سيب خانة كلمة السر فاضية وعدّل الاسم بس واحفظ — كلمة السر القديمة المفروض تفضل شغالة.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>(أ) صورة فقط. (ب)+(ج) الكلمة القديمة ترفض والجديدة تدخل. (د) مفيش تغيير في كلمة السر.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Profile/PasswordChangeTest</code>, <code>Profile/ProfileUpdateTest</code>, <code>Users/UserPolicyTest</code>, <code>Drivers/DriverUpdateTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-1-2-auth-users-roles#3.1" data-title="مدخل البيانات مايقدرش يلمس حساب مدير النظام">
@@ -170,7 +170,7 @@
         <h3>Super Admin على جهة دخول منفصلة</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>بنية الأدوار (Super Admin منفصل عن مستخدمي الشركات)</dd></div><div class="row"><dt>الخطوات</dt><dd>افتح <code>/platform/login</code> → <code>superadmin@product.test</code> / <code>password</code>.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>تدخل على لوحة <code>/platform/dashboard</code> بقائمة جانبية مختلفة (Dashboard / Tenants / Roles &amp; Permissions فقط). حساب الشركة <strong>مبيدخلش</strong> من هنا والعكس.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Auth/PlatformLoginTest</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>بنية الأدوار (Super Admin منفصل عن مستخدمي الشركات)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح صفحة تسجيل دخول الـPlatform (<code>/platform/login</code>).</li><li>اكتب البريد <code>superadmin@product.test</code> وكلمة المرور <code>password</code>.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>تدخل على لوحة <code>/platform/dashboard</code> بقائمة جانبية مختلفة (Dashboard / Tenants / Roles &amp; Permissions فقط). حساب الشركة <strong>مبيدخلش</strong> من هنا والعكس.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Auth/PlatformLoginTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     </details>
@@ -184,7 +184,7 @@
         <h3>مدير نظام مبيشوفش بيانات شركة تانية</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>أساس العزل بين الشركات</dd></div><div class="row"><dt>الخطوات</dt><dd>(يحتاج شركة تانية — أنشئها من Super Admin → Tenants، وأضف لها مستخدم). سجّل دخول بمدير نظام شركة A، وجرّب تفتح <code>/app/user/view/{id}</code> بـ id مستخدم من شركة B.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd><strong>404</strong> (كأن الصف مش موجود) — مش 403.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Tenancy/TenantIsolationTest</code>, <code>Users/UserPolicyTest</code>, <code>*/(*)TenantIsolationTest</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>أساس العزل بين الشركات</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>(يحتاج شركة تانية) من Super Admin افتح Tenants، أنشئ شركة جديدة، وأضف لها مستخدم.</li><li>سجّل دخول بمدير نظام شركة A.</li><li>جرّب تفتح <code>/app/user/view/{id}</code> بـ id مستخدم من شركة B.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd><strong>404</strong> (كأن الصف مش موجود) — مش 403.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Tenancy/TenantIsolationTest</code>, <code>Users/UserPolicyTest</code>, <code>*/(*)TenantIsolationTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-1-2-auth-users-roles#6" data-title="شركة معطّلة = مستخدموها مبيدخلوش">
@@ -194,7 +194,7 @@
         <h3>شركة معطّلة = مستخدموها مبيدخلوش</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1 (Super Admin يدير حالة الشركات)</dd></div><div class="row"><dt>الخطوات</dt><dd>من Super Admin → Tenants → عطّل شركة GCM. جرّب تسجّل دخول بـ <code>admin@gcm.test</code>.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الدخول مرفوض. أعِد تنشيط الشركة → الدخول يشتغل تاني.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Platform/TenantManagementTest</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1 (Super Admin يدير حالة الشركات)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>من Super Admin افتح Tenants وعطّل شركة GCM.</li><li>جرّب تسجّل دخول بـ<code>admin@gcm.test</code>.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الدخول مرفوض. لما تعيد تنشيط الشركة، الدخول يرجع يشتغل تاني.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Platform/TenantManagementTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     </details>
@@ -208,7 +208,7 @@
         <h3>المراقب والسائق ممنوعين من صفحة المستخدمين</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.4 (إنشاء/تعديل الحسابات مسؤولية مدير النظام / مدخل البيانات فقط)</dd></div><div class="row"><dt>الخطوات</dt><dd>سجّل دخول بـ <code>auditor@gcm.test</code> ثم <code>driver@gcm.test</code>. لكل واحد: (أ) شوف القائمة الجانبية (ب) جرّب تفتح <code>/app/user/list</code> يدويًا.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>"Users" <strong>مش موجود</strong> في القائمة الجانبية لأي منهم؛ وفتح الرابط يدويًا → الجدول يعرض "لا تملك صلاحية عرض هذه البيانات" (والطلب فعليًا 403).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Users/UserPolicyTest</code>, <code>MenuVisibilityTest</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.4 (إنشاء/تعديل الحسابات مسؤولية مدير النظام / مدخل البيانات فقط)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>سجّل دخول بـ<code>auditor@gcm.test</code>، وشوف القائمة الجانبية، وجرّب تفتح <code>/app/user/list</code> يدويًا.</li><li>كرّر نفس الشيء بـ<code>driver@gcm.test</code>.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>&quot;Users&quot; <strong>مش موجود</strong> في القائمة الجانبية لأي منهم؛ ولو فتحت الرابط يدويًا، الجدول بيعرض &quot;لا تملك صلاحية عرض هذه البيانات&quot; (والطلب فعليًا 403).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Users/UserPolicyTest</code>, <code>MenuVisibilityTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-1-2-auth-users-roles#8" data-title="إنشاء مستخدم GCM (data_entry / auditor فقط)">
@@ -218,7 +218,7 @@
         <h3>إنشاء مستخدم GCM (data_entry / auditor فقط)</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.4.x فورم إنشاء مستخدم</dd></div><div class="row"><dt>الخطوات</dt><dd>بمدير النظام → Users → "Add User" → GCM Staff → املأ الحقول واختر الدور <code>auditor</code> → حفظ.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>المستخدم يظهر فورًا في القائمة. قائمة الأدوار في الفورم فيها <code>data_entry</code> و<code>auditor</code> فقط — <strong>مفيش <code>system_admin</code> ولا <code>driver</code></strong>.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Users/UserPolicyTest</code>, <code>Users/DriverRoleExclusionTest</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.4.x فورم إنشاء مستخدم</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>بمدير النظام افتح Users.</li><li>دوس &quot;Add User&quot;.</li><li>اختار GCM Staff.</li><li>املأ الحقول واختر الدور <code>auditor</code>.</li><li>دوس حفظ.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>المستخدم يظهر فورًا في قائمة Users. <strong>خيارات الدور في فورم &quot;Add User&quot; ده تحديدًا</strong> (مش قائمة Users نفسها) فيها <code>data_entry</code> و<code>auditor</code> فقط — <strong>مفيش <code>system_admin</code> ولا <code>driver</code></strong> بينهم، لأن السائق ليه فورم إنشاء منفصل (Drivers، وبعدين Add Driver). حسابات السائقين الموجودة أصلًا بتفضل تظهر عادي في قائمة Users العامة مع باقي الحسابات.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Users/UserPolicyTest</code>, <code>Users/DriverRoleExclusionTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-1-2-auth-users-roles#9" data-title="مدير نظام واحد فقط لكل شركة">
@@ -228,7 +228,7 @@
         <h3>مدير نظام واحد فقط لكل شركة</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>قاعدة "مدير نظام واحد"</dd></div><div class="row"><dt>الخطوات</dt><dd>حاول تنشئ/تعدّل مستخدم لدور <code>system_admin</code> (لو الخيار مش ظاهر، جرّب عبر Postman — طلب <code>POST /api/v1/users</code> بـ <code>roles: ["system_admin"]</code>).</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>رفض (422) برسالة إن فيه مدير نظام بالفعل.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Users/SystemAdminUniquenessTest</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>قاعدة &quot;مدير نظام واحد&quot;</dd></div><div class="row"><dt>الخطوات</dt><dd>حاول تنشئ/تعدّل مستخدم لدور <code>system_admin</code> (لو الخيار مش ظاهر، جرّب عبر Postman — طلب <code>POST /api/v1/users</code> بـ <code>roles: [&quot;system_admin&quot;]</code>).</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>رفض (422) برسالة إن فيه مدير نظام بالفعل.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Users/SystemAdminUniquenessTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-1-2-auth-users-roles#10" data-title="تعطيل مدير النظام ممنوع دايمًا">
@@ -238,7 +238,7 @@
         <h3>تعطيل مدير النظام ممنوع دايمًا</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>قاعدة "مدير نظام واحد"</dd></div><div class="row"><dt>الخطوات</dt><dd>بمدير النظام، من صفحة تفاصيل حسابك، جرّب تغيّر حالتك لـ "معطّل".</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>مرفوض — بأي وسيلة، حتى لو أنت نفسك بتحاول.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Users/SystemAdminUniquenessTest</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>قاعدة &quot;مدير نظام واحد&quot;</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>بمدير النظام افتح صفحة تفاصيل حسابك.</li><li>جرّب تغيّر الحالة لـ&quot;معطّل&quot;.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>مرفوض — بأي وسيلة، حتى لو أنت نفسك بتحاول.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Users/SystemAdminUniquenessTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-1-2-auth-users-roles#11" data-title="البحث بيلاقي بالرقم التعريفي">
@@ -248,7 +248,7 @@
         <h3>البحث بيلاقي بالرقم التعريفي</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.4 (جدول المستخدمين، عمود الرقم التعريفي)</dd></div><div class="row"><dt>الخطوات</dt><dd>في قائمة المستخدمين، خُد <code>code</code> مستخدم من الجدول واكتبه في خانة البحث.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الصف يظهر (البحث بيلاقي بالاسم أو البريد أو الرقم التعريفي).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Users/UserListPaginationTest</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.4 (جدول المستخدمين، عمود الرقم التعريفي)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح قائمة المستخدمين.</li><li>خُد الرقم التعريفي (<code>code</code>) لأي مستخدم من الجدول.</li><li>اكتبه في خانة البحث.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الصف يظهر (البحث بيلاقي بالاسم أو البريد أو الرقم التعريفي).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Users/UserListPaginationTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-1-2-auth-users-roles#12" data-title="التصدير">
@@ -258,7 +258,7 @@
         <h3>التصدير</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.4 (زر تصدير)</dd></div><div class="row"><dt>الخطوات</dt><dd>بمدير النظام → Users → Export → Excel، ثم PDF.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>ملف ينزل بالأعمدة المعروضة (الرقم/الاسم/التبعية/الجهة/الدور/الحالة) — <strong>مش</strong> الـ id الخام ولا أعمدة زيادة.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Users/UserExportTest</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.4 (زر تصدير)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>بمدير النظام افتح Users.</li><li>دوس زرار Export واختار Excel.</li><li>كرّر ودوس Export واختار Pdf.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>ملف ينزل بالأعمدة المعروضة (الرقم/الاسم/التبعية/الجهة/الدور/الحالة) — <strong>مش</strong> الـ id الخام ولا أعمدة زيادة.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Users/UserExportTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-1-2-auth-users-roles#13" data-title="البيانات الإضافية الفاضية مبتظهرش كعنوان فاضي">
@@ -268,7 +268,7 @@
         <h3>البيانات الإضافية الفاضية مبتظهرش كعنوان فاضي</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.4 (حقل بيانات إضافية)</dd></div><div class="row"><dt>الخطوات</dt><dd>أنشئ مستخدم واترك محرر "البيانات الإضافية" فاضي تمامًا → احفظ → افتح صفحة تفاصيله.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>قسم "Additional Data" <strong>مش ظاهر</strong> خالص (مش عنوان فوق فراغ).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Users/UserPolicyTest::test_an_empty_quill_editor_is_stored_as_null_not_empty_markup</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.4 (حقل بيانات إضافية)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>أنشئ مستخدم واترك حقل &quot;البيانات الإضافية&quot; فاضي تمامًا.</li><li>احفظ.</li><li>افتح صفحة تفاصيل المستخدم.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>قسم &quot;Additional Data&quot; <strong>مش ظاهر</strong> خالص (مش عنوان فوق فراغ).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Users/UserPolicyTest::test_an_empty_quill_editor_is_stored_as_null_not_empty_markup</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     </details>
@@ -282,7 +282,7 @@
         <h3>مستخدم الشركة مبيوصلش لإدارة الأدوار</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.2 (الأدوار للقراءة فقط لمستخدمي الشركة)</dd></div><div class="row"><dt>الخطوات</dt><dd>سجّل دخول بمدير النظام، جرّب تفتح <code>/platform/roles</code>.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>تتحوّل للوجين (مفيش جلسة platform). "Roles &amp; Permissions" <strong>مش موجود</strong> في قائمة الشركة الجانبية.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Platform/RoleManagementTest</code>, <code>MenuVisibilityTest</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.2 (الأدوار للقراءة فقط لمستخدمي الشركة)</dd></div><div class="row"><dt>الخطوات</dt><dd>وانت داخل بحساب مدير النظام، جرّب تفتح الرابط <code>/platform/roles</code> مباشرة في المتصفح.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>تتحوّل للوجين (مفيش جلسة platform). &quot;Roles &amp; Permissions&quot; <strong>مش موجود</strong> في قائمة الشركة الجانبية.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Platform/RoleManagementTest</code>, <code>MenuVisibilityTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-1-2-auth-users-roles#15" data-title="قائمة الأدوار للقراءة (لكل دور شركة)">
@@ -302,7 +302,7 @@
         <h3>Super Admin: CRUD الأدوار + حذف مقيّد</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.2 (إدارة الأدوار من Super Admin، منع حذف دور مستخدَم)</dd></div><div class="row"><dt>الخطوات</dt><dd>من <code>/platform/roles</code>: أنشئ دور جديد → عدّله → احذفه (ينجح). بعدين جرّب تحذف <code>data_entry</code> (وهو مربوط بـ <code>dataentry@gcm.test</code>).</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>إنشاء/تعديل/حذف الدور الجديد يشتغل؛ حذف <code>data_entry</code> <strong>مرفوض</strong> برسالة واضحة (422).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Platform/RoleManagementTest</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.2 (إدارة الأدوار من Super Admin، منع حذف دور مستخدَم)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>من <code>/platform/roles</code> أنشئ دور جديد.</li><li>عدّله.</li><li>احذفه (المفروض ينجح).</li><li>جرّب تحذف <code>data_entry</code> (وهو مربوط بـ<code>dataentry@gcm.test</code>).</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>إنشاء/تعديل/حذف الدور الجديد يشتغل؛ حذف <code>data_entry</code> <strong>مرفوض</strong> برسالة واضحة (422).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Platform/RoleManagementTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     </details>
@@ -316,7 +316,7 @@
         <h3>كل دور يشوف بس اللي يخصّه</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>جداول الصلاحيات لكل قسم</dd></div><div class="row"><dt>الخطوات</dt><dd>سجّل دخول بالأربعة بالترتيب وسجّل اللي بيظهر في القائمة الجانبية.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd><ul><li><code>system_admin</code>: Dashboard + (عنوان <strong>Accounts</strong>: Users, Drivers) + (عنوان <strong>Fleet &amp; Assets</strong>: Vehicles, Assets) <strong>فقط</strong> (سقالة القالب الديمو — Layouts/Email/Kanban/Charts... — مخفية عن الكل عمدًا لحد ما نعرض للعميل اللي اتبنى فعلًا).</li><li><code>data_entry</code>: نفس الأدمن (Accounts + Fleet &amp; Assets) — من غير بند "Categories" تحت Vehicles.</li><li><code>auditor</code>: Dashboard + عنوان <strong>Fleet &amp; Assets</strong> (Vehicles, Assets) فقط — مفيش عنوان "Accounts".</li><li><code>driver</code>: Dashboard فقط.</li></ul></dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>MenuVisibilityTest</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>جداول الصلاحيات لكل قسم</dd></div><div class="row"><dt>الخطوات</dt><dd>سجّل دخول بالأربعة بالترتيب وسجّل اللي بيظهر في القائمة الجانبية.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd><ul><li><code>system_admin</code>: Dashboard + (عنوان <strong>Accounts</strong>: Users, Drivers) + (عنوان <strong>Fleet &amp; Assets</strong>: Vehicles, Assets) <strong>فقط</strong> (سقالة القالب الديمو — Layouts/Email/Kanban/Charts... — مخفية عن الكل عمدًا لحد ما نعرض للعميل اللي اتبنى فعلًا).</li><li><code>data_entry</code>: نفس الأدمن (Accounts + Fleet &amp; Assets) — من غير بند &quot;Categories&quot; تحت Vehicles.</li><li><code>auditor</code>: Dashboard + عنوان <strong>Fleet &amp; Assets</strong> (Vehicles, Assets) فقط — مفيش عنوان &quot;Accounts&quot;.</li><li><code>driver</code>: Dashboard فقط.</li></ul></dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>MenuVisibilityTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-1-2-auth-users-roles#18" data-title="Breadcrumb + عنوان الصفحة مطابق للـ FRD على كل صفحة">
@@ -326,17 +326,17 @@
         <h3>Breadcrumb + عنوان الصفحة مطابق للـ FRD على كل صفحة</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>كل قسم فيه سطر "عنوان الصفحة: ..." — لازم يكون هو العنوان الظاهر</dd></div><div class="row"><dt>الخطوات</dt><dd>افتح كل صفحة محتوى (Users/Vehicles/Drivers/Assets — list/add/view/edit + صفحتي الملف الشخصي)، بالعربي والإنجليزي.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>كل صفحة تبدأ بـ breadcrumb (أيقونة الهوم + مسار مختصر: مثلاً "المستخدمين &gt; إضافة")، وتحته <strong>عنوان الصفحة الوصفي المطابق للـ FRD</strong> (مثلاً "إنشاء مستخدم جديد" مش "إضافة"، "تفاصيل الحساب"، "تعديل تفاصيل المركبة"، ...). <strong>مفيش عنوان مكرر</strong> (كان فيه card-header بيكرر العنوان — اتشال). صفحات تسجيل الدخول مستثناة.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd>يدوي فقط (العناوين مصدرها <code>docs/acceptance/</code> mapping — أي نسخة FRD أحدث تُقارن أسطر "عنوان الصفحة" وتُحدّث مفاتيح <code>lang/*.json</code>)</dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>كل قسم فيه سطر &quot;عنوان الصفحة: ...&quot; — لازم يكون هو العنوان الظاهر</dd></div><div class="row"><dt>الخطوات</dt><dd>افتح كل صفحة محتوى (Users/Vehicles/Drivers/Assets — list/add/view/edit + صفحتي الملف الشخصي)، بالعربي والإنجليزي.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>كل صفحة تبدأ بـ breadcrumb (أيقونة الهوم + مسار مختصر: مثلاً &quot;المستخدمين &gt; إضافة&quot;)، وتحته <strong>عنوان الصفحة الوصفي المطابق للـ FRD</strong> (مثلاً &quot;إنشاء مستخدم جديد&quot; مش &quot;إضافة&quot;، &quot;تفاصيل الحساب&quot;، &quot;تعديل تفاصيل المركبة&quot;، ...). <strong>مفيش عنوان مكرر</strong> (كان فيه card-header بيكرر العنوان — اتشال). صفحات تسجيل الدخول مستثناة.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd>يدوي فقط (العناوين مصدرها <code>docs/acceptance/</code> mapping — أي نسخة FRD أحدث تُقارن أسطر &quot;عنوان الصفحة&quot; وتُحدّث مفاتيح <code>lang/*.json</code>)</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
-    <article class="item" data-id="week-1-2-auth-users-roles#19" data-title="صلاحيات data_entry في المستخدمين والسائقين (FRD: "انشاء/تعديل مسؤولية مدير النظام/مدخل البيانات")">
+    <article class="item" data-id="week-1-2-auth-users-roles#19" data-title="صلاحيات data_entry في المستخدمين والسائقين (FRD: &quot;انشاء/تعديل مسؤولية مدير النظام/مدخل البيانات&quot;)">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
           <span class="num">19</span></label>
-        <h3>صلاحيات data_entry في المستخدمين والسائقين (FRD: "انشاء/تعديل مسؤولية مدير النظام/مدخل البيانات")</h3>
+        <h3>صلاحيات data_entry في المستخدمين والسائقين (FRD: &quot;انشاء/تعديل مسؤولية مدير النظام/مدخل البيانات&quot;)</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.4.1 (نفس سطر الصلاحية المكرر في كل موديول)</dd></div><div class="row"><dt>الخطوات</dt><dd>سجّل دخول بـ<code>dataentry@gcm.test</code>. جرّب: عرض قائمة المستخدمين، إنشاء مستخدم جديد، تعديل بيانات مستخدم، تحويل حالته لـ"في إجازة"، ثم حاول "تعطيل" نفس المستخدم. كرر نفس الخطوات على صفحة السائقين.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>كل حاجة تنجح عدا محاولة "التعطيل" — بترجع 422 برسالة "Only a System Admin can deactivate or reactivate a user."</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>UserPolicyTest</code>, <code>DriverPolicyTest</code>, <code>DriverCreationTest</code>, <code>DriverUpdateTest</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.4.1 (نفس سطر الصلاحية المكرر في كل موديول)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>سجّل دخول بـ<code>dataentry@gcm.test</code>.</li><li>جرّب: عرض قائمة المستخدمين، إنشاء مستخدم جديد، تعديل بيانات مستخدم، تحويل حالته لـ&quot;في إجازة&quot;، ثم حاول &quot;تعطيل&quot; نفس المستخدم.</li><li>كرّر نفس الخطوات على صفحة السائقين.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>كل حاجة تنجح عدا محاولة &quot;التعطيل&quot; — بترجع 422 برسالة &quot;Only a System Admin can deactivate or reactivate a user.&quot;</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>UserPolicyTest</code>, <code>DriverPolicyTest</code>, <code>DriverCreationTest</code>, <code>DriverUpdateTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     </details>
@@ -355,7 +355,7 @@
         <h3>التاريخ والوقت الحالي</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.2 جزء الشريط الأعلى ← "التاريخ والوقت الحالي"</dd></div><div class="row"><dt>الخطوات</dt><dd>سجّل دخول بأي حساب. بص على الشريط العلوي. بدّل اللغة لعربي وارجع لإنجليزي. بعدين سجّل دخول Super Admin على <code>/platform/login</code>.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>التاريخ والوقت الحاليين ظاهرين على <strong>الطرف المقابل لمجموعة الأيقونات</strong> (في الإنجليزي: التاريخ شمال والأيقونات يمين، وفي العربي بالعكس) — بطلب العميل، عشان مايبقوش كلهم متكوّمين في ناحية واحدة — وبيتحدّثوا لوحدهم (كل نص دقيقة تقريبًا). في العربي الأرقام عربية (مثلاً <code>١٤/٠٩/٢٠٢٦، ٤:٢٢ م</code>)، وفي صفحات الـPlatform دايمًا إنجليزي حتى لو اللغة عربي.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd>يدوي فقط</dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.2 جزء الشريط الأعلى: &quot;التاريخ والوقت الحالي&quot;</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>سجّل دخول بأي حساب.</li><li>بص على الشريط العلوي.</li><li>بدّل اللغة لعربي وارجع لإنجليزي.</li><li>سجّل دخول Super Admin على <code>/platform/login</code>.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>التاريخ والوقت الحاليين ظاهرين على <strong>الطرف المقابل لمجموعة الأيقونات</strong> (في الإنجليزي: التاريخ شمال والأيقونات يمين، وفي العربي بالعكس) — بطلب العميل، عشان مايبقوش كلهم متكوّمين في ناحية واحدة — وبيتحدّثوا لوحدهم (كل نص دقيقة تقريبًا). في العربي الأرقام عربية (مثلاً <code>١٤/٠٩/٢٠٢٦، ٤:٢٢ م</code>)، وفي صفحات الـPlatform دايمًا إنجليزي حتى لو اللغة عربي.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd>يدوي فقط</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-frd-gap-review#2" data-title="تبديل الوضع الداكن / المضيء">
@@ -365,7 +365,7 @@
         <h3>تبديل الوضع الداكن / المضيء</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.2 "تغيير الوضع: داكن / مضيء"</dd></div><div class="row"><dt>الخطوات</dt><dd>اضغط أيقونة الشمس/القمر في الشريط العلوي → اختر Dark. تنقّل بين كذا صفحة. اعمل Refresh. اختر Light ثم System.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الصفحة كلها (الشريط، الكروت، الجداول) بتتحوّل للداكن وتفضل كده بعد التنقل والـRefresh. <strong>مفيش</strong> أيقونة ترس/لوحة إعدادات كاملة (RTL/Layout) — الزرار البسيط بس.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd>يدوي فقط</dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.2 &quot;تغيير الوضع: داكن / مضيء&quot;</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>اضغط أيقونة الشمس/القمر في الشريط العلوي واختار Dark.</li><li>تنقّل بين كذا صفحة.</li><li>اعمل Refresh للصفحة.</li><li>اختار Light، وبعدين System.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الصفحة كلها (الشريط، الكروت، الجداول) بتتحوّل للداكن وتفضل كده بعد التنقل والـRefresh. <strong>مفيش</strong> أيقونة ترس/لوحة إعدادات كاملة (RTL/Layout) — الزرار البسيط بس.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd>يدوي فقط</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-frd-gap-review#3" data-title="رسالة الحساب المعطّل عند تسجيل الدخول">
@@ -375,7 +375,7 @@
         <h3>رسالة الحساب المعطّل عند تسجيل الدخول</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.4 (سياسات التعطيل) ← رسالة "حسابك معطل من قبل مدير النظام..."</dd></div><div class="row"><dt>الخطوات</dt><dd>بمدير النظام: Users → افتح <code>auditor@gcm.test</code> → غيّر حالته لـ"معطّل". اطلع، وسجّل دخول بـ<code>auditor@gcm.test</code> / <code>password</code>. بعدين جرّب نفس الإيميل بباسورد <strong>غلط</strong>.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>بالباسورد الصح: "Your account has been deactivated by the System Admin. For more information, please contact support at Support@GCM-domain.com." — وبالباسورد الغلط: الرسالة العامة "These credentials do not match our records." <strong>من غير</strong> أي تلميح إن الحساب معطّل (عشان ماحدش يعرف حالة حساب من غير باسورده).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Auth/TenantLoginTest</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.4 (سياسات التعطيل) — رسالة &quot;حسابك معطل من قبل مدير النظام...&quot;</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>بمدير النظام افتح Users، وافتح حساب <code>auditor@gcm.test</code>.</li><li>غيّر حالته لـ&quot;معطّل&quot;.</li><li>اطلع (Logout)، وسجّل دخول بـ<code>auditor@gcm.test</code> / <code>password</code>.</li><li>جرّب نفس الإيميل ببسورد <strong>غلط</strong>.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>بالباسورد الصح: &quot;Your account has been deactivated by the System Admin. For more information, please contact support at Support@GCM-domain.com.&quot; — وبالباسورد الغلط: الرسالة العامة &quot;These credentials do not match our records.&quot; <strong>من غير</strong> أي تلميح إن الحساب معطّل (عشان ماحدش يعرف حالة حساب من غير باسورده).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Auth/TenantLoginTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     </details>
@@ -389,31 +389,31 @@
         <h3>الملف الشخصي = صورة فقط</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.3.1 ("المستخدم يستطيع تغيير البيانات التالية من صفحة الملف الشخصي: الصورة الشخصية")</dd></div><div class="row"><dt>الخطوات</dt><dd>بـ<code>dataentry@gcm.test</code> (وكرّر بـ<code>driver@gcm.test</code>): My Profile. حاول تكتب في خانة الاسم. اضغط "Upload new photo" → اختر صورة PNG/JPG صغيرة → لاحظ المعاينة → "Save photo". جرّب ملف مش صورة، وجرّب "Save photo" من غير اختيار صورة.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الاسم والبريد للقراءة فقط، ومفيش تابات "Account/Security". الصورة بتتحفظ وتظهر في الصفحة <strong>وفي الشريط العلوي</strong>. الملف غير الصورة أو من غير اختيار → رسالة خطأ واضحة.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Profile/ProfileUpdateTest</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.3.1 (&quot;المستخدم يستطيع تغيير البيانات التالية من صفحة الملف الشخصي: الصورة الشخصية&quot;)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>بـ<code>dataentry@gcm.test</code> (وكرّر بـ<code>driver@gcm.test</code>) افتح My Profile.</li><li>حاول تكتب في خانة الاسم.</li><li>دوس &quot;Upload new photo&quot; واختار صورة PNG/JPG صغيرة، ولاحظ المعاينة.</li><li>دوس &quot;Save photo&quot;.</li><li>جرّب ملف مش صورة، وجرّب &quot;Save photo&quot; من غير ما تختار صورة.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الاسم والبريد للقراءة فقط، ومفيش تابات &quot;Account/Security&quot;. الصورة بتتحفظ وتظهر في الصفحة <strong>وفي الشريط العلوي</strong>. لو اخترت ملف مش صورة، أو دُست حفظ من غير ما تختار حاجة، هتظهر رسالة خطأ واضحة.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Profile/ProfileUpdateTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     </details>
     <details open class="group">
       <summary>ج) المستخدمين والسائقين <span class="count"></span></summary>
       
-    <article class="item" data-id="week-3-frd-gap-review#5" data-title=""آخر تحديث: تم بواسطة X — التاريخ والوقت"">
+    <article class="item" data-id="week-3-frd-gap-review#5" data-title="&quot;آخر تحديث: تم بواسطة X — التاريخ والوقت&quot;">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
           <span class="num">5</span></label>
-        <h3>"آخر تحديث: تم بواسطة X — التاريخ والوقت"</h3>
+        <h3>&quot;آخر تحديث: تم بواسطة X — التاريخ والوقت&quot;</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>سطر "اخر تحديث: تم بواسطة ..... – التاريخ والوقت" في صفحات التفاصيل والتعديل</dd></div><div class="row"><dt>الخطوات</dt><dd>بمدير النظام، عدّل (وسجّل حفظ) مستخدم، سائق، مركبة، وأصل. بعد كل حفظ افتح صفحة <strong>التفاصيل</strong> ثم صفحة <strong>التعديل</strong> لنفس السجل.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>في الصفحتين سطر صغير "Last updated by System Admin — &lt;التاريخ والوقت&gt;" بالاسم الصح. لو السجل عمره ما اتعدّل من واجهة (بيانات زرع أولية) السطر مش بيظهر.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Users/UserPolicyTest</code>, <code>Drivers/DriverUpdateTest</code>, <code>Vehicles/VehicleManagementTest</code> (<code>updated_by_...</code>)</dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>سطر &quot;اخر تحديث: تم بواسطة ..... – التاريخ والوقت&quot; في صفحات التفاصيل والتعديل</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>بمدير النظام، عدّل واحفظ مستخدم، وسائق، ومركبة، وأصل (كل واحد لوحده).</li><li>بعد كل حفظ، افتح صفحة <strong>التفاصيل</strong> ثم صفحة <strong>التعديل</strong> لنفس السجل.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>في الصفحتين سطر صغير &quot;Last updated by System Admin — &lt;التاريخ والوقت&gt;&quot; بالاسم الصح. لو السجل عمره ما اتعدّل من واجهة (بيانات زرع أولية) السطر مش بيظهر.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Users/UserPolicyTest</code>, <code>Drivers/DriverUpdateTest</code>, <code>Vehicles/VehicleManagementTest</code> (<code>updated_by_...</code>)</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
-    <article class="item" data-id="week-3-frd-gap-review#6" data-title="تسمية "رقم الموبايل (حساب واتساب)"">
+    <article class="item" data-id="week-3-frd-gap-review#6" data-title="تسمية &quot;رقم الموبايل (حساب واتساب)&quot;">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
           <span class="num">6</span></label>
-        <h3>تسمية "رقم الموبايل (حساب واتساب)"</h3>
+        <h3>تسمية &quot;رقم الموبايل (حساب واتساب)&quot;</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>"رقم الموبايل (حساب واتساب)" / "Mobile No. (with WhatsApp)"</dd></div><div class="row"><dt>الخطوات</dt><dd>افتح فورم إنشاء مستخدم، فورم إنشاء سائق، وصفحة تعديل/تفاصيل كل واحد، بالعربي والإنجليزي. وكمان فورم إنشاء شركة (Tenant) في <code>/platform/tenants/create</code>.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>التسمية بالظبط "رقم الموبايل (حساب واتساب)" في العربي و"Mobile No. (with WhatsApp)" في الإنجليزي — في كل الأماكن دي.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd>يدوي فقط</dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>&quot;رقم الموبايل (حساب واتساب)&quot; / &quot;Mobile No. (with WhatsApp)&quot;</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح فورم إنشاء مستخدم.</li><li>افتح فورم إنشاء سائق.</li><li>افتح صفحة تعديل/تفاصيل كل واحد منهم.</li><li>كرّر بالعربي والإنجليزي.</li><li>افتح كمان فورم إنشاء شركة (Tenant) في <code>/platform/tenants/create</code>.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>التسمية بالظبط &quot;رقم الموبايل (حساب واتساب)&quot; في العربي و&quot;Mobile No. (with WhatsApp)&quot; في الإنجليزي — في كل الأماكن دي.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd>يدوي فقط</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-frd-gap-review#7" data-title="رقم الموبايل مايتكررش داخل نفس الشركة">
@@ -423,7 +423,7 @@
         <h3>رقم الموبايل مايتكررش داخل نفس الشركة</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>متطلب إضافي من المالك (رقم الموبايل فريد)</dd></div><div class="row"><dt>الخطوات</dt><dd>أنشئ مستخدم برقم <code>0511112222</code>. أنشئ مستخدم تاني بنفس الرقم. بعدين أنشئ <strong>سائق</strong> بنفس الرقم. بعدين عدّل المستخدم الأول واحفظ من غير ما تغيّر رقمه.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>المحاولة التانية والتالتة تترفض برسالة "The phone has already been taken." (مستخدم↔مستخدم ومستخدم↔سائق). تعديل المستخدم الأول بنفس رقمه <strong>بينجح</strong> (مش بيتعارض مع نفسه).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Users/UserUniquePhoneTest</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>متطلب إضافي من المالك (رقم الموبايل فريد)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>أنشئ مستخدم برقم <code>0511112222</code>.</li><li>أنشئ مستخدم تاني بنفس الرقم.</li><li>أنشئ <strong>سائق</strong> بنفس الرقم.</li><li>عدّل المستخدم الأول واحفظ من غير ما تغيّر رقمه.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>المحاولة التانية والتالتة تترفض برسالة &quot;The phone has already been taken.&quot; (مستخدم↔مستخدم ومستخدم↔سائق). تعديل المستخدم الأول بنفس رقمه <strong>بينجح</strong> (مش بيتعارض مع نفسه).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Users/UserUniquePhoneTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-frd-gap-review#8" data-title="مدخل البيانات مايقدرش يعدّل أو يعطّل مدير النظام">
@@ -433,7 +433,7 @@
         <h3>مدخل البيانات مايقدرش يعدّل أو يعطّل مدير النظام</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>مدير النظام "لا يمكن تعطيله او استنساخه" + صلاحيات مدخل البيانات</dd></div><div class="row"><dt>الخطوات</dt><dd>بـ<code>dataentry@gcm.test</code>: من Users، دوّر على حساب مدير النظام وحاول تفتح تعديله أو تغيّر حالته (لو الواجهة سمحت بالفتح، احفظ تعديل).</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>أي تعديل أو تغيير حالة على مدير النظام يترفض (403). دوره وباسورده وحالته ماتتغيّرش.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Users/UserPolicyTest::test_data_entry_cannot_edit_or_change_the_status_of_the_system_admin</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>مدير النظام &quot;لا يمكن تعطيله او استنساخه&quot; + صلاحيات مدخل البيانات</dd></div><div class="row"><dt>الخطوات</dt><dd>بـ<code>dataentry@gcm.test</code>: من Users، دوّر على حساب مدير النظام وحاول تفتح تعديله أو تغيّر حالته (لو الواجهة سمحت بالفتح، احفظ تعديل).</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>أي تعديل أو تغيير حالة على مدير النظام يترفض (403). دوره وباسورده وحالته ماتتغيّرش.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Users/UserPolicyTest::test_data_entry_cannot_edit_or_change_the_status_of_the_system_admin</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-frd-gap-review#9" data-title="اسم السائق حقل واحد">
@@ -443,21 +443,21 @@
         <h3>اسم السائق حقل واحد</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>فورم إنشاء السائق ("الاسم" — حقل واحد، بنفس الشكل في كل الأدوار)</dd></div><div class="row"><dt>الخطوات</dt><dd>أنشئ سائق واكتب اسم واحد. افتح صفحة تفاصيله بالعربي والإنجليزي.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الاسم بيظهر كما هو في الحالتين (مفيش حقلين عربي/إنجليزي منفصلين — اتحسمت إنها نقطة نسخ/لصق في توثيق الـFRD).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Drivers/DriverCreationTest</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>فورم إنشاء السائق (&quot;الاسم&quot; — حقل واحد، بنفس الشكل في كل الأدوار)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>أنشئ سائق واكتب اسم واحد.</li><li>افتح صفحة تفاصيله بالعربي والإنجليزي.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الاسم بيظهر كما هو في الحالتين (مفيش حقلين عربي/إنجليزي منفصلين — اتحسمت إنها نقطة نسخ/لصق في توثيق الـFRD).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Drivers/DriverCreationTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     </details>
     <details open class="group">
       <summary>د) تصنيفات المركبات القابلة للإدارة (طلب العميل — خارج الـFRD) <span class="count"></span></summary>
       
-    <article class="item" data-id="week-3-frd-gap-review#10" data-title="القائمة الجانبية: Vehicles ← List + Categories">
+    <article class="item" data-id="week-3-frd-gap-review#10" data-title="القائمة الجانبية: Vehicles فيها List و Categories">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
           <span class="num">10</span></label>
-        <h3>القائمة الجانبية: Vehicles ← List + Categories</h3>
+        <h3>القائمة الجانبية: Vehicles فيها List و Categories</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>الخطوات</dt><dd>سجّل دخول بـ<code>admin@gcm.test</code> وبص على "Vehicles" في القائمة الجانبية. بعدين بـ<code>dataentry@gcm.test</code> ثم <code>auditor@gcm.test</code>.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الأدمن: "Vehicles" فيها بندين <strong>List</strong> و<strong>Categories</strong>. مدخل البيانات والمراقب: بند <strong>List</strong> بس، مفيش Categories.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>MenuVisibilityTest</code></dd></div></dl>
+      <dl><div class="row"><dt>الخطوات</dt><dd><ul><li>سجّل دخول بـ<code>admin@gcm.test</code> وبص على &quot;Vehicles&quot; في القائمة الجانبية.</li><li>كرّر بـ<code>dataentry@gcm.test</code>.</li><li>كرّر بـ<code>auditor@gcm.test</code>.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الأدمن: &quot;Vehicles&quot; فيها بندين <strong>List</strong> و<strong>Categories</strong>. مدخل البيانات والمراقب: بند <strong>List</strong> بس، مفيش Categories.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>MenuVisibilityTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-frd-gap-review#11" data-title="إضافة تصنيف جديد">
@@ -467,17 +467,17 @@
         <h3>إضافة تصنيف جديد</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>الخطوات</dt><dd>بالأدمن: Vehicles ← Categories ← "Add category". جرّب الأول تدوس Submit وهو فاضي. بعدين اكتب اسم إنجليزي موجود أصلًا (مثلاً <code>Dump truck</code>). بعدين اكتب اسمين جداد (إنجليزي + عربي) واحفظ.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الفاضي → "This field is required" على الحقلين. المكرر → رفض برسالة "The Name (English) has already been taken". الصح → يرجّعك للقائمة برسالة نجاح، والتصنيف الجديد ظاهر فيها بعدد مركبات 0.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleCategoryManagementTest</code></dd></div></dl>
+      <dl><div class="row"><dt>الخطوات</dt><dd><ul><li>بالأدمن افتح Vehicles، وبعدين Categories، وبعدين دوس &quot;Add category&quot;.</li><li>جرّب الأول تدوس Submit وهو فاضي.</li><li>اكتب اسم إنجليزي موجود أصلًا (مثلاً <code>Dump truck</code>) وجرّب تحفظ.</li><li>اكتب اسمين جداد (إنجليزي وعربي) واحفظ.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd><ul><li>لو الحقول فاضية: رسالة &quot;This field is required&quot; على الحقلين.</li><li>لو الاسم الإنجليزي مكرر: رفض برسالة &quot;The Name (English) has already been taken&quot;.</li><li>لو البيانات صح: يرجّعك للقائمة برسالة نجاح، والتصنيف الجديد ظاهر فيها بعدد مركبات 0.</li></ul></dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleCategoryManagementTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
-    <article class="item" data-id="week-3-frd-gap-review#12" data-title="عدد كروت "Vehicles by category" = عدد التصنيفات الفعلي">
+    <article class="item" data-id="week-3-frd-gap-review#12" data-title="عدد كروت &quot;Vehicles by category&quot; = عدد التصنيفات الفعلي">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
           <span class="num">12</span></label>
-        <h3>عدد كروت "Vehicles by category" = عدد التصنيفات الفعلي</h3>
+        <h3>عدد كروت &quot;Vehicles by category&quot; = عدد التصنيفات الفعلي</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>الخطوات</dt><dd>افتح Vehicles ← List وعدّ الكروت في "Vehicles by category". أضف تصنيف جديد (بند 11) وارجع لصفحة المركبات. جرّب كمان قايمة فلتر "All categories" وفورم إضافة مركبة وفورم إضافة سائق وفورم إضافة أصل.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>عدد الكروت = عدد التصنيفات بالظبط (5 في الأول، 6 بعد الإضافة) وكل كارت عليه عدد مركباته الصح. التصنيف الجديد بيظهر كمان في الفلتر، وفي قايمة الفئة بفورم المركبة، وفي "أنواع المركبات المؤهل لقيادتها" بفورم السائق، وفي "تصنيف المركبات المتناسب" بفورم الأصل.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleCategoryManagementTest::test_vehicle_stats_follow_the_real_category_list</code></dd></div></dl>
+      <dl><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح Vehicles، وبعدين List، وعدّ الكروت في &quot;Vehicles by category&quot;.</li><li>أضف تصنيف جديد زي البند اللي فات، وارجع لصفحة المركبات.</li><li>جرّب فلتر &quot;All categories&quot;، وفورم إضافة مركبة، وفورم إضافة سائق، وفورم إضافة أصل.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>عدد الكروت = عدد التصنيفات بالظبط (5 في الأول، 6 بعد الإضافة) وكل كارت عليه عدد مركباته الصح. التصنيف الجديد بيظهر كمان في الفلتر، وفي قايمة الفئة بفورم المركبة، وفي &quot;أنواع المركبات المؤهل لقيادتها&quot; بفورم السائق، وفي &quot;تصنيف المركبات المتناسب&quot; بفورم الأصل.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleCategoryManagementTest::test_vehicle_stats_follow_the_real_category_list</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-frd-gap-review#13" data-title="تعديل تصنيف">
@@ -487,7 +487,7 @@
         <h3>تعديل تصنيف</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>الخطوات</dt><dd>Categories ← أيقونة التعديل على أي تصنيف ← غيّر الاسم الإنجليزي والعربي ← حفظ. بعدين افتح صفحة المركبات.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الاسم الجديد ظاهر في الكروت والفلتر وعمود "Category" بالجدول. المركبات المرتبطة بيه فضلت مرتبطة (مفيش مركبة فقدت تصنيفها). إعادة الحفظ بنفس الاسم من غير تغيير بتنجح.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleCategoryManagementTest::test_renaming_keeps_the_slug_stable</code></dd></div></dl>
+      <dl><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح Categories، ودوس أيقونة التعديل على أي تصنيف.</li><li>غيّر الاسم الإنجليزي والعربي.</li><li>احفظ.</li><li>افتح صفحة المركبات.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الاسم الجديد ظاهر في الكروت والفلتر وعمود &quot;Category&quot; بالجدول. المركبات المرتبطة بيه فضلت مرتبطة (مفيش مركبة فقدت تصنيفها). إعادة الحفظ بنفس الاسم من غير تغيير بتنجح.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleCategoryManagementTest::test_renaming_keeps_the_slug_stable</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-frd-gap-review#14" data-title="الحذف — مسموح لتصنيف مضاف يدويًا وغير مستخدم فقط">
@@ -497,7 +497,7 @@
         <h3>الحذف — مسموح لتصنيف مضاف يدويًا وغير مستخدم فقط</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>الخطوات</dt><dd>(أ) أضف تصنيف جديد واحذفه من أيقونة الحذف ← أكّد في النافذة. (ب) بص على تصنيف مربوط بمركبة أو أصل أو سائق. (ج) بص على أي تصنيف من الستة الأساسيين (بما فيهم شاحنة جرّارة) حتى لو مش مربوط بحاجة.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>(أ) التصنيف بيتمسح والكارت بتاعه بيختفي من صفحة المركبات. (ب) أيقونة الحذف <strong>مقفولة</strong> وعليها تلميح "In use — can't be deleted"؛ ولو الحذف اتحاول من API مباشرة → 422 برسالة توضّح المربوط بإيه ("in use by 3 vehicles, 1 asset"). (ج) أيقونة الحذف <strong>مقفولة دايمًا</strong> على الستة الأساسيين وعليها تلميح "Primary category — can't be deleted"؛ والـAPI بيرجّع 422 "This is a primary category and can't be deleted." (الاسم بس هو اللي بيتعدّل).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleCategoryManagementTest</code> (<code>test_a_category_used_by_a_vehicle...</code>, <code>..._driver_or_an_asset...</code>, <code>test_an_unused_custom_category_can_be_deleted</code>, <code>test_a_primary_category_cannot_be_deleted_even_when_unused</code>, <code>test_the_list_flags_primary_categories_so_the_ui_can_disable_delete</code>)</dd></div></dl>
+      <dl><div class="row"><dt>الخطوات</dt><dd><ul><li>(أ) أضف تصنيف جديد واحذفه من أيقونة الحذف، وأكّد في النافذة اللي بتظهر.</li><li>(ب) بص على تصنيف مربوط بمركبة أو أصل أو سائق.</li><li>(ج) بص على أي تصنيف من الستة الأساسيين (بما فيهم شاحنة جرّارة) حتى لو مش مربوط بحاجة.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd><ul><li>(أ) التصنيف بيتمسح والكارت بتاعه بيختفي من صفحة المركبات.</li><li>(ب) أيقونة الحذف <strong>مقفولة</strong> وعليها تلميح &quot;In use — can't be deleted&quot;؛ ولو الحذف اتحاول من API مباشرة، بيترفض بكود 422 برسالة توضّح المربوط بإيه (&quot;in use by 3 vehicles, 1 asset&quot;).</li><li>(ج) أيقونة الحذف <strong>مقفولة دايمًا</strong> على الستة الأساسيين وعليها تلميح &quot;Primary category — can't be deleted&quot;؛ والـAPI بيرجّع نفس الرفض 422 &quot;This is a primary category and can't be deleted.&quot; (الاسم بس هو اللي بيتعدّل).</li></ul></dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleCategoryManagementTest</code> (<code>test_a_category_used_by_a_vehicle...</code>, <code>..._driver_or_an_asset...</code>, <code>test_an_unused_custom_category_can_be_deleted</code>, <code>test_a_primary_category_cannot_be_deleted_even_when_unused</code>, <code>test_the_list_flags_primary_categories_so_the_ui_can_disable_delete</code>)</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-frd-gap-review#15" data-title="صلاحية مدير النظام فقط">
@@ -507,7 +507,7 @@
         <h3>صلاحية مدير النظام فقط</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>الخطوات</dt><dd>سجّل دخول بـ<code>dataentry@gcm.test</code> ثم <code>auditor@gcm.test</code> ثم <code>driver@gcm.test</code>. جرّب تفتح <code>/app/vehicle-category/list</code> و<code>/app/vehicle-category/add</code> يدويًا. وافتح صفحة المركبات وبص على كروت التصنيفات.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الصفحتين بيرجّعوا <strong>403</strong>. مفيش لينك "Manage categories" في صفحة المركبات. قايمة التصنيفات في الفورمات (مركبة/سائق/أصل) لسه شغالة عادي لكل الأدوار (دي بيانات مرجعية للقراءة).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleCategoryManagementTest</code> (<code>test_only_the_system_admin_can_manage_categories</code>, <code>test_the_management_pages_are_forbidden_for_other_roles</code>)</dd></div></dl>
+      <dl><div class="row"><dt>الخطوات</dt><dd>سجّل دخول بـ<code>dataentry@gcm.test</code> ثم <code>auditor@gcm.test</code> ثم <code>driver@gcm.test</code>. جرّب تفتح <code>/app/vehicle-category/list</code> و<code>/app/vehicle-category/add</code> يدويًا. وافتح صفحة المركبات وبص على كروت التصنيفات.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الصفحتين بيرجّعوا <strong>403</strong>. مفيش لينك &quot;Manage categories&quot; في صفحة المركبات. قايمة التصنيفات في الفورمات (مركبة/سائق/أصل) لسه شغالة عادي لكل الأدوار (دي بيانات مرجعية للقراءة).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleCategoryManagementTest</code> (<code>test_only_the_system_admin_can_manage_categories</code>, <code>test_the_management_pages_are_forbidden_for_other_roles</code>)</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-frd-gap-review#16" data-title="عزل التصنيفات بين الشركات">
@@ -517,7 +517,7 @@
         <h3>عزل التصنيفات بين الشركات</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>الخطوات</dt><dd>(يحتاج شركة تانية — أنشئها من Super Admin ← Tenants). سجّل دخول بمدير نظام الشركة الجديدة وافتح Vehicles ← Categories.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الشركة الجديدة بتبدأ بالست تصنيفات الافتراضية بس. اللي أضفته/عدّلته/حذفته في شركة GCM <strong>ماظهرش</strong> عندها، والعكس. نفس الاسم مسموح في شركتين مختلفتين.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleCategoryManagementTest::test_categories_are_isolated_between_tenants</code></dd></div></dl>
+      <dl><div class="row"><dt>الخطوات</dt><dd><ul><li>(يحتاج شركة تانية) من Super Admin افتح Tenants وأنشئ شركة جديدة.</li><li>سجّل دخول بمدير نظام الشركة الجديدة.</li><li>افتح Vehicles، وبعدين Categories.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الشركة الجديدة بتبدأ بالست تصنيفات الافتراضية بس. اللي أضفته/عدّلته/حذفته في شركة GCM <strong>ماظهرش</strong> عندها، والعكس. نفس الاسم مسموح في شركتين مختلفتين.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleCategoryManagementTest::test_categories_are_isolated_between_tenants</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-frd-gap-review#17" data-title="الواجهة بالعربي">
@@ -527,7 +527,7 @@
         <h3>الواجهة بالعربي</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>الخطوات</dt><dd>بدّل اللغة لعربي وافتح Vehicles ← Categories وصفحة الإضافة وصفحة التعديل ونافذة تأكيد الحذف.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>كل النصوص عربي (العنوان "تصنيفات المركبات"، الأعمدة، الأزرار، رسالة الحذف، تلميح القفل)، الصفحة RTL، وعنوان الحقل الإنجليزي ابتدائه من الشمال والعربي من اليمين.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd>يدوي فقط</dd></div></dl>
+      <dl><div class="row"><dt>الخطوات</dt><dd><ul><li>بدّل اللغة لعربي.</li><li>افتح Vehicles، وبعدين Categories.</li><li>افتح صفحة الإضافة، وصفحة التعديل، ونافذة تأكيد الحذف.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>كل النصوص عربي (العنوان &quot;تصنيفات المركبات&quot;، الأعمدة، الأزرار، رسالة الحذف، تلميح القفل)، الصفحة RTL، وعنوان الحقل الإنجليزي ابتدائه من الشمال والعربي من اليمين.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd>يدوي فقط</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-frd-gap-review#18" data-title="القائمة الجانبية متجمّعة تحت عنوانين">
@@ -537,17 +537,17 @@
         <h3>القائمة الجانبية متجمّعة تحت عنوانين</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>الخطوات</dt><dd>سجّل دخول بـ<code>admin@gcm.test</code> ثم <code>dataentry@gcm.test</code> ثم <code>auditor@gcm.test</code> ثم <code>driver@gcm.test</code> وبص على القائمة الجانبية. بدّل اللغة لعربي.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الأدمن ومدخل البيانات: Dashboard ثم عنوان <strong>Accounts</strong> (تحته Users وDrivers) ثم عنوان <strong>Fleet &amp; Assets</strong> (تحته Vehicles وAssets). المراقب: Dashboard + عنوان <strong>Fleet &amp; Assets</strong> بس (مفيش "Accounts" لأنه مالوش حاجة تحته). السائق: Dashboard بس ومفيش أي عنوان. بالعربي: "الحسابات" و"الأسطول والأصول".</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>MenuVisibilityTest</code> (<code>test_system_admin_and_data_entry_see_both_section_titles</code>, <code>test_an_auditor_sees_only_the_fleet_and_assets_title</code>, <code>test_a_driver_sees_no_section_titles_at_all</code>)</dd></div></dl>
+      <dl><div class="row"><dt>الخطوات</dt><dd><ul><li>سجّل دخول بـ<code>admin@gcm.test</code> ثم <code>dataentry@gcm.test</code> ثم <code>auditor@gcm.test</code> ثم <code>driver@gcm.test</code> وبص على القائمة الجانبية.</li><li>بدّل اللغة لعربي.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الأدمن ومدخل البيانات: Dashboard ثم عنوان <strong>Accounts</strong> (تحته Users وDrivers) ثم عنوان <strong>Fleet &amp; Assets</strong> (تحته Vehicles وAssets). المراقب: Dashboard + عنوان <strong>Fleet &amp; Assets</strong> بس (مفيش &quot;Accounts&quot; لأنه مالوش حاجة تحته). السائق: Dashboard بس ومفيش أي عنوان. بالعربي: &quot;الحسابات&quot; و&quot;الأسطول والأصول&quot;.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>MenuVisibilityTest</code> (<code>test_system_admin_and_data_entry_see_both_section_titles</code>, <code>test_an_auditor_sees_only_the_fleet_and_assets_title</code>, <code>test_a_driver_sees_no_section_titles_at_all</code>)</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
-    <article class="item" data-id="week-3-frd-gap-review#19" data-title="زر "Add category" مش لازق في خانة البحث + زر Export">
+    <article class="item" data-id="week-3-frd-gap-review#19" data-title="زر &quot;Add category&quot; مش لازق في خانة البحث + زر Export">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
           <span class="num">19</span></label>
-        <h3>زر "Add category" مش لازق في خانة البحث + زر Export</h3>
+        <h3>زر &quot;Add category&quot; مش لازق في خانة البحث + زر Export</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>الخطوات</dt><dd>افتح Vehicles ← Categories وقارن المسافة بين خانة البحث وأزرار <strong>Export</strong> و<strong>Add category</strong> بصفحة Assets ← Categories.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>نفس الترتيب والمسافات بالظبط في الصفحتين (بحث ← Export ← Add). زر Export بيفتح قايمة Excel / Pdf.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>ExportFiltersTest::test_vehicle_category_export_*</code> (الصفوف المصدّرة مع البحث + PDF + أدمن فقط). الترتيب والمسافات يدوي.</dd></div></dl>
+      <dl><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح Vehicles، وبعدين Categories.</li><li>قارن المسافة بين خانة البحث وأزرار <strong>Export</strong> و<strong>Add category</strong> بنفس الصفحة.</li><li>كرّر المقارنة مع صفحة Assets، وبعدين Categories.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>نفس الترتيب والمسافات بالظبط في الصفحتين (بحث، بعده Export، بعده Add). زر Export بيفتح قايمة Excel / Pdf.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>ExportFiltersTest::test_vehicle_category_export_*</code> (الصفوف المصدّرة مع البحث + PDF + أدمن فقط). الترتيب والمسافات يدوي.</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-frd-gap-review#20" data-title="المحتوى بعرض الشاشة كله (Wide) كوضع افتراضي">
@@ -557,7 +557,7 @@
         <h3>المحتوى بعرض الشاشة كله (Wide) كوضع افتراضي</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>الخطوات</dt><dd>سجّل دخول وافتح أي صفحة (مثلاً Vehicles ← List) على شاشة عريضة (1400px فأكتر). قارنها بعرض المتصفح.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>المحتوى ممتد على عرض المساحة المتاحة كله (جنب القائمة الجانبية) من غير هوامش جانبية كبيرة، في كل الصفحات. (لو الشاشة فيها الوضع القديم متخزّن في المتصفح، امسح بيانات الموقع/localStorage.)</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd>يدوي فقط</dd></div></dl>
+      <dl><div class="row"><dt>الخطوات</dt><dd><ul><li>سجّل دخول وافتح أي صفحة (مثلاً Vehicles، وبعدين List) على شاشة عريضة (1400px فأكتر).</li><li>قارن عرض المحتوى بعرض المتصفح.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>المحتوى ممتد على عرض المساحة المتاحة كله (جنب القائمة الجانبية) من غير هوامش جانبية كبيرة، في كل الصفحات. (لو الشاشة فيها الوضع القديم متخزّن في المتصفح، امسح بيانات الموقع/localStorage.)</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd>يدوي فقط</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     </details>
@@ -571,7 +571,7 @@
         <h3>الحفظ البطيء بملفات كبيرة مش شكله معلّق</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>الخطوات</dt><dd>Drivers ← إنشاء سائق. املأ الحقول المطلوبة وارفع 4 مستندات (إقامة/رخصة/رخصة تشغيلية/تأمين) كل واحد <strong>3-4 ميجا</strong> (PDF أو صورة). اضغط حفظ. جرّب كمان نفس الحاجة من Vehicles ← إضافة مركبة (صورتين + وثائق).</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>أول ما تضغط حفظ تظهر نافذة فوق الصفحة فيها <strong>دايرة تحميل + شريط تقدّم + "جارٍ رفع الملفات... 43%"</strong>، وبعد ما الرفع يخلص بتتحول لـ "جارٍ الحفظ — من فضلك انتظر..." لحد ما تتحول لقائمة السائقين برسالة النجاح. مينفعش تدوس حفظ مرتين (الصفحة كلها مغطّاة). والسائق بيتسجل <strong>مرة واحدة</strong>.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd>يدوي فقط</dd></div></dl>
+      <dl><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح Drivers، وبعدين إنشاء سائق.</li><li>املأ الحقول المطلوبة وارفع 4 مستندات (إقامة/رخصة/رخصة تشغيلية/تأمين) كل واحد <strong>3-4 ميجا</strong> (PDF أو صورة).</li><li>اضغط حفظ.</li><li>كرّر نفس الحاجة من Vehicles، وبعدين إضافة مركبة (صورتين + وثائق).</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>أول ما تضغط حفظ تظهر نافذة فوق الصفحة فيها <strong>دايرة تحميل + شريط تقدّم + &quot;جارٍ رفع الملفات... 43%&quot;</strong>، وبعد ما الرفع يخلص بتتحول لـ &quot;جارٍ الحفظ — من فضلك انتظر...&quot; لحد ما تتحول لقائمة السائقين برسالة النجاح. مينفعش تدوس حفظ مرتين (الصفحة كلها مغطّاة). والسائق بيتسجل <strong>مرة واحدة</strong>.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd>يدوي فقط</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-frd-gap-review#22" data-title="ملف أكبر من الحد يترفض فورًا من غير رفع">
@@ -581,7 +581,7 @@
         <h3>ملف أكبر من الحد يترفض فورًا من غير رفع</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>الخطوات</dt><dd>في إنشاء سائق، اختار ملف أكبر من <strong>5 ميجا</strong> كمستند (أو صورة شخصية أكبر من <strong>2 ميجا</strong>). في إضافة مركبة، اختار أي ملف أكبر من <strong>4 ميجا</strong>. اضغط حفظ.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>رسالة حمرا في نفس اللحظة: "الملف "اسم.pdf" حجمه 6.0 ميجابايت — الحد الأقصى 5 ميجابايت. من فضلك اختر ملفًا أصغر." — <strong>من غير ما يرفع حاجة</strong> ومن غير انتظار.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd>يدوي فقط</dd></div></dl>
+      <dl><div class="row"><dt>الخطوات</dt><dd><ul><li>في إنشاء سائق، اختار ملف أكبر من <strong>5 ميجا</strong> كمستند (أو صورة شخصية أكبر من <strong>2 ميجا</strong>).</li><li>اضغط حفظ.</li><li>في إضافة مركبة، اختار أي ملف أكبر من <strong>4 ميجا</strong>.</li><li>اضغط حفظ.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>رسالة حمرا في نفس اللحظة: &quot;الملف &quot;اسم.pdf&quot; حجمه 6.0 ميجابايت — الحد الأقصى 5 ميجابايت. من فضلك اختر ملفًا أصغر.&quot; — <strong>من غير ما يرفع حاجة</strong> ومن غير انتظار.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd>يدوي فقط</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-frd-gap-review#23" data-title="التصدير (خصوصًا PDF) بيوضّح إنه شغّال">
@@ -591,7 +591,7 @@
         <h3>التصدير (خصوصًا PDF) بيوضّح إنه شغّال</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>الخطوات</dt><dd>في أي قائمة (Users / Drivers / Vehicles / Vehicle Categories / Assets / Asset Categories) دوس Export ← Pdf. جرّب كمان Excel. (الأنسب لقائمة كبيرة: زوّد بيانات — مثلاً <code>php artisan db:seed --class=DevVehicleVolumeSeeder</code> بيزرع 3000 مركبة — وبعدين <code>php artisan migrate:fresh --seed</code> في الآخر.)</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>أول ما تدوس تظهر نافذة "جارٍ تجهيز الملف..." مع تلميح "القوائم الكبيرة قد تستغرق بعض الوقت. من فضلك اترك هذه الصفحة مفتوحة." ودايرة تحميل، وبتختفي لما الملف ينزل (<code>vehicles.pdf</code> / <code>vehicles.xlsx</code>...). لو حصل خطأ بتظهر رسالة حمرا بزرار "حسنًا" بدل ما الصفحة تفضل معلّقة. الـ PDF بيتقسم صفحات، كل صفحة فيها هيدر الجدول.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>ExportPdfLayoutTest</code> (بنية الـPDF: 40 صف لكل جدول، الصفحات، الـescape)</dd></div></dl>
+      <dl><div class="row"><dt>الخطوات</dt><dd><ul><li>في أي قائمة (Users / Drivers / Vehicles / Vehicle Categories / Assets / Asset Categories) دوس زرار Export واختار Pdf.</li><li>جرّب كمان Excel.</li><li>(الأنسب لقائمة كبيرة: زوّد بيانات — مثلاً <code>php artisan db:seed --class=DevVehicleVolumeSeeder</code> بيزرع 3000 مركبة — وبعدين <code>php artisan migrate:fresh --seed</code> في الآخر.)</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>أول ما تدوس تظهر نافذة &quot;جارٍ تجهيز الملف...&quot; مع تلميح &quot;القوائم الكبيرة قد تستغرق بعض الوقت. من فضلك اترك هذه الصفحة مفتوحة.&quot; ودايرة تحميل، وبتختفي لما الملف ينزل (<code>vehicles.pdf</code> / <code>vehicles.xlsx</code>...). لو حصل خطأ بتظهر رسالة حمرا بزرار &quot;حسنًا&quot; بدل ما الصفحة تفضل معلّقة. الـ PDF بيتقسم صفحات، كل صفحة فيها هيدر الجدول.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>ExportPdfLayoutTest</code> (بنية الـPDF: 40 صف لكل جدول، الصفحات، الـescape)</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-frd-gap-review#24" data-title="تصدير PDF بالعربي">
@@ -601,7 +601,7 @@
         <h3>تصدير PDF بالعربي</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>الخطوات</dt><dd>بدّل اللغة للعربية من الـnavbar. من قائمة <strong>المستخدمين</strong> ثم <strong>السائقين</strong> ثم <strong>المركبات</strong> ثم <strong>الأصول</strong> ثم <strong>تصنيفات سعة الأصول</strong> ثم <strong>تصنيفات المركبات</strong> دوس تصدير ← PDF وافتح الملف. (لو مفيش بيانات عربية: أنشئ سائق/مستخدم باسم عربي، ومركبة بلوحة حروفها عربي مثل "أ ب ج".) بعدها بدّل للإنجليزي وصدّر نفس القائمة.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>بالعربي — العنوان والأعمدة <strong>عربي</strong> والجدول بيبدأ من <strong>اليمين</strong> (أول عمود "الرقم التعريفي" في أقصى اليمين)، والأسماء والتصنيفات العربية <strong>حروفها متوصّلة وقراءتها صح</strong> (مش علامات استفهام ولا حروف مفصولة/معكوسة)، والقيم مترجمة (نشط / في الصيانة / متعهد / مدير النظام) مش <code>on_maintenance</code>. بالإنجليزي — الأعمدة والعناوين إنجليزي بترتيبها العادي، لكن أي اسم عربي في البيانات لسه بيظهر صح. حجم الملف صغير (عشرات الكيلوبايت مش ~1 ميجا).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>ArabicTextTest</code> (الربط والاتجاه) + <code>ExportPdfLayoutTest</code> (عكس الأعمدة، ترجمة القيم، PDF عربي حقيقي). العرض البصري يدوي.</dd></div></dl>
+      <dl><div class="row"><dt>الخطوات</dt><dd><ul><li>بدّل اللغة للعربية من الـnavbar.</li><li>من قائمة <strong>المستخدمين</strong> (وبعدين <strong>السائقين</strong>، <strong>المركبات</strong>، <strong>الأصول</strong>، <strong>تصنيفات سعة الأصول</strong>، <strong>تصنيفات المركبات</strong>) دوس تصدير واختار PDF، وافتح الملف.</li><li>(لو مفيش بيانات عربية: أنشئ سائق/مستخدم باسم عربي، ومركبة بلوحة حروفها عربي مثل &quot;أ ب ج&quot;.)</li><li>بدّل للإنجليزي وصدّر نفس القائمة.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>بالعربي — العنوان والأعمدة <strong>عربي</strong> والجدول بيبدأ من <strong>اليمين</strong> (أول عمود &quot;الرقم التعريفي&quot; في أقصى اليمين)، والأسماء والتصنيفات العربية <strong>حروفها متوصّلة وقراءتها صح</strong> (مش علامات استفهام ولا حروف مفصولة/معكوسة)، والقيم مترجمة (نشط / في الصيانة / متعهد / مدير النظام) مش <code>on_maintenance</code>. بالإنجليزي — الأعمدة والعناوين إنجليزي بترتيبها العادي، لكن أي اسم عربي في البيانات لسه بيظهر صح. حجم الملف صغير (عشرات الكيلوبايت مش ~1 ميجا).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>ArabicTextTest</code> (الربط والاتجاه) + <code>ExportPdfLayoutTest</code> (عكس الأعمدة، ترجمة القيم، PDF عربي حقيقي). العرض البصري يدوي.</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-frd-gap-review#25" data-title="التصدير بيطابق الفلاتر والبحث اللي على الشاشة">
@@ -611,7 +611,41 @@
         <h3>التصدير بيطابق الفلاتر والبحث اللي على الشاشة</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>الخطوات</dt><dd>في كل قائمة (Users / Drivers / Vehicles / Vehicle Categories / Assets / Asset Categories) — (1) اختار فلتر واحد على الأقل (مثلًا الحالة أو التصنيف) واكتب حاجة في مربع البحث بحيث الجدول يعرض جزء بس من الصفوف. (2) دوس Export ← Excel، وبعدين Export ← Pdf. (3) امسح الفلاتر والبحث ودوس Export تاني.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الملف (Excel والـPDF) فيه <strong>نفس الصفوف اللي بتظهر في الجدول بالظبط</strong> (نفس الفلاتر ونفس البحث) — مش القائمة كلها. بعد مسح الفلاتر والبحث الملف بيحتوي كل الصفوف. البحث بيشتغل على نفس الأعمدة اللي بيشتغل عليها في الجدول (مثلًا لوحة المركبة بالشكل المعروض، أو كود المستخدم).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>ExportFiltersTest</code> (الصفوف المصدّرة لكل قائمة مع كل فلتر والبحث، وPDF مفلتر). سلوك الأزرار في المتصفح يدوي.</dd></div></dl>
+      <dl><div class="row"><dt>الخطوات</dt><dd><ul><li>في كل قائمة (Users / Drivers / Vehicles / Vehicle Categories / Assets / Asset Categories) اختار فلتر واحد على الأقل (مثلًا الحالة أو التصنيف)، واكتب حاجة في مربع البحث بحيث الجدول يعرض جزء بس من الصفوف.</li><li>دوس Export واختار Excel.</li><li>دوس Export تاني واختار Pdf.</li><li>امسح الفلاتر والبحث، ودوس Export تاني.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الملف (Excel والـPDF) فيه <strong>نفس الصفوف اللي بتظهر في الجدول بالظبط</strong> (نفس الفلاتر ونفس البحث) — مش القائمة كلها. بعد مسح الفلاتر والبحث الملف بيحتوي كل الصفوف. البحث بيشتغل على نفس الأعمدة اللي بيشتغل عليها في الجدول (مثلًا لوحة المركبة بالشكل المعروض، أو كود المستخدم).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>ExportFiltersTest</code> (الصفوف المصدّرة لكل قائمة مع كل فلتر والبحث، وPDF مفلتر). سلوك الأزرار في المتصفح يدوي.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+    <details open class="group">
+      <summary>و) صلاحيات الأدوار — تحديث FRD V01.14 <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-3-frd-gap-review#26" data-title="مدخل البيانات يقدر يعطّل ويعيد تنشيط أي حساب/مركبة/أصل">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">26</span></label>
+        <h3>مدخل البيانات يقدر يعطّل ويعيد تنشيط أي حساب/مركبة/أصل</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.4 + توصيف صفحات دور مدخل البيانات (&quot;كل الصلاحيات (انشاء/تعديل/تعطيل)&quot;)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>بـ<code>dataentry@gcm.test</code> افتح أي مستخدم (أو سائق) وغيّر حالته لـ&quot;معطّل&quot;، وبعدين رجّعه &quot;نشط&quot;.</li><li>كرّر نفس الشيء على أي مركبة، وأي أصل.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>كل التعطيلات وإعادة التنشيط تنجح (مش 422). لو جرّبت تعطّل حساب <code>admin@gcm.test</code> نفسه، ده لسه بيترفض (403) — القاعدة دي محدّش بيقدر يلمسها.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleManagementTest</code>, <code>Assets/AssetManagementTest</code>, <code>Users/UserPolicyTest</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-frd-gap-review#27" data-title="المراقب يقدر يشوف ويصدّر Users وDrivers (مش يعدّل)">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">27</span></label>
+        <h3>المراقب يقدر يشوف ويصدّر Users وDrivers (مش يعدّل)</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>توصيف صفحات دور المراقب (&quot;له صلاحية الاطلاع علي جميع الصفحات (view)... وليس له أي دور في تعديل او انشاء&quot;)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>بـ<code>auditor@gcm.test</code> بصّ على القائمة الجانبية، وافتح Users وDrivers.</li><li>جرّب تصدّر من الاتنين (Excel/Pdf).</li><li>جرّب تفتح فورم &quot;Add User&quot; مباشرة يدويًا.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>&quot;Accounts&quot; (Users, Drivers) ظاهرة في القائمة، والقوائم بتتفتح فعليًا (مش 403)، والتصدير شغّال. فورم الإضافة يترفض (403).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Users/UserPolicyTest::test_auditor_can_list_and_view_but_not_create_users</code>, <code>Users/UserExportTest::test_export_succeeds_for_auditor</code>, <code>Drivers/DriverPolicyTest::test_auditor_can_list_and_view_but_not_update_drivers</code>, <code>Drivers/DriverExportTest::test_export_succeeds_for_auditor</code>, <code>MenuVisibilityTest</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-frd-gap-review#28" data-title="المراقب يقدر يغيّر كلمة سره بنفسه">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">28</span></label>
+        <h3>المراقب يقدر يغيّر كلمة سره بنفسه</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>&quot;لا يملك المراقب تعديل أي بيانات من خلال صفحة الملف الشخصي الا صورته او كلمة المرور&quot;</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>بـ<code>auditor@gcm.test</code> افتح My Profile.</li><li>تأكد إن تاب &quot;Security&quot; ظاهر.</li><li>افتحه وغيّر كلمة السر فعليًا (بالكلمة الحالية <code>password</code>).</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>تاب &quot;Security&quot; ظاهر (كان مختفي قبل كده)، وتغيير كلمة السر بينجح (&quot;Password updated&quot;). الاسم والبريد لسه للقراءة فقط.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Profile/PasswordChangeTest::test_an_auditor_changes_their_own_password</code>, <code>test_the_security_page_is_available_to_an_auditor</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     </details>
@@ -630,7 +664,7 @@
         <h3>صلاحيات العرض</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.5 (عرض المركبات)</dd></div><div class="row"><dt>الخطوات</dt><dd>سجّل دخول بـ <code>admin</code> ثم <code>dataentry</code> ثم <code>auditor</code> — لكل واحد افتح قائمة المركبات.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>التلاتة يشوفوا القائمة والكروت والفلاتر. <code>driver</code> → "Vehicles" مش في قائمته والرابط اليدوي يرجّع 403.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehiclePolicyTest</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.5 (عرض المركبات)</dd></div><div class="row"><dt>الخطوات</dt><dd>سجّل دخول بـ<code>admin</code> ثم <code>dataentry</code> ثم <code>auditor</code> — لكل واحد افتح قائمة المركبات.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>التلاتة يشوفوا القائمة والكروت والفلاتر. أما <code>driver</code> فـ&quot;Vehicles&quot; مش في قائمته والرابط اليدوي يرجّع 403.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehiclePolicyTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-vehicles-drivers-assets#2" data-title="الإنشاء (system_admin + data_entry فقط)">
@@ -640,7 +674,7 @@
         <h3>الإنشاء (system_admin + data_entry فقط)</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.5.3 ((انشاء / تعديل) المركبات مسؤولية مدير النظام / مدخل البيانات)</dd></div><div class="row"><dt>الخطوات</dt><dd>بـ <code>dataentry</code> → Add Vehicle → املأ (لوحة + فئة + تبعية + وثائق بأرقام وتواريخ + تصريح دخول) → حفظ. بعدين بـ <code>auditor</code> دوّر على زر Add Vehicle.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd><code>dataentry</code> ينشئ بنجاح والمركبة تظهر في القائمة. <code>auditor</code> <strong>مفيش عنده زر Add Vehicle</strong> ولا أزرار تعديل.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleManagementTest</code>, <code>Vehicles/VehiclePolicyTest</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.5.3 ((انشاء / تعديل) المركبات مسؤولية مدير النظام / مدخل البيانات)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>بـ<code>dataentry</code> افتح Add Vehicle، واملأ (لوحة + فئة + تبعية + وثائق بأرقام وتواريخ + تصريح دخول)، واحفظ.</li><li>بـ<code>auditor</code> دوّر على زر Add Vehicle.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd><code>dataentry</code> ينشئ بنجاح والمركبة تظهر في القائمة. <code>auditor</code> <strong>مفيش عنده زر Add Vehicle</strong> ولا أزرار تعديل.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleManagementTest</code>, <code>Vehicles/VehiclePolicyTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-vehicles-drivers-assets#3" data-title="الأرقام أرقام فقط">
@@ -650,7 +684,7 @@
         <h3>الأرقام أرقام فقط</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.5.3 (حقول الأرقام)</dd></div><div class="row"><dt>الخطوات</dt><dd>في فورم المركبة، جرّب تكتب حروف في "أرقام اللوحة" أو رقم رخصة السير.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الحروف تترفض/تتشال فورًا؛ ولو أرسلت الطلب بحروف → رفض 422.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleManagementTest::test_plate_number_and_document_numbers_must_be_digits_only</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.5.3 (حقول الأرقام)</dd></div><div class="row"><dt>الخطوات</dt><dd>في فورم المركبة، جرّب تكتب حروف في &quot;أرقام اللوحة&quot; أو رقم رخصة السير.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الحروف تترفض/تتشال فورًا؛ ولو أرسلت الطلب بحروف، الرد رفض 422.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleManagementTest::test_plate_number_and_document_numbers_must_be_digits_only</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-vehicles-drivers-assets#4" data-title="اللوحة فريدة داخل الشركة، ومتاحة لشركة تانية">
@@ -660,7 +694,7 @@
         <h3>اللوحة فريدة داخل الشركة، ومتاحة لشركة تانية</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.5 (المركبة هويتها اللوحة)</dd></div><div class="row"><dt>الخطوات</dt><dd>أنشئ مركبة بلوحة <code>ABC 1234</code>. جرّب تنشئ تانية بنفس اللوحة.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>رفض للتكرار داخل نفس الشركة. (نفس اللوحة مسموحة في شركة تانية — يغطيه التست الآلي.)</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleUniquePlateTest</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.5 (المركبة هويتها اللوحة)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>أنشئ مركبة بلوحة <code>ABC 1234</code>.</li><li>جرّب تنشئ تانية بنفس اللوحة.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>رفض للتكرار داخل نفس الشركة. (نفس اللوحة مسموحة في شركة تانية — يغطيه التست الآلي.)</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleUniquePlateTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-vehicles-drivers-assets#5" data-title="البحث بلوحة معروضة بالمسافة">
@@ -680,17 +714,17 @@
         <h3>حالة المركبة — تقسيم الأدوار</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.5.3 (حالة "في الصيانة" من مدير النظام / مدخل البيانات · التعطيل من مدير النظام)</dd></div><div class="row"><dt>الخطوات</dt><dd>بـ <code>dataentry</code>: حوّل مركبة لـ "في الصيانة" (ينجح)، ثم جرّب "تعطيل" (يترفض). بـ <code>admin</code>: عطّل ثم نشّط-من-معطّل (ينجح).</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>زي الموصوف بالظبط.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleManagementTest</code> (<code>data_entry_can_set_maintenance_but_not_deactivate</code>, <code>system_admin_can_deactivate</code>)</dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.5.3 (حالة &quot;في الصيانة&quot; من مدير النظام / مدخل البيانات · التعطيل من مدير النظام)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>بـ<code>dataentry</code> حوّل مركبة لـ&quot;في الصيانة&quot; (المفروض ينجح)، وبعدين جرّب &quot;تعطيل&quot; (المفروض يترفض).</li><li>بـ<code>admin</code> عطّل المركبة، وبعدين نشّطها من &quot;معطّل&quot; (المفروض الاتنين ينجحوا).</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>زي الموصوف بالظبط.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleManagementTest</code> (<code>data_entry_can_set_maintenance_but_not_deactivate</code>, <code>system_admin_can_deactivate</code>)</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
-    <article class="item" data-id="week-3-vehicles-drivers-assets#7" data-title="data_entry مبيقدرش ينشئ مركبة "معطّلة" مباشرة">
+    <article class="item" data-id="week-3-vehicles-drivers-assets#7" data-title="data_entry مبيقدرش ينشئ مركبة &quot;معطّلة&quot; مباشرة">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
           <span class="num">7</span></label>
-        <h3>data_entry مبيقدرش ينشئ مركبة "معطّلة" مباشرة</h3>
+        <h3>data_entry مبيقدرش ينشئ مركبة &quot;معطّلة&quot; مباشرة</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.5.3</dd></div><div class="row"><dt>الخطوات</dt><dd>(Postman) بـ <code>dataentry</code> أرسل <code>POST /api/v1/vehicles</code> بـ <code>operational_status: deactivated</code>.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>رفض. بـ <code>admin</code> نفس الطلب → ينجح.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleManagementTest</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.5.3</dd></div><div class="row"><dt>الخطوات</dt><dd>(Postman) بـ<code>dataentry</code> أرسل <code>POST /api/v1/vehicles</code> بـ<code>operational_status: deactivated</code>.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>رفض. نفس الطلب بـ<code>admin</code> ينجح.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleManagementTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-vehicles-drivers-assets#8" data-title="الحاوية المدمجة — فلترة السعة من مجمع الأصول">
@@ -700,7 +734,7 @@
         <h3>الحاوية المدمجة — فلترة السعة من مجمع الأصول</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.5.3 (لو المركبة تشمل حاوية مدمجة: قائمة السعة تتفلتر)</dd></div><div class="row"><dt>الخطوات</dt><dd>في فورم المركبة: فعّل "تشمل حاوية مدمجة" → اختر النوع (حاوية/صهريج) + فئة المركبة. لاحظ قائمة السعة.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>تظهر فقط تصنيفات السعة اللي عندها أصل من النوع المختار متوافق مع فئة المركبة. لو مفيش → <strong>خطأ inline، بدون fallback لكل السعات</strong>.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleEmbeddedCapacityTest</code> (6 حالات)</dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.5.3 (لو المركبة تشمل حاوية مدمجة: قائمة السعة تتفلتر)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>في فورم المركبة فعّل &quot;تشمل حاوية مدمجة&quot;.</li><li>اختر النوع (حاوية/صهريج) وفئة المركبة.</li><li>لاحظ قائمة السعة.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>تظهر فقط تصنيفات السعة اللي عندها أصل من النوع المختار متوافق مع فئة المركبة. لو مفيش، بيظهر <strong>خطأ inline، بدون fallback لكل السعات</strong>.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleEmbeddedCapacityTest</code> (6 حالات)</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-vehicles-drivers-assets#9" data-title="الترقيم السيرفر-سايد (حجم واقعي)">
@@ -710,7 +744,7 @@
         <h3>الترقيم السيرفر-سايد (حجم واقعي)</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§6 الأداء (Pagination قياسي)</dd></div><div class="row"><dt>الخطوات</dt><dd><code>php artisan db:seed --class=DevVehicleVolumeSeeder</code> (يزرع 3000 مركبة). افتح القائمة وافحص طلبات الشبكة (Network tab).</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>كل طلب يجيب <code>per_page=10&amp;page=1</code> (مش تحميل 3000 دفعة). "Showing 1 to 10 of 3,000". بعد الاختبار: <code>php artisan migrate:fresh --seed</code>.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleListPaginationTest</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§6 الأداء (Pagination قياسي)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li><code>php artisan db:seed --class=DevVehicleVolumeSeeder</code> (يزرع 3000 مركبة).</li><li>افتح القائمة وافحص طلبات الشبكة (Network tab).</li><li>بعد الاختبار: <code>php artisan migrate:fresh --seed</code>.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>كل طلب يجيب <code>per_page=10&amp;page=1</code> (مش تحميل 3000 دفعة). &quot;Showing 1 to 10 of 3,000&quot;.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleListPaginationTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     </details>
@@ -724,7 +758,7 @@
         <h3>مدير النظام + مدخل البيانات فقط، وصفحة منفصلة</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>"إدارة وانشاء حسابات السائقين" (قسم مستقل) — "جميع البيانات قابلة للتعديل من خلال مدير النظام او مدخل البيانات"</dd></div><div class="row"><dt>الخطوات</dt><dd>بـ <code>admin</code> ثم <code>dataentry</code> افتح قائمة السائقين. بـ <code>auditor</code>/<code>driver</code> — القائمة الجانبية + الرابط اليدوي.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd><code>admin</code> و<code>dataentry</code> يشوفوا "Drivers" ويقدروا ينشئوا ويعدّلوا. <code>auditor</code>/<code>driver</code>: "Drivers" مش في القائمة، الرابط يرجّع 403. زر الإنشاء اسمه "إنشاء مستخدم جديد سائق" ويوديك لصفحة السائق المخصصة (مش فورم المستخدمين).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Drivers/DriverPolicyTest</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>&quot;إدارة وانشاء حسابات السائقين&quot; (قسم مستقل) — &quot;جميع البيانات قابلة للتعديل من خلال مدير النظام او مدخل البيانات&quot;</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>بـ<code>admin</code> ثم <code>dataentry</code> افتح قائمة السائقين.</li><li>بـ<code>auditor</code> وبعدين <code>driver</code>: شوف القائمة الجانبية، وجرّب الرابط اليدوي.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd><code>admin</code> و<code>dataentry</code> يشوفوا &quot;Drivers&quot; ويقدروا ينشئوا ويعدّلوا. <code>auditor</code>/<code>driver</code>: &quot;Drivers&quot; مش في القائمة، والرابط يرجّع 403. زر الإنشاء اسمه &quot;إنشاء مستخدم جديد سائق&quot; ويوديك لصفحة السائق المخصصة (مش فورم المستخدمين).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Drivers/DriverPolicyTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-vehicles-drivers-assets#11" data-title="إنشاء سائق — صفحة واحدة تنشئ كل حاجة">
@@ -734,7 +768,7 @@
         <h3>إنشاء سائق — صفحة واحدة تنشئ كل حاجة</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>فورم إنشاء السائق (بيانات الحساب + المركبة الافتراضية + الإقامة/الرخص/التأمين + تصاريح الدخول)</dd></div><div class="row"><dt>الخطوات</dt><dd>بـ <code>admin</code> → أنشئ سائق: املأ كل الأقسام الأربعة + أضف تصريح دخول واحد على الأقل → حفظ.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>يتنشئ مستخدم بدور <code>driver</code> + صف سائق كامل + التصاريح، كلهم مرة واحدة. السائق يظهر فورًا في قائمة السائقين.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Drivers/DriverCreationTest</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>فورم إنشاء السائق (بيانات الحساب + المركبة الافتراضية + الإقامة/الرخص/التأمين + تصاريح الدخول)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>بـ<code>admin</code> أنشئ سائق: املأ كل الأقسام الأربعة.</li><li>أضف تصريح دخول واحد على الأقل.</li><li>احفظ.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>يتنشئ مستخدم بدور <code>driver</code> + صف سائق كامل + التصاريح، كلهم مرة واحدة. السائق يظهر فورًا في قائمة السائقين.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Drivers/DriverCreationTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-vehicles-drivers-assets#12" data-title="المركبة الافتراضية لازم تتبع نوع مختار">
@@ -744,7 +778,7 @@
         <h3>المركبة الافتراضية لازم تتبع نوع مختار</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>قسم المركبة الافتراضية ("قائمة تشمل ارقام المركبات المرتبطة بالتصنيف")</dd></div><div class="row"><dt>الخطوات</dt><dd>في قسم المركبة الافتراضية، اختر فئة، ثم حاول تختار مركبة من فئة تانية (لو ظهرت).</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>المركبات المعروضة كلها من الفئات المختارة فقط؛ ولو أُرسلت مركبة من فئة غير مختارة → رفض 422.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Drivers/DriverCreationTest::test_default_vehicle_must_belong_to_a_selected_qualified_category</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>قسم المركبة الافتراضية (&quot;قائمة تشمل ارقام المركبات المرتبطة بالتصنيف&quot;)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>في قسم المركبة الافتراضية، اختر فئة.</li><li>حاول تختار مركبة من فئة تانية (لو ظهرت).</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>المركبات المعروضة كلها من الفئات المختارة فقط؛ ولو أُرسلت مركبة من فئة غير مختارة، الرد رفض 422.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Drivers/DriverCreationTest::test_default_vehicle_must_belong_to_a_selected_qualified_category</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-vehicles-drivers-assets#13" data-title="المركبة الافتراضية لسائق واحد فقط">
@@ -754,7 +788,7 @@
         <h3>المركبة الافتراضية لسائق واحد فقط</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>المركبة الافتراضية (سائق = مركبة افتراضية واحدة)</dd></div><div class="row"><dt>الخطوات</dt><dd>أنشئ سائق A بمركبة افتراضية X. أنشئ سائق B — لاحظ قائمة المركبات الافتراضية.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>المركبة X <strong>مش ظاهرة</strong> في قائمة سائق B. (ولو أُرسلت مباشرة → رفض 422.) عند تعديل سائق A، مركبته X تفضل ظاهرة له هو.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Drivers/DriverCreationTest</code>, <code>Drivers/DriverUpdateTest</code>, <code>Vehicles/VehicleListPaginationTest::test_unassigned_as_default_hides_vehicles_already_taken_by_a_driver</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>المركبة الافتراضية (سائق = مركبة افتراضية واحدة)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>أنشئ سائق A بمركبة افتراضية X.</li><li>أنشئ سائق B، ولاحظ قائمة المركبات الافتراضية.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>المركبة X <strong>مش ظاهرة</strong> في قائمة سائق B (ولو أُرسلت مباشرة، الرد رفض 422). عند تعديل سائق A، مركبته X تفضل ظاهرة له هو.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Drivers/DriverCreationTest</code>, <code>Drivers/DriverUpdateTest</code>, <code>Vehicles/VehicleListPaginationTest::test_unassigned_as_default_hides_vehicles_already_taken_by_a_driver</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-vehicles-drivers-assets#14" data-title="مستندات السائق خاصة">
@@ -764,7 +798,7 @@
         <h3>مستندات السائق خاصة</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§3.10 (مستندات رسمية حساسة، رابط محمي)</dd></div><div class="row"><dt>الخطوات</dt><dd>بعد إنشاء سائق بمرفقات، من صفحة تفاصيله نزّل مستند (رخصة مثلًا). جرّب تخمّن رابط عام مباشر للملف.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>التحميل يشتغل بس من الرابط المحمي (بيتحقق من الصلاحية)؛ مفيش رابط عام يشتغل.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Drivers/DriverDocumentAccessTest</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§3.10 (مستندات رسمية حساسة، رابط محمي)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>بعد إنشاء سائق بمرفقات، من صفحة تفاصيله نزّل مستند (رخصة مثلًا).</li><li>جرّب تخمّن رابط عام مباشر للملف.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>التحميل يشتغل بس من الرابط المحمي (بيتحقق من الصلاحية)؛ مفيش رابط عام يشتغل.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Drivers/DriverDocumentAccessTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-vehicles-drivers-assets#15" data-title="جدول السائقين — 5 أعمدة + 4 كروت">
@@ -788,7 +822,7 @@
         <h3>صلاحيات الأصول (نفس نمط المركبات)</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.7.3 ((انشاء / تعديل) مسؤولية مدير النظام / مدخل البيانات؛ auditor عرض)</dd></div><div class="row"><dt>الخطوات</dt><dd>سجّل دخول بالأربعة، افحص قائمة "Assets" الجانبية والوصول.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd><code>admin</code>/<code>dataentry</code>/<code>auditor</code> يشوفوا "Assets" (List + Categories). <code>driver</code> لأ. <code>auditor</code> عرض/تصدير بس.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Assets/AssetPolicyTest</code>, <code>MenuVisibilityTest</code> (<code>test_an_auditor_sees_assets</code>, <code>test_a_data_entry_user_sees_vehicles_and_assets...</code>)</dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.7.3 (الإنشاء والتعديل مسؤولية مدير النظام أو مدخل البيانات؛ المراقب عرض فقط)</dd></div><div class="row"><dt>الخطوات</dt><dd>سجّل دخول بالأربعة، افحص قائمة &quot;Assets&quot; الجانبية والوصول.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd><code>admin</code>/<code>dataentry</code>/<code>auditor</code> يشوفوا &quot;Assets&quot; (List + Categories). <code>driver</code> لأ. <code>auditor</code> عرض/تصدير بس.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Assets/AssetPolicyTest</code>, <code>MenuVisibilityTest</code> (<code>test_an_auditor_sees_assets</code>, <code>test_a_data_entry_user_sees_vehicles_and_assets...</code>)</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-vehicles-drivers-assets#17" data-title="الكروت منفصلة للحاويات والصهاريج">
@@ -808,7 +842,7 @@
         <h3>تعديل الأصل — الاسم فقط</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.7.3 ("اما السعة والتصنيف وما سواها" مقفول — تؤثر على التعاقدات والرحلات)</dd></div><div class="row"><dt>الخطوات</dt><dd>بـ <code>admin</code> افتح تعديل أصل موجود.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>خانة الاسم فقط قابلة للتعديل؛ السعة والتصنيف معروضين للعرض فقط (أو غير موجودين في فورم التعديل).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Assets/AssetManagementTest</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.7.3 (&quot;اما السعة والتصنيف وما سواها&quot; مقفول — تؤثر على التعاقدات والرحلات)</dd></div><div class="row"><dt>الخطوات</dt><dd>بـ<code>admin</code> افتح تعديل أصل موجود.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>خانة الاسم فقط قابلة للتعديل؛ السعة والتصنيف معروضين للعرض فقط (أو غير موجودين في فورم التعديل).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Assets/AssetManagementTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-vehicles-drivers-assets#19" data-title="تصنيف السعة يتفلتر حسب نوع الأصل">
@@ -818,7 +852,7 @@
         <h3>تصنيف السعة يتفلتر حسب نوع الأصل</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.7.3 (قائمة السعة تتفلتر حسب النوع المختار)</dd></div><div class="row"><dt>الخطوات</dt><dd>في فورم إنشاء أصل، بدّل النوع بين "حاوية" و"صهريج" ولاحظ قائمة تصنيف السعة.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>كل نوع يعرض تصنيفات السعة المتوافقة معه (و<code>both</code> يظهر للاتنين).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Assets/AssetManagementTest</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.7.3 (قائمة السعة تتفلتر حسب النوع المختار)</dd></div><div class="row"><dt>الخطوات</dt><dd>في فورم إنشاء أصل، بدّل النوع بين &quot;حاوية&quot; و&quot;صهريج&quot; ولاحظ قائمة تصنيف السعة.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>كل نوع يعرض تصنيفات السعة المتوافقة معه (و<code>both</code> يظهر للاتنين).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Assets/AssetManagementTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-vehicles-drivers-assets#20" data-title="تصنيفات سعة الأصول — الاسم فقط للتعديل">
@@ -828,7 +862,7 @@
         <h3>تصنيفات سعة الأصول — الاسم فقط للتعديل</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.7.2 (تعديل التصنيف الاسم فقط، السعة والنوعية مقفولين، لا حذف ولا تعطيل)</dd></div><div class="row"><dt>الخطوات</dt><dd><code>/app/asset-category/list</code> → أنشئ تصنيف → عدّله.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>التعديل الاسم فقط؛ مفيش زر حذف ولا تعطيل.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Assets/AssetCapacityCategoryManagementTest</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.7.2 (تعديل التصنيف الاسم فقط، السعة والنوعية مقفولين، لا حذف ولا تعطيل)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح <code>/app/asset-category/list</code>.</li><li>أنشئ تصنيف.</li><li>عدّله.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>التعديل الاسم فقط؛ مفيش زر حذف ولا تعطيل.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Assets/AssetCapacityCategoryManagementTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-vehicles-drivers-assets#21" data-title="البيانات الإضافية الفاضية مبتظهرش (كل الموديولات)">
@@ -838,7 +872,7 @@
         <h3>البيانات الإضافية الفاضية مبتظهرش (كل الموديولات)</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>حقل البيانات الإضافية في فورم المركبة / السائق / الأصل</dd></div><div class="row"><dt>الخطوات</dt><dd>أنشئ مركبة (وسائق، وأصل) واترك "البيانات الإضافية" فاضية → افتح صفحة التفاصيل.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>قسم "Additional Data" <strong>مش ظاهر</strong> في التلاتة.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>test_an_empty_quill_editor_is_stored_as_null_not_empty_markup</code> (في <code>VehicleManagementTest</code> / <code>DriverCreationTest</code> / <code>AssetManagementTest</code>)</dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>حقل البيانات الإضافية في فورم المركبة / السائق / الأصل</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>أنشئ مركبة (وسائق، وأصل) واترك &quot;البيانات الإضافية&quot; فاضية.</li><li>افتح صفحة التفاصيل.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>قسم &quot;Additional Data&quot; <strong>مش ظاهر</strong> في التلاتة.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>test_an_empty_quill_editor_is_stored_as_null_not_empty_markup</code> (في <code>VehicleManagementTest</code> / <code>DriverCreationTest</code> / <code>AssetManagementTest</code>)</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     </details>
@@ -852,12 +886,12 @@
         <h3>تبديل اللغة يترجم كل الصفحات</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>ثنائية اللغة لصفحات الشركة</dd></div><div class="row"><dt>الخطوات</dt><dd>سجّل دخول، افتح <code>/lang/ar</code> ثم تصفّح كل صفحات المركبات/السائقين/الأصول/المستخدمين/الملف الشخصي. كرّر بـ <code>/lang/en</code>.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>مفيش أي كلمة إنجليزية ظاهرة في وضع العربي (لا في العناوين، لا في الجداول، لا في رسائل الفورم، ولا في نصوص الـ JS زي "Loading..." أو "Select a vehicle").</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd>يدوي فقط (فيه سكريبت فحص مفاتيح ناقصة — راجع <code>CLAUDE.md</code>)</dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>ثنائية اللغة لصفحات الشركة</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>سجّل دخول، ودوس أيقونة تبديل اللغة في الشريط العلوي واختار <strong>العربية</strong>.</li><li>تصفّح صفحات المركبات/السائقين/الأصول/المستخدمين/الملف الشخصي.</li><li>دوس نفس الأيقونة واختار <strong>English</strong> وكرّر نفس الصفحات.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>مفيش أي كلمة إنجليزية ظاهرة في وضع العربي (لا في العناوين، لا في الجداول، لا في رسائل الفورم، ولا في نصوص الـ JS زي &quot;Loading...&quot; أو &quot;Select a vehicle&quot;).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd>يدوي فقط (فيه سكريبت فحص مفاتيح ناقصة — راجع <code>CLAUDE.md</code>)</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     </details>
   </section>
-  <p class="foot">اتولّد تلقائيًا من ملفات <code>docs/acceptance/week-*.md</code> بتاريخ 2026-09-24 — للتحديث: <code>node docs/acceptance/build-checklist.mjs</code>. متعدّلش الملف ده بإيدك.</p>
+  <p class="foot">اتولّد تلقائيًا من ملفات <code>docs/acceptance/week-*.md</code> بتاريخ 2026-09-27 — للتحديث: <code>node docs/acceptance/build-checklist.mjs</code>. متعدّلش الملف ده بإيدك.</p>
 </div>
 
 <script>

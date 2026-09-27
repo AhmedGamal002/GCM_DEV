@@ -2,16 +2,17 @@
 
 namespace App\Domain\Assets\Actions;
 
-use App\Domain\Assets\Exceptions\CannotDeactivateAssetException;
 use App\Models\Asset;
 use App\Models\User;
 
 /**
- * Mirrors UpdateVehicleStatusAction. The FRD splits authority:
- * on_maintenance is (System Admin / Data Entry); Deactivated and
- * reactivation-from-deactivated are System Admin only. The Policy gates
- * the request; this second check keeps the rule true even if the action
- * is called directly.
+ * FRD V01.14 role page for Data Entry ("إدارة الموارد: كل الصلاحيات
+ * (انشاء / تعديل / تعطيل)") widens this beyond V01.09, which reserved
+ * deactivating an asset for System Admin only — data_entry may now
+ * deactivate/reactivate too, same as on_maintenance. (V01.14 §1.7.1's
+ * own policy paragraph still says "مدير النظام فقط" for this — an
+ * internal contradiction in that FRD version; confirmed with the client
+ * as their mistake, intent is admin-parity for data_entry here.)
  *
  * FRD also says deactivating / servicing an asset makes it unavailable
  * for trips and "cannot be done while it's out with a vehicle/project" —
@@ -22,12 +23,6 @@ class UpdateAssetStatusAction
 {
     public function execute(Asset $asset, string $status, User $actor): Asset
     {
-        $touchesDeactivation = $status === 'deactivated' || $asset->operational_status === 'deactivated';
-
-        if ($touchesDeactivation && ! $actor->hasRole('system_admin')) {
-            throw new CannotDeactivateAssetException;
-        }
-
         // operational_status is outside $fillable — set explicitly.
         $asset->operational_status = $status;
         $asset->updated_by = $actor->id;

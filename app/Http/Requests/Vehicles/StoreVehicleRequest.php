@@ -78,21 +78,6 @@ class StoreVehicleRequest extends FormRequest
         return $rules;
     }
 
-    /**
-     * The FRD's create form lists "deactivated" as a status option, but
-     * deactivation is System Admin only (same rule as the status
-     * endpoint) — the UI hides the option from data_entry; this rejects
-     * a hand-crafted request too.
-     */
-    public function withValidator($validator): void
-    {
-        $validator->after(function ($validator) {
-            if ($this->input('operational_status') === 'deactivated' && ! $this->user()->hasRole('system_admin')) {
-                $validator->errors()->add('operational_status', __('Only a System Admin can deactivate a vehicle.'));
-            }
-        });
-    }
-
     public function messages(): array
     {
         $messages = [

@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api\V1;
 use App\Domain\Vehicles\Actions\CreateVehicleAction;
 use App\Domain\Vehicles\Actions\UpdateVehicleAction;
 use App\Domain\Vehicles\Actions\UpdateVehicleStatusAction;
-use App\Domain\Vehicles\Exceptions\CannotDeactivateVehicleException;
 use App\Domain\Vehicles\Exports\VehiclesExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Vehicles\StoreVehicleRequest;
@@ -110,12 +109,7 @@ class VehicleController extends Controller
     public function status(UpdateVehicleStatusRequest $request, int $vehicle, UpdateVehicleStatusAction $action)
     {
         $vehicle = Vehicle::findOrFail($vehicle);
-
-        try {
-            $vehicle = $action->execute($vehicle, $request->validated('status'), $request->user());
-        } catch (CannotDeactivateVehicleException $e) {
-            abort(422, $e->getMessage());
-        }
+        $vehicle = $action->execute($vehicle, $request->validated('status'), $request->user());
 
         return VehicleResource::make($vehicle->load(self::LIST_WITH));
     }

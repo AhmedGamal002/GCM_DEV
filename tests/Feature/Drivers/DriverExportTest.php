@@ -54,14 +54,25 @@ class DriverExportTest extends TestCase
         );
     }
 
-    public function test_export_is_forbidden_for_non_system_admin(): void
+    public function test_export_is_forbidden_for_driver(): void
+    {
+        $driver = User::factory()->create(['email' => 'other-driver@tenant-a.test']);
+        $driver->assignRole('driver');
+
+        $this->actingAs($driver, 'web')
+            ->get('/api/v1/drivers/export')
+            ->assertForbidden();
+    }
+
+    /** FRD V01.14: auditor gets (عرض/تصدير) على كل الصفحات — was fully blocked under V01.09. */
+    public function test_export_succeeds_for_auditor(): void
     {
         $auditor = User::factory()->create(['email' => 'auditor@tenant-a.test']);
         $auditor->assignRole('auditor');
 
         $this->actingAs($auditor, 'web')
-            ->get('/api/v1/drivers/export')
-            ->assertForbidden();
+            ->get('/api/v1/drivers/export?format=pdf')
+            ->assertOk();
     }
 
     public function test_pdf_export_succeeds_for_system_admin(): void

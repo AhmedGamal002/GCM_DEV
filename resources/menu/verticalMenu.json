@@ -14,13 +14,13 @@
       "name": "Users",
       "icon": "menu-icon tf-icons ti ti-users",
       "slug": "app-user",
-      "roles": ["system_admin", "data_entry"],
+      "roles": ["system_admin", "data_entry", "auditor"],
       "submenu": [
         {
           "url": "app/user/list",
           "name": "List",
           "slug": "app-user-list",
-          "roles": ["system_admin", "data_entry"]
+          "roles": ["system_admin", "data_entry", "auditor"]
         },
         {
           "name": "View",
@@ -59,13 +59,13 @@
       "name": "Drivers",
       "icon": "menu-icon tf-icons ti ti-steering-wheel",
       "slug": "app-driver",
-      "roles": ["system_admin", "data_entry"],
+      "roles": ["system_admin", "data_entry", "auditor"],
       "submenu": [
         {
           "url": "app/driver/list",
           "name": "List",
           "slug": "app-driver-list",
-          "roles": ["system_admin", "data_entry"]
+          "roles": ["system_admin", "data_entry", "auditor"]
         },
         {
           "url": "app/driver/add",

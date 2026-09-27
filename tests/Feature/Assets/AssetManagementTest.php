@@ -102,12 +102,14 @@ class AssetManagementTest extends TestCase
             ->assertJsonValidationErrors(['asset_capacity_category_id']);
     }
 
-    public function test_data_entry_cannot_create_a_deactivated_asset(): void
+    /** FRD V01.14: data_entry now has admin-parity ("كل الصلاحيات") on Resource Management, deactivation included. */
+    public function test_data_entry_can_create_a_deactivated_asset(): void
     {
         $this->actingAs($this->dataEntry, 'web')
             ->postJson('/api/v1/assets', $this->validPayload(['operational_status' => 'deactivated']))
-            ->assertStatus(422)
-            ->assertJsonValidationErrors(['operational_status']);
+            ->assertCreated();
+
+        $this->assertSame('deactivated', Asset::firstOrFail()->operational_status);
     }
 
     public function test_system_admin_can_create_a_deactivated_asset(): void
@@ -145,7 +147,7 @@ class AssetManagementTest extends TestCase
         $this->assertSame($this->dataEntry->id, $asset->updated_by);
     }
 
-    public function test_data_entry_can_set_maintenance_but_not_deactivate(): void
+    public function test_data_entry_can_set_maintenance_and_deactivate(): void
     {
         $asset = Asset::factory()->create();
 
@@ -156,19 +158,19 @@ class AssetManagementTest extends TestCase
 
         $this->actingAs($this->dataEntry, 'web')
             ->patchJson("/api/v1/assets/{$asset->id}/status", ['status' => 'deactivated'])
-            ->assertStatus(422);
-        $this->assertSame('on_maintenance', $asset->refresh()->operational_status);
+            ->assertOk();
+        $this->assertSame('deactivated', $asset->refresh()->operational_status);
     }
 
-    public function test_data_entry_cannot_reactivate_a_deactivated_asset(): void
+    public function test_data_entry_can_reactivate_a_deactivated_asset(): void
     {
         $asset = Asset::factory()->deactivated()->create();
 
         $this->actingAs($this->dataEntry, 'web')
             ->patchJson("/api/v1/assets/{$asset->id}/status", ['status' => 'active'])
-            ->assertStatus(422);
+            ->assertOk();
 
-        $this->assertSame('deactivated', $asset->refresh()->operational_status);
+        $this->assertSame('active', $asset->refresh()->operational_status);
     }
 
     public function test_system_admin_can_reactivate_a_deactivated_asset(): void

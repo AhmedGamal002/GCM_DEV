@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GCM Portal — اختبار القبول</title>
+<style>
+  :root {
+    --bg:#f6f7fb; --card:#fff; --text:#1f2430; --muted:#69708a; --line:#e3e6ef;
+    --accent:#4f46e5; --ok:#15803d; --ok-bg:#e6f6ec; --bad:#b91c1c; --bad-bg:#fdeaea; --code:#eef0f8;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#14161f; --card:#1d2030; --text:#e7e9f3; --muted:#9aa1bd; --line:#2d3148;
+      --accent:#8b85ff; --ok:#4ade80; --ok-bg:#15301f; --bad:#f87171; --bad-bg:#3a1c1c; --code:#272b40; }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); line-height:1.7;
+    font-family:"Segoe UI",Tahoma,"Noto Naskh Arabic",Arial,sans-serif; }
+  code { background:var(--code); padding:1px 6px; border-radius:5px; font-size:.88em;
+    direction:ltr; unicode-bidi:isolate; font-family:Consolas,monospace; overflow-wrap:anywhere; word-break:break-word; }
+  dt, dd, .row, h3 { min-width:0; overflow-wrap:anywhere; }
+  .wrap { max-width:960px; margin:0 auto; padding:0 16px 80px; }
+  h1 { font-size:1.5rem; margin:28px 0 4px; }
+  .sub { color:var(--muted); margin:0 0 20px; }
+
+  .setup { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px 18px; margin-bottom:18px; }
+  .setup h2 { margin:0 0 8px; font-size:1.05rem; }
+  .setup table { width:100%; border-collapse:collapse; margin-top:4px; font-size:.95rem; }
+  .setup th, .setup td { text-align:start; padding:6px 8px; border-bottom:1px solid var(--line); }
+  .setup a { color:var(--accent); font-weight:600; }
+
+  .bar { background:var(--bg); padding:12px 0 10px; border-bottom:1px solid var(--line); }
+  @media (min-width:720px) { .bar { position:sticky; top:0; z-index:5; } }
+  .stats { display:flex; gap:14px; flex-wrap:wrap; align-items:center; font-size:.95rem; }
+  .stats b { font-size:1.1rem; }
+  .prog { height:9px; background:var(--line); border-radius:9px; overflow:hidden; margin:8px 0; display:flex; }
+  .prog i { display:block; height:100%; }
+  .prog .p { background:var(--ok); } .prog .f { background:var(--bad); }
+  .tools { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+  .tools input[type=search], .tools input[type=text] { padding:6px 10px; border:1px solid var(--line); border-radius:8px;
+    background:var(--card); color:var(--text); font:inherit; min-width:150px; }
+  .chip, .btn { border:1px solid var(--line); background:var(--card); color:var(--text); padding:5px 12px;
+    border-radius:20px; cursor:pointer; font:inherit; font-size:.9rem; }
+  .chip.on { background:var(--accent); border-color:var(--accent); color:#fff; }
+  .btn:hover, .chip:hover { border-color:var(--accent); }
+
+  .doc-title { font-size:1.15rem; margin:30px 0 6px; padding-bottom:6px; border-bottom:2px solid var(--accent); }
+  .group { margin:12px 0; }
+  .group > summary { cursor:pointer; font-weight:700; padding:8px 4px; }
+  .count { font-weight:400; color:var(--muted); font-size:.85rem; }
+
+  .item { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px 16px; margin:10px 0;
+    border-inline-start:5px solid var(--line); }
+  .item.is-pass { border-inline-start-color:var(--ok); background:linear-gradient(var(--ok-bg),var(--ok-bg)) ; }
+  .item.is-fail { border-inline-start-color:var(--bad); background:linear-gradient(var(--bad-bg),var(--bad-bg)); }
+  .item header { display:flex; align-items:center; gap:10px; }
+  .item h3 { font-size:1rem; margin:0; flex:1; }
+  .check { display:flex; align-items:center; gap:8px; cursor:pointer; }
+  .check input { width:22px; height:22px; accent-color:var(--ok); cursor:pointer; }
+  .num { background:var(--code); border-radius:8px; padding:0 8px; font-weight:700; font-size:.85rem; direction:ltr; }
+  .failbtn { border:1px solid var(--bad); color:var(--bad); background:transparent; border-radius:8px; padding:3px 12px; cursor:pointer; font:inherit; font-size:.85rem; }
+  .item.is-fail .failbtn { background:var(--bad); color:#fff; }
+  dl { margin:10px 0 6px; }
+  .row { display:grid; grid-template-columns:130px 1fr; gap:6px; padding:5px 0; border-top:1px dashed var(--line); }
+  dt { color:var(--muted); font-size:.85rem; padding-top:2px; }
+  dd { margin:0; } dd ul { margin:4px 0 0; padding-inline-start:20px; }
+  .note { width:100%; resize:vertical; border:1px solid var(--line); border-radius:8px; background:var(--bg);
+    color:var(--text); padding:6px 10px; font:inherit; font-size:.9rem; }
+  .item.hidden, .group.hidden, .doc.hidden { display:none; }
+  @media (max-width:640px) { .row { grid-template-columns:1fr; gap:0; } }
+  @media print { .bar, .tools, .setup { display:none; } .item { break-inside:avoid; } body { background:#fff; color:#000; } }
+</style>
+<!-- Builds the real .xlsx the export button downloads (SheetJS, pinned version) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+<div class="wrap">
+  <h1>GCM Portal — اختبار القبول</h1>
+  <p class="sub">لكل بند: جرّب الخطوات وقارن بالنتيجة المتوقعة. علّم ✔ لو نجح، ودوس "فشل" واكتب ملاحظة لو طلع غلط. تقدّمك بيتحفظ تلقائيًا في المتصفح ده، ولما تخلص صدّر النتيجة.</p>
+
+  <div class="setup">
+    <h2>بيانات الدخول</h2>
+    <table>
+      <tr><th>الرابط</th><td><a href="https://gcm-dev.digitswat.com" target="_blank" rel="noopener">https://gcm-dev.digitswat.com</a></td></tr>
+      <tr><th>البريد الإلكتروني</th><td><code>admin@gcm.test</code></td></tr>
+      <tr><th>كلمة المرور</th><td><code>password</code></td></tr>
+    </table>
+  </div>
+
+  <div class="bar">
+    <div class="stats">
+      <span>تم: <b id="s-pass">0</b></span>
+      <span>فشل: <b id="s-fail" style="color:var(--bad)">0</b></span>
+      <span>متبقي: <b id="s-left">0</b></span>
+      <span>من <b>50</b> بند</span>
+    </div>
+    <div class="prog"><i class="p" id="b-pass"></i><i class="f" id="b-fail"></i></div>
+    <div class="tools">
+      <input type="text" id="tester" placeholder="اسم المُختبِر">
+      <button type="button" class="chip on" data-f="all">الكل</button>
+      <button type="button" class="chip" data-f="left">المتبقي</button>
+      <button type="button" class="chip" data-f="pass">تم</button>
+      <button type="button" class="chip" data-f="fail">فشل</button>
+      <input type="search" id="q" placeholder="بحث…">
+      <button type="button" class="btn" id="export">تصدير Excel</button>
+      <button type="button" class="btn" id="reset">مسح كل العلامات</button>
+    </div>
+  </div>
+
+  <section class="doc" data-doc="week-1-2-auth-users-roles">
+    <h2 class="doc-title">تسجيل الدخول وإدارة المستخدمين والأدوار</h2>
+    
+    <details open class="group">
+      <summary>أ) تسجيل الدخول وفصل الجلسات <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-1-2-auth-users-roles#1" data-title="دخول مستخدم شركة">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">1</span></label>
+        <h3>دخول مستخدم شركة</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.1.1 صفحة تسجيل الدخول</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح صفحة تسجيل الدخول (<code>/login</code>).</li><li>اكتب البريد <code>admin@gcm.test</code> وكلمة المرور <code>password</code>.</li><li>دوس دخول.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>تتحوّل للوحة التحكم، وفوق مكتوب اسمك ودورك واسم الشركة (&quot;System Admin — GCM&quot;).</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-1-2-auth-users-roles#2" data-title="البريد ثابت بعد الإنشاء">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">2</span></label>
+        <h3>البريد ثابت بعد الإنشاء</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.3.1 إدارة الملف الشخصي / §1.4 المستخدمين</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح My Profile.</li><li>جرّب تعدّل خانة البريد أو الاسم.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>البريد والاسم للعرض فقط (disabled) — الصورة الشخصية هي الوحيدة القابلة للتغيير من الملف الشخصي.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+    <details open class="group">
+      <summary>ج) إدارة المستخدمين (مدير النظام + مدخل البيانات) <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-1-2-auth-users-roles#8" data-title="إنشاء مستخدم GCM (مدخل بيانات / مراقب فقط)">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">3</span></label>
+        <h3>إنشاء مستخدم GCM (مدخل بيانات / مراقب فقط)</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.4.x فورم إنشاء مستخدم</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>من القائمة الجانبية افتح Users.</li><li>دوس &quot;Add User&quot;.</li><li>اختار GCM Staff.</li><li>املأ الحقول واختر أي دور من الاتنين المتاحين.</li><li>دوس حفظ.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>المستخدم يظهر فورًا في قائمة Users. <strong>خيارات الدور في فورم &quot;Add User&quot; ده تحديدًا</strong> فيها دورين بس (مدخل بيانات ومراقب) — دور مدير النظام ودور السائق مش من ضمنهم في <strong>الفورم ده</strong>، لأن السائق ليه صفحة إنشاء مخصصة منفصلة (Drivers، وبعدين Add Driver). ده مايمنعش إن حسابات السائقين الموجودة أصلًا تظهر عادي في قائمة Users العامة مع باقي الحسابات.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-1-2-auth-users-roles#10" data-title="تعطيل مدير النظام ممنوع دايمًا">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">4</span></label>
+        <h3>تعطيل مدير النظام ممنوع دايمًا</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>قاعدة &quot;مدير نظام واحد&quot;</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>بمدير النظام افتح صفحة تفاصيل حسابك.</li><li>جرّب تغيّر الحالة لـ&quot;معطّل&quot;.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>مرفوض — بأي وسيلة، حتى لو أنت نفسك بتحاول.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-1-2-auth-users-roles#11" data-title="البحث بيلاقي بالرقم التعريفي">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">5</span></label>
+        <h3>البحث بيلاقي بالرقم التعريفي</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.4 (جدول المستخدمين، عمود الرقم التعريفي)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح قائمة المستخدمين.</li><li>خُد الرقم التعريفي (<code>code</code>) لأي مستخدم من الجدول.</li><li>اكتبه في خانة البحث.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الصف يظهر (البحث بيلاقي بالاسم أو البريد أو الرقم التعريفي).</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-1-2-auth-users-roles#12" data-title="التصدير">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">6</span></label>
+        <h3>التصدير</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.4 (زر تصدير)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>بمدير النظام افتح Users.</li><li>دوس زرار Export واختار Excel.</li><li>كرّر ودوس Export واختار Pdf.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>ملف ينزل بالأعمدة المعروضة (الرقم/الاسم/التبعية/الجهة/الدور/الحالة) — <strong>مش</strong> الـ id الخام ولا أعمدة زيادة.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-1-2-auth-users-roles#13" data-title="البيانات الإضافية الفاضية مبتظهرش كعنوان فاضي">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">7</span></label>
+        <h3>البيانات الإضافية الفاضية مبتظهرش كعنوان فاضي</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.4 (حقل بيانات إضافية)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>أنشئ مستخدم واترك حقل &quot;البيانات الإضافية&quot; فاضي تمامًا.</li><li>احفظ.</li><li>افتح صفحة تفاصيل المستخدم.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>قسم &quot;Additional Data&quot; <strong>مش ظاهر</strong> خالص (مش عنوان فوق فراغ).</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+    <details open class="group">
+      <summary>هـ) القائمة الجانبية حسب الدور <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-1-2-auth-users-roles#17" data-title="عناصر القائمة الجانبية لمدير النظام">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">8</span></label>
+        <h3>عناصر القائمة الجانبية لمدير النظام</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>جداول الصلاحيات لكل قسم</dd></div><div class="row"><dt>الخطوات</dt><dd>سجّل دخول بحسابك (مدير النظام) وبصّ على القائمة الجانبية.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>تشوف Dashboard، وتحت عنوان <strong>Accounts</strong>: Users وDrivers، وتحت عنوان <strong>Fleet &amp; Assets</strong>: Vehicles وAssets — من غير أي بنود تانية.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-1-2-auth-users-roles#18" data-title="Breadcrumb + عنوان الصفحة مطابق للـ FRD على كل صفحة">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">9</span></label>
+        <h3>Breadcrumb + عنوان الصفحة مطابق للـ FRD على كل صفحة</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>كل قسم فيه سطر &quot;عنوان الصفحة: ...&quot; — لازم يكون هو العنوان الظاهر</dd></div><div class="row"><dt>الخطوات</dt><dd>افتح كل صفحة محتوى (Users/Vehicles/Drivers/Assets — list/add/view/edit + صفحتي الملف الشخصي)، بالعربي والإنجليزي.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>كل صفحة تبدأ بـ breadcrumb (أيقونة الهوم + مسار مختصر: مثلاً &quot;المستخدمين &gt; إضافة&quot;)، وتحته <strong>عنوان الصفحة الوصفي المطابق للـ FRD</strong> (مثلاً &quot;إنشاء مستخدم جديد&quot; مش &quot;إضافة&quot;، &quot;تفاصيل الحساب&quot;، &quot;تعديل تفاصيل المركبة&quot;، ...). <strong>مفيش عنوان مكرر</strong> (كان فيه card-header بيكرر العنوان — اتشال). صفحات تسجيل الدخول مستثناة.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+  </section>
+
+  <section class="doc" data-doc="week-3-frd-gap-review">
+    <h2 class="doc-title">الشريط العلوي، الملف الشخصي، وتصنيفات المركبات</h2>
+    
+    <details open class="group">
+      <summary>أ) الشريط العلوي (§1.2) <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-3-frd-gap-review#1" data-title="التاريخ والوقت الحالي">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">1</span></label>
+        <h3>التاريخ والوقت الحالي</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.2 جزء الشريط الأعلى: &quot;التاريخ والوقت الحالي&quot;</dd></div><div class="row"><dt>الخطوات</dt><dd>سجّل دخول بحسابك. بصّ على الشريط العلوي. بدّل اللغة لعربي وارجع لإنجليزي.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>التاريخ والوقت الحاليين ظاهرين على <strong>الطرف المقابل لمجموعة الأيقونات</strong> (في الإنجليزي: التاريخ شمال والأيقونات يمين، وفي العربي بالعكس) وبيتحدّثوا لوحدهم (كل نص دقيقة تقريبًا). في العربي الأرقام عربية (مثلاً <code>١٤/٠٩/٢٠٢٦، ٤:٢٢ م</code>).</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-frd-gap-review#2" data-title="تبديل الوضع الداكن / المضيء">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">2</span></label>
+        <h3>تبديل الوضع الداكن / المضيء</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.2 &quot;تغيير الوضع: داكن / مضيء&quot;</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>اضغط أيقونة الشمس/القمر في الشريط العلوي واختار Dark.</li><li>تنقّل بين كذا صفحة.</li><li>اعمل Refresh للصفحة.</li><li>اختار Light، وبعدين System.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الصفحة كلها (الشريط، الكروت، الجداول) بتتحوّل للداكن وتفضل كده بعد التنقل والـRefresh. <strong>مفيش</strong> أيقونة ترس/لوحة إعدادات كاملة (RTL/Layout) — الزرار البسيط بس.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+    <details open class="group">
+      <summary>ب) الملف الشخصي (§1.3.1) <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-3-frd-gap-review#4" data-title="الملف الشخصي = صورة فقط">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">3</span></label>
+        <h3>الملف الشخصي = صورة فقط</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.3.1 (&quot;المستخدم يستطيع تغيير البيانات التالية من صفحة الملف الشخصي: الصورة الشخصية&quot;)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح My Profile.</li><li>حاول تكتب في خانة الاسم.</li><li>دوس &quot;Upload new photo&quot; واختار صورة PNG/JPG صغيرة، ولاحظ المعاينة.</li><li>دوس &quot;Save photo&quot;.</li><li>جرّب ملف مش صورة، وجرّب &quot;Save photo&quot; من غير ما تختار صورة.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الاسم والبريد للقراءة فقط، ومفيش تابات &quot;Account/Security&quot;. الصورة بتتحفظ وتظهر في الصفحة <strong>وفي الشريط العلوي</strong>. لو اخترت ملف مش صورة، أو دُست حفظ من غير ما تختار حاجة، هتظهر رسالة خطأ واضحة.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+    <details open class="group">
+      <summary>ج) المستخدمين والسائقين <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-3-frd-gap-review#5" data-title="&quot;آخر تحديث: تم بواسطة X — التاريخ والوقت&quot;">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">4</span></label>
+        <h3>&quot;آخر تحديث: تم بواسطة X — التاريخ والوقت&quot;</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>سطر &quot;اخر تحديث: تم بواسطة ..... – التاريخ والوقت&quot; في صفحات التفاصيل والتعديل</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>بمدير النظام، عدّل واحفظ مستخدم، وسائق، ومركبة، وأصل (كل واحد لوحده).</li><li>بعد كل حفظ، افتح صفحة <strong>التفاصيل</strong> ثم صفحة <strong>التعديل</strong> لنفس السجل.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>في الصفحتين سطر صغير &quot;Last updated by System Admin — &lt;التاريخ والوقت&gt;&quot; بالاسم الصح. لو السجل عمره ما اتعدّل من واجهة (بيانات زرع أولية) السطر مش بيظهر.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-frd-gap-review#6" data-title="تسمية &quot;رقم الموبايل (حساب واتساب)&quot;">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">5</span></label>
+        <h3>تسمية &quot;رقم الموبايل (حساب واتساب)&quot;</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>&quot;رقم الموبايل (حساب واتساب)&quot; / &quot;Mobile No. (with WhatsApp)&quot;</dd></div><div class="row"><dt>الخطوات</dt><dd>افتح فورم إنشاء مستخدم، فورم إنشاء سائق، وصفحة تعديل/تفاصيل كل واحد، بالعربي والإنجليزي.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>التسمية بالظبط &quot;رقم الموبايل (حساب واتساب)&quot; في العربي و&quot;Mobile No. (with WhatsApp)&quot; في الإنجليزي — في كل الأماكن دي.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-frd-gap-review#7" data-title="رقم الموبايل مايتكررش داخل نفس الشركة">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">6</span></label>
+        <h3>رقم الموبايل مايتكررش داخل نفس الشركة</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>متطلب إضافي من المالك (رقم الموبايل فريد)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>أنشئ مستخدم برقم <code>0511112222</code>.</li><li>أنشئ مستخدم تاني بنفس الرقم.</li><li>أنشئ <strong>سائق</strong> بنفس الرقم.</li><li>عدّل المستخدم الأول واحفظ من غير ما تغيّر رقمه.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>المحاولة التانية والتالتة تترفض برسالة &quot;The phone has already been taken.&quot; (مستخدم↔مستخدم ومستخدم↔سائق). تعديل المستخدم الأول بنفس رقمه <strong>بينجح</strong> (مش بيتعارض مع نفسه).</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-frd-gap-review#9" data-title="اسم السائق حقل واحد">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">7</span></label>
+        <h3>اسم السائق حقل واحد</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>فورم إنشاء السائق (&quot;الاسم&quot; — حقل واحد، بنفس الشكل في كل الأدوار)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>أنشئ سائق واكتب اسم واحد.</li><li>افتح صفحة تفاصيله بالعربي والإنجليزي.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الاسم بيظهر كما هو في الحالتين (مفيش حقلين عربي/إنجليزي منفصلين — اتحسمت إنها نقطة نسخ/لصق في توثيق الـFRD).</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+    <details open class="group">
+      <summary>د) تصنيفات المركبات <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-3-frd-gap-review#10" data-title="القائمة الجانبية: Vehicles فيها List و Categories">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">8</span></label>
+        <h3>القائمة الجانبية: Vehicles فيها List و Categories</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>الخطوات</dt><dd>بصّ على &quot;Vehicles&quot; في القائمة الجانبية.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>&quot;Vehicles&quot; فيها بندين <strong>List</strong> و<strong>Categories</strong>.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-frd-gap-review#11" data-title="إضافة تصنيف جديد">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">9</span></label>
+        <h3>إضافة تصنيف جديد</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>الخطوات</dt><dd><ul><li>بالأدمن افتح Vehicles، وبعدين Categories، وبعدين دوس &quot;Add category&quot;.</li><li>جرّب الأول تدوس Submit وهو فاضي.</li><li>اكتب اسم إنجليزي موجود أصلًا (مثلاً <code>Dump truck</code>) وجرّب تحفظ.</li><li>اكتب اسمين جداد (إنجليزي وعربي) واحفظ.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd><ul><li>لو الحقول فاضية: رسالة &quot;This field is required&quot; على الحقلين.</li><li>لو الاسم الإنجليزي مكرر: رفض برسالة &quot;The Name (English) has already been taken&quot;.</li><li>لو البيانات صح: يرجّعك للقائمة برسالة نجاح، والتصنيف الجديد ظاهر فيها بعدد مركبات 0.</li></ul></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-frd-gap-review#12" data-title="عدد كروت &quot;Vehicles by category&quot; = عدد التصنيفات الفعلي">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">10</span></label>
+        <h3>عدد كروت &quot;Vehicles by category&quot; = عدد التصنيفات الفعلي</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح Vehicles، وبعدين List، وعدّ الكروت في &quot;Vehicles by category&quot;.</li><li>أضف تصنيف جديد زي البند اللي فات، وارجع لصفحة المركبات.</li><li>جرّب فلتر &quot;All categories&quot;، وفورم إضافة مركبة، وفورم إضافة سائق، وفورم إضافة أصل.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>عدد الكروت = عدد التصنيفات بالظبط (5 في الأول، 6 بعد الإضافة) وكل كارت عليه عدد مركباته الصح. التصنيف الجديد بيظهر كمان في الفلتر، وفي قايمة الفئة بفورم المركبة، وفي &quot;أنواع المركبات المؤهل لقيادتها&quot; بفورم السائق، وفي &quot;تصنيف المركبات المتناسب&quot; بفورم الأصل.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-frd-gap-review#13" data-title="تعديل تصنيف">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">11</span></label>
+        <h3>تعديل تصنيف</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح Categories، ودوس أيقونة التعديل على أي تصنيف.</li><li>غيّر الاسم الإنجليزي والعربي.</li><li>احفظ.</li><li>افتح صفحة المركبات.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الاسم الجديد ظاهر في الكروت والفلتر وعمود &quot;Category&quot; بالجدول. المركبات المرتبطة بيه فضلت مرتبطة (مفيش مركبة فقدت تصنيفها). إعادة الحفظ بنفس الاسم من غير تغيير بتنجح.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-frd-gap-review#14" data-title="الحذف — مسموح لتصنيف مضاف يدويًا وغير مستخدم فقط">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">12</span></label>
+        <h3>الحذف — مسموح لتصنيف مضاف يدويًا وغير مستخدم فقط</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>الخطوات</dt><dd><ul><li>(أ) أضف تصنيف جديد واحذفه من أيقونة الحذف، وأكّد في النافذة اللي بتظهر.</li><li>(ب) بص على تصنيف مربوط بمركبة أو أصل أو سائق.</li><li>(ج) بص على أي تصنيف من الستة الأساسيين (بما فيهم شاحنة جرّارة) حتى لو مش مربوط بحاجة.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>(أ) التصنيف بيتمسح والكارت بتاعه بيختفي من صفحة المركبات. (ب) أيقونة الحذف <strong>مقفولة</strong> وعليها تلميح &quot;In use — can't be deleted&quot;. (ج) أيقونة الحذف <strong>مقفولة دايمًا</strong> على الستة الأساسيين وعليها تلميح &quot;Primary category — can't be deleted&quot; (الاسم بس هو اللي بيتعدّل).</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-frd-gap-review#17" data-title="الواجهة بالعربي">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">13</span></label>
+        <h3>الواجهة بالعربي</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>الخطوات</dt><dd><ul><li>بدّل اللغة لعربي.</li><li>افتح Vehicles، وبعدين Categories.</li><li>افتح صفحة الإضافة، وصفحة التعديل، ونافذة تأكيد الحذف.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>كل النصوص عربي (العنوان &quot;تصنيفات المركبات&quot;، الأعمدة، الأزرار، رسالة الحذف، تلميح القفل)، الصفحة RTL، وعنوان الحقل الإنجليزي ابتدائه من الشمال والعربي من اليمين.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-frd-gap-review#18" data-title="القائمة الجانبية متجمّعة تحت عنوانين">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">14</span></label>
+        <h3>القائمة الجانبية متجمّعة تحت عنوانين</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>الخطوات</dt><dd>سجّل دخول وبصّ على القائمة الجانبية. بدّل اللغة لعربي.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>تشوف Dashboard ثم عنوان <strong>Accounts</strong> (تحته Users وDrivers) ثم عنوان <strong>Fleet &amp; Assets</strong> (تحته Vehicles وAssets). بالعربي: &quot;الحسابات&quot; و&quot;الأسطول والأصول&quot;.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-frd-gap-review#19" data-title="زر &quot;Add category&quot; مش لازق في خانة البحث + زر Export">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">15</span></label>
+        <h3>زر &quot;Add category&quot; مش لازق في خانة البحث + زر Export</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح Vehicles، وبعدين Categories.</li><li>قارن المسافة بين خانة البحث وأزرار <strong>Export</strong> و<strong>Add category</strong> بنفس الصفحة.</li><li>كرّر المقارنة مع صفحة Assets، وبعدين Categories.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>نفس الترتيب والمسافات بالظبط في الصفحتين (بحث، بعده Export، بعده Add). زر Export بيفتح قايمة Excel / Pdf.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-frd-gap-review#20" data-title="المحتوى بعرض الشاشة كله (Wide) كوضع افتراضي">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">16</span></label>
+        <h3>المحتوى بعرض الشاشة كله (Wide) كوضع افتراضي</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>الخطوات</dt><dd><ul><li>سجّل دخول وافتح أي صفحة (مثلاً Vehicles، وبعدين List) على شاشة عريضة (1400px فأكتر).</li><li>قارن عرض المحتوى بعرض المتصفح.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>المحتوى ممتد على عرض المساحة المتاحة كله (جنب القائمة الجانبية) من غير هوامش جانبية كبيرة، في كل الصفحات. (لو الشاشة فيها الوضع القديم متخزّن في المتصفح، امسح بيانات الموقع/localStorage.)</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+    <details open class="group">
+      <summary>هـ) الأداء وتجربة الاستخدام <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-3-frd-gap-review#21" data-title="الحفظ البطيء بملفات كبيرة مش شكله معلّق">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">17</span></label>
+        <h3>الحفظ البطيء بملفات كبيرة مش شكله معلّق</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح Drivers، وبعدين إنشاء سائق.</li><li>املأ الحقول المطلوبة وارفع 4 مستندات (إقامة/رخصة/رخصة تشغيلية/تأمين) كل واحد <strong>3-4 ميجا</strong> (PDF أو صورة).</li><li>اضغط حفظ.</li><li>كرّر نفس الحاجة من Vehicles، وبعدين إضافة مركبة (صورتين + وثائق).</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>أول ما تضغط حفظ تظهر نافذة فوق الصفحة فيها <strong>دايرة تحميل + شريط تقدّم + &quot;جارٍ رفع الملفات... 43%&quot;</strong>، وبعد ما الرفع يخلص بتتحول لـ &quot;جارٍ الحفظ — من فضلك انتظر...&quot; لحد ما تتحول لقائمة السائقين برسالة النجاح. مينفعش تدوس حفظ مرتين (الصفحة كلها مغطّاة). والسائق بيتسجل <strong>مرة واحدة</strong>.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-frd-gap-review#22" data-title="ملف أكبر من الحد يترفض فورًا من غير رفع">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">18</span></label>
+        <h3>ملف أكبر من الحد يترفض فورًا من غير رفع</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>الخطوات</dt><dd><ul><li>في إنشاء سائق، اختار ملف أكبر من <strong>5 ميجا</strong> كمستند (أو صورة شخصية أكبر من <strong>2 ميجا</strong>).</li><li>اضغط حفظ.</li><li>في إضافة مركبة، اختار أي ملف أكبر من <strong>4 ميجا</strong>.</li><li>اضغط حفظ.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>رسالة حمرا في نفس اللحظة: &quot;الملف &quot;اسم.pdf&quot; حجمه 6.0 ميجابايت — الحد الأقصى 5 ميجابايت. من فضلك اختر ملفًا أصغر.&quot; — <strong>من غير ما يرفع حاجة</strong> ومن غير انتظار.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-frd-gap-review#23" data-title="التصدير (خصوصًا PDF) بيوضّح إنه شغّال">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">19</span></label>
+        <h3>التصدير (خصوصًا PDF) بيوضّح إنه شغّال</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>الخطوات</dt><dd><ul><li>في أي قائمة (Users / Drivers / Vehicles / Vehicle Categories / Assets / Asset Categories) دوس زرار Export واختار Pdf.</li><li>جرّب كمان Excel.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>أول ما تدوس تظهر نافذة &quot;جارٍ تجهيز الملف...&quot; مع تلميح &quot;القوائم الكبيرة قد تستغرق بعض الوقت. من فضلك اترك هذه الصفحة مفتوحة.&quot; ودايرة تحميل، وبتختفي لما الملف ينزل (<code>vehicles.pdf</code> / <code>vehicles.xlsx</code>...). لو حصل خطأ بتظهر رسالة حمرا بزرار &quot;حسنًا&quot; بدل ما الصفحة تفضل معلّقة. الـ PDF بيتقسم صفحات، كل صفحة فيها هيدر الجدول.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-frd-gap-review#24" data-title="تصدير PDF بالعربي">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">20</span></label>
+        <h3>تصدير PDF بالعربي</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>الخطوات</dt><dd><ul><li>بدّل اللغة للعربية من الـnavbar.</li><li>من قائمة <strong>المستخدمين</strong> (وبعدين <strong>السائقين</strong>، <strong>المركبات</strong>، <strong>الأصول</strong>، <strong>تصنيفات سعة الأصول</strong>، <strong>تصنيفات المركبات</strong>) دوس تصدير واختار PDF، وافتح الملف.</li><li>(لو مفيش بيانات عربية: أنشئ سائق/مستخدم باسم عربي، ومركبة بلوحة حروفها عربي مثل &quot;أ ب ج&quot;.)</li><li>بدّل للإنجليزي وصدّر نفس القائمة.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>بالعربي — العنوان والأعمدة <strong>عربي</strong> والجدول بيبدأ من <strong>اليمين</strong> (أول عمود &quot;الرقم التعريفي&quot; في أقصى اليمين)، والأسماء والتصنيفات العربية <strong>حروفها متوصّلة وقراءتها صح</strong> (مش علامات استفهام ولا حروف مفصولة/معكوسة)، والقيم مترجمة (نشط / في الصيانة / متعهد / مدير النظام) مش <code>on_maintenance</code>. بالإنجليزي — الأعمدة والعناوين إنجليزي بترتيبها العادي، لكن أي اسم عربي في البيانات لسه بيظهر صح. حجم الملف صغير (عشرات الكيلوبايت مش ~1 ميجا).</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-frd-gap-review#25" data-title="التصدير بيطابق الفلاتر والبحث اللي على الشاشة">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">21</span></label>
+        <h3>التصدير بيطابق الفلاتر والبحث اللي على الشاشة</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>الخطوات</dt><dd><ul><li>في كل قائمة (Users / Drivers / Vehicles / Vehicle Categories / Assets / Asset Categories) اختار فلتر واحد على الأقل (مثلًا الحالة أو التصنيف)، واكتب حاجة في مربع البحث بحيث الجدول يعرض جزء بس من الصفوف.</li><li>دوس Export واختار Excel.</li><li>دوس Export تاني واختار Pdf.</li><li>امسح الفلاتر والبحث، ودوس Export تاني.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الملف (Excel والـPDF) فيه <strong>نفس الصفوف اللي بتظهر في الجدول بالظبط</strong> (نفس الفلاتر ونفس البحث) — مش القائمة كلها. بعد مسح الفلاتر والبحث الملف بيحتوي كل الصفوف. البحث بيشتغل على نفس الأعمدة اللي بيشتغل عليها في الجدول (مثلًا لوحة المركبة بالشكل المعروض، أو كود المستخدم).</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+  </section>
+
+  <section class="doc" data-doc="week-3-vehicles-drivers-assets">
+    <h2 class="doc-title">المركبات والسائقين والأصول</h2>
+    
+    <details open class="group">
+      <summary>أ) المركبات — <code>/app/vehicle/list</code> <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-3-vehicles-drivers-assets#1" data-title="صلاحيات العرض">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">1</span></label>
+        <h3>صلاحيات العرض</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.5 (عرض المركبات)</dd></div><div class="row"><dt>الخطوات</dt><dd>افتح قائمة المركبات.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>تشوف القائمة والكروت والفلاتر.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-vehicles-drivers-assets#2" data-title="إنشاء مركبة جديدة">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">2</span></label>
+        <h3>إنشاء مركبة جديدة</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.5.3 ((انشاء / تعديل) المركبات مسؤولية مدير النظام / مدخل البيانات)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح Add Vehicle.</li><li>املأ (لوحة + فئة + تبعية + وثائق بأرقام وتواريخ + تصريح دخول).</li><li>احفظ.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>المركبة تتنشئ بنجاح وتظهر فورًا في القائمة.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-vehicles-drivers-assets#3" data-title="الأرقام أرقام فقط">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">3</span></label>
+        <h3>الأرقام أرقام فقط</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.5.3 (حقول الأرقام)</dd></div><div class="row"><dt>الخطوات</dt><dd>في فورم المركبة، جرّب تكتب حروف في &quot;أرقام اللوحة&quot; أو رقم رخصة السير.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الحروف تترفض/تتشال فورًا؛ ولو أرسلت الطلب بحروف، الرد رفض 422.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-vehicles-drivers-assets#4" data-title="اللوحة فريدة داخل الشركة">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">4</span></label>
+        <h3>اللوحة فريدة داخل الشركة</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.5 (المركبة هويتها اللوحة)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>أنشئ مركبة بلوحة <code>ABC 1234</code>.</li><li>جرّب تنشئ تانية بنفس اللوحة.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>المحاولة التانية بترفض برسالة إن اللوحة مستخدمة بالفعل.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-vehicles-drivers-assets#5" data-title="البحث بلوحة معروضة بالمسافة">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">5</span></label>
+        <h3>البحث بلوحة معروضة بالمسافة</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.5 (البحث في جدول المركبات)</dd></div><div class="row"><dt>الخطوات</dt><dd>في القائمة، اكتب اللوحة كاملة زي ما هي معروضة (<code>ABC 1234</code>) في خانة البحث.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>المركبة تظهر (وكمان تظهر لو كتبت <code>ABC1234</code> من غير مسافة، أو الحروف بس، أو الأرقام بس).</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-vehicles-drivers-assets#6" data-title="حالة المركبة">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">6</span></label>
+        <h3>حالة المركبة</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.5.3 (حالة &quot;في الصيانة&quot; من مدير النظام / مدخل البيانات · التعطيل من مدير النظام)</dd></div><div class="row"><dt>الخطوات</dt><dd>حوّل مركبة لـ&quot;في الصيانة&quot;، ثم لـ&quot;معطّل&quot;، ثم أعِد تنشيطها من &quot;معطّل&quot;.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>التحويلات التلاتة بتنجح.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-vehicles-drivers-assets#8" data-title="الحاوية المدمجة — فلترة السعة من مجمع الأصول">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">7</span></label>
+        <h3>الحاوية المدمجة — فلترة السعة من مجمع الأصول</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.5.3 (لو المركبة تشمل حاوية مدمجة: قائمة السعة تتفلتر)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>في فورم المركبة فعّل &quot;تشمل حاوية مدمجة&quot;.</li><li>اختر النوع (حاوية/صهريج) وفئة المركبة.</li><li>لاحظ قائمة السعة.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>تظهر فقط تصنيفات السعة اللي عندها أصل من النوع المختار متوافق مع فئة المركبة. لو مفيش، بيظهر <strong>خطأ inline، بدون fallback لكل السعات</strong>.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+    <details open class="group">
+      <summary>ب) السائقون — <code>/app/driver/list</code> <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-3-vehicles-drivers-assets#10" data-title="مدير النظام + مدخل البيانات فقط، وصفحة منفصلة">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">8</span></label>
+        <h3>مدير النظام + مدخل البيانات فقط، وصفحة منفصلة</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>&quot;إدارة وانشاء حسابات السائقين&quot; (قسم مستقل) — &quot;جميع البيانات قابلة للتعديل من خلال مدير النظام او مدخل البيانات&quot;</dd></div><div class="row"><dt>الخطوات</dt><dd>افتح قائمة السائقين.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>تشوف &quot;Drivers&quot; وتقدر تنشئ وتعدّل. زر الإنشاء اسمه &quot;إنشاء مستخدم جديد سائق&quot; ويوديك لصفحة السائق المخصصة (مش فورم المستخدمين).</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-vehicles-drivers-assets#11" data-title="إنشاء سائق — صفحة واحدة تنشئ كل حاجة">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">9</span></label>
+        <h3>إنشاء سائق — صفحة واحدة تنشئ كل حاجة</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>فورم إنشاء السائق (بيانات الحساب + المركبة الافتراضية + الإقامة/الرخص/التأمين + تصاريح الدخول)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>بـ<code>admin</code> أنشئ سائق: املأ كل الأقسام الأربعة.</li><li>أضف تصريح دخول واحد على الأقل.</li><li>احفظ.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>يتنشئ مستخدم بدور <code>driver</code> + صف سائق كامل + التصاريح، كلهم مرة واحدة. السائق يظهر فورًا في قائمة السائقين.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-vehicles-drivers-assets#12" data-title="المركبة الافتراضية لازم تتبع نوع مختار">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">10</span></label>
+        <h3>المركبة الافتراضية لازم تتبع نوع مختار</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>قسم المركبة الافتراضية (&quot;قائمة تشمل ارقام المركبات المرتبطة بالتصنيف&quot;)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>في قسم المركبة الافتراضية، اختر فئة.</li><li>حاول تختار مركبة من فئة تانية (لو ظهرت).</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>المركبات المعروضة كلها من الفئات المختارة فقط؛ ولو أُرسلت مركبة من فئة غير مختارة، الرد رفض 422.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-vehicles-drivers-assets#13" data-title="المركبة الافتراضية لسائق واحد فقط">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">11</span></label>
+        <h3>المركبة الافتراضية لسائق واحد فقط</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>المركبة الافتراضية (سائق = مركبة افتراضية واحدة)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>أنشئ سائق A بمركبة افتراضية X.</li><li>أنشئ سائق B، ولاحظ قائمة المركبات الافتراضية.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>المركبة X <strong>مش ظاهرة</strong> في قائمة سائق B (ولو أُرسلت مباشرة، الرد رفض 422). عند تعديل سائق A، مركبته X تفضل ظاهرة له هو.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-vehicles-drivers-assets#14" data-title="مستندات السائق خاصة">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">12</span></label>
+        <h3>مستندات السائق خاصة</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§3.10 (مستندات رسمية حساسة، رابط محمي)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>بعد إنشاء سائق بمرفقات، من صفحة تفاصيله نزّل مستند (رخصة مثلًا).</li><li>جرّب تخمّن رابط عام مباشر للملف.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>التحميل يشتغل بس من الرابط المحمي (بيتحقق من الصلاحية)؛ مفيش رابط عام يشتغل.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-vehicles-drivers-assets#15" data-title="جدول السائقين — 5 أعمدة + 4 كروت">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">13</span></label>
+        <h3>جدول السائقين — 5 أعمدة + 4 كروت</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>صفحة إدارة السائقين</dd></div><div class="row"><dt>الخطوات</dt><dd>افتح القائمة.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>4 كروت (المتاحين / في رحلات=0 / في إجازة / المعطّلين) + جدول 5 أعمدة (الرقم / الاسم / التبعية / التوفر / تفاصيل) — <strong>بدون</strong> عمود جهة أو دور. فلاتر التبعية + التوفر. زر تصدير.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+    <details open class="group">
+      <summary>ج) الأصول — <code>/app/asset/list</code> <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-3-vehicles-drivers-assets#16" data-title="صلاحيات الأصول (نفس نمط المركبات)">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">14</span></label>
+        <h3>صلاحيات الأصول (نفس نمط المركبات)</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.7.3 (الإنشاء والتعديل مسؤولية مدير النظام أو مدخل البيانات؛ المراقب عرض فقط)</dd></div><div class="row"><dt>الخطوات</dt><dd>افتح قائمة الأصول.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>تشوف &quot;Assets&quot; (List + Categories).</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-vehicles-drivers-assets#17" data-title="الكروت منفصلة للحاويات والصهاريج">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">15</span></label>
+        <h3>الكروت منفصلة للحاويات والصهاريج</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.7 (إحصائيات لكل من الحاويات والصهاريج بشكل منفصل)</dd></div><div class="row"><dt>الخطوات</dt><dd>أنشئ أصلين (حاوية + صهريج) وافتح القائمة.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>مجموعتين كروت منفصلتين، كل مجموعة: متاح / في مشاريع=0 / في الصيانة / معطّل.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-vehicles-drivers-assets#18" data-title="تعديل الأصل — الاسم فقط">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">16</span></label>
+        <h3>تعديل الأصل — الاسم فقط</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.7.3 (&quot;اما السعة والتصنيف وما سواها&quot; مقفول — تؤثر على التعاقدات والرحلات)</dd></div><div class="row"><dt>الخطوات</dt><dd>بـ<code>admin</code> افتح تعديل أصل موجود.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>خانة الاسم فقط قابلة للتعديل؛ السعة والتصنيف معروضين للعرض فقط (أو غير موجودين في فورم التعديل).</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-vehicles-drivers-assets#19" data-title="تصنيف السعة يتفلتر حسب نوع الأصل">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">17</span></label>
+        <h3>تصنيف السعة يتفلتر حسب نوع الأصل</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.7.3 (قائمة السعة تتفلتر حسب النوع المختار)</dd></div><div class="row"><dt>الخطوات</dt><dd>في فورم إنشاء أصل، بدّل النوع بين &quot;حاوية&quot; و&quot;صهريج&quot; ولاحظ قائمة تصنيف السعة.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>كل نوع يعرض تصنيفات السعة المتوافقة معه (و<code>both</code> يظهر للاتنين).</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-vehicles-drivers-assets#20" data-title="تصنيفات سعة الأصول — الاسم فقط للتعديل">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">18</span></label>
+        <h3>تصنيفات سعة الأصول — الاسم فقط للتعديل</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.7.2 (تعديل التصنيف الاسم فقط، السعة والنوعية مقفولين، لا حذف ولا تعطيل)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح <code>/app/asset-category/list</code>.</li><li>أنشئ تصنيف.</li><li>عدّله.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>التعديل الاسم فقط؛ مفيش زر حذف ولا تعطيل.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-vehicles-drivers-assets#21" data-title="البيانات الإضافية الفاضية مبتظهرش (كل الموديولات)">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">19</span></label>
+        <h3>البيانات الإضافية الفاضية مبتظهرش (كل الموديولات)</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>حقل البيانات الإضافية في فورم المركبة / السائق / الأصل</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>أنشئ مركبة (وسائق، وأصل) واترك &quot;البيانات الإضافية&quot; فاضية.</li><li>افتح صفحة التفاصيل.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>قسم &quot;Additional Data&quot; <strong>مش ظاهر</strong> في التلاتة.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+    <details open class="group">
+      <summary>د) اللغة <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-3-vehicles-drivers-assets#22" data-title="تبديل اللغة يترجم كل الصفحات">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">20</span></label>
+        <h3>تبديل اللغة يترجم كل الصفحات</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>ثنائية اللغة لصفحات الشركة</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>سجّل دخول، ودوس أيقونة تبديل اللغة في الشريط العلوي واختار <strong>العربية</strong>.</li><li>تصفّح صفحات المركبات/السائقين/الأصول/المستخدمين/الملف الشخصي.</li><li>دوس نفس الأيقونة واختار <strong>English</strong> وكرّر نفس الصفحات.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>مفيش أي كلمة إنجليزية ظاهرة في وضع العربي (لا في العناوين، لا في الجداول، لا في رسائل الفورم، ولا في نصوص الـ JS زي &quot;Loading...&quot; أو &quot;Select a vehicle&quot;).</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+  </section>
+</div>
+
+<script>
+(function () {
+  var KEY = 'gcm-client-checklist-v1';
+  var state = {};
+  try { state = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {}
+  state.items = state.items || {};
+  var items = [].slice.call(document.querySelectorAll('.item'));
+  var filter = 'all';
+
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+  function get(id) { return state.items[id] || (state.items[id] = { s: '', n: '' }); }
+
+  function paint(el) {
+    var st = get(el.dataset.id);
+    el.classList.toggle('is-pass', st.s === 'pass');
+    el.classList.toggle('is-fail', st.s === 'fail');
+    el.querySelector('.pass').checked = st.s === 'pass';
+    el.querySelector('.note').value = st.n || '';
+  }
+
+  function refresh() {
+    var p = 0, f = 0, q = document.getElementById('q').value.trim().toLowerCase();
+    items.forEach(function (el) {
+      var s = get(el.dataset.id).s;
+      if (s === 'pass') p++; else if (s === 'fail') f++;
+      var show = filter === 'all' || (filter === 'left' && !s) || filter === s;
+      if (show && q) show = el.textContent.toLowerCase().indexOf(q) !== -1;
+      el.classList.toggle('hidden', !show);
+    });
+    document.querySelectorAll('.group').forEach(function (g) {
+      var its = [].slice.call(g.querySelectorAll('.item'));
+      var done = its.filter(function (i) { return get(i.dataset.id).s === 'pass'; }).length;
+      g.querySelector('.count').textContent = '(' + done + '/' + its.length + ')';
+      g.classList.toggle('hidden', its.every(function (i) { return i.classList.contains('hidden'); }));
+    });
+    document.querySelectorAll('.doc').forEach(function (d) {
+      d.classList.toggle('hidden', [].every.call(d.querySelectorAll('.group'), function (g) { return g.classList.contains('hidden'); }));
+    });
+    var n = items.length;
+    document.getElementById('s-pass').textContent = p;
+    document.getElementById('s-fail').textContent = f;
+    document.getElementById('s-left').textContent = n - p - f;
+    document.getElementById('b-pass').style.width = (p / n * 100) + '%';
+    document.getElementById('b-fail').style.width = (f / n * 100) + '%';
+  }
+
+  items.forEach(function (el) {
+    paint(el);
+    el.querySelector('.pass').addEventListener('change', function (e) {
+      get(el.dataset.id).s = e.target.checked ? 'pass' : ''; save(); paint(el); refresh();
+    });
+    el.querySelector('.failbtn').addEventListener('click', function () {
+      var st = get(el.dataset.id); st.s = st.s === 'fail' ? '' : 'fail'; save(); paint(el); refresh();
+    });
+    el.querySelector('.note').addEventListener('input', function (e) {
+      get(el.dataset.id).n = e.target.value; save();
+    });
+  });
+
+  document.querySelectorAll('.chip').forEach(function (c) {
+    c.addEventListener('click', function () {
+      document.querySelectorAll('.chip').forEach(function (x) { x.classList.remove('on'); });
+      c.classList.add('on'); filter = c.dataset.f; refresh();
+    });
+  });
+  document.getElementById('q').addEventListener('input', refresh);
+
+  var tester = document.getElementById('tester');
+  tester.value = state.tester || '';
+  tester.addEventListener('input', function () { state.tester = tester.value; save(); });
+
+  document.getElementById('reset').addEventListener('click', function () {
+    if (!confirm('هيتمسح كل التعليم والملاحظات. متأكد؟')) return;
+    state.items = {}; save(); items.forEach(paint); refresh();
+  });
+
+  // Builds a real .xlsx (via SheetJS, loaded above) from the same DOM the
+  // checklist already renders — needs the one-time CDN fetch (cached by the
+  // browser after that), but the tester already needs internet to reach the
+  // login link above, so that's not an extra requirement in practice.
+  document.getElementById('export').addEventListener('click', function () {
+    if (typeof XLSX === 'undefined') {
+      alert('تعذّر تحميل مكتبة تصدير Excel — تأكد إن عندك اتصال بالإنترنت وحاول تاني.');
+      return;
+    }
+
+    var STATUS_LABEL = { pass: 'تم', fail: 'فشل' };
+    var rows = [['القسم', 'رقم', 'البند', 'الحالة', 'ملاحظات']];
+    document.querySelectorAll('.doc').forEach(function (docEl) {
+      var docTitle = docEl.querySelector('.doc-title').textContent.trim();
+      [].forEach.call(docEl.querySelectorAll('.item'), function (el) {
+        var st = get(el.dataset.id);
+        var num = el.querySelector('.num').textContent;
+        rows.push([docTitle, num, el.dataset.title, STATUS_LABEL[st.s] || 'لم يتم بعد', st.n || '']);
+      });
+    });
+
+    var sheet = XLSX.utils.aoa_to_sheet(rows);
+    sheet['!cols'] = [{ wch: 30 }, { wch: 6 }, { wch: 50 }, { wch: 12 }, { wch: 40 }];
+    var workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, sheet, 'نتيجة الاختبار');
+    XLSX.writeFile(workbook, 'نتيجة اختبار GCM Portal.xlsx');
+  });
+
+  refresh();
+})();
+</script>
+</body>
+</html>

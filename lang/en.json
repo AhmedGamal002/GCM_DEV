@@ -273,7 +273,6 @@
   "Trip history and per-vehicle trip statistics will appear here once the Trips module is available.": "Trip history and per-vehicle trip statistics will appear here once the Trips module is available.",
   "Vehicle Status": "Vehicle Status",
   "Change this vehicle's operational status?": "Change this vehicle's operational status?",
-  "A vehicle on maintenance or deactivated cannot be selected for a trip. Deactivation is System Admin only.": "A vehicle on maintenance or deactivated cannot be selected for a trip. Deactivation is System Admin only.",
   "Vehicle status updated successfully.": "Vehicle status updated successfully.",
   "Number": "Number",
   "Area": "Area",
@@ -301,7 +300,6 @@
   "The plate number must contain digits only.": "The plate number must contain digits only.",
   "The document number must contain digits only.": "The document number must contain digits only.",
   "The permit number must contain digits only.": "The permit number must contain digits only.",
-  "Only a System Admin can deactivate a vehicle.": "Only a System Admin can deactivate a vehicle.",
   "No entry permits recorded for this vehicle.": "No entry permits recorded for this vehicle.",
   "Choose the vehicle category and container type first.": "Choose the vehicle category and container type first.",
   "There is no compatible :type capacity recorded for the selected vehicle category.": "There is no compatible :type capacity recorded for the selected vehicle category.",
@@ -333,7 +331,6 @@
   "Whether this asset is currently out with a project will appear here once the Projects module is available.": "Whether this asset is currently out with a project will appear here once the Projects module is available.",
   "Asset Status": "Asset Status",
   "Change this asset's operational status?": "Change this asset's operational status?",
-  "An asset on maintenance or deactivated cannot be selected for a trip. Deactivation is System Admin only.": "An asset on maintenance or deactivated cannot be selected for a trip. Deactivation is System Admin only.",
   "Asset capacity categories": "Asset capacity categories",
   "All": "All",
   "Add category": "Add category",
@@ -350,7 +347,6 @@
   "Category name": "Category name",
   "Additional data": "Additional data",
   "The selected capacity does not apply to this asset type.": "The selected capacity does not apply to this asset type.",
-  "Only a System Admin can deactivate an asset.": "Only a System Admin can deactivate an asset.",
   "Add Driver": "Add Driver",
   "Add Permit": "Add Permit",
   "Area Name": "Area Name",
@@ -436,5 +432,7 @@
   "Applies To": "Applies To",
   "Both": "Both",
   "System Admin": "System Admin",
-  "Auditor": "Auditor"
+  "Auditor": "Auditor",
+  "A vehicle on maintenance or deactivated cannot be selected for a trip.": "A vehicle on maintenance or deactivated cannot be selected for a trip.",
+  "An asset on maintenance or deactivated cannot be selected for a trip.": "An asset on maintenance or deactivated cannot be selected for a trip."
 }

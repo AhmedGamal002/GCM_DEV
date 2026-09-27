@@ -70,14 +70,25 @@ class DriverDocumentAccessTest extends TestCase
         $response->assertOk();
     }
 
-    public function test_a_non_system_admin_cannot_download_a_driver_document(): void
+    public function test_a_driver_cannot_download_another_drivers_document(): void
+    {
+        $otherDriver = User::factory()->create(['email' => 'other-driver@tenant-a.test']);
+        $otherDriver->assignRole('driver');
+
+        $this->actingAs($otherDriver, 'web')
+            ->get("/api/v1/drivers/{$this->driver->id}/documents/license")
+            ->assertForbidden();
+    }
+
+    /** FRD V01.14: auditor gets (عرض/تصدير) على كل الصفحات — can view a driver's details, documents included. */
+    public function test_an_auditor_can_download_a_driver_document(): void
     {
         $auditor = User::factory()->create(['email' => 'auditor@tenant-a.test']);
         $auditor->assignRole('auditor');
 
         $this->actingAs($auditor, 'web')
             ->get("/api/v1/drivers/{$this->driver->id}/documents/license")
-            ->assertForbidden();
+            ->assertOk();
     }
 
     public function test_an_unknown_document_type_404s(): void
