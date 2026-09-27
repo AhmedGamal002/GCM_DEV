@@ -1554,6 +1554,42 @@
           ]
         },
         {
+          "name": "Update Permission",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/x-www-form-urlencoded" }],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "_token", "value": "{{platform_csrf}}" },
+                { "key": "name", "value": "drivers.export.renamed" }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/platform/permissions/{{last_permission_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["platform", "permissions", "{{last_permission_id}}"]
+            },
+            "description": "Name-only edit — FRD/app pattern: a permission's identity (the `name` string roles are matched against) is the only editable field."
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.sendRequest({ url: pm.collectionVariables.get('base_url') + '/platform/tenants', method: 'GET' }, function (err, res) {",
+                  "    if (!err && res && res.code === 200) {",
+                  "        const match = res.text().match(/name=\"_token\" value=\"([^\"]+)\"/);",
+                  "        if (match) pm.collectionVariables.set('platform_csrf', match[1]);",
+                  "    }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
           "name": "Delete Permission",
           "request": {
             "method": "DELETE",
