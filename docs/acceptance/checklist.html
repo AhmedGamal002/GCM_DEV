@@ -102,7 +102,7 @@
       <span>تم: <b id="s-pass">0</b></span>
       <span>فشل: <b id="s-fail" style="color:var(--bad)">0</b></span>
       <span>متبقي: <b id="s-left">0</b></span>
-      <span>من <b>70</b> بند</span>
+      <span>من <b>77</b> بند</span>
     </div>
     <div class="prog"><i class="p" id="b-pass"></i><i class="f" id="b-fail"></i></div>
     <div class="tools">
@@ -337,6 +337,30 @@
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
       <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.4.1 (نفس سطر الصلاحية المكرر في كل موديول)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>سجّل دخول بـ<code>dataentry@gcm.test</code>.</li><li>جرّب: عرض قائمة المستخدمين، إنشاء مستخدم جديد، تعديل بيانات مستخدم، تحويل حالته لـ&quot;في إجازة&quot;، ثم حاول &quot;تعطيل&quot; نفس المستخدم.</li><li>كرّر نفس الخطوات على صفحة السائقين.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>كل حاجة تنجح عدا محاولة &quot;التعطيل&quot; — بترجع 422 برسالة &quot;Only a System Admin can deactivate or reactivate a user.&quot;</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>UserPolicyTest</code>, <code>DriverPolicyTest</code>, <code>DriverCreationTest</code>, <code>DriverUpdateTest</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+    <details open class="group">
+      <summary>و) استكمال CRUD المستخدمين <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-1-2-auth-users-roles#20" data-title="تعديل بيانات مستخدم">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">20</span></label>
+        <h3>تعديل بيانات مستخدم</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.4 (تعديل حساب مستخدم تابع لـGCM)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح تعديل أي مستخدم غير مدير النظام.</li><li>غيّر الاسم ورقم الموبايل.</li><li>احفظ.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>التعديل بينجح، والبيانات الجديدة تظهر في صفحة التفاصيل، وسطر &quot;آخر تحديث&quot; بيتحدّث بالاسم والتاريخ والوقت الحاليين.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Users/UserPolicyTest::test_admins_can_set_another_users_password</code>, <code>Users/UserUniquePhoneTest</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-1-2-auth-users-roles#21" data-title="تغيير حالة مستخدم عادي (في إجازة / تعطيل / إعادة تنشيط)">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">21</span></label>
+        <h3>تغيير حالة مستخدم عادي (في إجازة / تعطيل / إعادة تنشيط)</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.4 (&quot;تعديل الحساب الي حالة (في إجازة) او تعطيله من خلال (مدير النظام / مدخل البيانات)&quot;)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح أي مستخدم غير مدير النظام وغيّر حالته لـ&quot;في إجازة&quot;.</li><li>غيّرها بعدين لـ&quot;معطّل&quot;.</li><li>أعد تنشيطه (رجّعها &quot;نشط&quot;).</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>كل التحويلات التلاتة بتنجح فورًا وتظهر في صفحة التفاصيل.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Users/UserPolicyTest::test_data_entry_can_set_vacation_and_deactivate</code> (نفس الـaction، ومدير النظام صلاحيته أوسع)</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     </details>
@@ -887,6 +911,60 @@
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
       <dl><div class="row"><dt>مرجع الـFRD</dt><dd>ثنائية اللغة لصفحات الشركة</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>سجّل دخول، ودوس أيقونة تبديل اللغة في الشريط العلوي واختار <strong>العربية</strong>.</li><li>تصفّح صفحات المركبات/السائقين/الأصول/المستخدمين/الملف الشخصي.</li><li>دوس نفس الأيقونة واختار <strong>English</strong> وكرّر نفس الصفحات.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>مفيش أي كلمة إنجليزية ظاهرة في وضع العربي (لا في العناوين، لا في الجداول، لا في رسائل الفورم، ولا في نصوص الـ JS زي &quot;Loading...&quot; أو &quot;Select a vehicle&quot;).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd>يدوي فقط (فيه سكريبت فحص مفاتيح ناقصة — راجع <code>CLAUDE.md</code>)</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+    <details open class="group">
+      <summary>هـ) استكمال CRUD السائقين والمركبات والأصول <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-3-vehicles-drivers-assets#23" data-title="تعديل بيانات سائق">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">23</span></label>
+        <h3>تعديل بيانات سائق</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>&quot;جميع البيانات قابلة للتعديل من خلال مدير النظام او مدخل البيانات&quot;</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح تعديل أي سائق.</li><li>غيّر تاريخ صلاحية رخصته (أو أي حقل تاني).</li><li>احفظ.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>التعديل بينجح، والبيانات الجديدة تظهر في صفحة تفاصيل السائق.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Drivers/DriverUpdateTest::test_admin_can_set_a_drivers_password_and_blank_keeps_it</code>, <code>test_updated_by_is_recorded_on_update</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-vehicles-drivers-assets#24" data-title="تغيير حالة سائق (في إجازة / تعطيل / إعادة تنشيط)">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">24</span></label>
+        <h3>تغيير حالة سائق (في إجازة / تعطيل / إعادة تنشيط)</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>نفس قاعدة المستخدمين — السائق حساب <code>User</code> بدور <code>driver</code>.</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح أي سائق وغيّر حالته لـ&quot;في إجازة&quot;.</li><li>غيّرها بعدين لـ&quot;معطّل&quot;.</li><li>أعد تنشيطه.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>كل التحويلات التلاتة بتنجح، وتظهر في قائمة السائقين وصفحة التفاصيل.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Users/UserPolicyTest::test_data_entry_can_set_vacation_and_deactivate</code> (نفس الـendpoint — تغيير حالة السائق بيمر بـ<code>/api/v1/users/{id}/status</code>)</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-vehicles-drivers-assets#25" data-title="تعديل مركبة">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">25</span></label>
+        <h3>تعديل مركبة</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.5.3 ((انشاء / تعديل) المركبات مسؤولية مدير النظام / مدخل البيانات)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح تعديل أي مركبة.</li><li>غيّر فئتها أو تواريخ صلاحية وثائقها.</li><li>احفظ.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>التعديل بينجح، والبيانات الجديدة تظهر في صفحة تفاصيل المركبة.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleManagementTest::test_update_changes_editable_fields_and_replaces_entry_permits</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-vehicles-drivers-assets#26" data-title="إنشاء أصل جديد">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">26</span></label>
+        <h3>إنشاء أصل جديد</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.7.3</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح إنشاء أصل جديد.</li><li>املأ الاسم والنوع وتصنيف السعة وتصنيفات المركبات المتوافقة.</li><li>احفظ.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الأصل يتنشئ بنجاح ويظهر فورًا في القائمة.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Assets/AssetManagementTest::test_system_admin_creates_a_full_asset</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-vehicles-drivers-assets#27" data-title="تغيير حالة أصل (الصيانة / تعطيل / إعادة تنشيط)">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">27</span></label>
+        <h3>تغيير حالة أصل (الصيانة / تعطيل / إعادة تنشيط)</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.7.1</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح أي أصل وغيّر حالته لـ&quot;في الصيانة&quot;.</li><li>غيّرها بعدين لـ&quot;معطّل&quot;.</li><li>أعد تنشيطه.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>كل التحويلات التلاتة بتنجح.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Assets/AssetManagementTest::test_data_entry_can_set_maintenance_and_deactivate</code> (نفس الـaction، ومدير النظام صلاحيته أوسع)</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     </details>

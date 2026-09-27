@@ -105,7 +105,7 @@ function renderDocs(docsArr) {
     .map(
       d => `
   <section class="doc" data-doc="${esc(d.key)}">
-    <h2 class="doc-title">${esc(d.title)}${d.sync ? `<small>${esc(d.sync)}</small>` : ''}</h2>
+    ${d.title ? `<h2 class="doc-title">${esc(d.title)}${d.sync ? `<small>${esc(d.sync)}</small>` : ''}</h2>` : ''}
     ${d.sections
       .map(
         s => `
@@ -366,37 +366,29 @@ console.log(`checklist.html built — ${total} items from ${files.length} files`
 // phase numbers, FRD sync dates, or automated-test class names — the client
 // only sees what to click and what should happen.
 
-// A section heading occasionally narrates internal project context (e.g. "an
-// out-of-FRD client request", "notes from testing on the server") that reads
-// like a dev note rather than an acceptance-test section — renamed here.
-const CLIENT_SECTION_TITLES = {
-  'د) تصنيفات المركبات القابلة للإدارة (طلب العميل — خارج الـFRD)': 'د) تصنيفات المركبات',
-  'هـ) الأداء وإحساس المستخدم (ملاحظات من التجربة على السيرفر)': 'هـ) الأداء وتجربة الاستخدام',
-};
-
-const CLIENT_DOC_TITLES = {
-  'week-1-2-auth-users-roles': 'تسجيل الدخول وإدارة المستخدمين والأدوار',
-  'week-3-frd-gap-review': 'الشريط العلوي، الملف الشخصي، وتصنيفات المركبات',
-  'week-3-vehicles-drivers-assets': 'المركبات والسائقين والأصول',
-};
-
-const CLIENT_INCLUDE = new Set(
-  [
-    // '14' excluded on purpose — it's the only remaining item that even
-    // acknowledges the Super Admin/platform layer exists (redirected away
-    // from `/platform/roles`), and that layer must stay invisible to the
-    // client entirely, not just inaccessible.
-    ['week-1-2-auth-users-roles', ['1', '2', '8', '10', '11', '12', '13', '17', '18']],
-    [
-      'week-3-frd-gap-review',
-      ['1', '2', '4', '5', '6', '7', '9', '10', '11', '12', '13', '14', '17', '18', '19', '20', '21', '22', '23', '24', '25'],
-    ],
-    [
-      'week-3-vehicles-drivers-assets',
-      ['1', '2', '3', '4', '5', '6', '8', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22'],
-    ],
-  ].flatMap(([key, nums]) => nums.map(n => `${key}#${n}`)),
-);
+// Reorganized module-by-module (View → Create → Edit → Status → business
+// rules), not by which week-*.md file or discovery order an item happened to
+// come from — a tester reading source-ordered "gap review" history has no way
+// to tell "did I check every CRUD action for Users?" A flat allowlist can't
+// express that grouping, so CLIENT_GROUPS both selects AND orders: each
+// group's `ids` list is a curated, explicit set (same allowlist philosophy as
+// before — a new source item is invisible here until someone adds its id to
+// the right group), and its position in the array is the section's position
+// in the page. Every included id must still resolve to a real parsed item —
+// buildClientDocs throws if one doesn't, so a typo or a renumbered source
+// item is caught immediately instead of silently vanishing.
+const CLIENT_GROUPS = [
+  { title: 'المستخدمين', ids: ['week-1-2-auth-users-roles#8', 'week-1-2-auth-users-roles#20', 'week-1-2-auth-users-roles#21', 'week-1-2-auth-users-roles#10', 'week-1-2-auth-users-roles#11', 'week-1-2-auth-users-roles#12'] },
+  { title: 'السائقين', ids: ['week-3-vehicles-drivers-assets#10', 'week-3-vehicles-drivers-assets#11', 'week-3-vehicles-drivers-assets#23', 'week-3-vehicles-drivers-assets#24', 'week-3-frd-gap-review#9', 'week-3-vehicles-drivers-assets#12', 'week-3-vehicles-drivers-assets#13', 'week-3-vehicles-drivers-assets#14', 'week-3-vehicles-drivers-assets#15'] },
+  { title: 'المركبات', ids: ['week-3-vehicles-drivers-assets#1', 'week-3-vehicles-drivers-assets#2', 'week-3-vehicles-drivers-assets#25', 'week-3-vehicles-drivers-assets#6', 'week-3-vehicles-drivers-assets#3', 'week-3-vehicles-drivers-assets#4', 'week-3-vehicles-drivers-assets#5', 'week-3-vehicles-drivers-assets#8'] },
+  { title: 'تصنيفات المركبات', ids: ['week-3-frd-gap-review#10', 'week-3-frd-gap-review#11', 'week-3-frd-gap-review#13', 'week-3-frd-gap-review#14', 'week-3-frd-gap-review#12', 'week-3-frd-gap-review#17', 'week-3-frd-gap-review#19'] },
+  { title: 'الأصول', ids: ['week-3-vehicles-drivers-assets#16', 'week-3-vehicles-drivers-assets#26', 'week-3-vehicles-drivers-assets#18', 'week-3-vehicles-drivers-assets#27', 'week-3-vehicles-drivers-assets#17', 'week-3-vehicles-drivers-assets#19'] },
+  { title: 'تصنيفات سعة الأصول', ids: ['week-3-vehicles-drivers-assets#20'] },
+  { title: 'الملف الشخصي', ids: ['week-1-2-auth-users-roles#2', 'week-3-frd-gap-review#4'] },
+  { title: 'قواعد عامة عبر الموديولات', ids: ['week-3-frd-gap-review#5', 'week-3-frd-gap-review#6', 'week-3-frd-gap-review#7'] },
+  { title: 'الواجهة والتنقل', ids: ['week-1-2-auth-users-roles#1', 'week-1-2-auth-users-roles#17', 'week-1-2-auth-users-roles#18', 'week-3-frd-gap-review#1', 'week-3-frd-gap-review#2', 'week-3-vehicles-drivers-assets#22'] },
+  { title: 'الأداء والتصدير', ids: ['week-3-frd-gap-review#22', 'week-3-frd-gap-review#23', 'week-3-frd-gap-review#24', 'week-3-frd-gap-review#25'] },
+];
 
 const CLIENT_OVERRIDES = {
   'week-1-2-auth-users-roles#8': {
@@ -413,9 +405,9 @@ const CLIENT_OVERRIDES = {
   },
   'week-1-2-auth-users-roles#17': {
     title: 'عناصر القائمة الجانبية لمدير النظام',
-    steps: 'سجّل دخول بحسابك (مدير النظام) وبصّ على القائمة الجانبية.',
+    stepsList: ['سجّل دخول بحسابك (مدير النظام) وبصّ على القائمة الجانبية.', 'بدّل اللغة لعربي.'],
     expected:
-      'تشوف Dashboard، وتحت عنوان **Accounts**: Users وDrivers، وتحت عنوان **Fleet & Assets**: Vehicles وAssets — من غير أي بنود تانية.',
+      'تشوف Dashboard، وتحت عنوان **Accounts**: Users وDrivers، وتحت عنوان **Fleet & Assets**: Vehicles وAssets — من غير أي بنود تانية. بالعربي العنوانين بيبقوا "الحسابات" و"الأسطول والأصول".',
   },
   'week-3-frd-gap-review#1': {
     steps: 'سجّل دخول بحسابك. بصّ على الشريط العلوي. بدّل اللغة لعربي وارجع لإنجليزي.',
@@ -453,11 +445,6 @@ const CLIENT_OVERRIDES = {
     expected:
       '(أ) التصنيف بيتمسح والكارت بتاعه بيختفي من صفحة المركبات. (ب) أيقونة الحذف **مقفولة** وعليها تلميح "In use — can\'t be deleted". (ج) أيقونة الحذف **مقفولة دايمًا** على الستة الأساسيين وعليها تلميح "Primary category — can\'t be deleted" (الاسم بس هو اللي بيتعدّل).',
   },
-  'week-3-frd-gap-review#18': {
-    steps: 'سجّل دخول وبصّ على القائمة الجانبية. بدّل اللغة لعربي.',
-    expected:
-      'تشوف Dashboard ثم عنوان **Accounts** (تحته Users وDrivers) ثم عنوان **Fleet & Assets** (تحته Vehicles وAssets). بالعربي: "الحسابات" و"الأسطول والأصول".',
-  },
   'week-3-frd-gap-review#23': {
     stepsList: [
       'في أي قائمة (Users / Drivers / Vehicles / Vehicle Categories / Assets / Asset Categories) دوس زرار Export واختار Pdf.',
@@ -465,6 +452,7 @@ const CLIENT_OVERRIDES = {
     ],
   },
   'week-3-vehicles-drivers-assets#1': {
+    title: 'عرض قائمة المركبات',
     steps: 'افتح قائمة المركبات.',
     expected: 'تشوف القائمة والكروت والفلاتر.',
   },
@@ -482,16 +470,18 @@ const CLIENT_OVERRIDES = {
     expected: 'المحاولة التانية بترفض برسالة إن اللوحة مستخدمة بالفعل.',
   },
   'week-3-vehicles-drivers-assets#6': {
-    title: 'حالة المركبة',
+    title: 'تغيير حالة مركبة (الصيانة / تعطيل / إعادة تنشيط)',
     steps: 'حوّل مركبة لـ"في الصيانة"، ثم لـ"معطّل"، ثم أعِد تنشيطها من "معطّل".',
     expected: 'التحويلات التلاتة بتنجح.',
   },
   'week-3-vehicles-drivers-assets#10': {
+    title: 'الوصول لقائمة السائقين',
     steps: 'افتح قائمة السائقين.',
     expected:
       'تشوف "Drivers" وتقدر تنشئ وتعدّل. زر الإنشاء اسمه "إنشاء مستخدم جديد سائق" ويوديك لصفحة السائق المخصصة (مش فورم المستخدمين).',
   },
   'week-3-vehicles-drivers-assets#16': {
+    title: 'عرض قائمة الأصول',
     frd: '§1.7.3 (الإنشاء والتعديل مسؤولية مدير النظام أو مدخل البيانات؛ المراقب عرض فقط)',
     steps: 'افتح قائمة الأصول.',
     expected: 'تشوف "Assets" (List + Categories).',
@@ -499,34 +489,39 @@ const CLIENT_OVERRIDES = {
 };
 
 function buildClientDocs(sourceDocs) {
-  return sourceDocs
-    .map(d => {
-      let n = 0;
-      const sections = d.sections
-        .map(s => {
-          const items = s.items
-            .filter(it => CLIENT_INCLUDE.has(it.id))
-            .map(it => {
-              const ov = CLIENT_OVERRIDES[it.id] || {};
-              n += 1;
-              const fields = it.fields
-                .filter(f => f.key !== 'يغطيه آليًا')
-                .map(f => {
-                  if (f.key === 'FRD' && ov.frd) return { ...f, text: ov.frd, subs: [] };
-                  if (f.key === 'الخطوات' && ov.stepsList) return { ...f, text: '', subs: ov.stepsList };
-                  if (f.key === 'الخطوات' && ov.steps) return { ...f, text: ov.steps, subs: [] };
-                  if (f.key === 'المتوقع' && ov.expectedList) return { ...f, text: '', subs: ov.expectedList };
-                  if (f.key === 'المتوقع' && ov.expected) return { ...f, text: ov.expected, subs: [] };
-                  return f;
-                });
-              return { ...it, num: String(n), title: ov.title || it.title, fields };
-            });
-          return { ...s, title: CLIENT_SECTION_TITLES[s.title] || s.title, items };
-        })
-        .filter(s => s.items.length > 0);
-      return { key: d.key, title: CLIENT_DOC_TITLES[d.key] || d.title, sync: '', sections };
-    })
-    .filter(d => d.sections.length > 0);
+  const byId = new Map();
+  for (const d of sourceDocs) {
+    for (const s of d.sections) {
+      for (const it of s.items) byId.set(it.id, it);
+    }
+  }
+
+  let n = 0;
+  const sections = CLIENT_GROUPS.map(group => {
+    const items = group.ids.map(id => {
+      const it = byId.get(id);
+      if (!it) throw new Error(`CLIENT_GROUPS references an id that no longer exists in any week-*.md file: ${id}`);
+      const ov = CLIENT_OVERRIDES[id] || {};
+      n += 1;
+      const fields = it.fields
+        .filter(f => f.key !== 'يغطيه آليًا')
+        .map(f => {
+          if (f.key === 'FRD' && ov.frd) return { ...f, text: ov.frd, subs: [] };
+          if (f.key === 'الخطوات' && ov.stepsList) return { ...f, text: '', subs: ov.stepsList };
+          if (f.key === 'الخطوات' && ov.steps) return { ...f, text: ov.steps, subs: [] };
+          if (f.key === 'المتوقع' && ov.expectedList) return { ...f, text: '', subs: ov.expectedList };
+          if (f.key === 'المتوقع' && ov.expected) return { ...f, text: ov.expected, subs: [] };
+          return f;
+        });
+      return { ...it, num: String(n), title: ov.title || it.title, fields };
+    });
+    return { title: group.title, items };
+  });
+
+  // One unified document (no per-source-file titles/sync lines) — the page's
+  // own <h1> is the only title; an empty doc.title tells renderDocs to skip
+  // the (otherwise redundant) per-doc heading.
+  return [{ key: 'client', title: '', sync: '', sections }];
 }
 
 const clientDocs = buildClientDocs(docs);
@@ -605,8 +600,12 @@ const clientHtml = `<!DOCTYPE html>
   @media (max-width:640px) { .row { grid-template-columns:1fr; gap:0; } }
   @media print { .bar, .tools, .setup { display:none; } .item { break-inside:avoid; } body { background:#fff; color:#000; } }
 </style>
-<!-- Builds the real .xlsx the export button downloads (SheetJS, pinned version) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<!-- Builds the real .xlsx the export button downloads. Plain SheetJS (the
+     free "xlsx" package) silently drops cell styles on write — only its paid
+     Pro build honors them — so this uses xlsx-js-style, a community fork
+     with the identical API that actually writes fill/font colors, to get
+     the pass=green/fail=red rows. Pinned version, jsdelivr (not on cdnjs). -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
 </head>
 <body>
 <div class="wrap">
@@ -731,18 +730,40 @@ ${clientBody}
     }
 
     var STATUS_LABEL = { pass: 'تم', fail: 'فشل' };
+    // Same colors as the page's own pass/fail cards (var(--ok)/var(--ok-bg),
+    // var(--bad)/var(--bad-bg) — light theme values, since Excel has no
+    // dark-mode concept to follow).
+    var ROW_STYLE = {
+      pass: { fill: { fgColor: { rgb: 'E6F6EC' } }, font: { color: { rgb: '15803D' } } },
+      fail: { fill: { fgColor: { rgb: 'FDEAEA' } }, font: { color: { rgb: 'B91C1C' } } },
+    };
+    var HEADER_STYLE = { fill: { fgColor: { rgb: 'E3E6EF' } }, font: { bold: true } };
+
     var rows = [['القسم', 'رقم', 'البند', 'الحالة', 'ملاحظات']];
-    document.querySelectorAll('.doc').forEach(function (docEl) {
-      var docTitle = docEl.querySelector('.doc-title').textContent.trim();
-      [].forEach.call(docEl.querySelectorAll('.item'), function (el) {
+    var statuses = [null]; // no color for the header row
+    document.querySelectorAll('.group').forEach(function (groupEl) {
+      // "القسم" is the module name (Users, Vehicles, ...), not a leftover
+      // count badge — grab the summary's own first text node only.
+      var groupTitle = groupEl.querySelector('summary').childNodes[0].textContent.trim();
+      [].forEach.call(groupEl.querySelectorAll('.item'), function (el) {
         var st = get(el.dataset.id);
         var num = el.querySelector('.num').textContent;
-        rows.push([docTitle, num, el.dataset.title, STATUS_LABEL[st.s] || 'لم يتم بعد', st.n || '']);
+        rows.push([groupTitle, num, el.dataset.title, STATUS_LABEL[st.s] || 'لم يتم بعد', st.n || '']);
+        statuses.push(st.s || null);
       });
     });
 
     var sheet = XLSX.utils.aoa_to_sheet(rows);
     sheet['!cols'] = [{ wch: 30 }, { wch: 6 }, { wch: 50 }, { wch: 12 }, { wch: 40 }];
+    rows.forEach(function (row, r) {
+      var rowStyle = r === 0 ? HEADER_STYLE : ROW_STYLE[statuses[r]];
+      if (!rowStyle) return;
+      row.forEach(function (_, c) {
+        var ref = XLSX.utils.encode_cell({ r: r, c: c });
+        if (sheet[ref]) sheet[ref].s = rowStyle;
+      });
+    });
+
     var workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, sheet, 'نتيجة الاختبار');
     XLSX.writeFile(workbook, 'نتيجة اختبار GCM Portal.xlsx');
