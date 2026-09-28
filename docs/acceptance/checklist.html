@@ -102,7 +102,7 @@
       <span>تم: <b id="s-pass">0</b></span>
       <span>فشل: <b id="s-fail" style="color:var(--bad)">0</b></span>
       <span>متبقي: <b id="s-left">0</b></span>
-      <span>من <b>77</b> بند</span>
+      <span>من <b>79</b> بند</span>
     </div>
     <div class="prog"><i class="p" id="b-pass"></i><i class="f" id="b-fail"></i></div>
     <div class="tools">
@@ -670,6 +670,26 @@
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
       <dl><div class="row"><dt>مرجع الـFRD</dt><dd>&quot;لا يملك المراقب تعديل أي بيانات من خلال صفحة الملف الشخصي الا صورته او كلمة المرور&quot; + قسم تعديل حساب السائق: &quot;المستخدم يستطيع تغيير البيانات التالية من صفحة الملف الشخصي: الصورة الشخصية، كلمة المرور&quot;</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>بـ<code>auditor@gcm.test</code> افتح My Profile.</li><li>تأكد إن تاب &quot;Security&quot; ظاهر.</li><li>افتحه وغيّر كلمة السر فعليًا (بالكلمة الحالية <code>password</code>).</li><li>كرّر نفس الخطوات بـ<code>driver@gcm.test</code>.</li><li>سجّل دخول بـ<code>admin@gcm.test</code> وافتح My Profile — تاب &quot;Security&quot; لازم يفضل مختفي.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>تاب &quot;Security&quot; ظاهر للمراقب والسائق (كان مختفي قبل كده)، وتغيير كلمة السر بينجح (&quot;Password updated&quot;). الاسم والبريد لسه للقراءة فقط. مدير النظام ومدخل البيانات مالهمش تاب Security.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Profile/PasswordChangeTest::test_an_auditor_changes_their_own_password</code>, <code>test_the_security_page_is_available_to_an_auditor</code>, <code>test_a_driver_changes_their_own_password</code>, <code>test_the_security_page_is_available_to_a_driver</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-frd-gap-review#29" data-title="نفس شاشة &quot;جاري الحفظ&quot; في كل صفحات الإنشاء والتعديل">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">29</span></label>
+        <h3>نفس شاشة &quot;جاري الحفظ&quot; في كل صفحات الإنشاء والتعديل</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>الدور</dt><dd>مدير النظام</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>جرّب الحفظ في كل الفورمات دي: مستخدم (إضافة وتعديل)، سائق، مركبة، أصل، تصنيف مركبات، تصنيف سعة أصول، شركة عميل، وصورة My Profile.</li><li>جرّب كمان زراير تغيير الحالة (تعطيل / تنشيط / صيانة) في صفحات التفاصيل، وحذف تصنيف مركبات.</li><li>في الفورمات اللي فيها صورة أو مستند، اختار ملف كبير شوية.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>في كل الحالات تظهر <strong>نفس الشاشة الغامقة</strong> بدايرة التحميل ورسالة &quot;Working...&quot; أول ما تدوس حفظ (ومعاها شريط رفع بالنسبة المئوية لو فيه ملف)، والصفحة مابتقبلش ضغطة تانية لحد ما الطلب يخلص. لو حصل خطأ (بيانات غلط مثلًا) الشاشة بتختفي وتظهر رسالة الخطأ في مكانها.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Unit/BusyOverlayConsistencyTest</code> (بيفشل لو أي صفحة إنشاء/تعديل جديدة اتضافت من غير الشاشة دي)</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-frd-gap-review#30" data-title="شاشة التحميل واللوجو والاسم">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">30</span></label>
+        <h3>شاشة التحميل واللوجو والاسم</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>الدور</dt><dd>مدير النظام</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح أي صفحة (أو اضغط Refresh) وراقب أول ثواني التحميل. جرّب كمان تدوس على رابط من القائمة الجانبية.</li><li>بصّ على أعلى القائمة الجانبية، وعلى صفحة تسجيل الدخول، وعلى عنوان تبويب المتصفح وفوتر الصفحة.</li><li>بدّل اللغة لعربي ثم إنجليزي.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>أثناء تحميل أي صفحة (وأول طلبات بياناتها) تظهر <strong>شاشة كاملة</strong> فيها لوجو GCM واسم &quot;GLOBAL CLEAR MISSION&quot; وشريط متحرك، وبتختفي لما الصفحة تجهز؛ وبتظهر تاني بمجرد ما تدوس على رابط لصفحة تانية. اللوجو والاسم ظاهرين في القائمة الجانبية وصفحة الدخول، والاسم في تبويب المتصفح والفوتر . بالعربي الاسم بيبقى &quot;الرسالة الواضحة العالمية&quot;.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>BrandingTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     </details>
