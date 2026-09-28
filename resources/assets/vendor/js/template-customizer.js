@@ -1008,7 +1008,11 @@ class TemplateCustomizer {
     link.type = 'text/css'
     link.href = href
     link.className = className
-    document.head.appendChild(link)
+    // GCM: core/theme CSS is injected here at runtime; keep the designer's
+    // gcm_custom.css (commonMaster.blade.php) after them so it always wins.
+    const gcmCustom = document.getElementById('gcm-custom-css')
+    if (gcmCustom) document.head.insertBefore(link, gcmCustom)
+    else document.head.appendChild(link)
   }
 
   _insertStylesheet(className, href) {
