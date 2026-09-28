@@ -13,7 +13,7 @@ Dashboard, then an **Accounts** section (Users · Drivers) and a **Fleet & Asset
 ## 1. Sign in and profile
 
 - `/login` with email + password.
-- **My Profile** from the top bar: change your profile photo only. Name and password are managed by the administration — if you forget your password use "Forgot Password" on the login page.
+- **My Profile** from the top bar: change your profile photo **and your password** (the "Security" tab — you enter your current password first). Name and email are read-only. If you forget your password use "Forgot Password" on the login page.
 
 ## 2. Users — `/app/user/list`
 
