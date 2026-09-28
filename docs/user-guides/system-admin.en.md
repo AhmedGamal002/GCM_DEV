@@ -124,7 +124,24 @@ System Admin: view, create, edit (full data), export, and all status changes.
 ## 8. Change asset status
 - **System Admin**: "on maintenance" + **deactivate** + **reactivate from deactivated**.
 
-## 9. Features available now (end of Week 3)
+## 9. Client company management — `/app/company/list`
+
+Sidebar: heading **Clients & Projects** → **Client Companies** (List + Add).
+
+### List
+- Server-side table: ID, Company, Company representative (`—` until client accounts exist), Projects and Users (`0` until they exist), Status, Actions. Search by name, short name or ID + a status filter + Excel/PDF export honouring the same filters.
+
+### Create a client company
+- **Required:** name, short name (3 unique English letters — shown in upper case), status (active by default).
+- **The ID is generated automatically = the short name + a running number** (`ALN-0001`, then `GPC-0002`…). That is why **the short name is locked after creation**, and the numbers of the company's projects, contracts and trips (once built) will be made from it.
+- **Optional:** business sector, logo, phone, email, address, map link (`http`/`https` only), contract number + start/end dates + contract copy, commercial registration (number + copy), tax registration (number + copy), additional data. Numbers are digits only; attachments are PDF or images up to 4 MB (logo 2 MB).
+
+### Details and edit
+- Details page: the data + download links for the attachments + statistics (projects, contracts, trips, waste moved — `0` for now).
+- Edit page: **every field** is editable except the short name (locked; the ID is shown above the form). A file input left empty keeps the stored file; a new file replaces it.
+- **Deactivate / reactivate** from the "Company Status" card on the edit page (with a confirmation). There is no delete. Deactivating a company does **not** deactivate anything else.
+
+## 10. Features available now
 
 | Module | Available | Deferred |
 |---|---|---|
@@ -132,4 +149,5 @@ System Admin: view, create, edit (full data), export, and all status changes.
 | Vehicles | Full CRUD + status + export + embedded container | "on a trip" column/counter + vehicle trip log (Week 7) |
 | Drivers | Full CRUD + default vehicle + documents + permits | "on a trip" status (Week 7), mobile app |
 | Assets | Full CRUD + categories + status + export | "Add asset to a project" + "in projects" counter (Week 4) |
+| Client companies | Full CRUD + deactivate/reactivate + attachments + export | Representative, projects/users counts and the projects/contracts sections on the details page (Weeks 4–6) |
 | Dashboard | Shell screen | Real stats (Week 8) |

@@ -2,7 +2,7 @@
   "info": {
     "name": "GCM Portal",
     "_postman_id": "b1e9d8b0-6f5a-4b0a-9c1a-gcmportal0001",
-    "description": "GCM Portal API + Platform (Super Admin) collection. Covers everything shipped through Week 3 (Assets, Vehicles + Driver Management): Tenant Auth, Users, Roles (read-only), Profile, Drivers, Vehicles, Assets & Supply Hub, and Platform (Tenants/Roles/Permissions CRUD).\n\nSee postman/README.md in the repo for how the two auth flows work (Bearer token for /api/v1/*, session+CSRF for /platform/*) and the convention to follow when adding a new endpoint's request here.\n\nKeep this file updated alongside the code: every new API/Platform route gets a request added here in the same PR/session that adds the route.",
+    "description": "GCM Portal API + Platform (Super Admin) collection. Covers everything shipped through Phase 1 (Assets, Vehicles + Driver Management) and Phase 2 Part 4 (Client Companies): Tenant Auth, Users, Roles (read-only), Profile, Drivers, Vehicles, Assets & Supply Hub, Client Companies, and Platform (Tenants/Roles/Permissions CRUD).\n\nSee postman/README.md in the repo for how the two auth flows work (Bearer token for /api/v1/*, session+CSRF for /platform/*) and the convention to follow when adding a new endpoint's request here.\n\nKeep this file updated alongside the code: every new API/Platform route gets a request added here in the same PR/session that adds the route.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "auth": {
@@ -29,7 +29,8 @@
     { "key": "last_vehicle_category_id", "value": "", "type": "string" },
     { "key": "last_tenant_id", "value": "", "type": "string" },
     { "key": "last_role_id", "value": "", "type": "string" },
-    { "key": "last_permission_id", "value": "", "type": "string" }
+    { "key": "last_permission_id", "value": "", "type": "string" },
+    { "key": "last_company_id", "value": "", "type": "string" }
   ],
   "item": [
     {
@@ -1168,7 +1169,255 @@
       ]
     },
     {
-      "name": "8. Platform Auth (Super Admin)",
+      "name": "8. Client Companies",
+      "description": "Phase 2 · Part 4 — FRD V01.14 §1.11. system_admin / data_entry create, edit and (de)activate; auditor views and exports; driver has no access. No hard delete. Projects, users and contracts counts are 0 until those modules exist.",
+      "item": [
+        {
+          "name": "List Client Companies",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{api_base}}/companies?per_page=15",
+              "host": ["{{api_base}}"],
+              "path": ["companies"],
+              "query": [
+                { "key": "per_page", "value": "15" },
+                { "key": "operational_status", "value": "active", "disabled": true, "description": "active | deactivated" },
+                {
+                  "key": "search",
+                  "value": "Noor",
+                  "disabled": true,
+                  "description": "matches the name, short name (prefix) or the ID (code)"
+                },
+                {
+                  "key": "sort_by",
+                  "value": "name",
+                  "disabled": true,
+                  "description": "code | name | operational_status | created_at"
+                },
+                { "key": "sort_dir", "value": "asc", "disabled": true, "description": "asc | desc" }
+              ]
+            },
+            "description": "system_admin / data_entry / auditor (CompanyPolicy::viewAny). Genuinely paginated server-side."
+          }
+        },
+        {
+          "name": "Create Client Company",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "name", "value": "Client Co {{$timestamp}}", "type": "text" },
+                {
+                  "key": "prefix",
+                  "value": "CXA",
+                  "type": "text",
+                  "description": "3 English letters, unique per tenant, stored upper-case. The company ID is built from it (e.g. ALN-0001), so it cannot be changed after creation."
+                },
+                { "key": "business_sector", "value": "Construction", "type": "text", "disabled": true },
+                { "key": "logo", "type": "file", "src": [], "disabled": true, "description": "image, max 2MB" },
+                { "key": "phone", "value": "+966500000000", "type": "text", "disabled": true },
+                { "key": "email", "value": "info@client.test", "type": "text", "disabled": true },
+                { "key": "address", "value": "Riyadh", "type": "text", "disabled": true },
+                {
+                  "key": "location_url",
+                  "value": "https://maps.google.com/?q=riyadh",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "http/https only"
+                },
+                { "key": "contract_number", "value": "1001", "type": "text", "disabled": true, "description": "digits only" },
+                { "key": "contract_start_date", "value": "2026-01-01", "type": "text", "disabled": true },
+                {
+                  "key": "contract_end_date",
+                  "value": "2026-12-31",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "on/after contract_start_date"
+                },
+                {
+                  "key": "contract_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true,
+                  "description": "pdf/jpg/png, max 4MB — private, downloadable only through the download endpoint"
+                },
+                { "key": "cr_number", "value": "2002", "type": "text", "disabled": true, "description": "digits only" },
+                { "key": "cr_attachment", "type": "file", "src": [], "disabled": true },
+                { "key": "tax_number", "value": "3003", "type": "text", "disabled": true, "description": "digits only" },
+                { "key": "tax_attachment", "type": "file", "src": [], "disabled": true },
+                { "key": "additional_data", "value": "<p>notes</p>", "type": "text", "disabled": true },
+                { "key": "operational_status", "value": "active", "type": "text", "description": "active | deactivated" }
+              ]
+            },
+            "url": { "raw": "{{api_base}}/companies", "host": ["{{api_base}}"], "path": ["companies"] },
+            "description": "name, prefix and operational_status are required. multipart/form-data. The prefix must be exactly 3 English letters and unique in the tenant — change it if you re-send this request. The response returns the generated company ID (prefix + running number, e.g. ALN-0001)."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    if (body.data && body.data.id) {",
+                  "        pm.collectionVariables.set('last_company_id', body.data.id);",
+                  "        console.log('last_company_id saved:', body.data.id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Show Client Company",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{api_base}}/companies/{{last_company_id}}",
+              "host": ["{{api_base}}"],
+              "path": ["companies", "{{last_company_id}}"]
+            },
+            "description": "Returns the company with its contract / commercial-registration / tax-registration blocks (each with a download_url when a file was uploaded) and the placeholder stats."
+          }
+        },
+        {
+          "name": "Update Client Company",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "_method",
+                  "value": "PATCH",
+                  "type": "text",
+                  "description": "method spoofing — multipart PATCH is not parsed by PHP"
+                },
+                { "key": "name", "value": "Client Co {{$timestamp}}", "type": "text" },
+                {
+                  "key": "prefix",
+                  "value": "TCX",
+                  "type": "text",
+                  "description": "LOCKED after creation — any value sent here is ignored (the company ID ALN-0001 is built from it)."
+                },
+                { "key": "business_sector", "value": "Construction", "type": "text", "disabled": true },
+                { "key": "logo", "type": "file", "src": [], "disabled": true, "description": "image, max 2MB" },
+                { "key": "phone", "value": "+966500000000", "type": "text", "disabled": true },
+                { "key": "email", "value": "info@client.test", "type": "text", "disabled": true },
+                { "key": "address", "value": "Riyadh", "type": "text", "disabled": true },
+                {
+                  "key": "location_url",
+                  "value": "https://maps.google.com/?q=riyadh",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "http/https only"
+                },
+                { "key": "contract_number", "value": "1001", "type": "text", "disabled": true, "description": "digits only" },
+                { "key": "contract_start_date", "value": "2026-01-01", "type": "text", "disabled": true },
+                {
+                  "key": "contract_end_date",
+                  "value": "2026-12-31",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "on/after contract_start_date"
+                },
+                {
+                  "key": "contract_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true,
+                  "description": "pdf/jpg/png, max 4MB — private, downloadable only through the download endpoint"
+                },
+                { "key": "cr_number", "value": "2002", "type": "text", "disabled": true, "description": "digits only" },
+                { "key": "cr_attachment", "type": "file", "src": [], "disabled": true },
+                { "key": "tax_number", "value": "3003", "type": "text", "disabled": true, "description": "digits only" },
+                { "key": "tax_attachment", "type": "file", "src": [], "disabled": true },
+                { "key": "additional_data", "value": "<p>notes</p>", "type": "text", "disabled": true }
+              ]
+            },
+            "url": {
+              "raw": "{{api_base}}/companies/{{last_company_id}}",
+              "host": ["{{api_base}}"],
+              "path": ["companies", "{{last_company_id}}"]
+            },
+            "description": "Every field is editable (FRD §1.11.4) except the status, which has its own endpoint. Re-send the full form; a file field left out keeps the stored file, a new file replaces it. The short name (prefix) is locked after creation: it is ignored on update and the company ID (prefix + number) never changes."
+          }
+        },
+        {
+          "name": "Change Status",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"deactivated\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": {
+              "raw": "{{api_base}}/companies/{{last_company_id}}/status",
+              "host": ["{{api_base}}"],
+              "path": ["companies", "{{last_company_id}}", "status"]
+            },
+            "description": "status: active | deactivated. system_admin / data_entry. Nothing cascades — the FRD does not say a company status affects its projects."
+          }
+        },
+        {
+          "name": "Download Document",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{api_base}}/companies/{{last_company_id}}/documents/contract",
+              "host": ["{{api_base}}"],
+              "path": ["companies", "{{last_company_id}}", "documents", "contract"]
+            },
+            "description": "Change the last path segment: contract | cr | tax. Private file — 404 when nothing was uploaded for that type, 403 without view access."
+          }
+        },
+        {
+          "name": "Export Client Companies (Excel)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{api_base}}/companies/export?format=xlsx",
+              "host": ["{{api_base}}"],
+              "path": ["companies", "export"],
+              "query": [
+                { "key": "format", "value": "xlsx" },
+                { "key": "operational_status", "value": "active", "disabled": true },
+                { "key": "search", "value": "Noor", "disabled": true }
+              ]
+            },
+            "description": "Same filters and search as the list — the file holds exactly the rows the list shows."
+          }
+        },
+        {
+          "name": "Export Client Companies (PDF)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{api_base}}/companies/export?format=pdf",
+              "host": ["{{api_base}}"],
+              "path": ["companies", "export"],
+              "query": [
+                { "key": "format", "value": "pdf" },
+                { "key": "operational_status", "value": "active", "disabled": true },
+                { "key": "search", "value": "Noor", "disabled": true }
+              ]
+            },
+            "description": "Arabic output follows the session locale, like the other exports."
+          }
+        }
+      ]
+    },
+    {
+      "name": "9. Platform Auth (Super Admin)",
       "item": [
         {
           "name": "Get Login Page (capture CSRF)",
@@ -1243,7 +1492,7 @@
       ]
     },
     {
-      "name": "9. Platform - Tenants",
+      "name": "10. Platform - Tenants",
       "auth": { "type": "noauth" },
       "item": [
         {
@@ -1382,7 +1631,7 @@
       ]
     },
     {
-      "name": "10. Platform - Roles",
+      "name": "11. Platform - Roles",
       "auth": { "type": "noauth" },
       "item": [
         {
@@ -1511,7 +1760,7 @@
       ]
     },
     {
-      "name": "11. Platform - Permissions",
+      "name": "12. Platform - Permissions",
       "auth": { "type": "noauth" },
       "item": [
         {

@@ -119,6 +119,29 @@
       ]
     },
     {
+      "menuHeader": "Clients & Projects"
+    },
+    {
+      "name": "Client Companies",
+      "icon": "menu-icon tf-icons ti ti-building",
+      "slug": "app-company",
+      "roles": ["system_admin", "data_entry", "auditor"],
+      "submenu": [
+        {
+          "url": "app/company/list",
+          "name": "List",
+          "slug": "app-company-list",
+          "roles": ["system_admin", "data_entry", "auditor"]
+        },
+        {
+          "url": "app/company/add",
+          "name": "Add",
+          "slug": "app-company-add",
+          "roles": ["system_admin", "data_entry"]
+        }
+      ]
+    },
+    {
       "name": "Dashboards",
       "icon": "menu-icon tf-icons ti ti-smart-home",
       "slug": "dashboard",

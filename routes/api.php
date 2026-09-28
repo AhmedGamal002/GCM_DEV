@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V1\Auth\LogoutController;
 use App\Http\Controllers\Api\V1\Auth\MeController;
 use App\Http\Controllers\Api\V1\Auth\NewPasswordController;
 use App\Http\Controllers\Api\V1\Auth\PasswordResetLinkController;
+use App\Http\Controllers\Api\V1\CompanyController;
 use App\Http\Controllers\Api\V1\DriverController;
 use App\Http\Controllers\Api\V1\ProfileController;
 use App\Http\Controllers\Api\V1\RoleController;
@@ -86,6 +87,18 @@ Route::prefix('v1')->group(function () {
         Route::get('/assets/{asset}', [AssetController::class, 'show'])->whereNumber('asset');
         Route::patch('/assets/{asset}', [AssetController::class, 'update'])->whereNumber('asset');
         Route::patch('/assets/{asset}/status', [AssetController::class, 'status'])->whereNumber('asset');
+
+        // Client companies (Part 4 of Phase 2, FRD V01.14 §1.11). /companies/export
+        // MUST come before /companies/{company} — same reasoning as /vehicles above.
+        Route::get('/companies/export', [CompanyController::class, 'export']);
+        Route::get('/companies', [CompanyController::class, 'index']);
+        Route::post('/companies', [CompanyController::class, 'store']);
+        Route::get('/companies/{company}', [CompanyController::class, 'show'])->whereNumber('company');
+        Route::patch('/companies/{company}', [CompanyController::class, 'update'])->whereNumber('company');
+        Route::patch('/companies/{company}/status', [CompanyController::class, 'status'])->whereNumber('company');
+        Route::get('/companies/{company}/documents/{type}', [CompanyController::class, 'downloadDocument'])
+            ->whereNumber('company')
+            ->name('api.companies.documents.download');
 
         // /drivers/export and /drivers/stats MUST be registered before
         // /drivers/{driver} — same reasoning as /users/export (see above).

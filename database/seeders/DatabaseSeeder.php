@@ -37,6 +37,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             AssetCapacityCategorySeeder::class,
             AssetSeeder::class,
+            CompanySeeder::class,
         ]);
 
         User::factory()->create(['name' => 'System Admin', 'email' => 'admin@gcm.test'])

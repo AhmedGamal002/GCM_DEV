@@ -384,10 +384,11 @@ const CLIENT_GROUPS = [
   { title: 'تصنيفات المركبات', ids: ['week-3-frd-gap-review#10', 'week-3-frd-gap-review#11', 'week-3-frd-gap-review#13', 'week-3-frd-gap-review#14', 'week-3-frd-gap-review#12', 'week-3-frd-gap-review#17', 'week-3-frd-gap-review#19'] },
   { title: 'الأصول', ids: ['week-3-vehicles-drivers-assets#16', 'week-3-vehicles-drivers-assets#26', 'week-3-vehicles-drivers-assets#18', 'week-3-vehicles-drivers-assets#27', 'week-3-vehicles-drivers-assets#17', 'week-3-vehicles-drivers-assets#19'] },
   { title: 'تصنيفات سعة الأصول', ids: ['week-3-vehicles-drivers-assets#20'] },
+  { title: 'شركات العملاء', ids: ['week-4-client-companies#1', 'week-4-client-companies#2', 'week-4-client-companies#3', 'week-4-client-companies#4', 'week-4-client-companies#5', 'week-4-client-companies#6', 'week-4-client-companies#7', 'week-4-client-companies#8', 'week-4-client-companies#9'] },
   { title: 'الملف الشخصي', ids: ['week-1-2-auth-users-roles#2', 'week-3-frd-gap-review#4'] },
   { title: 'قواعد عامة عبر الموديولات', ids: ['week-3-frd-gap-review#5', 'week-3-frd-gap-review#6', 'week-3-frd-gap-review#7'] },
-  { title: 'الواجهة والتنقل', ids: ['week-1-2-auth-users-roles#1', 'week-1-2-auth-users-roles#17', 'week-1-2-auth-users-roles#18', 'week-3-frd-gap-review#1', 'week-3-frd-gap-review#2', 'week-3-vehicles-drivers-assets#22'] },
-  { title: 'الأداء والتصدير', ids: ['week-3-frd-gap-review#22', 'week-3-frd-gap-review#23', 'week-3-frd-gap-review#24', 'week-3-frd-gap-review#25'] },
+  { title: 'الواجهة والتنقل', ids: ['week-1-2-auth-users-roles#1', 'week-1-2-auth-users-roles#17', 'week-1-2-auth-users-roles#18', 'week-3-frd-gap-review#1', 'week-3-frd-gap-review#2', 'week-3-vehicles-drivers-assets#22', 'week-3-frd-gap-review#30'] },
+  { title: 'الأداء والتصدير', ids: ['week-3-frd-gap-review#22', 'week-3-frd-gap-review#23', 'week-3-frd-gap-review#24', 'week-3-frd-gap-review#25', 'week-3-frd-gap-review#29'] },
 ];
 
 const CLIENT_OVERRIDES = {
@@ -407,7 +408,7 @@ const CLIENT_OVERRIDES = {
     title: 'عناصر القائمة الجانبية لمدير النظام',
     stepsList: ['سجّل دخول بحسابك (مدير النظام) وبصّ على القائمة الجانبية.', 'بدّل اللغة لعربي.'],
     expected:
-      'تشوف Dashboard، وتحت عنوان **Accounts**: Users وDrivers، وتحت عنوان **Fleet & Assets**: Vehicles وAssets — من غير أي بنود تانية. بالعربي العنوانين بيبقوا "الحسابات" و"الأسطول والأصول".',
+      'تشوف Dashboard، وتحت عنوان **Accounts**: Users وDrivers، وتحت عنوان **Fleet & Assets**: Vehicles وAssets، وتحت عنوان **Clients & Projects**: Client Companies — من غير أي بنود تانية. بالعربي العناوين بتبقى "الحسابات" و"الأسطول والأصول" و"العملاء والمشروعات".',
   },
   'week-3-frd-gap-review#1': {
     steps: 'سجّل دخول بحسابك. بصّ على الشريط العلوي. بدّل اللغة لعربي وارجع لإنجليزي.',

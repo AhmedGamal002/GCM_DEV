@@ -102,7 +102,7 @@
       <span>تم: <b id="s-pass">0</b></span>
       <span>فشل: <b id="s-fail" style="color:var(--bad)">0</b></span>
       <span>متبقي: <b id="s-left">0</b></span>
-      <span>من <b>77</b> بند</span>
+      <span>من <b>93</b> بند</span>
     </div>
     <div class="prog"><i class="p" id="b-pass"></i><i class="f" id="b-fail"></i></div>
     <div class="tools">
@@ -316,7 +316,7 @@
         <h3>كل دور يشوف بس اللي يخصّه</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>جداول الصلاحيات لكل قسم</dd></div><div class="row"><dt>الخطوات</dt><dd>سجّل دخول بالأربعة بالترتيب وسجّل اللي بيظهر في القائمة الجانبية.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd><ul><li><code>system_admin</code>: Dashboard + (عنوان <strong>Accounts</strong>: Users, Drivers) + (عنوان <strong>Fleet &amp; Assets</strong>: Vehicles, Assets) <strong>فقط</strong> (سقالة القالب الديمو — Layouts/Email/Kanban/Charts... — مخفية عن الكل عمدًا لحد ما نعرض للعميل اللي اتبنى فعلًا).</li><li><code>data_entry</code>: نفس الأدمن (Accounts + Fleet &amp; Assets) — من غير بند &quot;Categories&quot; تحت Vehicles.</li><li><code>auditor</code>: Dashboard + عنوان <strong>Fleet &amp; Assets</strong> (Vehicles, Assets) فقط — مفيش عنوان &quot;Accounts&quot;.</li><li><code>driver</code>: Dashboard فقط.</li></ul></dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>MenuVisibilityTest</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>جداول الصلاحيات لكل قسم</dd></div><div class="row"><dt>الخطوات</dt><dd>سجّل دخول بالأربعة بالترتيب وسجّل اللي بيظهر في القائمة الجانبية.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd><ul><li><code>system_admin</code>: Dashboard + (عنوان <strong>Accounts</strong>: Users, Drivers) + (عنوان <strong>Fleet &amp; Assets</strong>: Vehicles, Assets) + (عنوان <strong>Clients &amp; Projects</strong>: Client Companies) <strong>فقط</strong> (سقالة القالب الديمو — Layouts/Email/Kanban/Charts... — مخفية عن الكل عمدًا لحد ما نعرض للعميل اللي اتبنى فعلًا).</li><li><code>data_entry</code>: نفس الأدمن (Accounts + Fleet &amp; Assets + Clients &amp; Projects) — من غير بند &quot;Categories&quot; تحت Vehicles.</li><li><code>auditor</code>: نفس عناوين الأدمن (عرض/تصدير بس — من غير بند &quot;Add&quot; تحت Client Companies ومن غير &quot;Categories&quot; تحت Vehicles).</li><li><code>driver</code>: Dashboard فقط.</li></ul></dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>MenuVisibilityTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-1-2-auth-users-roles#18" data-title="Breadcrumb + عنوان الصفحة مطابق للـ FRD على كل صفحة">
@@ -561,7 +561,7 @@
         <h3>القائمة الجانبية متجمّعة تحت عنوانين</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>الخطوات</dt><dd><ul><li>سجّل دخول بـ<code>admin@gcm.test</code> ثم <code>dataentry@gcm.test</code> ثم <code>auditor@gcm.test</code> ثم <code>driver@gcm.test</code> وبص على القائمة الجانبية.</li><li>بدّل اللغة لعربي.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الأدمن ومدخل البيانات: Dashboard ثم عنوان <strong>Accounts</strong> (تحته Users وDrivers) ثم عنوان <strong>Fleet &amp; Assets</strong> (تحته Vehicles وAssets). المراقب: Dashboard + عنوان <strong>Fleet &amp; Assets</strong> بس (مفيش &quot;Accounts&quot; لأنه مالوش حاجة تحته). السائق: Dashboard بس ومفيش أي عنوان. بالعربي: &quot;الحسابات&quot; و&quot;الأسطول والأصول&quot;.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>MenuVisibilityTest</code> (<code>test_system_admin_and_data_entry_see_both_section_titles</code>, <code>test_an_auditor_sees_only_the_fleet_and_assets_title</code>, <code>test_a_driver_sees_no_section_titles_at_all</code>)</dd></div></dl>
+      <dl><div class="row"><dt>الخطوات</dt><dd><ul><li>سجّل دخول بـ<code>admin@gcm.test</code> ثم <code>dataentry@gcm.test</code> ثم <code>auditor@gcm.test</code> ثم <code>driver@gcm.test</code> وبص على القائمة الجانبية.</li><li>بدّل اللغة لعربي.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الأدمن ومدخل البيانات: Dashboard ثم عنوان <strong>Accounts</strong> (تحته Users وDrivers) ثم عنوان <strong>Fleet &amp; Assets</strong> (تحته Vehicles وAssets) ثم عنوان <strong>Clients &amp; Projects</strong> (تحته Client Companies). المراقب: نفس العناوين (عرض وتصدير بس). السائق: Dashboard بس ومفيش أي عنوان. بالعربي: &quot;الحسابات&quot; و&quot;الأسطول والأصول&quot; و&quot;العملاء والمشروعات&quot;.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>MenuVisibilityTest</code> (<code>test_system_admin_and_data_entry_see_both_section_titles</code>, <code>test_an_auditor_sees_both_section_titles_too</code>, <code>test_a_driver_sees_no_section_titles_at_all</code>)</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-frd-gap-review#19" data-title="زر &quot;Add category&quot; مش لازق في خانة البحث + زر Export">
@@ -670,6 +670,26 @@
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
       <dl><div class="row"><dt>مرجع الـFRD</dt><dd>&quot;لا يملك المراقب تعديل أي بيانات من خلال صفحة الملف الشخصي الا صورته او كلمة المرور&quot; + قسم تعديل حساب السائق: &quot;المستخدم يستطيع تغيير البيانات التالية من صفحة الملف الشخصي: الصورة الشخصية، كلمة المرور&quot;</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>بـ<code>auditor@gcm.test</code> افتح My Profile.</li><li>تأكد إن تاب &quot;Security&quot; ظاهر.</li><li>افتحه وغيّر كلمة السر فعليًا (بالكلمة الحالية <code>password</code>).</li><li>كرّر نفس الخطوات بـ<code>driver@gcm.test</code>.</li><li>سجّل دخول بـ<code>admin@gcm.test</code> وافتح My Profile — تاب &quot;Security&quot; لازم يفضل مختفي.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>تاب &quot;Security&quot; ظاهر للمراقب والسائق (كان مختفي قبل كده)، وتغيير كلمة السر بينجح (&quot;Password updated&quot;). الاسم والبريد لسه للقراءة فقط. مدير النظام ومدخل البيانات مالهمش تاب Security.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Profile/PasswordChangeTest::test_an_auditor_changes_their_own_password</code>, <code>test_the_security_page_is_available_to_an_auditor</code>, <code>test_a_driver_changes_their_own_password</code>, <code>test_the_security_page_is_available_to_a_driver</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-frd-gap-review#29" data-title="نفس شاشة &quot;جاري الحفظ&quot; في كل صفحات الإنشاء والتعديل">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">29</span></label>
+        <h3>نفس شاشة &quot;جاري الحفظ&quot; في كل صفحات الإنشاء والتعديل</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>الدور</dt><dd>مدير النظام</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>جرّب الحفظ في كل الفورمات دي: مستخدم (إضافة وتعديل)، سائق، مركبة، أصل، تصنيف مركبات، تصنيف سعة أصول، شركة عميل، وصورة My Profile.</li><li>جرّب كمان زراير تغيير الحالة (تعطيل / تنشيط / صيانة) في صفحات التفاصيل، وحذف تصنيف مركبات.</li><li>في الفورمات اللي فيها صورة أو مستند، اختار ملف كبير شوية.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>في كل الحالات تظهر <strong>نفس الشاشة الغامقة</strong> بدايرة التحميل ورسالة &quot;Working...&quot; أول ما تدوس حفظ (ومعاها شريط رفع بالنسبة المئوية لو فيه ملف)، والصفحة مابتقبلش ضغطة تانية لحد ما الطلب يخلص. لو حصل خطأ (بيانات غلط مثلًا) الشاشة بتختفي وتظهر رسالة الخطأ في مكانها.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Unit/BusyOverlayConsistencyTest</code> (بيفشل لو أي صفحة إنشاء/تعديل جديدة اتضافت من غير الشاشة دي)</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-frd-gap-review#30" data-title="شاشة التحميل واللوجو والاسم">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">30</span></label>
+        <h3>شاشة التحميل واللوجو والاسم</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>الدور</dt><dd>مدير النظام</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح أي صفحة (أو اضغط Refresh) وراقب أول ثواني التحميل. جرّب كمان تدوس على رابط من القائمة الجانبية.</li><li>بصّ على أعلى القائمة الجانبية، وعلى صفحة تسجيل الدخول، وعلى عنوان تبويب المتصفح وفوتر الصفحة.</li><li>بدّل اللغة لعربي ثم إنجليزي.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>أثناء تحميل أي صفحة (وأول طلبات بياناتها) تظهر <strong>شاشة كاملة</strong> فيها لوجو GCM واسم &quot;GLOBAL CLEAR MISSION&quot; وشريط متحرك، وبتختفي لما الصفحة تجهز؛ وبتظهر تاني بمجرد ما تدوس على رابط لصفحة تانية. اللوجو والاسم ظاهرين في القائمة الجانبية وصفحة الدخول، والاسم في تبويب المتصفح والفوتر . بالعربي الاسم بيبقى &quot;الرسالة الواضحة العالمية&quot;.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>BrandingTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     </details>
@@ -965,6 +985,175 @@
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
       <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.7.1</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح أي أصل وغيّر حالته لـ&quot;في الصيانة&quot;.</li><li>غيّرها بعدين لـ&quot;معطّل&quot;.</li><li>أعد تنشيطه.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>كل التحويلات التلاتة بتنجح.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Assets/AssetManagementTest::test_data_entry_can_set_maintenance_and_deactivate</code> (نفس الـaction، ومدير النظام صلاحيته أوسع)</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+  </section>
+
+  <section class="doc" data-doc="week-4-client-companies">
+    <h2 class="doc-title">قبول التنفيذ — المرحلة الثانية: شركات العملاء<small>آخر مزامنة: FRD V01.14</small></h2>
+    
+    <details open class="group">
+      <summary>أ) القائمة <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-4-client-companies#1" data-title="عرض قائمة شركات العملاء">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">1</span></label>
+        <h3>عرض قائمة شركات العملاء</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.11 إدارة شركات العملاء</dd></div><div class="row"><dt>الدور</dt><dd>مدير النظام</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>من القائمة الجانبية افتح <strong>Client Companies</strong> (تحت عنوان &quot;Clients &amp; Projects&quot;) ثم List.</li><li>جرّب البحث باسم شركة، وبالاسم المختصر، وبالرقم التعريفي (زي <code>ALN-0001</code>).</li><li>جرّب فلتر الحالة (نشطة / معطلة).</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>جدول فيه الأعمدة (الرقم التعريفي بصيغة حروف + رقم زي <code>ALN-0001</code>، الشركة، ممثل الشركة، المشروعات، المستخدمين، الحالة، الإجراءات)، والبحث والفلتر شغالين. ممثل الشركة بيظهر <code>—</code> والمشروعات والمستخدمين <code>0</code> (بيتحدّثوا لما تتضاف مشروعات ومستخدمين للشركة).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Companies/CompanyManagementTest::test_the_list_is_paginated_searchable_filterable_and_sortable</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+    <details open class="group">
+      <summary>ب) الإنشاء <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-4-client-companies#2" data-title="إنشاء شركة عميل بالحد الأدنى">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">2</span></label>
+        <h3>إنشاء شركة عميل بالحد الأدنى</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.11.2 إنشاء شركة عميل جديدة</dd></div><div class="row"><dt>الدور</dt><dd>مدير النظام</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>من القائمة دوس &quot;Add Client Company&quot;.</li><li>اكتب اسم الشركة واسم مختصر من 3 حروف إنجليزية (مثلًا <code>abc</code>) واترك الباقي فاضي، والحالة &quot;نشطة&quot;.</li><li>دوس Submit.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>بترجع للقائمة برسالة نجاح والشركة ظاهرة، ورقمها التعريفي اتولّد تلقائي من <strong>الاسم المختصر + رقم تسلسلي</strong> (<code>ABC-0001</code> للشركة الأولى، و<code>XYZ-0002</code> للتانية وهكذا)، والاسم المختصر اتحوّل لحروف كبيرة (<code>ABC</code>).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Companies/CompanyManagementTest::test_system_admin_creates_a_company_with_only_the_required_fields</code>, <code>test_the_company_id_is_the_prefix_plus_a_running_number_per_tenant</code>, <code>test_the_prefix_is_normalised_to_three_upper_case_letters</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-4-client-companies#3" data-title="إنشاء شركة عميل بكل البيانات والمرفقات">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">3</span></label>
+        <h3>إنشاء شركة عميل بكل البيانات والمرفقات</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.11.2</dd></div><div class="row"><dt>الدور</dt><dd>مدير النظام</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح &quot;Add Client Company&quot;.</li><li>املأ كل الخانات: نشاط العميل، الهاتف، البريد، العنوان، رابط الخريطة، رقم العقد + تاريخ البداية والنهاية، السجل التجاري، السجل الضريبي.</li><li>ارفع شعار (صورة) وصورة العقد وصورة السجل التجاري وصورة السجل الضريبي (PDF أو صورة).</li><li>اكتب ملاحظات في &quot;Additional Data&quot; واحفظ.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الشركة بتتحفظ وكل البيانات والمرفقات ظاهرة في صفحة التفاصيل.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Companies/CompanyManagementTest::test_files_are_stored_and_the_attachments_stay_private</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-4-client-companies#4" data-title="الاسم المختصر: 3 حروف إنجليزية وغير متكرر، ومنه بيتكوّن الرقم التعريفي">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">4</span></label>
+        <h3>الاسم المختصر: 3 حروف إنجليزية وغير متكرر، ومنه بيتكوّن الرقم التعريفي</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.11.2 (&quot;الاسم المختصر — 3 حروف انجليزية مميزة وغير متكررة وتستخدم عند الحاجة كخليط مع الأرقام للتعبير عن رقم غير متكرر يخص الشركة&quot;)</dd></div><div class="row"><dt>الدور</dt><dd>مدير النظام</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>في فورم الإضافة، اكتب في الاسم المختصر حروف عربي أو أرقام أو أكتر من 3 حروف أو أقل من 3 — لاحظ إن الخانة بتقبل حروف إنجليزية بس وبتحوّلها لحروف كبيرة.</li><li>اكتب اسم مختصر مستخدم لشركة تانية (زي <code>ALN</code>) واحفظ.</li><li>افتح تعديل أي شركة وبصّ على خانة الاسم المختصر.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>رسالة خطأ تحت الخانة (&quot;الاسم المختصر لازم يكون 3 حروف إنجليزية&quot; أو &quot;مستخدم لشركة تانية&quot;)، والشركة ماتتحفظش. في صفحة التعديل الخانة <strong>مقفولة</strong> والرقم التعريفي ظاهر فوق الفورم — لأن الرقم مبني على الاسم المختصر فمينفعش يتغيّر بعد الإنشاء.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Companies/CompanyManagementTest::test_a_prefix_that_is_not_three_english_letters_is_rejected</code>, <code>test_the_prefix_must_be_unique_within_the_tenant</code>, <code>test_the_prefix_is_locked_after_creation</code>, <code>test_the_model_refuses_to_change_a_saved_prefix_from_any_code_path</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-4-client-companies#5" data-title="التحقق من باقي الحقول">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">5</span></label>
+        <h3>التحقق من باقي الحقول</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.11.2</dd></div><div class="row"><dt>الدور</dt><dd>مدير النظام</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>في فورم الإضافة اكتب حروف في رقم العقد أو السجل التجاري أو الضريبي.</li><li>خلّي تاريخ النهاية قبل تاريخ البداية.</li><li>اكتب بريد غلط، ورابط خريطة مش بيبدأ بـ <code>http</code>.</li><li>ارفع ملف أكبر من 4 ميجا أو نوعه مش PDF/صورة، وشعار أكبر من 2 ميجا.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>كل حقل بيرفض برسالة واضحة تحته (أو رسالة حجم الملف قبل الرفع)، ومفيش حاجة بتتحفظ.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Companies/CompanyManagementTest::test_the_registration_numbers_must_be_digits_only</code>, <code>test_the_contract_end_date_cannot_be_before_the_start_date</code>, <code>test_email_and_location_link_are_validated</code>, <code>test_the_location_link_must_be_http_or_https</code>, <code>test_an_oversized_or_wrong_type_attachment_is_rejected</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+    <details open class="group">
+      <summary>ج) التفاصيل والتعديل <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-4-client-companies#6" data-title="صفحة تفاصيل الشركة">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">6</span></label>
+        <h3>صفحة تفاصيل الشركة</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.11.3 صفحة عرض تفاصيل شركة عميل</dd></div><div class="row"><dt>الدور</dt><dd>مدير النظام</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>من القائمة دوس أيقونة العين على شركة فيها مرفقات (مثلًا اللي عملتها في البند 3).</li><li>دوس &quot;Download&quot; جنب العقد وجنب السجلين.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الاسم واللوجو والحالة والنشاط وبيانات التواصل والعقد (الرقم والمدة) والسجلات وآخر تحديث بواسطة مين. المرفقات بتتنزّل. الإحصائيات (المشروعات والتعاقدات والرحلات والنفايات المنقولة) بـ <code>0</code>، وقسما المشروعات والتعاقدات فيهم رسالة &quot;هتظهر هنا لما الموديول يبقى متاح&quot;.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Companies/CompanyManagementTest::test_show_returns_the_company_with_placeholder_counts</code>, <code>test_the_attachment_download_streams_the_private_file</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-4-client-companies#7" data-title="تعديل بيانات الشركة">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">7</span></label>
+        <h3>تعديل بيانات الشركة</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.11.4 صفحة تعديل شركة عميل</dd></div><div class="row"><dt>الدور</dt><dd>مدير النظام</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح صفحة تعديل شركة. لاحظ إن كل الخانات معبّية والمرفقات الحالية ظاهرة كروابط.</li><li>غيّر الاسم وباقي البيانات (الاسم المختصر مقفول)، ومن غير ما تختار ملفات جديدة دوس Submit.</li><li>افتح التعديل تاني وارفع صورة عقد جديدة واحفظ.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>التعديلات بتتحفظ وتظهر في التفاصيل. المرفقات القديمة بتفضل لو ماغيرتهاش، ولو رفعت جديد بتحل محل القديم. الاسم المختصر والرقم التعريفي بيفضلوا زي ما هما.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Companies/CompanyManagementTest::test_every_field_except_the_prefix_is_editable</code>, <code>test_a_company_can_keep_its_own_prefix_when_edited</code>, <code>test_the_prefix_is_locked_after_creation</code>, <code>test_re_uploading_replaces_the_old_file_and_no_file_keeps_it</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-4-client-companies#8" data-title="تعطيل الشركة وإعادة تنشيطها">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">8</span></label>
+        <h3>تعطيل الشركة وإعادة تنشيطها</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.11.4 (تعطيل / تنشيط)</dd></div><div class="row"><dt>الدور</dt><dd>مدير النظام</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>في صفحة تعديل شركة نشطة انزل لكارت &quot;Company Status&quot;.</li><li>اختار &quot;Deactivated&quot;، علّم &quot;I confirm this status change&quot; وادوس &quot;Update Status&quot;.</li><li>ارجع للقائمة وافلتر بـ &quot;Deactivated&quot;، وبعدها رجّع الشركة لـ &quot;Active&quot; بنفس الطريقة.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الحالة بتتغير وتظهر في القائمة والتفاصيل، وزر التأكيد مايشتغلش إلا بعد التعليم. مفيش زر حذف في أي مكان.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Companies/CompanyManagementTest::test_status_can_be_deactivated_and_reactivated</code>, <code>test_reactivating_works_from_the_deactivated_state</code>, <code>test_there_is_no_hard_delete_route</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+    <details open class="group">
+      <summary>د) التصدير <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-4-client-companies#9" data-title="تصدير القائمة بنفس الفلاتر والبحث">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">9</span></label>
+        <h3>تصدير القائمة بنفس الفلاتر والبحث</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.11 (زر تصدير Excel / PDF)</dd></div><div class="row"><dt>الدور</dt><dd>مدير النظام</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>في قائمة شركات العملاء اكتب في البحث جزء من اسم شركة، أو اختار فلتر &quot;Deactivated&quot;.</li><li>دوس Export واختار Excel، وبعدها Pdf.</li><li>غيّر اللغة للعربي وصدّر PDF تاني.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الملفين فيهم نفس الصفوف اللي ظاهرة على الشاشة بس (مش الجدول كله). الـPDF بالعربي بيطلع بحروف متصلة وترتيب صحيح.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>ExportFiltersTest::test_client_company_export_honours_search_and_filter</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+    <details open class="group">
+      <summary>هـ) الأدوار والصلاحيات <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-4-client-companies#10" data-title="مدخل البيانات ليه نفس صلاحيات مدير النظام">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">10</span></label>
+        <h3>مدخل البيانات ليه نفس صلاحيات مدير النظام</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.11 (&quot;إنشاء / تعديل / تعطيل — مدير النظام / مدخل البيانات&quot;) + V01.14 صلاحيات مدخل البيانات</dd></div><div class="row"><dt>الدور</dt><dd>مدخل البيانات</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>سجّل دخول بـ<code>dataentry@gcm.test</code>، افتح Client Companies.</li><li>أنشئ شركة، عدّلها، عطّلها وارجع نشّطها.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>كل العمليات بتنجح زي مدير النظام.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Companies/CompanyPolicyTest::test_system_admin_and_data_entry_have_full_access</code>, <code>CompanyManagementTest::test_data_entry_can_create_a_company</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-4-client-companies#11" data-title="المراقب: عرض وتصدير فقط">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">11</span></label>
+        <h3>المراقب: عرض وتصدير فقط</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>V01.14 — مراقب النظام &quot;عرض / تصدير&quot; في كل الأقسام</dd></div><div class="row"><dt>الدور</dt><dd>المراقب</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>سجّل دخول بـ<code>auditor@gcm.test</code>. افتح Client Companies.</li><li>افتح تفاصيل شركة وجرّب التصدير.</li><li>جرّب تفتح &quot;Add Client Company&quot; ودوس Submit، وجرّب تفتح صفحة تعديل مباشرة.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>القائمة والتفاصيل والتصدير شغالين. الإنشاء والتعديل والتعطيل بيترفضوا (403) ومفيش لينك &quot;Add&quot; في القائمة الجانبية.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Companies/CompanyPolicyTest::test_auditor_can_view_and_export_but_not_change_anything</code>, <code>MenuVisibilityTest::test_client_companies_menu_visibility_per_role</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-4-client-companies#12" data-title="السائق مالوش وصول">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">12</span></label>
+        <h3>السائق مالوش وصول</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>الدور</dt><dd>السائق</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>سجّل دخول بـ<code>driver@gcm.test</code>. بصّ على القائمة الجانبية وجرّب تفتح <code>/app/company/list</code> يدويًا.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>مفيش &quot;Client Companies&quot; في القائمة، والجدول بيعرض رسالة إنك مالكش صلاحية (403).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Companies/CompanyPolicyTest::test_driver_has_no_access_at_all</code>, <code>test_the_attachment_download_needs_view_access</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-4-client-companies#13" data-title="عزل الشركات المشغّلة عن بعض">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">13</span></label>
+        <h3>عزل الشركات المشغّلة عن بعض</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>الدور</dt><dd>مدير النظام (شركتين)</dd></div><div class="row"><dt>الخطوات</dt><dd>من Postman (أو جلسة مدير نظام لشركة تانية) جرّب تفتح/تعدّل/تعطّل/تحمّل مرفق شركة عميل تابعة لشركة مشغّلة تانية بنفس الـ id.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>404 في كل الحالات، والقائمة والتصدير مايظهروش غير شركات الشركة المشغّلة الحالية. نفس الاسم المختصر مسموح في شركتين مشغّلتين مختلفتين، وكل واحدة بتعدّ الأرقام من 1.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Companies/CompanyTenantIsolationTest</code>, <code>CompanyManagementTest::test_the_same_prefix_is_allowed_in_another_tenant</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+    <details open class="group">
+      <summary>و) القائمة الجانبية واللغة <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-4-client-companies#14" data-title="عنوان &quot;Clients &amp; Projects&quot; وبند Client Companies">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">14</span></label>
+        <h3>عنوان &quot;Clients &amp; Projects&quot; وبند Client Companies</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.11</dd></div><div class="row"><dt>الدور</dt><dd>مدير النظام</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>بصّ على القائمة الجانبية. بدّل اللغة لعربي.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>تحت عنوان <strong>Clients &amp; Projects</strong> (&quot;العملاء والمشروعات&quot;) بند <strong>Client Companies</strong> (&quot;شركات العملاء&quot;) فيه List وAdd. كل نصوص صفحات الشركات بتترجم للعربي والصفحة بتتعكس (RTL).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>MenuVisibilityTest::test_system_admin_and_data_entry_see_both_section_titles</code>, <code>test_client_companies_menu_visibility_per_role</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     </details>

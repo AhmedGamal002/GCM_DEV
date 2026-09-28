@@ -41,12 +41,17 @@ Dashboard, then an **Accounts** section (Users · Drivers) and a **Fleet & Asset
 - **Asset capacity categories** (`/app/asset-category/list`): view and export only — no create, no edit.
 - **Not allowed:** any create, edit, or status change.
 
-## 6. What you cannot do (returns 403)
+## 6. Client companies — `/app/company/list`
+
+- **View** the list + filter + **export**, and the **details** of any company (and download its attachments).
+- **Not allowed:** creating, editing or deactivating (the "Add" link is not shown in the sidebar).
+
+## 7. What you cannot do (returns 403)
 
 - Create, edit, or deactivate any user / driver / vehicle / asset / category.
 - Change your name or email on the profile page.
 - Manage roles & permissions / companies.
 
-## 7. Features available now
+## 8. Features available now
 
-Full view + export across every built module (Users, Drivers, Vehicles, Assets, and categories) — was limited to vehicles and assets only before the FRD V01.14 upgrade. Self-service password change works from the profile page.
+Full view + export across every built module (Users, Drivers, Vehicles, Assets, Client companies, and categories) — was limited to vehicles and assets only before the FRD V01.14 upgrade. Self-service password change works from the profile page.

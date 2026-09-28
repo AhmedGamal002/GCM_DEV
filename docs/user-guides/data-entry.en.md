@@ -51,7 +51,14 @@ Dashboard, then an **Accounts** section (Users · Drivers) and a **Fleet & Asset
 - **Edit:** name only (capacity and kind locked).
 - No delete, no deactivate.
 
-## 6. What you cannot do (returns 403 or 422)
+## 6. Client companies — `/app/company/list`
+
+- **View** the list + filter + **export**, and the **details** of any company (and download its attachments).
+- **Create** a client company (name + short name are required) — including creating it deactivated.
+- **Edit** any company data (every field except the short name — it is locked after creation because the company ID is built from it).
+- **Status:** **deactivate and reactivate** from the edit page. There is no delete.
+
+## 7. What you cannot do (returns 403 or 422)
 
 | | |
 |---|---|
@@ -60,8 +67,9 @@ Dashboard, then an **Accounts** section (Users · Drivers) and a **Fleet & Asset
 | Anything related to Contracts (PO) | ✖ — you don't see that section at all once it's built |
 | Roles & permissions / Companies management | ✖ |
 
-## 7. Features available now
+## 8. Features available now
 
 Users and Drivers: view/create/edit + every account status (on vacation/deactivate/reactivate) except the System Admin's own account.
 Vehicles and Assets: full CRUD including deactivate/reactivate + export. The embedded container in the vehicle form works.
+Client companies: full CRUD including deactivate/reactivate + export.
 Deferred: "Add asset to a project" (Week 4), "on a trip" column for vehicles (Week 7).
