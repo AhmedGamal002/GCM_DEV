@@ -143,14 +143,14 @@
       <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.3.1 إدارة الملف الشخصي / §1.4 المستخدمين</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح My Profile.</li><li>جرّب تعدّل خانة البريد أو الاسم.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>البريد والاسم للعرض فقط (disabled) — الصورة الشخصية هي الوحيدة القابلة للتغيير من الملف الشخصي.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Profile/ProfileUpdateTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
-    <article class="item" data-id="week-1-2-auth-users-roles#3" data-title="موظفو GCM والسائقون مايغيّروش كلمة السر بنفسهم — الإدارة هي اللي بتغيّرها">
+    <article class="item" data-id="week-1-2-auth-users-roles#3" data-title="مدير النظام ومدخل البيانات مايغيّروش كلمة السر بنفسهم — الإدارة هي اللي بتغيّرها">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
           <span class="num">3</span></label>
-        <h3>موظفو GCM والسائقون مايغيّروش كلمة السر بنفسهم — الإدارة هي اللي بتغيّرها</h3>
+        <h3>مدير النظام ومدخل البيانات مايغيّروش كلمة السر بنفسهم — الإدارة هي اللي بتغيّرها</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.4 (&quot;كلمة المرور غير قابلة للتعديل من قبل المستخدم ولكن من قبل مدير النظام او مدخل البيانات&quot;)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>(أ) سجّل دخول بـ<code>dataentry@gcm.test</code> وافتح My Profile — لازم تلاقي مفيش تابات &quot;Account/Security&quot; والاسم للقراءة فقط. جرّب كمان تفتح <code>/pages/account-settings-security</code> يدويًا (المفروض يرجّع 403).</li><li>(ب) من <code>admin@gcm.test</code> أو <code>dataentry@gcm.test</code> افتح Users وعدّل <code>auditor@gcm.test</code> — اكتب كلمة سر جديدة مع تأكيدها واحفظ. بعدين سجّل دخول بالمراقب بالكلمة الجديدة.</li><li>(ج) كرّر نفس خطوة (ب) على سائق من صفحة تعديل السائق.</li><li>(د) سيب خانة كلمة السر فاضية وعدّل الاسم بس واحفظ — كلمة السر القديمة المفروض تفضل شغالة.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>(أ) صورة فقط. (ب)+(ج) الكلمة القديمة ترفض والجديدة تدخل. (د) مفيش تغيير في كلمة السر.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Profile/PasswordChangeTest</code>, <code>Profile/ProfileUpdateTest</code>, <code>Users/UserPolicyTest</code>, <code>Drivers/DriverUpdateTest</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.4 (&quot;كلمة المرور قابلة للتعديل من قبل مدير النظام او مدخل البيانات&quot;) — المراقب والسائق استثناء (بند 28 في مراجعة الفجوات: بيغيّروها من الملف الشخصي)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>(أ) سجّل دخول بـ<code>dataentry@gcm.test</code> (وكرّر بـ<code>admin@gcm.test</code>) وافتح My Profile — لازم تلاقي مفيش تابات &quot;Account/Security&quot; والاسم للقراءة فقط. جرّب كمان تفتح <code>/pages/account-settings-security</code> يدويًا (المفروض يرجّع 403).</li><li>(ب) من <code>admin@gcm.test</code> أو <code>dataentry@gcm.test</code> افتح Users وعدّل <code>auditor@gcm.test</code> — اكتب كلمة سر جديدة مع تأكيدها واحفظ. بعدين سجّل دخول بالمراقب بالكلمة الجديدة.</li><li>(ج) كرّر نفس خطوة (ب) على سائق من صفحة تعديل السائق.</li><li>(د) سيب خانة كلمة السر فاضية وعدّل الاسم بس واحفظ — كلمة السر القديمة المفروض تفضل شغالة.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>(أ) صورة فقط. (ب)+(ج) الكلمة القديمة ترفض والجديدة تدخل. (د) مفيش تغيير في كلمة السر.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Profile/PasswordChangeTest</code>, <code>Profile/ProfileUpdateTest</code>, <code>Users/UserPolicyTest</code>, <code>Drivers/DriverUpdateTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-1-2-auth-users-roles#3.1" data-title="مدخل البيانات مايقدرش يلمس حساب مدير النظام">
@@ -413,7 +413,7 @@
         <h3>الملف الشخصي = صورة فقط</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.3.1 (&quot;المستخدم يستطيع تغيير البيانات التالية من صفحة الملف الشخصي: الصورة الشخصية&quot;)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>بـ<code>dataentry@gcm.test</code> (وكرّر بـ<code>driver@gcm.test</code>) افتح My Profile.</li><li>حاول تكتب في خانة الاسم.</li><li>دوس &quot;Upload new photo&quot; واختار صورة PNG/JPG صغيرة، ولاحظ المعاينة.</li><li>دوس &quot;Save photo&quot;.</li><li>جرّب ملف مش صورة، وجرّب &quot;Save photo&quot; من غير ما تختار صورة.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الاسم والبريد للقراءة فقط، ومفيش تابات &quot;Account/Security&quot;. الصورة بتتحفظ وتظهر في الصفحة <strong>وفي الشريط العلوي</strong>. لو اخترت ملف مش صورة، أو دُست حفظ من غير ما تختار حاجة، هتظهر رسالة خطأ واضحة.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Profile/ProfileUpdateTest</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.3.1 (&quot;المستخدم يستطيع تغيير البيانات التالية من صفحة الملف الشخصي: الصورة الشخصية&quot;)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>بـ<code>dataentry@gcm.test</code> (وكرّر بـ<code>admin@gcm.test</code>) افتح My Profile.</li><li>حاول تكتب في خانة الاسم.</li><li>دوس &quot;Upload new photo&quot; واختار صورة PNG/JPG صغيرة، ولاحظ المعاينة.</li><li>دوس &quot;Save photo&quot;.</li><li>جرّب ملف مش صورة، وجرّب &quot;Save photo&quot; من غير ما تختار صورة.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الاسم والبريد للقراءة فقط، ومفيش تابات &quot;Account/Security&quot;. الصورة بتتحفظ وتظهر في الصفحة <strong>وفي الشريط العلوي</strong>. لو اخترت ملف مش صورة، أو دُست حفظ من غير ما تختار حاجة، هتظهر رسالة خطأ واضحة.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Profile/ProfileUpdateTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     </details>
@@ -662,14 +662,14 @@
       <dl><div class="row"><dt>مرجع الـFRD</dt><dd>توصيف صفحات دور المراقب (&quot;له صلاحية الاطلاع علي جميع الصفحات (view)... وليس له أي دور في تعديل او انشاء&quot;)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>بـ<code>auditor@gcm.test</code> بصّ على القائمة الجانبية، وافتح Users وDrivers.</li><li>جرّب تصدّر من الاتنين (Excel/Pdf).</li><li>جرّب تفتح فورم &quot;Add User&quot; مباشرة يدويًا.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>&quot;Accounts&quot; (Users, Drivers) ظاهرة في القائمة، والقوائم بتتفتح فعليًا (مش 403)، والتصدير شغّال. فورم الإضافة يترفض (403).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Users/UserPolicyTest::test_auditor_can_list_and_view_but_not_create_users</code>, <code>Users/UserExportTest::test_export_succeeds_for_auditor</code>, <code>Drivers/DriverPolicyTest::test_auditor_can_list_and_view_but_not_update_drivers</code>, <code>Drivers/DriverExportTest::test_export_succeeds_for_auditor</code>, <code>MenuVisibilityTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
-    <article class="item" data-id="week-3-frd-gap-review#28" data-title="المراقب يقدر يغيّر كلمة سره بنفسه">
+    <article class="item" data-id="week-3-frd-gap-review#28" data-title="المراقب والسائق يقدروا يغيّروا كلمة سرهم بنفسهم">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
           <span class="num">28</span></label>
-        <h3>المراقب يقدر يغيّر كلمة سره بنفسه</h3>
+        <h3>المراقب والسائق يقدروا يغيّروا كلمة سرهم بنفسهم</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>&quot;لا يملك المراقب تعديل أي بيانات من خلال صفحة الملف الشخصي الا صورته او كلمة المرور&quot;</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>بـ<code>auditor@gcm.test</code> افتح My Profile.</li><li>تأكد إن تاب &quot;Security&quot; ظاهر.</li><li>افتحه وغيّر كلمة السر فعليًا (بالكلمة الحالية <code>password</code>).</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>تاب &quot;Security&quot; ظاهر (كان مختفي قبل كده)، وتغيير كلمة السر بينجح (&quot;Password updated&quot;). الاسم والبريد لسه للقراءة فقط.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Profile/PasswordChangeTest::test_an_auditor_changes_their_own_password</code>, <code>test_the_security_page_is_available_to_an_auditor</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>&quot;لا يملك المراقب تعديل أي بيانات من خلال صفحة الملف الشخصي الا صورته او كلمة المرور&quot; + قسم تعديل حساب السائق: &quot;المستخدم يستطيع تغيير البيانات التالية من صفحة الملف الشخصي: الصورة الشخصية، كلمة المرور&quot;</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>بـ<code>auditor@gcm.test</code> افتح My Profile.</li><li>تأكد إن تاب &quot;Security&quot; ظاهر.</li><li>افتحه وغيّر كلمة السر فعليًا (بالكلمة الحالية <code>password</code>).</li><li>كرّر نفس الخطوات بـ<code>driver@gcm.test</code>.</li><li>سجّل دخول بـ<code>admin@gcm.test</code> وافتح My Profile — تاب &quot;Security&quot; لازم يفضل مختفي.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>تاب &quot;Security&quot; ظاهر للمراقب والسائق (كان مختفي قبل كده)، وتغيير كلمة السر بينجح (&quot;Password updated&quot;). الاسم والبريد لسه للقراءة فقط. مدير النظام ومدخل البيانات مالهمش تاب Security.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Profile/PasswordChangeTest::test_an_auditor_changes_their_own_password</code>, <code>test_the_security_page_is_available_to_an_auditor</code>, <code>test_a_driver_changes_their_own_password</code>, <code>test_the_security_page_is_available_to_a_driver</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     </details>
@@ -969,7 +969,7 @@
     </article>
     </details>
   </section>
-  <p class="foot">اتولّد تلقائيًا من ملفات <code>docs/acceptance/week-*.md</code> بتاريخ 2026-09-27 — للتحديث: <code>node docs/acceptance/build-checklist.mjs</code>. متعدّلش الملف ده بإيدك.</p>
+  <p class="foot">اتولّد تلقائيًا من ملفات <code>docs/acceptance/week-*.md</code> بتاريخ 2026-09-28 — للتحديث: <code>node docs/acceptance/build-checklist.mjs</code>. متعدّلش الملف ده بإيدك.</p>
 </div>
 
 <script>
