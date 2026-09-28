@@ -18,7 +18,7 @@
 
 @section('content')
 
-@include('_partials.breadcrumb', ['pageTitle' => __('Edit Category'), 'breadcrumbs' => [
+@include('_partials.breadcrumb', ['updatedId' => 'asset-category-last-updated', 'pageTitle' => __('Edit Category'), 'breadcrumbs' => [
   ['title' => __('Assets'), 'url' => route('app-asset-list')],
   ['title' => __('Asset capacity categories'), 'url' => route('app-asset-category-list')],
   ['title' => __('Edit category')],

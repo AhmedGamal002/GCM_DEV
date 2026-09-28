@@ -170,12 +170,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const status = statusForm.querySelector('input[name="new_status"]:checked').value;
 
+    window.gcmBusy.start();
+
     window.axios
       .patch(`/api/v1/vehicles/${id}/status`, { status })
       .then(() => {
         window.location.href = `${window.location.pathname}?status_updated=1`;
       })
       .catch(function (error) {
+        window.gcmBusy.stop();
         errorBox.textContent = (error.response && error.response.data && error.response.data.message) || t.generic_error;
         errorBox.classList.remove('d-none');
         window.scrollTo(0, 0);

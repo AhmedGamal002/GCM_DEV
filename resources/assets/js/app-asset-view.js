@@ -107,12 +107,15 @@ document.addEventListener('DOMContentLoaded', function () {
     const checked = statusForm.querySelector('input[name="new_status"]:checked');
     if (!checked) return;
 
+    window.gcmBusy.start();
+
     window.axios
       .patch(`/api/v1/assets/${id}/status`, { status: checked.value })
       .then(() => {
         window.location.href = `${window.location.pathname}?status_updated=1`;
       })
       .catch(function (error) {
+        window.gcmBusy.stop();
         errorBox.textContent = (error.response && error.response.data && error.response.data.message) || t.generic_error;
         errorBox.classList.remove('d-none');
         window.scrollTo(0, 0);

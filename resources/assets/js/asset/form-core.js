@@ -199,6 +199,7 @@ export function initAssetForm(opts) {
     if (!validate()) return;
 
     submitBtn.disabled = true;
+    window.gcmBusy.start({ progress: true });
 
     let url = '/api/v1/assets';
     let method = 'post';
@@ -223,7 +224,7 @@ export function initAssetForm(opts) {
       };
     }
 
-    window.axios[method](url, payload)
+    window.axios[method](url, payload, { onUploadProgress: window.gcmBusy.onUploadProgress })
       .then(() => {
         if (mode === 'edit') {
           window.location.href = `${t.view_url_base || '/app/asset/view'}/${id}?saved=1`;
@@ -232,6 +233,7 @@ export function initAssetForm(opts) {
         }
       })
       .catch((error) => {
+        window.gcmBusy.stop();
         submitBtn.disabled = false;
         const res = error.response;
         if (res && res.status === 422 && res.data && res.data.errors) {

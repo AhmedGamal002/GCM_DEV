@@ -10,10 +10,6 @@
 
   <form class="card-body {{ $isCreate ? '' : 'd-none' }}" id="vehicleForm" enctype="multipart/form-data" novalidate>
 
-    @unless($isCreate)
-      <p class="small text-muted mb-4" id="ve-updated-by"></p>
-    @endunless
-
     <h6>1. {{ __('Basic Data') }}</h6>
     <div class="row g-6">
       <div class="col-md-3">

@@ -3,7 +3,7 @@
 return [
   "creatorName" => "Digitswat",
   "creatorUrl" => "https://digitswat.com",
-  "templateName" => "Digitswat",
+  "templateName" => "GLOBAL CLEAR MISSION",
   "templateSuffix" => "Admin Template",
   "templateVersion" => "2.0.0",
   "templateFree" => false,
