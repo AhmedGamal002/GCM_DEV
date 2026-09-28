@@ -7,6 +7,8 @@
   // name) so existing @include callers don't need a new param just to
   // get a heading; pass `pageTitle` explicitly only when the page's
   // heading should read differently from its last breadcrumb entry.
+  // Optional: id of a <p> rendered right under the title for the "Last updated by X — date" line.
+  $updatedId = $updatedId ?? null;
   $pageTitle = $pageTitle ?? (count($breadcrumbs) ? end($breadcrumbs)['title'] : null);
 @endphp
 <nav aria-label="breadcrumb" class="mb-2">
@@ -27,4 +29,9 @@
 </nav>
 @if ($pageTitle)
   <h4 class="fw-bold mb-4">{{ $pageTitle }}</h4>
+@endif
+{{-- FRD: every details/edit page shows "اخر تحديث: تم بواسطة ..... – التاريخ والوقت" right under the page title.
+     The page's JS fills #{{ $updatedId }} once the record loads; empty, it takes no space (.gcm-updated-by:empty). --}}
+@if ($updatedId)
+  <p class="gcm-updated-by small text-muted mt-n3 mb-4" id="{{ $updatedId }}"></p>
 @endif

@@ -36,7 +36,7 @@
 
 @section('content')
 
-@include('_partials.breadcrumb', ['pageTitle' => __('Edit Account'), 'breadcrumbs' => [
+@include('_partials.breadcrumb', ['updatedId' => 'ue-updated-by', 'pageTitle' => __('Edit Account'), 'breadcrumbs' => [
   ['title' => __('Users'), 'url' => route('app-user-list')],
   ['title' => __('Edit')],
 ]])
@@ -62,8 +62,6 @@
 
   <div class="d-none" id="user-edit-form-wrapper">
     <form class="card-body" id="userEditForm">
-
-      <p class="small text-muted mb-4" id="ue-updated-by"></p>
 
       <h6>1. {{ __('Account Details') }}</h6>
       <div class="row g-6">

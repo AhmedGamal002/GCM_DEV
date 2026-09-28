@@ -100,6 +100,7 @@ export function initAssetCategoryForm(opts) {
     if (!validate()) return;
 
     submitBtn.disabled = true;
+    window.gcmBusy.start({ progress: true });
 
     let url = '/api/v1/asset-capacity-categories';
     let method = 'post';
@@ -119,11 +120,12 @@ export function initAssetCategoryForm(opts) {
       };
     }
 
-    window.axios[method](url, payload)
+    window.axios[method](url, payload, { onUploadProgress: window.gcmBusy.onUploadProgress })
       .then(() => {
         window.location.href = `${t.list_url || '/app/asset-category/list'}?created=1`;
       })
       .catch((error) => {
+        window.gcmBusy.stop();
         submitBtn.disabled = false;
         const res = error.response;
         if (res && res.status === 422 && res.data && res.data.errors) {

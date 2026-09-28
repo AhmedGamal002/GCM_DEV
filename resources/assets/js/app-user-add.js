@@ -39,12 +39,27 @@ document.addEventListener('DOMContentLoaded', function () {
       data.append('photo', photo);
     }
 
+    // Server limit: 2 MB per photo — fail now, not after the upload.
+    const tooLarge = window.gcmFileGuard(form, { default: 2048 });
+    if (tooLarge) {
+      errorBox.textContent = tooLarge;
+      errorBox.classList.remove('d-none');
+      window.scrollTo(0, 0);
+      return;
+    }
+
+    window.gcmBusy.start({ progress: true });
+
     window.axios
-      .post('/api/v1/users', data, { headers: { 'Content-Type': 'multipart/form-data' } })
+      .post('/api/v1/users', data, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+        onUploadProgress: window.gcmBusy.onUploadProgress
+      })
       .then(function () {
         window.location.href = '/app/user/list?created=1';
       })
       .catch(function (error) {
+        window.gcmBusy.stop();
         const message =
           error.response && error.response.data && error.response.data.errors
             ? Object.values(error.response.data.errors).flat().join(' ')
