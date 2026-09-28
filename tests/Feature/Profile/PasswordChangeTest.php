@@ -17,10 +17,11 @@ use Tests\TestCase;
  * Those roles don't exist until Week 4-5 (RoleSeeder), so that "allowed"
  * half is covered with a contractor_user created here.
  *
- * FRD V01.14 (changed): auditor specifically gets self-service password
- * change too now ("لا يملك المراقب تعديل أي بيانات من خلال صفحة الملف
- * الشخصي الا صورته او كلمة المرور") — data_entry/system_admin/driver stay
- * exactly as before. The gate itself is User::canChangeOwnPassword().
+ * FRD V01.14 (changed): auditor ("لا يملك المراقب تعديل أي بيانات من خلال
+ * صفحة الملف الشخصي الا صورته او كلمة المرور") and driver (edit-account
+ * section: "الصورة الشخصية" + "كلمة المرور") get self-service password
+ * change too now — data_entry/system_admin stay exactly as before. The gate
+ * itself is User::canChangeOwnPassword().
  */
 class PasswordChangeTest extends TestCase
 {
@@ -55,8 +56,8 @@ class PasswordChangeTest extends TestCase
         ], $overrides);
     }
 
-    #[DataProvider('gcmRolesProvider')]
-    public function test_gcm_staff_and_drivers_cannot_change_their_own_password(string $role): void
+    #[DataProvider('adminRolesProvider')]
+    public function test_data_entry_and_system_admin_cannot_change_their_own_password(string $role): void
     {
         $user = $this->userWithRole($role);
 
@@ -67,24 +68,23 @@ class PasswordChangeTest extends TestCase
         $this->assertTrue(Hash::check('old-password', $user->fresh()->password));
     }
 
-    #[DataProvider('gcmRolesProvider')]
-    public function test_the_security_page_is_not_available_to_gcm_staff_and_drivers(string $role): void
+    #[DataProvider('adminRolesProvider')]
+    public function test_the_security_page_is_not_available_to_data_entry_and_system_admin(string $role): void
     {
         $this->actingAs($this->userWithRole($role), 'web')
             ->get('/pages/account-settings-security')
             ->assertForbidden();
     }
 
-    public static function gcmRolesProvider(): array
+    public static function adminRolesProvider(): array
     {
         return [
             ['system_admin'],
             ['data_entry'],
-            ['driver'],
         ];
     }
 
-    public function test_the_profile_page_hides_the_security_tab_for_gcm_users(): void
+    public function test_the_profile_page_hides_the_security_tab_for_data_entry(): void
     {
         $this->actingAs($this->userWithRole('data_entry'), 'web')
             ->get('/pages/account-settings-account')
@@ -117,6 +117,25 @@ class PasswordChangeTest extends TestCase
             ->get('/pages/account-settings-account')
             ->assertOk()
             ->assertSee('account-settings-security', false);
+    }
+
+    /** FRD V01.14: the driver's edit-account section lists the photo AND the password as self-service. */
+    public function test_a_driver_changes_their_own_password(): void
+    {
+        $user = $this->userWithRole('driver');
+
+        $this->actingAs($user, 'web')
+            ->patchJson('/api/v1/me/password', $this->payload())
+            ->assertNoContent();
+
+        $this->assertTrue(Hash::check('brand-new-password', $user->fresh()->password));
+    }
+
+    public function test_the_security_page_is_available_to_a_driver(): void
+    {
+        $this->actingAs($this->userWithRole('driver'), 'web')
+            ->get('/pages/account-settings-security')
+            ->assertOk();
     }
 
     public function test_a_contractor_user_changes_their_password_with_the_correct_current_password(): void

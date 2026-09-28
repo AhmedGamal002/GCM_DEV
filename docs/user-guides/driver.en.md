@@ -12,7 +12,7 @@ The driver **does not use the admin panel** — their mobile app comes in a late
 
 - **Sidebar shows a single item — Dashboard.** (Users / Vehicles / Drivers / Assets and the whole template scaffold are **hidden**.)
 - If they try to open any other page manually (e.g. `/app/user/list`) it returns 403 and the table shows "You don't have permission to view this data."
-- They **can use the Profile** (My Profile): change their profile photo only. Name and password are changed by the System Admin or Data Entry.
+- They **can use the Profile** (My Profile): change their profile photo **and their own password** (the "Security" tab). Name and email are read-only and are changed by the System Admin or Data Entry.
 - They can read the roles list (reference data) — with no practical effect for them.
 
 ## What they cannot do
@@ -24,4 +24,4 @@ The driver **does not use the admin panel** — their mobile app comes in a late
 
 | Available | Deferred |
 |---|---|
-| Sign in + shell dashboard + Profile (photo only) | The full mobile app (creating trips, uploading container photos, ...) — Week 7+ |
+| Sign in + shell dashboard + Profile (photo + password) | The full mobile app (creating trips, uploading container photos, ...) — Week 7+ |

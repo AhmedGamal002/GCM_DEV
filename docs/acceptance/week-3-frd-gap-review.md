@@ -48,7 +48,7 @@
 ### 4. الملف الشخصي = صورة فقط
 - **FRD:** §1.3.1 ("المستخدم يستطيع تغيير البيانات التالية من صفحة الملف الشخصي: الصورة الشخصية")
 - **الخطوات:**
-  - بـ`dataentry@gcm.test` (وكرّر بـ`driver@gcm.test`) افتح My Profile.
+  - بـ`dataentry@gcm.test` (وكرّر بـ`admin@gcm.test`) افتح My Profile.
   - حاول تكتب في خانة الاسم.
   - دوس "Upload new photo" واختار صورة PNG/JPG صغيرة، ولاحظ المعاينة.
   - دوس "Save photo".
@@ -295,12 +295,14 @@
 - **يغطيه آليًا:** `Users/UserPolicyTest::test_auditor_can_list_and_view_but_not_create_users`, `Users/UserExportTest::test_export_succeeds_for_auditor`, `Drivers/DriverPolicyTest::test_auditor_can_list_and_view_but_not_update_drivers`, `Drivers/DriverExportTest::test_export_succeeds_for_auditor`, `MenuVisibilityTest`
 - **النتيجة:** ⬜
 
-### 28. المراقب يقدر يغيّر كلمة سره بنفسه
-- **FRD:** "لا يملك المراقب تعديل أي بيانات من خلال صفحة الملف الشخصي الا صورته او كلمة المرور"
+### 28. المراقب والسائق يقدروا يغيّروا كلمة سرهم بنفسهم
+- **FRD:** "لا يملك المراقب تعديل أي بيانات من خلال صفحة الملف الشخصي الا صورته او كلمة المرور" + قسم تعديل حساب السائق: "المستخدم يستطيع تغيير البيانات التالية من صفحة الملف الشخصي: الصورة الشخصية، كلمة المرور"
 - **الخطوات:**
   - بـ`auditor@gcm.test` افتح My Profile.
   - تأكد إن تاب "Security" ظاهر.
   - افتحه وغيّر كلمة السر فعليًا (بالكلمة الحالية `password`).
-- **المتوقع:** تاب "Security" ظاهر (كان مختفي قبل كده)، وتغيير كلمة السر بينجح ("Password updated"). الاسم والبريد لسه للقراءة فقط.
-- **يغطيه آليًا:** `Profile/PasswordChangeTest::test_an_auditor_changes_their_own_password`, `test_the_security_page_is_available_to_an_auditor`
+  - كرّر نفس الخطوات بـ`driver@gcm.test`.
+  - سجّل دخول بـ`admin@gcm.test` وافتح My Profile — تاب "Security" لازم يفضل مختفي.
+- **المتوقع:** تاب "Security" ظاهر للمراقب والسائق (كان مختفي قبل كده)، وتغيير كلمة السر بينجح ("Password updated"). الاسم والبريد لسه للقراءة فقط. مدير النظام ومدخل البيانات مالهمش تاب Security.
+- **يغطيه آليًا:** `Profile/PasswordChangeTest::test_an_auditor_changes_their_own_password`, `test_the_security_page_is_available_to_an_auditor`, `test_a_driver_changes_their_own_password`, `test_the_security_page_is_available_to_a_driver`
 - **النتيجة:** ⬜

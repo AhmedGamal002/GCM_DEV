@@ -104,9 +104,14 @@ class User extends Authenticatable
    * الملف الشخصي الا صورته او كلمة المرور" — auditor specifically now
    * gets self-service password change too (still no name/email — that
    * stays admin-managed for every GCM-staff role, auditor included).
+   *
+   * FRD V01.14 (changed): the driver's edit-account section now lists
+   * "الصورة الشخصية" + "كلمة المرور" under "المستخدم يستطيع تغيير البيانات
+   * التالية من صفحة الملف الشخصي" — so drivers get self-service password
+   * change as well (the V01.09 version listed the photo only).
    */
   public function canChangeOwnPassword(): bool
   {
-    return $this->hasAnyRole(['auditor', 'client_project_manager', 'client_project_auditor', 'contractor_user']);
+    return $this->hasAnyRole(['auditor', 'driver', 'client_project_manager', 'client_project_auditor', 'contractor_user']);
   }
 }

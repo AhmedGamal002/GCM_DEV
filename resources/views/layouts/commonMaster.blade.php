@@ -33,6 +33,9 @@ $contentLayout = (isset($container) ? (($container === 'container-xxl') ? "layou
   <!-- Include Scripts for customizer, helper, analytics, config -->
   <!-- $isFront is used to append the front layout scriptsIncludes only on the front layout otherwise the variable will be blank -->
   @include('layouts/sections/scriptsIncludes' . $isFront)
+
+  <!-- GCM custom styles — keep this LAST so it overrides theme/vendor/page styles (edited by the designer, no build step) -->
+  <link id="gcm-custom-css" rel="stylesheet" href="{{ asset('assets/css/gcm_custom.css') }}?v={{ @filemtime(public_path('assets/css/gcm_custom.css')) }}" />
 </head>
 
 <body>
