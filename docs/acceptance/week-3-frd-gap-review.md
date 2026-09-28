@@ -45,15 +45,15 @@
 
 ## ب) الملف الشخصي (§1.3.1)
 
-### 4. الملف الشخصي = صورة فقط
-- **FRD:** §1.3.1 ("المستخدم يستطيع تغيير البيانات التالية من صفحة الملف الشخصي: الصورة الشخصية")
+### 4. الملف الشخصي = صورة + كلمة السر (الاسم والبريد للقراءة فقط)
+- **FRD:** §1.3.1 ("المستخدم يستطيع تغيير البيانات التالية من صفحة الملف الشخصي: الصورة الشخصية" + كلمة المرور)
 - **الخطوات:**
   - بـ`dataentry@gcm.test` (وكرّر بـ`admin@gcm.test`) افتح My Profile.
   - حاول تكتب في خانة الاسم.
   - دوس "Upload new photo" واختار صورة PNG/JPG صغيرة، ولاحظ المعاينة.
   - دوس "Save photo".
   - جرّب ملف مش صورة، وجرّب "Save photo" من غير ما تختار صورة.
-- **المتوقع:** الاسم والبريد للقراءة فقط، ومفيش تابات "Account/Security". الصورة بتتحفظ وتظهر في الصفحة **وفي الشريط العلوي**. لو اخترت ملف مش صورة، أو دُست حفظ من غير ما تختار حاجة، هتظهر رسالة خطأ واضحة.
+- **المتوقع:** الاسم والبريد للقراءة فقط، وفيه تابين "Account" و"Security" (كلمة السر بتتغيّر من التاب التاني). الصورة بتتحفظ وتظهر في الصفحة **وفي الشريط العلوي**. لو اخترت ملف مش صورة، أو دُست حفظ من غير ما تختار حاجة، هتظهر رسالة خطأ واضحة.
 - **يغطيه آليًا:** `Profile/ProfileUpdateTest`
 - **النتيجة:** ⬜
 
@@ -295,16 +295,16 @@
 - **يغطيه آليًا:** `Users/UserPolicyTest::test_auditor_can_list_and_view_but_not_create_users`, `Users/UserExportTest::test_export_succeeds_for_auditor`, `Drivers/DriverPolicyTest::test_auditor_can_list_and_view_but_not_update_drivers`, `Drivers/DriverExportTest::test_export_succeeds_for_auditor`, `MenuVisibilityTest`
 - **النتيجة:** ⬜
 
-### 28. المراقب والسائق يقدروا يغيّروا كلمة سرهم بنفسهم
+### 28. كل الأدوار تقدر تغيّر كلمة سرها بنفسها
 - **FRD:** "لا يملك المراقب تعديل أي بيانات من خلال صفحة الملف الشخصي الا صورته او كلمة المرور" + قسم تعديل حساب السائق: "المستخدم يستطيع تغيير البيانات التالية من صفحة الملف الشخصي: الصورة الشخصية، كلمة المرور"
 - **الخطوات:**
   - بـ`auditor@gcm.test` افتح My Profile.
   - تأكد إن تاب "Security" ظاهر.
   - افتحه وغيّر كلمة السر فعليًا (بالكلمة الحالية `password`).
   - كرّر نفس الخطوات بـ`driver@gcm.test`.
-  - سجّل دخول بـ`admin@gcm.test` وافتح My Profile — تاب "Security" لازم يفضل مختفي.
-- **المتوقع:** تاب "Security" ظاهر للمراقب والسائق (كان مختفي قبل كده)، وتغيير كلمة السر بينجح ("Password updated"). الاسم والبريد لسه للقراءة فقط. مدير النظام ومدخل البيانات مالهمش تاب Security.
-- **يغطيه آليًا:** `Profile/PasswordChangeTest::test_an_auditor_changes_their_own_password`, `test_the_security_page_is_available_to_an_auditor`, `test_a_driver_changes_their_own_password`, `test_the_security_page_is_available_to_a_driver`
+  - كرّر نفس الخطوات بـ`admin@gcm.test` وبـ`dataentry@gcm.test`.
+- **المتوقع:** تاب "Security" ظاهر لكل الأدوار الأربعة (مدير النظام، مدخل البيانات، المراقب، السائق)، وتغيير كلمة السر بينجح ("Password updated"). الاسم والبريد لسه للقراءة فقط. (المراقب والسائق من نص الـFRD؛ مدير النظام ومدخل البيانات توسيع بطلب العميل.)
+- **يغطيه آليًا:** `Profile/PasswordChangeTest::test_an_auditor_changes_their_own_password`, `test_the_security_page_is_available_to_an_auditor`, `test_every_role_changes_its_own_password`, `test_the_security_page_is_available_to_every_role`, `test_the_profile_page_shows_the_security_tab_to_every_role`
 - **النتيجة:** ⬜
 
 ### 29. نفس شاشة "جاري الحفظ" في كل صفحات الإنشاء والتعديل

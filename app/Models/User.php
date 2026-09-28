@@ -93,25 +93,22 @@ class User extends Authenticatable
   }
 
   /**
-   * FRD V01.09: GCM staff and drivers can't change their own password
+   * Every role changes its OWN password from the profile page (the
+   * "Security" tab; current password required).
+   *
+   * The FRD is narrower: V01.09 lets only client/contractor users do it
    * ("غير قابلة للتعديل من قبل المستخدم ولكن من قبل مدير النظام او مدخل
-   * البيانات") — only client/contractor users can, from their profile
-   * page. Those roles don't exist until Week 4-5, so today this is false
-   * for data_entry/driver; the names below are the ones RoleSeeder's
-   * docblock already reserves.
+   * البيانات" for GCM staff), and V01.14 adds the auditor and the driver
+   * ("لا يملك المراقب تعديل أي بيانات من خلال صفحة الملف الشخصي الا صورته
+   * او كلمة المرور" / the driver's edit-account section). The client
+   * asked for system_admin and data_entry to be able to change their own
+   * password as well, so all GCM roles can — an admin can still set
+   * someone else's password from that user's edit page.
    *
-   * FRD V01.14 (changed): "لا يملك المراقب تعديل أي بيانات من خلال صفحة
-   * الملف الشخصي الا صورته او كلمة المرور" — auditor specifically now
-   * gets self-service password change too (still no name/email — that
-   * stays admin-managed for every GCM-staff role, auditor included).
-   *
-   * FRD V01.14 (changed): the driver's edit-account section now lists
-   * "الصورة الشخصية" + "كلمة المرور" under "المستخدم يستطيع تغيير البيانات
-   * التالية من صفحة الملف الشخصي" — so drivers get self-service password
-   * change as well (the V01.09 version listed the photo only).
+   * Name and email stay read-only on the profile page for every role.
    */
   public function canChangeOwnPassword(): bool
   {
-    return $this->hasAnyRole(['auditor', 'driver', 'client_project_manager', 'client_project_auditor', 'contractor_user']);
+    return $this->hasAnyRole(['system_admin', 'data_entry', 'auditor', 'driver', 'client_project_manager', 'client_project_auditor', 'contractor_user']);
   }
 }

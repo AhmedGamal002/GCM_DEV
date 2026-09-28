@@ -13,7 +13,7 @@ Dashboard, then an **Accounts** section (Users · Drivers) and a **Fleet & Asset
 ## 1. Sign in and profile
 
 - `/login` with email + password.
-- **My Profile**: change your profile photo, **and now your password too** (the "Security" tab is shown to you specifically — not to other GCM staff). Name and email stay read-only.
+- **My Profile**: change your profile photo, **and your password too** (the "Security" tab — you enter your current password first). Name and email stay read-only.
 
 ## 2. Users — `/app/user/list`
 
