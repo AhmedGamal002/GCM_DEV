@@ -32,7 +32,7 @@
 
 @section('content')
 
-@include('_partials.breadcrumb', ['pageTitle' => __('Intermediate Facility Details'), 'breadcrumbs' => [
+@include('_partials.breadcrumb', ['updatedId' => 'fv-updated-by', 'pageTitle' => __('Intermediate Facility Details'), 'breadcrumbs' => [
   ['title' => __('Facilities'), 'url' => route('app-facility-list')],
   ['title' => __('Facility Details')],
 ]])
@@ -77,7 +77,6 @@
           <span class="h6 d-block mb-2">{{ __('Additional Data') }}:</span>
           <div id="fv-additional"></div>
         </div>
-        <p class="small text-muted mb-4" id="fv-updated-by"></p>
         <div class="d-flex justify-content-center">
           <a href="#" id="fv-edit-link" class="btn btn-primary me-4 d-none">{{ __('Edit') }}</a>
           <a href="{{ route('app-facility-list') }}" class="btn btn-label-secondary">{{ __('Back to list') }}</a>
