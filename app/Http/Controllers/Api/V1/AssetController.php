@@ -143,6 +143,7 @@ class AssetController extends Controller
     {
         return Asset::query()
             ->with(self::LIST_WITH)
+            ->when($request->filled('asset_capacity_category_id'), fn ($q) => $q->where('asset_capacity_category_id', $request->integer('asset_capacity_category_id')))
             ->when($request->filled('asset_type'), fn ($q) => $q->where('asset_type', $request->string('asset_type')))
             ->when($request->filled('operational_status'), fn ($q) => $q->where('operational_status', $request->string('operational_status')))
             ->when($request->filled('affiliation'), fn ($q) => $q->where('affiliation', $request->string('affiliation')))

@@ -120,6 +120,7 @@ System Admin: view, create, edit (full data), export, and all status changes.
 
 ### Asset capacity categories — `/app/asset-category/list`
 - Create and edit. After creation, **name only** is editable (capacity and kind locked). No delete, no deactivate.
+- The list's eye icon opens a **details page** (a client add-on, not in the FRD): the category's own data plus a table of every asset carrying it, linking to each asset's own details page.
 
 ## 8. Change asset status
 - **System Admin**: "on maintenance" + **deactivate** + **reactivate from deactivated**.
