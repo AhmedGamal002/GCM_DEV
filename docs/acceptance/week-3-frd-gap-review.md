@@ -192,12 +192,12 @@
 - **يغطيه آليًا:** يدوي فقط
 - **النتيجة:** ⬜
 
-### 18. القائمة الجانبية متجمّعة تحت عنوانين
+### 18. القائمة الجانبية متجمّعة تحت أربع عناوين
 - **الخطوات:**
   - سجّل دخول بـ`admin@gcm.test` ثم `dataentry@gcm.test` ثم `auditor@gcm.test` ثم `driver@gcm.test` وبص على القائمة الجانبية.
   - بدّل اللغة لعربي.
-- **المتوقع:** الأدمن ومدخل البيانات: Dashboard ثم عنوان **Accounts** (تحته Users وDrivers) ثم عنوان **Fleet & Assets** (تحته Vehicles وAssets) ثم عنوان **Clients & Projects** (تحته Client Companies). المراقب: نفس العناوين (عرض وتصدير بس). السائق: Dashboard بس ومفيش أي عنوان. بالعربي: "الحسابات" و"الأسطول والأصول" و"العملاء والمشروعات".
-- **يغطيه آليًا:** `MenuVisibilityTest` (`test_system_admin_and_data_entry_see_both_section_titles`, `test_an_auditor_sees_both_section_titles_too`, `test_a_driver_sees_no_section_titles_at_all`)
+- **المتوقع:** الأدمن ومدخل البيانات: Dashboard ثم عنوان **Accounts** (تحته Users وDrivers) ثم عنوان **Fleet & Assets** (تحته Vehicles وAssets) ثم عنوان **Operations** (تحته Facilities) ثم عنوان **Clients & Projects** (تحته Client Companies). المراقب: نفس العناوين الأربعة (عرض وتصدير بس). السائق: Dashboard بس ومفيش أي عنوان. بالعربي: "الحسابات" و"الأسطول والأصول" و"العمليات" و"العملاء والمشروعات".
+- **يغطيه آليًا:** `MenuVisibilityTest` (`test_system_admin_and_data_entry_see_all_section_titles`, `test_an_auditor_sees_all_section_titles_too`, `test_a_driver_sees_no_section_titles_at_all`)
 - **النتيجة:** ⬜
 
 ### 19. زر "Add category" مش لازق في خانة البحث + زر Export

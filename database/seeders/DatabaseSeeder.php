@@ -37,6 +37,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             AssetCapacityCategorySeeder::class,
             AssetSeeder::class,
+            IntermediateFacilitySeeder::class,
             CompanySeeder::class,
         ]);
 

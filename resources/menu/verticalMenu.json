@@ -119,6 +119,16 @@
       ]
     },
     {
+      "menuHeader": "Operations"
+    },
+    {
+      "url": "app/facility/list",
+      "name": "Facilities",
+      "icon": "menu-icon tf-icons ti ti-building-factory-2",
+      "slug": "app-facility",
+      "roles": ["system_admin", "data_entry", "auditor"]
+    },
+    {
       "menuHeader": "Clients & Projects"
     },
     {

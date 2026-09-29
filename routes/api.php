@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\V1\Auth\NewPasswordController;
 use App\Http\Controllers\Api\V1\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Api\V1\CompanyController;
 use App\Http\Controllers\Api\V1\DriverController;
+use App\Http\Controllers\Api\V1\FacilityController;
 use App\Http\Controllers\Api\V1\ProfileController;
 use App\Http\Controllers\Api\V1\RoleController;
 use App\Http\Controllers\Api\V1\UserController;
@@ -87,6 +88,18 @@ Route::prefix('v1')->group(function () {
         Route::get('/assets/{asset}', [AssetController::class, 'show'])->whereNumber('asset');
         Route::patch('/assets/{asset}', [AssetController::class, 'update'])->whereNumber('asset');
         Route::patch('/assets/{asset}/status', [AssetController::class, 'status'])->whereNumber('asset');
+
+        // Intermediate waste facilities (FRD §1.8) — /facilities/export and
+        // /facilities/stats MUST come before /facilities/{facility}, same
+        // raw-int-param reasoning as /vehicles above.
+        Route::get('/facilities/export', [FacilityController::class, 'export']);
+        Route::get('/facilities/stats', [FacilityController::class, 'stats']);
+        Route::get('/facilities', [FacilityController::class, 'index']);
+        Route::post('/facilities', [FacilityController::class, 'store']);
+        Route::get('/facilities/{facility}', [FacilityController::class, 'show'])->whereNumber('facility');
+        Route::patch('/facilities/{facility}', [FacilityController::class, 'update'])->whereNumber('facility');
+        Route::patch('/facilities/{facility}/status', [FacilityController::class, 'status'])->whereNumber('facility');
+        Route::get('/facilities/{facility}/contract', [FacilityController::class, 'downloadContract'])->whereNumber('facility');
 
         // Client companies (Part 4 of Phase 2, FRD V01.14 §1.11). /companies/export
         // MUST come before /companies/{company} — same reasoning as /vehicles above.

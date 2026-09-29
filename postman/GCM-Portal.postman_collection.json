@@ -2,35 +2,120 @@
   "info": {
     "name": "GCM Portal",
     "_postman_id": "b1e9d8b0-6f5a-4b0a-9c1a-gcmportal0001",
-    "description": "GCM Portal API + Platform (Super Admin) collection. Covers everything shipped through Phase 1 (Assets, Vehicles + Driver Management) and Phase 2 Part 4 (Client Companies): Tenant Auth, Users, Roles (read-only), Profile, Drivers, Vehicles, Assets & Supply Hub, Client Companies, and Platform (Tenants/Roles/Permissions CRUD).\n\nSee postman/README.md in the repo for how the two auth flows work (Bearer token for /api/v1/*, session+CSRF for /platform/*) and the convention to follow when adding a new endpoint's request here.\n\nKeep this file updated alongside the code: every new API/Platform route gets a request added here in the same PR/session that adds the route.",
+    "description": "GCM Portal API + Platform (Super Admin) collection. Covers everything shipped through Phase 2 so far (Intermediate Facilities, Client Companies) on top of Week 3 (Assets, Vehicles + Driver Management): Tenant Auth, Users, Roles (read-only), Profile, Drivers, Vehicles, Assets & Supply Hub, Intermediate Facilities, Client Companies, and Platform (Tenants/Roles/Permissions CRUD).\n\nSee postman/README.md in the repo for how the two auth flows work (Bearer token for /api/v1/*, session+CSRF for /platform/*) and the convention to follow when adding a new endpoint's request here.\n\nKeep this file updated alongside the code: every new API/Platform route gets a request added here in the same PR/session that adds the route.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "auth": {
     "type": "bearer",
     "bearer": [
-      { "key": "token", "value": "{{tenant_token}}", "type": "string" }
+      {
+        "key": "token",
+        "value": "{{tenant_token}}",
+        "type": "string"
+      }
     ]
   },
   "variable": [
-    { "key": "base_url", "value": "http://localhost:8000", "type": "string" },
-    { "key": "api_base", "value": "{{base_url}}/api/v1", "type": "string" },
-    { "key": "tenant_email", "value": "admin@gcm.test", "type": "string" },
-    { "key": "tenant_password", "value": "password", "type": "string" },
-    { "key": "tenant_token", "value": "", "type": "string" },
-    { "key": "platform_email", "value": "superadmin@product.test", "type": "string" },
-    { "key": "platform_password", "value": "password", "type": "string" },
-    { "key": "platform_csrf", "value": "", "type": "string" },
-    { "key": "last_user_id", "value": "", "type": "string" },
-    { "key": "last_driver_id", "value": "", "type": "string" },
-    { "key": "last_vehicle_id", "value": "", "type": "string" },
-    { "key": "last_vehicle_document_id", "value": "", "type": "string" },
-    { "key": "last_asset_id", "value": "", "type": "string" },
-    { "key": "last_asset_capacity_category_id", "value": "", "type": "string" },
-    { "key": "last_vehicle_category_id", "value": "", "type": "string" },
-    { "key": "last_tenant_id", "value": "", "type": "string" },
-    { "key": "last_role_id", "value": "", "type": "string" },
-    { "key": "last_permission_id", "value": "", "type": "string" },
-    { "key": "last_company_id", "value": "", "type": "string" }
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string"
+    },
+    {
+      "key": "api_base",
+      "value": "{{base_url}}/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "tenant_email",
+      "value": "admin@gcm.test",
+      "type": "string"
+    },
+    {
+      "key": "tenant_password",
+      "value": "password",
+      "type": "string"
+    },
+    {
+      "key": "tenant_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "platform_email",
+      "value": "superadmin@product.test",
+      "type": "string"
+    },
+    {
+      "key": "platform_password",
+      "value": "password",
+      "type": "string"
+    },
+    {
+      "key": "platform_csrf",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "last_user_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "last_driver_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "last_vehicle_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "last_vehicle_document_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "last_asset_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "last_asset_capacity_category_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "last_facility_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "last_company_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "last_vehicle_category_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "last_tenant_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "last_role_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "last_permission_id",
+      "value": "",
+      "type": "string"
+    }
   ],
   "item": [
     {
@@ -39,18 +124,34 @@
         {
           "name": "Login",
           "request": {
-            "auth": { "type": "noauth" },
+            "auth": {
+              "type": "noauth"
+            },
             "method": "POST",
-            "header": [{ "key": "Accept", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"{{tenant_email}}\",\n  \"password\": \"{{tenant_password}}\"\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": {
               "raw": "{{api_base}}/auth/login",
-              "host": ["{{api_base}}"],
-              "path": ["auth", "login"]
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
             },
             "description": "Postman is never a SANCTUM_STATEFUL_DOMAINS origin, so this always returns a bearer `token` (the same path a future mobile app would use) instead of a session cookie. The test script below saves it into {{tenant_token}}, which every other request in this collection sends via the collection-level Bearer auth."
           },
@@ -77,47 +178,89 @@
           "name": "Logout",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Accept", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
             "url": {
               "raw": "{{api_base}}/auth/logout",
-              "host": ["{{api_base}}"],
-              "path": ["auth", "logout"]
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "auth",
+                "logout"
+              ]
             }
           }
         },
         {
           "name": "Forgot Password",
           "request": {
-            "auth": { "type": "noauth" },
+            "auth": {
+              "type": "noauth"
+            },
             "method": "POST",
-            "header": [{ "key": "Accept", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"{{tenant_email}}\"\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": {
               "raw": "{{api_base}}/auth/forgot-password",
-              "host": ["{{api_base}}"],
-              "path": ["auth", "forgot-password"]
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "auth",
+                "forgot-password"
+              ]
             }
           }
         },
         {
           "name": "Reset Password",
           "request": {
-            "auth": { "type": "noauth" },
+            "auth": {
+              "type": "noauth"
+            },
             "method": "POST",
-            "header": [{ "key": "Accept", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"token\": \"paste-token-from-email-log-here\",\n  \"email\": \"{{tenant_email}}\",\n  \"password\": \"NewPassword123!\",\n  \"password_confirmation\": \"NewPassword123!\"\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": {
               "raw": "{{api_base}}/auth/reset-password",
-              "host": ["{{api_base}}"],
-              "path": ["auth", "reset-password"]
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "auth",
+                "reset-password"
+              ]
             },
             "description": "In local dev, MAIL_MAILER=log — grab the reset token from storage/logs/laravel.log."
           }
@@ -131,23 +274,57 @@
           "name": "Get Current User",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Accept", "value": "application/json" }],
-            "url": { "raw": "{{api_base}}/me", "host": ["{{api_base}}"], "path": ["me"] }
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/me",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "me"
+              ]
+            }
           }
         },
         {
           "name": "Update Profile (Photo)",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Accept", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "formdata",
               "formdata": [
-                { "key": "_method", "value": "PATCH", "type": "text" },
-                { "key": "photo", "type": "file", "src": [] }
+                {
+                  "key": "_method",
+                  "value": "PATCH",
+                  "type": "text"
+                },
+                {
+                  "key": "photo",
+                  "type": "file",
+                  "src": []
+                }
               ]
             },
-            "url": { "raw": "{{api_base}}/me", "host": ["{{api_base}}"], "path": ["me"] },
+            "url": {
+              "raw": "{{api_base}}/me",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "me"
+              ]
+            },
             "description": "FRD: the only thing a user changes from their own profile is the photo (multipart, POST + _method=PATCH). Name/email/everything else is admin-managed."
           }
         },
@@ -155,13 +332,31 @@
           "name": "Change Password",
           "request": {
             "method": "PATCH",
-            "header": [{ "key": "Accept", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"current_password\": \"{{tenant_password}}\",\n  \"new_password\": \"NewPassword123!\",\n  \"new_password_confirmation\": \"NewPassword123!\"\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
-            "url": { "raw": "{{api_base}}/me/password", "host": ["{{api_base}}"], "path": ["me", "password"] },
+            "url": {
+              "raw": "{{api_base}}/me/password",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "me",
+                "password"
+              ]
+            },
             "description": "403 for GCM staff and drivers (FRD: an admin sets their password via PATCH /users/{id} or /drivers/{id} with password + password_confirmation). Only client/contractor users (Week 4-5) can use this."
           }
         }
@@ -174,8 +369,21 @@
           "name": "List Roles",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Accept", "value": "application/json" }],
-            "url": { "raw": "{{api_base}}/roles", "host": ["{{api_base}}"], "path": ["roles"] },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/roles",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "roles"
+              ]
+            },
             "description": "Available to every tenant role (e.g. for a role-assignment dropdown). No mutation route exists here — Role/Permission CRUD lives entirely under Platform (Super Admin), see folder 10-11."
           }
         }
@@ -188,18 +396,55 @@
           "name": "List Users",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Accept", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
             "url": {
               "raw": "{{api_base}}/users?per_page=15",
-              "host": ["{{api_base}}"],
-              "path": ["users"],
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "users"
+              ],
               "query": [
-                { "key": "per_page", "value": "15" },
-                { "key": "status", "value": "active", "disabled": true, "description": "active | on_vacation | deactivated" },
-                { "key": "role", "value": "data_entry", "disabled": true, "description": "data_entry | auditor | driver | system_admin" },
-                { "key": "search", "value": "ahmed", "disabled": true, "description": "matches name, email, or code" },
-                { "key": "sort_by", "value": "name", "disabled": true, "description": "code | name | status | created_at" },
-                { "key": "sort_dir", "value": "asc", "disabled": true, "description": "asc | desc" }
+                {
+                  "key": "per_page",
+                  "value": "15"
+                },
+                {
+                  "key": "status",
+                  "value": "active",
+                  "disabled": true,
+                  "description": "active | on_vacation | deactivated"
+                },
+                {
+                  "key": "role",
+                  "value": "data_entry",
+                  "disabled": true,
+                  "description": "data_entry | auditor | driver | system_admin"
+                },
+                {
+                  "key": "search",
+                  "value": "ahmed",
+                  "disabled": true,
+                  "description": "matches name, email, or code"
+                },
+                {
+                  "key": "sort_by",
+                  "value": "name",
+                  "disabled": true,
+                  "description": "code | name | status | created_at"
+                },
+                {
+                  "key": "sort_dir",
+                  "value": "asc",
+                  "disabled": true,
+                  "description": "asc | desc"
+                }
               ]
             },
             "description": "system_admin only (UserPolicy::viewAny). Excludes the caller's own row — self is edited via /me. Genuinely paginated server-side (per_page/page/sort_by/sort_dir all real) — see ARCHITECTURE.md's performance section for why that matters at real employee-count scale."
@@ -212,13 +457,33 @@
             "header": [],
             "url": {
               "raw": "{{api_base}}/users/export?format=xlsx",
-              "host": ["{{api_base}}"],
-              "path": ["users", "export"],
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "users",
+                "export"
+              ],
               "query": [
-                { "key": "format", "value": "xlsx" },
-                { "key": "search", "value": "", "disabled": true },
-                { "key": "status", "value": "", "disabled": true },
-                { "key": "role", "value": "", "disabled": true }
+                {
+                  "key": "format",
+                  "value": "xlsx"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "role",
+                  "value": "",
+                  "disabled": true
+                }
               ]
             }
           }
@@ -230,13 +495,33 @@
             "header": [],
             "url": {
               "raw": "{{api_base}}/users/export?format=pdf",
-              "host": ["{{api_base}}"],
-              "path": ["users", "export"],
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "users",
+                "export"
+              ],
               "query": [
-                { "key": "format", "value": "pdf" },
-                { "key": "search", "value": "", "disabled": true },
-                { "key": "status", "value": "", "disabled": true },
-                { "key": "role", "value": "", "disabled": true }
+                {
+                  "key": "format",
+                  "value": "pdf"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "role",
+                  "value": "",
+                  "disabled": true
+                }
               ]
             }
           }
@@ -245,22 +530,74 @@
           "name": "Create User",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Accept", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "formdata",
               "formdata": [
-                { "key": "name", "value": "New Data Entry User", "type": "text" },
-                { "key": "email", "value": "new.user+{{$timestamp}}@gcm.test", "type": "text" },
-                { "key": "phone", "value": "0100000{{$timestamp}}", "type": "text" },
-                { "key": "photo", "type": "file", "src": [], "disabled": true },
-                { "key": "password", "value": "Password123!", "type": "text" },
-                { "key": "password_confirmation", "value": "Password123!", "type": "text" },
-                { "key": "status", "value": "active", "type": "text" },
-                { "key": "additional_data", "value": "", "type": "text", "disabled": true },
-                { "key": "roles[]", "value": "data_entry", "type": "text", "description": "Exactly one of: data_entry | auditor | driver (system_admin is never creatable here)" }
+                {
+                  "key": "name",
+                  "value": "New Data Entry User",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "new.user+{{$timestamp}}@gcm.test",
+                  "type": "text"
+                },
+                {
+                  "key": "phone",
+                  "value": "0100000{{$timestamp}}",
+                  "type": "text"
+                },
+                {
+                  "key": "photo",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "password",
+                  "value": "Password123!",
+                  "type": "text"
+                },
+                {
+                  "key": "password_confirmation",
+                  "value": "Password123!",
+                  "type": "text"
+                },
+                {
+                  "key": "status",
+                  "value": "active",
+                  "type": "text"
+                },
+                {
+                  "key": "additional_data",
+                  "value": "",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "roles[]",
+                  "value": "data_entry",
+                  "type": "text",
+                  "description": "Exactly one of: data_entry | auditor | driver (system_admin is never creatable here)"
+                }
               ]
             },
-            "url": { "raw": "{{api_base}}/users", "host": ["{{api_base}}"], "path": ["users"] }
+            "url": {
+              "raw": "{{api_base}}/users",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
           },
           "event": [
             {
@@ -284,11 +621,21 @@
           "name": "Show User",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Accept", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
             "url": {
               "raw": "{{api_base}}/users/{{last_user_id}}",
-              "host": ["{{api_base}}"],
-              "path": ["users", "{{last_user_id}}"]
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "users",
+                "{{last_user_id}}"
+              ]
             }
           }
         },
@@ -296,21 +643,53 @@
           "name": "Update User",
           "request": {
             "method": "PATCH",
-            "header": [{ "key": "Accept", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "formdata",
               "formdata": [
-                { "key": "name", "value": "Updated Name", "type": "text" },
-                { "key": "phone", "value": "0100000000", "type": "text" },
-                { "key": "photo", "type": "file", "src": [], "disabled": true },
-                { "key": "additional_data", "value": "", "type": "text", "disabled": true },
-                { "key": "roles[]", "value": "auditor", "type": "text" }
+                {
+                  "key": "name",
+                  "value": "Updated Name",
+                  "type": "text"
+                },
+                {
+                  "key": "phone",
+                  "value": "0100000000",
+                  "type": "text"
+                },
+                {
+                  "key": "photo",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "additional_data",
+                  "value": "",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "roles[]",
+                  "value": "auditor",
+                  "type": "text"
+                }
               ]
             },
             "url": {
               "raw": "{{api_base}}/users/{{last_user_id}}",
-              "host": ["{{api_base}}"],
-              "path": ["users", "{{last_user_id}}"]
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "users",
+                "{{last_user_id}}"
+              ]
             },
             "description": "Postman sends real multipart PATCH natively — no _method spoofing needed."
           }
@@ -319,16 +698,31 @@
           "name": "Update User Status",
           "request": {
             "method": "PATCH",
-            "header": [{ "key": "Accept", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"status\": \"on_vacation\"\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": {
               "raw": "{{api_base}}/users/{{last_user_id}}/status",
-              "host": ["{{api_base}}"],
-              "path": ["users", "{{last_user_id}}", "status"]
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "users",
+                "{{last_user_id}}",
+                "status"
+              ]
             },
             "description": "status: active | on_vacation | deactivated. Deactivating a system_admin always fails (422) regardless of who asks — see CannotDeactivateSystemAdminException."
           }
@@ -342,18 +736,55 @@
           "name": "List Drivers",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Accept", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
             "url": {
               "raw": "{{api_base}}/drivers?per_page=15",
-              "host": ["{{api_base}}"],
-              "path": ["drivers"],
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "drivers"
+              ],
               "query": [
-                { "key": "per_page", "value": "15" },
-                { "key": "status", "value": "active", "disabled": true, "description": "active | on_vacation | deactivated" },
-                { "key": "affiliation", "value": "gcm", "disabled": true, "description": "gcm | contractor" },
-                { "key": "search", "value": "ahmed", "disabled": true, "description": "matches name, email, or code" },
-                { "key": "sort_by", "value": "name", "disabled": true, "description": "code | name | status | created_at" },
-                { "key": "sort_dir", "value": "asc", "disabled": true, "description": "asc | desc" }
+                {
+                  "key": "per_page",
+                  "value": "15"
+                },
+                {
+                  "key": "status",
+                  "value": "active",
+                  "disabled": true,
+                  "description": "active | on_vacation | deactivated"
+                },
+                {
+                  "key": "affiliation",
+                  "value": "gcm",
+                  "disabled": true,
+                  "description": "gcm | contractor"
+                },
+                {
+                  "key": "search",
+                  "value": "ahmed",
+                  "disabled": true,
+                  "description": "matches name, email, or code"
+                },
+                {
+                  "key": "sort_by",
+                  "value": "name",
+                  "disabled": true,
+                  "description": "code | name | status | created_at"
+                },
+                {
+                  "key": "sort_dir",
+                  "value": "asc",
+                  "disabled": true,
+                  "description": "asc | desc"
+                }
               ]
             },
             "description": "Genuinely paginated server-side, same as /users — see ARCHITECTURE.md's performance section."
@@ -366,13 +797,33 @@
             "header": [],
             "url": {
               "raw": "{{api_base}}/drivers/export?format=xlsx",
-              "host": ["{{api_base}}"],
-              "path": ["drivers", "export"],
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "drivers",
+                "export"
+              ],
               "query": [
-                { "key": "format", "value": "xlsx" },
-                { "key": "search", "value": "", "disabled": true },
-                { "key": "status", "value": "", "disabled": true },
-                { "key": "affiliation", "value": "", "disabled": true }
+                {
+                  "key": "format",
+                  "value": "xlsx"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "affiliation",
+                  "value": "",
+                  "disabled": true
+                }
               ]
             }
           }
@@ -384,13 +835,33 @@
             "header": [],
             "url": {
               "raw": "{{api_base}}/drivers/export?format=pdf",
-              "host": ["{{api_base}}"],
-              "path": ["drivers", "export"],
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "drivers",
+                "export"
+              ],
               "query": [
-                { "key": "format", "value": "pdf" },
-                { "key": "search", "value": "", "disabled": true },
-                { "key": "status", "value": "", "disabled": true },
-                { "key": "affiliation", "value": "", "disabled": true }
+                {
+                  "key": "format",
+                  "value": "pdf"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "affiliation",
+                  "value": "",
+                  "disabled": true
+                }
               ]
             }
           }
@@ -399,8 +870,22 @@
           "name": "Driver Stats",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Accept", "value": "application/json" }],
-            "url": { "raw": "{{api_base}}/drivers/stats", "host": ["{{api_base}}"], "path": ["drivers", "stats"] },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/drivers/stats",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "drivers",
+                "stats"
+              ]
+            },
             "description": "Counts (available/on_trips/on_vacation/deactivated) computed against the full tenant-scoped set in SQL — not from whatever page of the list table happens to be loaded."
           }
         },
@@ -408,45 +893,168 @@
           "name": "Create Driver",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Accept", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "formdata",
               "formdata": [
-                { "key": "name", "value": "New Driver", "type": "text" },
-                { "key": "email", "value": "new.driver+{{$timestamp}}@gcm.test", "type": "text" },
-                { "key": "phone", "value": "0100001{{$timestamp}}", "type": "text" },
-                { "key": "photo", "type": "file", "src": [], "disabled": true },
-                { "key": "password", "value": "Password123!", "type": "text" },
-                { "key": "password_confirmation", "value": "Password123!", "type": "text" },
-                { "key": "status", "value": "active", "type": "text" },
-                { "key": "additional_data", "value": "", "type": "text", "disabled": true },
-
-                { "key": "vehicle_category_ids[0]", "value": "1", "type": "text", "description": "vehicle_categories.id — see GET /vehicle-categories. At least one required." },
-                { "key": "default_vehicle_id", "value": "1", "type": "text", "description": "vehicles.id — must belong to one of the selected vehicle_category_ids. See GET /vehicles?category=slug." },
-
-                { "key": "residence_number", "value": "RES-0001", "type": "text" },
-                { "key": "residence_valid_to", "value": "2027-01-01", "type": "text" },
-                { "key": "residence_attachment", "type": "file", "src": [], "disabled": true },
-
-                { "key": "license_number", "value": "LIC-0001", "type": "text" },
-                { "key": "license_valid_to", "value": "2027-01-01", "type": "text" },
-                { "key": "license_attachment", "type": "file", "src": [], "disabled": true },
-
-                { "key": "operational_license_number", "value": "OPL-0001", "type": "text" },
-                { "key": "operational_license_valid_to", "value": "2027-01-01", "type": "text" },
-                { "key": "operational_license_attachment", "type": "file", "src": [], "disabled": true },
-
-                { "key": "insurance_number", "value": "INS-0001", "type": "text" },
-                { "key": "insurance_valid_to", "value": "2027-01-01", "type": "text" },
-                { "key": "insurance_attachment", "type": "file", "src": [], "disabled": true },
-
-                { "key": "entry_permits[0][area_name]", "value": "Cairo Zone A", "type": "text", "disabled": true },
-                { "key": "entry_permits[0][permit_number]", "value": "PERMIT-0001", "type": "text", "disabled": true },
-                { "key": "entry_permits[0][valid_to]", "value": "2027-01-01", "type": "text", "disabled": true },
-                { "key": "entry_permits[0][attachment]", "type": "file", "src": [], "disabled": true }
+                {
+                  "key": "name",
+                  "value": "New Driver",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "new.driver+{{$timestamp}}@gcm.test",
+                  "type": "text"
+                },
+                {
+                  "key": "phone",
+                  "value": "0100001{{$timestamp}}",
+                  "type": "text"
+                },
+                {
+                  "key": "photo",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "password",
+                  "value": "Password123!",
+                  "type": "text"
+                },
+                {
+                  "key": "password_confirmation",
+                  "value": "Password123!",
+                  "type": "text"
+                },
+                {
+                  "key": "status",
+                  "value": "active",
+                  "type": "text"
+                },
+                {
+                  "key": "additional_data",
+                  "value": "",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "vehicle_category_ids[0]",
+                  "value": "1",
+                  "type": "text",
+                  "description": "vehicle_categories.id — see GET /vehicle-categories. At least one required."
+                },
+                {
+                  "key": "default_vehicle_id",
+                  "value": "1",
+                  "type": "text",
+                  "description": "vehicles.id — must belong to one of the selected vehicle_category_ids. See GET /vehicles?category=slug."
+                },
+                {
+                  "key": "residence_number",
+                  "value": "RES-0001",
+                  "type": "text"
+                },
+                {
+                  "key": "residence_valid_to",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "residence_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "license_number",
+                  "value": "LIC-0001",
+                  "type": "text"
+                },
+                {
+                  "key": "license_valid_to",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "license_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "operational_license_number",
+                  "value": "OPL-0001",
+                  "type": "text"
+                },
+                {
+                  "key": "operational_license_valid_to",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "operational_license_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "insurance_number",
+                  "value": "INS-0001",
+                  "type": "text"
+                },
+                {
+                  "key": "insurance_valid_to",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "insurance_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "entry_permits[0][area_name]",
+                  "value": "Cairo Zone A",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "entry_permits[0][permit_number]",
+                  "value": "PERMIT-0001",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "entry_permits[0][valid_to]",
+                  "value": "2027-01-01",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "entry_permits[0][attachment]",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                }
               ]
             },
-            "url": { "raw": "{{api_base}}/drivers", "host": ["{{api_base}}"], "path": ["drivers"] },
+            "url": {
+              "raw": "{{api_base}}/drivers",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "drivers"
+              ]
+            },
             "description": "Creates the User (role=driver) + Driver profile + any entry permits in one transaction. entry_permits[*] rows are disabled by default — enable them to test that part. vehicle_category_ids/default_vehicle_id need real ids from your DB — check GET /vehicle-categories and GET /vehicles first."
           },
           "event": [
@@ -471,11 +1079,21 @@
           "name": "Show Driver",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Accept", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
             "url": {
               "raw": "{{api_base}}/drivers/{{last_driver_id}}",
-              "host": ["{{api_base}}"],
-              "path": ["drivers", "{{last_driver_id}}"]
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "drivers",
+                "{{last_driver_id}}"
+              ]
             }
           }
         },
@@ -483,39 +1101,124 @@
           "name": "Update Driver",
           "request": {
             "method": "PATCH",
-            "header": [{ "key": "Accept", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "formdata",
               "formdata": [
-                { "key": "name", "value": "Updated Driver Name", "type": "text" },
-                { "key": "phone", "value": "0100000000", "type": "text" },
-                { "key": "photo", "type": "file", "src": [], "disabled": true },
-                { "key": "additional_data", "value": "", "type": "text", "disabled": true },
-
-                { "key": "vehicle_category_ids[0]", "value": "1", "type": "text", "description": "vehicle_categories.id — at least one required." },
-                { "key": "default_vehicle_id", "value": "1", "type": "text", "description": "vehicles.id — must belong to one of the selected vehicle_category_ids." },
-
-                { "key": "residence_number", "value": "RES-0001", "type": "text" },
-                { "key": "residence_valid_to", "value": "2027-01-01", "type": "text" },
-                { "key": "residence_attachment", "type": "file", "src": [], "disabled": true },
-
-                { "key": "license_number", "value": "LIC-0001", "type": "text" },
-                { "key": "license_valid_to", "value": "2027-01-01", "type": "text" },
-                { "key": "license_attachment", "type": "file", "src": [], "disabled": true },
-
-                { "key": "operational_license_number", "value": "OPL-0001", "type": "text" },
-                { "key": "operational_license_valid_to", "value": "2027-01-01", "type": "text" },
-                { "key": "operational_license_attachment", "type": "file", "src": [], "disabled": true },
-
-                { "key": "insurance_number", "value": "INS-0001", "type": "text" },
-                { "key": "insurance_valid_to", "value": "2027-01-01", "type": "text" },
-                { "key": "insurance_attachment", "type": "file", "src": [], "disabled": true }
+                {
+                  "key": "name",
+                  "value": "Updated Driver Name",
+                  "type": "text"
+                },
+                {
+                  "key": "phone",
+                  "value": "0100000000",
+                  "type": "text"
+                },
+                {
+                  "key": "photo",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "additional_data",
+                  "value": "",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "vehicle_category_ids[0]",
+                  "value": "1",
+                  "type": "text",
+                  "description": "vehicle_categories.id — at least one required."
+                },
+                {
+                  "key": "default_vehicle_id",
+                  "value": "1",
+                  "type": "text",
+                  "description": "vehicles.id — must belong to one of the selected vehicle_category_ids."
+                },
+                {
+                  "key": "residence_number",
+                  "value": "RES-0001",
+                  "type": "text"
+                },
+                {
+                  "key": "residence_valid_to",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "residence_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "license_number",
+                  "value": "LIC-0001",
+                  "type": "text"
+                },
+                {
+                  "key": "license_valid_to",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "license_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "operational_license_number",
+                  "value": "OPL-0001",
+                  "type": "text"
+                },
+                {
+                  "key": "operational_license_valid_to",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "operational_license_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "insurance_number",
+                  "value": "INS-0001",
+                  "type": "text"
+                },
+                {
+                  "key": "insurance_valid_to",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "insurance_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                }
               ]
             },
             "url": {
               "raw": "{{api_base}}/drivers/{{last_driver_id}}",
-              "host": ["{{api_base}}"],
-              "path": ["drivers", "{{last_driver_id}}"]
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "drivers",
+                "{{last_driver_id}}"
+              ]
             }
           }
         },
@@ -523,20 +1226,48 @@
           "name": "Add Entry Permit",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Accept", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "formdata",
               "formdata": [
-                { "key": "area_name", "value": "Cairo Zone A", "type": "text" },
-                { "key": "permit_number", "value": "PERMIT-0002", "type": "text" },
-                { "key": "valid_to", "value": "2027-01-01", "type": "text" },
-                { "key": "attachment", "type": "file", "src": [], "disabled": true }
+                {
+                  "key": "area_name",
+                  "value": "Cairo Zone A",
+                  "type": "text"
+                },
+                {
+                  "key": "permit_number",
+                  "value": "PERMIT-0002",
+                  "type": "text"
+                },
+                {
+                  "key": "valid_to",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                }
               ]
             },
             "url": {
               "raw": "{{api_base}}/drivers/{{last_driver_id}}/entry-permits",
-              "host": ["{{api_base}}"],
-              "path": ["drivers", "{{last_driver_id}}", "entry-permits"]
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "drivers",
+                "{{last_driver_id}}",
+                "entry-permits"
+              ]
             }
           }
         },
@@ -547,8 +1278,15 @@
             "header": [],
             "url": {
               "raw": "{{api_base}}/drivers/{{last_driver_id}}/documents/residence",
-              "host": ["{{api_base}}"],
-              "path": ["drivers", "{{last_driver_id}}", "documents", "residence"]
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "drivers",
+                "{{last_driver_id}}",
+                "documents",
+                "residence"
+              ]
             },
             "description": "type: residence | license | operational-license | insurance. Served from the private `local` disk via a policy-gated route — never a static URL."
           }
@@ -560,8 +1298,14 @@
             "header": [],
             "url": {
               "raw": "{{api_base}}/driver-entry-permits/1/attachment",
-              "host": ["{{api_base}}"],
-              "path": ["driver-entry-permits", "1", "attachment"]
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "driver-entry-permits",
+                "1",
+                "attachment"
+              ]
             },
             "description": "Replace the `1` with a real entry_permits.id (from Show Driver's entry_permits[].id, or the response of Add Entry Permit)."
           }
@@ -575,19 +1319,61 @@
           "name": "List Vehicles",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Accept", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
             "url": {
               "raw": "{{api_base}}/vehicles?per_page=15",
-              "host": ["{{api_base}}"],
-              "path": ["vehicles"],
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicles"
+              ],
               "query": [
-                { "key": "per_page", "value": "15" },
-                { "key": "category", "value": "hook_lift", "disabled": true, "description": "vehicle_categories.slug: hook_lift | compactor | dump_truck | water_tanker | dyna_box | tractor_truck" },
-                { "key": "operational_status", "value": "active", "disabled": true, "description": "active | on_maintenance | deactivated" },
-                { "key": "affiliation", "value": "gcm", "disabled": true, "description": "gcm | contractor" },
-                { "key": "search", "value": "ABC", "disabled": true, "description": "matches plate_letters, plate_numbers, or the combined displayed plate (\"ABC 1234\", with or without the space)" },
-                { "key": "sort_by", "value": "plate_letters", "disabled": true, "description": "plate_letters | operational_status | created_at" },
-                { "key": "sort_dir", "value": "asc", "disabled": true, "description": "asc | desc" }
+                {
+                  "key": "per_page",
+                  "value": "15"
+                },
+                {
+                  "key": "category",
+                  "value": "hook_lift",
+                  "disabled": true,
+                  "description": "vehicle_categories.slug: hook_lift | compactor | dump_truck | water_tanker | dyna_box | tractor_truck"
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "disabled": true,
+                  "description": "active | on_maintenance | deactivated"
+                },
+                {
+                  "key": "affiliation",
+                  "value": "gcm",
+                  "disabled": true,
+                  "description": "gcm | contractor"
+                },
+                {
+                  "key": "search",
+                  "value": "ABC",
+                  "disabled": true,
+                  "description": "matches plate_letters, plate_numbers, or the combined displayed plate (\"ABC 1234\", with or without the space)"
+                },
+                {
+                  "key": "sort_by",
+                  "value": "plate_letters",
+                  "disabled": true,
+                  "description": "plate_letters | operational_status | created_at"
+                },
+                {
+                  "key": "sort_dir",
+                  "value": "asc",
+                  "disabled": true,
+                  "description": "asc | desc"
+                }
               ]
             },
             "description": "system_admin / data_entry / auditor (VehiclePolicy::viewAny). Genuinely paginated server-side, same as /users and /drivers — see ARCHITECTURE.md's performance section."
@@ -600,14 +1386,38 @@
             "header": [],
             "url": {
               "raw": "{{api_base}}/vehicles/export?format=xlsx",
-              "host": ["{{api_base}}"],
-              "path": ["vehicles", "export"],
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicles",
+                "export"
+              ],
               "query": [
-                { "key": "format", "value": "xlsx" },
-                { "key": "search", "value": "", "disabled": true },
-                { "key": "category", "value": "", "disabled": true },
-                { "key": "operational_status", "value": "", "disabled": true },
-                { "key": "affiliation", "value": "", "disabled": true }
+                {
+                  "key": "format",
+                  "value": "xlsx"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "category",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "operational_status",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "affiliation",
+                  "value": "",
+                  "disabled": true
+                }
               ]
             }
           }
@@ -619,14 +1429,38 @@
             "header": [],
             "url": {
               "raw": "{{api_base}}/vehicles/export?format=pdf",
-              "host": ["{{api_base}}"],
-              "path": ["vehicles", "export"],
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicles",
+                "export"
+              ],
               "query": [
-                { "key": "format", "value": "pdf" },
-                { "key": "search", "value": "", "disabled": true },
-                { "key": "category", "value": "", "disabled": true },
-                { "key": "operational_status", "value": "", "disabled": true },
-                { "key": "affiliation", "value": "", "disabled": true }
+                {
+                  "key": "format",
+                  "value": "pdf"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "category",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "operational_status",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "affiliation",
+                  "value": "",
+                  "disabled": true
+                }
               ]
             }
           }
@@ -635,8 +1469,22 @@
           "name": "Vehicle Stats",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Accept", "value": "application/json" }],
-            "url": { "raw": "{{api_base}}/vehicles/stats", "host": ["{{api_base}}"], "path": ["vehicles", "stats"] },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/vehicles/stats",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicles",
+                "stats"
+              ]
+            },
             "description": "Counts for the list page cards: by_category (an ARRAY of {id, slug, name, count} — one entry per category the tenant has, zero-count ones included) + availability (available/on_trip/on_maintenance/deactivated), computed in SQL against the full tenant-scoped set. on_trip is always 0 until the Trips module (Week 7)."
           }
         },
@@ -644,8 +1492,21 @@
           "name": "Reference — Vehicle Categories",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Accept", "value": "application/json" }],
-            "url": { "raw": "{{api_base}}/vehicle-categories", "host": ["{{api_base}}"], "path": ["vehicle-categories"] },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/vehicle-categories",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicle-categories"
+              ]
+            },
             "description": "Plain list of this tenant's vehicle categories (starts as the six defaults; the system_admin can add/rename/delete — see the Vehicle Categories requests below). Readable by EVERY tenant role (form dropdowns). Use the ids/slugs here for vehicle_category_id on Create/Update Vehicle and for a driver's vehicle_category_ids[]. Add ?per_page=10&search=&sort_by=&sort_dir= for the paginated management list (includes vehicles_count/drivers_count/assets_count/in_use)."
           }
         },
@@ -653,13 +1514,30 @@
           "name": "Create Vehicle Category",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Accept", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name_en\": \"Crane truck\",\n  \"name_ar\": \"مركبات رافعة\"\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
-            "url": { "raw": "{{api_base}}/vehicle-categories", "host": ["{{api_base}}"], "path": ["vehicle-categories"] },
+            "url": {
+              "raw": "{{api_base}}/vehicle-categories",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicle-categories"
+              ]
+            },
             "description": "system_admin ONLY (403 for everyone else). name_en + name_ar required, each unique within the tenant. The slug is generated from name_en once and never changes on rename. Saves last_vehicle_category_id."
           },
           "event": [
@@ -682,8 +1560,22 @@
           "name": "Show Vehicle Category",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Accept", "value": "application/json" }],
-            "url": { "raw": "{{api_base}}/vehicle-categories/{{last_vehicle_category_id}}", "host": ["{{api_base}}"], "path": ["vehicle-categories", "{{last_vehicle_category_id}}"] },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/vehicle-categories/{{last_vehicle_category_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicle-categories",
+                "{{last_vehicle_category_id}}"
+              ]
+            },
             "description": "system_admin only. Includes vehicles_count / drivers_count / assets_count / in_use."
           }
         },
@@ -691,13 +1583,31 @@
           "name": "Update Vehicle Category",
           "request": {
             "method": "PATCH",
-            "header": [{ "key": "Accept", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name_en\": \"Crane truck (renamed)\",\n  \"name_ar\": \"مركبات رافعة\"\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
-            "url": { "raw": "{{api_base}}/vehicle-categories/{{last_vehicle_category_id}}", "host": ["{{api_base}}"], "path": ["vehicle-categories", "{{last_vehicle_category_id}}"] },
+            "url": {
+              "raw": "{{api_base}}/vehicle-categories/{{last_vehicle_category_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicle-categories",
+                "{{last_vehicle_category_id}}"
+              ]
+            },
             "description": "system_admin only. Names only — the slug is stable."
           }
         },
@@ -705,8 +1615,22 @@
           "name": "Delete Vehicle Category",
           "request": {
             "method": "DELETE",
-            "header": [{ "key": "Accept", "value": "application/json" }],
-            "url": { "raw": "{{api_base}}/vehicle-categories/{{last_vehicle_category_id}}", "host": ["{{api_base}}"], "path": ["vehicle-categories", "{{last_vehicle_category_id}}"] },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/vehicle-categories/{{last_vehicle_category_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicle-categories",
+                "{{last_vehicle_category_id}}"
+              ]
+            },
             "description": "system_admin only. 204 on success. 422 (\"This is a primary category and can't be deleted.\") for the six primary categories (the FRD five + Tractor truck) even when unused. 422 with a clear message if a custom category is still used by vehicles, drivers' qualified categories or assets' compatible categories (e.g. \"in use by 3 vehicles, 1 asset\")."
           }
         },
@@ -717,11 +1641,23 @@
             "header": [],
             "url": {
               "raw": "{{api_base}}/vehicle-categories/export?format=xlsx",
-              "host": ["{{api_base}}"],
-              "path": ["vehicle-categories", "export"],
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicle-categories",
+                "export"
+              ],
               "query": [
-                { "key": "format", "value": "xlsx" },
-                { "key": "search", "value": "", "disabled": true }
+                {
+                  "key": "format",
+                  "value": "xlsx"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                }
               ]
             },
             "description": "system_admin only. Honours the same `search` (name EN/AR) as the list."
@@ -734,11 +1670,23 @@
             "header": [],
             "url": {
               "raw": "{{api_base}}/vehicle-categories/export?format=pdf",
-              "host": ["{{api_base}}"],
-              "path": ["vehicle-categories", "export"],
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicle-categories",
+                "export"
+              ],
               "query": [
-                { "key": "format", "value": "pdf" },
-                { "key": "search", "value": "", "disabled": true }
+                {
+                  "key": "format",
+                  "value": "pdf"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                }
               ]
             },
             "description": "system_admin only. Arabic names render joined/RTL via ArabicText."
@@ -748,8 +1696,21 @@
           "name": "Reference — Asset Capacity Categories",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Accept", "value": "application/json" }],
-            "url": { "raw": "{{api_base}}/asset-capacity-categories", "host": ["{{api_base}}"], "path": ["asset-capacity-categories"] },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/asset-capacity-categories",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "asset-capacity-categories"
+              ]
+            },
             "description": "Tenant-scoped capacity list for the embedded-container dropdown. Read-only for now — full CRUD lands with the Assets module."
           }
         },
@@ -757,40 +1718,178 @@
           "name": "Create Vehicle",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Accept", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "formdata",
               "formdata": [
-                { "key": "plate_letters", "value": "ABC", "type": "text" },
-                { "key": "plate_numbers", "value": "1234", "type": "text", "description": "digits only" },
-                { "key": "vehicle_category_id", "value": "1", "type": "text", "description": "vehicle_categories.id — see Reference — Vehicle Categories" },
-                { "key": "has_embedded_container", "value": "1", "type": "text", "description": "1 | 0" },
-                { "key": "embedded_container_type", "value": "container", "type": "text", "description": "container | tank — required when has_embedded_container=1" },
-                { "key": "embedded_asset_capacity_category_id", "value": "1", "type": "text", "description": "asset_capacity_categories.id — required when has_embedded_container=1" },
-                { "key": "operational_status", "value": "active", "type": "text", "description": "active | on_maintenance | deactivated (deactivated is system_admin only)" },
-                { "key": "affiliation", "value": "gcm", "type": "text", "description": "gcm | contractor (contractor deferred to Week 5)" },
-                { "key": "additional_data", "value": "<p>notes</p>", "type": "text", "disabled": true },
-                { "key": "photo_front", "type": "file", "src": [], "disabled": true },
-                { "key": "photo_back", "type": "file", "src": [], "disabled": true },
-                { "key": "documents[registration_card][number]", "value": "1001", "type": "text", "description": "digits only" },
-                { "key": "documents[registration_card][valid_to]", "value": "2027-01-01", "type": "text" },
-                { "key": "documents[registration_card][attachment]", "type": "file", "src": [], "disabled": true },
-                { "key": "documents[fitness_document][number]", "value": "1002", "type": "text" },
-                { "key": "documents[fitness_document][valid_to]", "value": "2027-01-01", "type": "text" },
-                { "key": "documents[fitness_document][attachment]", "type": "file", "src": [], "disabled": true },
-                { "key": "documents[inspection_certificate][number]", "value": "1003", "type": "text" },
-                { "key": "documents[inspection_certificate][valid_to]", "value": "2027-01-01", "type": "text" },
-                { "key": "documents[inspection_certificate][attachment]", "type": "file", "src": [], "disabled": true },
-                { "key": "documents[insurance][number]", "value": "1004", "type": "text" },
-                { "key": "documents[insurance][valid_to]", "value": "2027-01-01", "type": "text" },
-                { "key": "documents[insurance][attachment]", "type": "file", "src": [], "disabled": true },
-                { "key": "entry_permits[0][area_name]", "value": "Riyadh", "type": "text" },
-                { "key": "entry_permits[0][permit_number]", "value": "2001", "type": "text", "description": "digits only" },
-                { "key": "entry_permits[0][valid_to]", "value": "2027-01-01", "type": "text" },
-                { "key": "entry_permits[0][attachment]", "type": "file", "src": [], "disabled": true }
+                {
+                  "key": "plate_letters",
+                  "value": "ABC",
+                  "type": "text"
+                },
+                {
+                  "key": "plate_numbers",
+                  "value": "1234",
+                  "type": "text",
+                  "description": "digits only"
+                },
+                {
+                  "key": "vehicle_category_id",
+                  "value": "1",
+                  "type": "text",
+                  "description": "vehicle_categories.id — see Reference — Vehicle Categories"
+                },
+                {
+                  "key": "has_embedded_container",
+                  "value": "1",
+                  "type": "text",
+                  "description": "1 | 0"
+                },
+                {
+                  "key": "embedded_container_type",
+                  "value": "container",
+                  "type": "text",
+                  "description": "container | tank — required when has_embedded_container=1"
+                },
+                {
+                  "key": "embedded_asset_capacity_category_id",
+                  "value": "1",
+                  "type": "text",
+                  "description": "asset_capacity_categories.id — required when has_embedded_container=1"
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "type": "text",
+                  "description": "active | on_maintenance | deactivated (deactivated is system_admin only)"
+                },
+                {
+                  "key": "affiliation",
+                  "value": "gcm",
+                  "type": "text",
+                  "description": "gcm | contractor (contractor deferred to Week 5)"
+                },
+                {
+                  "key": "additional_data",
+                  "value": "<p>notes</p>",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "photo_front",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "photo_back",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "documents[registration_card][number]",
+                  "value": "1001",
+                  "type": "text",
+                  "description": "digits only"
+                },
+                {
+                  "key": "documents[registration_card][valid_to]",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "documents[registration_card][attachment]",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "documents[fitness_document][number]",
+                  "value": "1002",
+                  "type": "text"
+                },
+                {
+                  "key": "documents[fitness_document][valid_to]",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "documents[fitness_document][attachment]",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "documents[inspection_certificate][number]",
+                  "value": "1003",
+                  "type": "text"
+                },
+                {
+                  "key": "documents[inspection_certificate][valid_to]",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "documents[inspection_certificate][attachment]",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "documents[insurance][number]",
+                  "value": "1004",
+                  "type": "text"
+                },
+                {
+                  "key": "documents[insurance][valid_to]",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "documents[insurance][attachment]",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "entry_permits[0][area_name]",
+                  "value": "Riyadh",
+                  "type": "text"
+                },
+                {
+                  "key": "entry_permits[0][permit_number]",
+                  "value": "2001",
+                  "type": "text",
+                  "description": "digits only"
+                },
+                {
+                  "key": "entry_permits[0][valid_to]",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "entry_permits[0][attachment]",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                }
               ]
             },
-            "url": { "raw": "{{api_base}}/vehicles", "host": ["{{api_base}}"], "path": ["vehicles"] },
+            "url": {
+              "raw": "{{api_base}}/vehicles",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicles"
+              ]
+            },
             "description": "Creates the vehicle + its 4 single documents + any entry permits in one transaction. All *_number fields are digits-only. File fields are disabled by default — enable and pick a file to test uploads."
           },
           "event": [
@@ -815,11 +1914,21 @@
           "name": "Show Vehicle",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Accept", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
             "url": {
               "raw": "{{api_base}}/vehicles/{{last_vehicle_id}}",
-              "host": ["{{api_base}}"],
-              "path": ["vehicles", "{{last_vehicle_id}}"]
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicles",
+                "{{last_vehicle_id}}"
+              ]
             },
             "description": "Includes documents[] — grab a documents[].id for {{last_vehicle_document_id}} to test Download Document."
           }
@@ -828,38 +1937,141 @@
           "name": "Update Vehicle",
           "request": {
             "method": "PATCH",
-            "header": [{ "key": "Accept", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "formdata",
               "formdata": [
-                { "key": "plate_letters", "value": "XYZ", "type": "text" },
-                { "key": "plate_numbers", "value": "9999", "type": "text" },
-                { "key": "vehicle_category_id", "value": "1", "type": "text" },
-                { "key": "has_embedded_container", "value": "0", "type": "text" },
-                { "key": "operational_status", "value": "active", "type": "text" },
-                { "key": "affiliation", "value": "gcm", "type": "text" },
-                { "key": "additional_data", "value": "<p>updated</p>", "type": "text", "disabled": true },
-                { "key": "photo_front", "type": "file", "src": [], "disabled": true },
-                { "key": "photo_back", "type": "file", "src": [], "disabled": true },
-                { "key": "documents[registration_card][number]", "value": "1001", "type": "text" },
-                { "key": "documents[registration_card][valid_to]", "value": "2027-01-01", "type": "text" },
-                { "key": "documents[fitness_document][number]", "value": "1002", "type": "text" },
-                { "key": "documents[fitness_document][valid_to]", "value": "2027-01-01", "type": "text" },
-                { "key": "documents[inspection_certificate][number]", "value": "1003", "type": "text" },
-                { "key": "documents[inspection_certificate][valid_to]", "value": "2027-01-01", "type": "text" },
-                { "key": "documents[insurance][number]", "value": "1004", "type": "text" },
-                { "key": "documents[insurance][valid_to]", "value": "2027-01-01", "type": "text" },
-                { "key": "entry_permits[0][id]", "value": "", "type": "text", "description": "existing entry_permits.id — keeps its attachment. Blank = new row. Omit a row entirely to delete it." },
-                { "key": "entry_permits[0][area_name]", "value": "Jeddah", "type": "text" },
-                { "key": "entry_permits[0][permit_number]", "value": "2002", "type": "text" },
-                { "key": "entry_permits[0][valid_to]", "value": "2027-01-01", "type": "text" },
-                { "key": "entry_permits[0][attachment]", "type": "file", "src": [], "disabled": true }
+                {
+                  "key": "plate_letters",
+                  "value": "XYZ",
+                  "type": "text"
+                },
+                {
+                  "key": "plate_numbers",
+                  "value": "9999",
+                  "type": "text"
+                },
+                {
+                  "key": "vehicle_category_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "has_embedded_container",
+                  "value": "0",
+                  "type": "text"
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "type": "text"
+                },
+                {
+                  "key": "affiliation",
+                  "value": "gcm",
+                  "type": "text"
+                },
+                {
+                  "key": "additional_data",
+                  "value": "<p>updated</p>",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "photo_front",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "photo_back",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "documents[registration_card][number]",
+                  "value": "1001",
+                  "type": "text"
+                },
+                {
+                  "key": "documents[registration_card][valid_to]",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "documents[fitness_document][number]",
+                  "value": "1002",
+                  "type": "text"
+                },
+                {
+                  "key": "documents[fitness_document][valid_to]",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "documents[inspection_certificate][number]",
+                  "value": "1003",
+                  "type": "text"
+                },
+                {
+                  "key": "documents[inspection_certificate][valid_to]",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "documents[insurance][number]",
+                  "value": "1004",
+                  "type": "text"
+                },
+                {
+                  "key": "documents[insurance][valid_to]",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "entry_permits[0][id]",
+                  "value": "",
+                  "type": "text",
+                  "description": "existing entry_permits.id — keeps its attachment. Blank = new row. Omit a row entirely to delete it."
+                },
+                {
+                  "key": "entry_permits[0][area_name]",
+                  "value": "Jeddah",
+                  "type": "text"
+                },
+                {
+                  "key": "entry_permits[0][permit_number]",
+                  "value": "2002",
+                  "type": "text"
+                },
+                {
+                  "key": "entry_permits[0][valid_to]",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "entry_permits[0][attachment]",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                }
               ]
             },
             "url": {
               "raw": "{{api_base}}/vehicles/{{last_vehicle_id}}",
-              "host": ["{{api_base}}"],
-              "path": ["vehicles", "{{last_vehicle_id}}"]
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicles",
+                "{{last_vehicle_id}}"
+              ]
             },
             "description": "Postman sends real multipart PATCH natively — no _method spoofing needed. Everything except operational_status is editable here; status changes go through Change Operational Status."
           }
@@ -868,16 +2080,31 @@
           "name": "Change Operational Status",
           "request": {
             "method": "PATCH",
-            "header": [{ "key": "Accept", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"status\": \"on_maintenance\"\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": {
               "raw": "{{api_base}}/vehicles/{{last_vehicle_id}}/status",
-              "host": ["{{api_base}}"],
-              "path": ["vehicles", "{{last_vehicle_id}}", "status"]
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicles",
+                "{{last_vehicle_id}}",
+                "status"
+              ]
             },
             "description": "status: active | on_maintenance | deactivated. Setting or clearing `deactivated` is System Admin only (422 otherwise) — see CannotDeactivateVehicleException."
           }
@@ -889,8 +2116,16 @@
             "header": [],
             "url": {
               "raw": "{{api_base}}/vehicles/{{last_vehicle_id}}/documents/{{last_vehicle_document_id}}/download",
-              "host": ["{{api_base}}"],
-              "path": ["vehicles", "{{last_vehicle_id}}", "documents", "{{last_vehicle_document_id}}", "download"]
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicles",
+                "{{last_vehicle_id}}",
+                "documents",
+                "{{last_vehicle_document_id}}",
+                "download"
+              ]
             },
             "description": "Set {{last_vehicle_document_id}} from Show Vehicle's documents[].id. Served from the private `local` disk via a policy-gated route; 404 if that document row has no uploaded file."
           }
@@ -904,19 +2139,61 @@
           "name": "List Assets",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Accept", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
             "url": {
               "raw": "{{api_base}}/assets?per_page=15",
-              "host": ["{{api_base}}"],
-              "path": ["assets"],
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "assets"
+              ],
               "query": [
-                { "key": "per_page", "value": "15" },
-                { "key": "asset_type", "value": "container", "disabled": true, "description": "container | tank" },
-                { "key": "operational_status", "value": "active", "disabled": true, "description": "active | on_maintenance | deactivated" },
-                { "key": "affiliation", "value": "gcm", "disabled": true, "description": "gcm | contractor" },
-                { "key": "search", "value": "Container", "disabled": true, "description": "matches the asset name" },
-                { "key": "sort_by", "value": "name", "disabled": true, "description": "name | asset_type | operational_status | created_at" },
-                { "key": "sort_dir", "value": "asc", "disabled": true, "description": "asc | desc" }
+                {
+                  "key": "per_page",
+                  "value": "15"
+                },
+                {
+                  "key": "asset_type",
+                  "value": "container",
+                  "disabled": true,
+                  "description": "container | tank"
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "disabled": true,
+                  "description": "active | on_maintenance | deactivated"
+                },
+                {
+                  "key": "affiliation",
+                  "value": "gcm",
+                  "disabled": true,
+                  "description": "gcm | contractor"
+                },
+                {
+                  "key": "search",
+                  "value": "Container",
+                  "disabled": true,
+                  "description": "matches the asset name"
+                },
+                {
+                  "key": "sort_by",
+                  "value": "name",
+                  "disabled": true,
+                  "description": "name | asset_type | operational_status | created_at"
+                },
+                {
+                  "key": "sort_dir",
+                  "value": "asc",
+                  "disabled": true,
+                  "description": "asc | desc"
+                }
               ]
             },
             "description": "system_admin / data_entry / auditor (AssetPolicy::viewAny). Genuinely paginated server-side, same as /vehicles."
@@ -929,14 +2206,38 @@
             "header": [],
             "url": {
               "raw": "{{api_base}}/assets/export?format=xlsx",
-              "host": ["{{api_base}}"],
-              "path": ["assets", "export"],
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "assets",
+                "export"
+              ],
               "query": [
-                { "key": "format", "value": "xlsx" },
-                { "key": "search", "value": "", "disabled": true },
-                { "key": "asset_type", "value": "", "disabled": true },
-                { "key": "operational_status", "value": "", "disabled": true },
-                { "key": "affiliation", "value": "", "disabled": true }
+                {
+                  "key": "format",
+                  "value": "xlsx"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "asset_type",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "operational_status",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "affiliation",
+                  "value": "",
+                  "disabled": true
+                }
               ]
             }
           }
@@ -948,14 +2249,38 @@
             "header": [],
             "url": {
               "raw": "{{api_base}}/assets/export?format=pdf",
-              "host": ["{{api_base}}"],
-              "path": ["assets", "export"],
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "assets",
+                "export"
+              ],
               "query": [
-                { "key": "format", "value": "pdf" },
-                { "key": "search", "value": "", "disabled": true },
-                { "key": "asset_type", "value": "", "disabled": true },
-                { "key": "operational_status", "value": "", "disabled": true },
-                { "key": "affiliation", "value": "", "disabled": true }
+                {
+                  "key": "format",
+                  "value": "pdf"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "asset_type",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "operational_status",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "affiliation",
+                  "value": "",
+                  "disabled": true
+                }
               ]
             }
           }
@@ -964,8 +2289,22 @@
           "name": "Asset Stats",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Accept", "value": "application/json" }],
-            "url": { "raw": "{{api_base}}/assets/stats", "host": ["{{api_base}}"], "path": ["assets", "stats"] },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/assets/stats",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "assets",
+                "stats"
+              ]
+            },
             "description": "Containers and tanks counted separately (available / in_projects / on_maintenance / deactivated). in_projects is always 0 until the Projects module (Week 4)."
           }
         },
@@ -973,20 +2312,69 @@
           "name": "Reference — Capacity Categories",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Accept", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
             "url": {
               "raw": "{{api_base}}/asset-capacity-categories",
-              "host": ["{{api_base}}"],
-              "path": ["asset-capacity-categories"],
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "asset-capacity-categories"
+              ],
               "query": [
-                { "key": "for_type", "value": "container", "disabled": true, "description": "container | tank — returns capacities that fit that type (applies_to matches, or 'both')" },
-                { "key": "applies_to", "value": "both", "disabled": true, "description": "container | tank | both — exact match" },
-                { "key": "vehicle_category_id", "value": "1", "disabled": true, "description": "with asset_type — the vehicle form's embedded-container list: only capacities the fleet can field for that vehicle category + kind, derived from the asset pool. Both params required together." },
-                { "key": "asset_type", "value": "container", "disabled": true, "description": "container | tank — pair with vehicle_category_id" },
-                { "key": "search", "value": "skip", "disabled": true, "description": "matches the capacity name" },
-                { "key": "sort_by", "value": "name", "disabled": true, "description": "name | applies_to | capacity_cbm | capacity_ton | assets_count | created_at" },
-                { "key": "sort_dir", "value": "asc", "disabled": true, "description": "asc | desc" },
-                { "key": "per_page", "value": "15", "disabled": true, "description": "SEND this to get a paginated {data, meta} response (the management list page does). Omit it entirely — as the form dropdowns do — to get the full unpaginated array." }
+                {
+                  "key": "for_type",
+                  "value": "container",
+                  "disabled": true,
+                  "description": "container | tank — returns capacities that fit that type (applies_to matches, or 'both')"
+                },
+                {
+                  "key": "applies_to",
+                  "value": "both",
+                  "disabled": true,
+                  "description": "container | tank | both — exact match"
+                },
+                {
+                  "key": "vehicle_category_id",
+                  "value": "1",
+                  "disabled": true,
+                  "description": "with asset_type — the vehicle form's embedded-container list: only capacities the fleet can field for that vehicle category + kind, derived from the asset pool. Both params required together."
+                },
+                {
+                  "key": "asset_type",
+                  "value": "container",
+                  "disabled": true,
+                  "description": "container | tank — pair with vehicle_category_id"
+                },
+                {
+                  "key": "search",
+                  "value": "skip",
+                  "disabled": true,
+                  "description": "matches the capacity name"
+                },
+                {
+                  "key": "sort_by",
+                  "value": "name",
+                  "disabled": true,
+                  "description": "name | applies_to | capacity_cbm | capacity_ton | assets_count | created_at"
+                },
+                {
+                  "key": "sort_dir",
+                  "value": "asc",
+                  "disabled": true,
+                  "description": "asc | desc"
+                },
+                {
+                  "key": "per_page",
+                  "value": "15",
+                  "disabled": true,
+                  "description": "SEND this to get a paginated {data, meta} response (the management list page does). Omit it entirely — as the form dropdowns do — to get the full unpaginated array."
+                }
               ]
             },
             "description": "Open reference list (any tenant role). Without per_page it returns the full unpaginated array — that's what the vehicle & asset form dropdowns use. With per_page it's genuinely server-side paged/sorted/searched, same as /vehicles (the management list page). With vehicle_category_id + asset_type it returns only the capacities usable as that vehicle category's embedded container (see EmbeddedCapacityFitsVehicleRule)."
@@ -996,13 +2384,30 @@
           "name": "Create Capacity Category",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Accept", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name\": \"Roll-on/off {{$timestamp}}\",\n  \"applies_to\": \"container\",\n  \"capacity_cbm\": 20,\n  \"capacity_ton\": 8,\n  \"additional_data\": \"\"\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
-            "url": { "raw": "{{api_base}}/asset-capacity-categories", "host": ["{{api_base}}"], "path": ["asset-capacity-categories"] },
+            "url": {
+              "raw": "{{api_base}}/asset-capacity-categories",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "asset-capacity-categories"
+              ]
+            },
             "description": "system_admin / data_entry. `applies_to`: container | tank | both. Both CBM and TON are required."
           },
           "event": [
@@ -1027,11 +2432,21 @@
           "name": "Show Capacity Category",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Accept", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
             "url": {
               "raw": "{{api_base}}/asset-capacity-categories/{{last_asset_capacity_category_id}}",
-              "host": ["{{api_base}}"],
-              "path": ["asset-capacity-categories", "{{last_asset_capacity_category_id}}"]
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "asset-capacity-categories",
+                "{{last_asset_capacity_category_id}}"
+              ]
             }
           }
         },
@@ -1039,16 +2454,30 @@
           "name": "Update Capacity Category (name only)",
           "request": {
             "method": "PATCH",
-            "header": [{ "key": "Accept", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name\": \"Roll-on/off (renamed)\"\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": {
               "raw": "{{api_base}}/asset-capacity-categories/{{last_asset_capacity_category_id}}",
-              "host": ["{{api_base}}"],
-              "path": ["asset-capacity-categories", "{{last_asset_capacity_category_id}}"]
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "asset-capacity-categories",
+                "{{last_asset_capacity_category_id}}"
+              ]
             },
             "description": "FRD §1.7.2 — only the name is editable. `applies_to` and the capacities are locked after creation (any other keys sent are ignored). No delete route."
           }
@@ -1060,12 +2489,28 @@
             "header": [],
             "url": {
               "raw": "{{api_base}}/asset-capacity-categories/export?format=xlsx",
-              "host": ["{{api_base}}"],
-              "path": ["asset-capacity-categories", "export"],
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "asset-capacity-categories",
+                "export"
+              ],
               "query": [
-                { "key": "format", "value": "xlsx" },
-                { "key": "search", "value": "", "disabled": true },
-                { "key": "applies_to", "value": "", "disabled": true }
+                {
+                  "key": "format",
+                  "value": "xlsx"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "applies_to",
+                  "value": "",
+                  "disabled": true
+                }
               ]
             }
           }
@@ -1077,12 +2522,28 @@
             "header": [],
             "url": {
               "raw": "{{api_base}}/asset-capacity-categories/export?format=pdf",
-              "host": ["{{api_base}}"],
-              "path": ["asset-capacity-categories", "export"],
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "asset-capacity-categories",
+                "export"
+              ],
               "query": [
-                { "key": "format", "value": "pdf" },
-                { "key": "search", "value": "", "disabled": true },
-                { "key": "applies_to", "value": "", "disabled": true }
+                {
+                  "key": "format",
+                  "value": "pdf"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "applies_to",
+                  "value": "",
+                  "disabled": true
+                }
               ]
             }
           }
@@ -1091,13 +2552,30 @@
           "name": "Create Asset",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Accept", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name\": \"Container A-{{$timestamp}}\",\n  \"asset_type\": \"container\",\n  \"asset_capacity_category_id\": 1,\n  \"compatible_vehicle_category_ids\": [1],\n  \"operational_status\": \"active\",\n  \"affiliation\": \"gcm\",\n  \"purchase_date\": \"2024-01-01\",\n  \"additional_data\": \"<p>notes</p>\"\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
-            "url": { "raw": "{{api_base}}/assets", "host": ["{{api_base}}"], "path": ["assets"] },
+            "url": {
+              "raw": "{{api_base}}/assets",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "assets"
+              ]
+            },
             "description": "asset_capacity_category_id must fit asset_type (its applies_to is that type or 'both'). compatible_vehicle_category_ids: vehicle_categories.id — at least one required (see Reference — Vehicle Categories in the Vehicles folder). deactivated status is System Admin only. contractor affiliation is rejected until Week 5."
           },
           "event": [
@@ -1122,11 +2600,21 @@
           "name": "Show Asset",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Accept", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
             "url": {
               "raw": "{{api_base}}/assets/{{last_asset_id}}",
-              "host": ["{{api_base}}"],
-              "path": ["assets", "{{last_asset_id}}"]
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "assets",
+                "{{last_asset_id}}"
+              ]
             }
           }
         },
@@ -1134,16 +2622,30 @@
           "name": "Update Asset (name only)",
           "request": {
             "method": "PATCH",
-            "header": [{ "key": "Accept", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name\": \"Container A-01 (renamed)\"\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": {
               "raw": "{{api_base}}/assets/{{last_asset_id}}",
-              "host": ["{{api_base}}"],
-              "path": ["assets", "{{last_asset_id}}"]
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "assets",
+                "{{last_asset_id}}"
+              ]
             },
             "description": "FRD §1.7.3 — the name is the ONLY editable field. Type, capacity, affiliation, purchase date, notes and compatible vehicle categories are all locked (any other keys sent are ignored). operational_status changes via Change Operational Status."
           }
@@ -1152,16 +2654,31 @@
           "name": "Change Operational Status",
           "request": {
             "method": "PATCH",
-            "header": [{ "key": "Accept", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"status\": \"on_maintenance\"\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": {
               "raw": "{{api_base}}/assets/{{last_asset_id}}/status",
-              "host": ["{{api_base}}"],
-              "path": ["assets", "{{last_asset_id}}", "status"]
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "assets",
+                "{{last_asset_id}}",
+                "status"
+              ]
             },
             "description": "status: active | on_maintenance | deactivated. Setting or clearing `deactivated` is System Admin only (422 otherwise) — see CannotDeactivateAssetException."
           }
@@ -1169,21 +2686,488 @@
       ]
     },
     {
-      "name": "8. Client Companies",
+      "name": "8. Intermediate Facilities",
+      "item": [
+        {
+          "name": "List Facilities",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/facilities?per_page=15",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "facilities"
+              ],
+              "query": [
+                {
+                  "key": "per_page",
+                  "value": "15"
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "environmental_service",
+                  "value": "recycle",
+                  "disabled": true
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "disabled": true
+                },
+                {
+                  "key": "sort_by",
+                  "value": "name",
+                  "disabled": true
+                },
+                {
+                  "key": "sort_dir",
+                  "value": "asc",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "FRD V01.14 §1.8. System Admin / Data Entry / Auditor. search matches the name and the 3-letter prefix. environmental_service: disposal | sewage_treatment | recycle. operational_status: active | deactivated. sort_by: name | environmental_service | operational_status | created_at."
+          }
+        },
+        {
+          "name": "Facility Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/facilities/stats",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "facilities",
+                "stats"
+              ]
+            },
+            "description": "Cards on the list page: for each environmental service, how many facilities offer it (`total`) and how many of those are `active`."
+          }
+        },
+        {
+          "name": "Create Facility",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Green Loop Recycling {{$timestamp}}",
+                  "type": "text"
+                },
+                {
+                  "key": "prefix",
+                  "value": "GLR",
+                  "type": "text",
+                  "description": "Exactly 3 English letters, unique per company (stored upper-case). Change it on every re-run — it is locked after creation."
+                },
+                {
+                  "key": "environmental_service",
+                  "value": "recycle",
+                  "type": "text",
+                  "description": "disposal | sewage_treatment | recycle"
+                },
+                {
+                  "key": "recycling_efficiency",
+                  "value": "72.5",
+                  "type": "text",
+                  "description": "Required for `recycle` (0–100), rejected for the other services."
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "type": "text",
+                  "description": "active | deactivated"
+                },
+                {
+                  "key": "address",
+                  "value": "Abu Dhabi, ICAD",
+                  "type": "text"
+                },
+                {
+                  "key": "location_url",
+                  "value": "https://maps.google.com/?q=24.4,54.5",
+                  "type": "text"
+                },
+                {
+                  "key": "contract_number",
+                  "value": "C-1001",
+                  "type": "text"
+                },
+                {
+                  "key": "contract_start",
+                  "value": "2026-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "contract_end",
+                  "value": "2026-12-31",
+                  "type": "text"
+                },
+                {
+                  "key": "additional_data",
+                  "value": "<p>notes</p>",
+                  "type": "text"
+                },
+                {
+                  "key": "logo",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true,
+                  "description": "Image, max 2 MB."
+                },
+                {
+                  "key": "contract_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true,
+                  "description": "pdf / jpg / png, max 4 MB. Private — served only through Download Contract."
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{api_base}}/facilities",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "facilities"
+              ]
+            },
+            "description": "System Admin / Data Entry. Multipart form (the two files are optional — enable them and pick a file). The tenant is taken from the token."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    if (body.data && body.data.id) {",
+                  "        pm.collectionVariables.set('last_facility_id', body.data.id);",
+                  "        console.log('last_facility_id saved:', body.data.id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Show Facility",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/facilities/{{last_facility_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "facilities",
+                "{{last_facility_id}}"
+              ]
+            },
+            "description": "`in_use` is true once a sub-service or trip uses the facility (always false until the Services module exists). `supported_sub_services` is filled by the Services module."
+          }
+        },
+        {
+          "name": "Update Facility",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "_method",
+                  "value": "PATCH",
+                  "type": "text",
+                  "description": "Laravel method spoofing — needed because a multipart body can't be sent with a real PATCH."
+                },
+                {
+                  "key": "name",
+                  "value": "Green Loop Recycling (renamed)",
+                  "type": "text"
+                },
+                {
+                  "key": "address",
+                  "value": "New address",
+                  "type": "text"
+                },
+                {
+                  "key": "location_url",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "contract_number",
+                  "value": "C-1002",
+                  "type": "text"
+                },
+                {
+                  "key": "contract_start",
+                  "value": "2026-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "contract_end",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "additional_data",
+                  "value": "<p>updated</p>",
+                  "type": "text"
+                },
+                {
+                  "key": "environmental_service",
+                  "value": "recycle",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "Editable only while the facility is unused — 422 once a sub-service or trip uses it."
+                },
+                {
+                  "key": "recycling_efficiency",
+                  "value": "80",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "Same lock as environmental_service."
+                },
+                {
+                  "key": "logo",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "contract_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{api_base}}/facilities/{{last_facility_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "facilities",
+                "{{last_facility_id}}"
+              ]
+            },
+            "description": "System Admin / Data Entry. The name and the optional data are always editable (a new logo / contract attachment replaces the old file). The prefix is never editable (ignored if sent). operational_status changes via Change Operational Status. A JSON PATCH without files works too."
+          }
+        },
+        {
+          "name": "Change Operational Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"deactivated\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/facilities/{{last_facility_id}}/status",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "facilities",
+                "{{last_facility_id}}",
+                "status"
+              ]
+            },
+            "description": "status: active | deactivated. System Admin / Data Entry. No delete route — facilities are deactivated, never removed."
+          }
+        },
+        {
+          "name": "Download Contract Attachment",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/facilities/{{last_facility_id}}/contract",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "facilities",
+                "{{last_facility_id}}",
+                "contract"
+              ]
+            },
+            "description": "Private file (disk `local`). 404 if the facility has no attachment. System Admin / Data Entry / Auditor."
+          }
+        },
+        {
+          "name": "Export Facilities (Excel)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/facilities/export?format=xlsx",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "facilities",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "xlsx"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "environmental_service",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "operational_status",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Same filters and search as the list — the file holds exactly the rows the list shows."
+          }
+        },
+        {
+          "name": "Export Facilities (PDF)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/facilities/export?format=pdf",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "facilities",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "pdf"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "environmental_service",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "operational_status",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "9. Client Companies",
       "description": "Phase 2 · Part 4 — FRD V01.14 §1.11. system_admin / data_entry create, edit and (de)activate; auditor views and exports; driver has no access. No hard delete. Projects, users and contracts counts are 0 until those modules exist.",
       "item": [
         {
           "name": "List Client Companies",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Accept", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
             "url": {
               "raw": "{{api_base}}/companies?per_page=15",
-              "host": ["{{api_base}}"],
-              "path": ["companies"],
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "companies"
+              ],
               "query": [
-                { "key": "per_page", "value": "15" },
-                { "key": "operational_status", "value": "active", "disabled": true, "description": "active | deactivated" },
+                {
+                  "key": "per_page",
+                  "value": "15"
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "disabled": true,
+                  "description": "active | deactivated"
+                },
                 {
                   "key": "search",
                   "value": "Noor",
@@ -1196,7 +3180,12 @@
                   "disabled": true,
                   "description": "code | name | operational_status | created_at"
                 },
-                { "key": "sort_dir", "value": "asc", "disabled": true, "description": "asc | desc" }
+                {
+                  "key": "sort_dir",
+                  "value": "asc",
+                  "disabled": true,
+                  "description": "asc | desc"
+                }
               ]
             },
             "description": "system_admin / data_entry / auditor (CompanyPolicy::viewAny). Genuinely paginated server-side."
@@ -1206,22 +3195,57 @@
           "name": "Create Client Company",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Accept", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "formdata",
               "formdata": [
-                { "key": "name", "value": "Client Co {{$timestamp}}", "type": "text" },
+                {
+                  "key": "name",
+                  "value": "Client Co {{$timestamp}}",
+                  "type": "text"
+                },
                 {
                   "key": "prefix",
                   "value": "CXA",
                   "type": "text",
                   "description": "3 English letters, unique per tenant, stored upper-case. The company ID is built from it (e.g. ALN-0001), so it cannot be changed after creation."
                 },
-                { "key": "business_sector", "value": "Construction", "type": "text", "disabled": true },
-                { "key": "logo", "type": "file", "src": [], "disabled": true, "description": "image, max 2MB" },
-                { "key": "phone", "value": "+966500000000", "type": "text", "disabled": true },
-                { "key": "email", "value": "info@client.test", "type": "text", "disabled": true },
-                { "key": "address", "value": "Riyadh", "type": "text", "disabled": true },
+                {
+                  "key": "business_sector",
+                  "value": "Construction",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "logo",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true,
+                  "description": "image, max 2MB"
+                },
+                {
+                  "key": "phone",
+                  "value": "+966500000000",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "email",
+                  "value": "info@client.test",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "address",
+                  "value": "Riyadh",
+                  "type": "text",
+                  "disabled": true
+                },
                 {
                   "key": "location_url",
                   "value": "https://maps.google.com/?q=riyadh",
@@ -1229,8 +3253,19 @@
                   "disabled": true,
                   "description": "http/https only"
                 },
-                { "key": "contract_number", "value": "1001", "type": "text", "disabled": true, "description": "digits only" },
-                { "key": "contract_start_date", "value": "2026-01-01", "type": "text", "disabled": true },
+                {
+                  "key": "contract_number",
+                  "value": "1001",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "digits only"
+                },
+                {
+                  "key": "contract_start_date",
+                  "value": "2026-01-01",
+                  "type": "text",
+                  "disabled": true
+                },
                 {
                   "key": "contract_end_date",
                   "value": "2026-12-31",
@@ -1245,15 +3280,55 @@
                   "disabled": true,
                   "description": "pdf/jpg/png, max 4MB — private, downloadable only through the download endpoint"
                 },
-                { "key": "cr_number", "value": "2002", "type": "text", "disabled": true, "description": "digits only" },
-                { "key": "cr_attachment", "type": "file", "src": [], "disabled": true },
-                { "key": "tax_number", "value": "3003", "type": "text", "disabled": true, "description": "digits only" },
-                { "key": "tax_attachment", "type": "file", "src": [], "disabled": true },
-                { "key": "additional_data", "value": "<p>notes</p>", "type": "text", "disabled": true },
-                { "key": "operational_status", "value": "active", "type": "text", "description": "active | deactivated" }
+                {
+                  "key": "cr_number",
+                  "value": "2002",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "digits only"
+                },
+                {
+                  "key": "cr_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "tax_number",
+                  "value": "3003",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "digits only"
+                },
+                {
+                  "key": "tax_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "additional_data",
+                  "value": "<p>notes</p>",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "type": "text",
+                  "description": "active | deactivated"
+                }
               ]
             },
-            "url": { "raw": "{{api_base}}/companies", "host": ["{{api_base}}"], "path": ["companies"] },
+            "url": {
+              "raw": "{{api_base}}/companies",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "companies"
+              ]
+            },
             "description": "name, prefix and operational_status are required. multipart/form-data. The prefix must be exactly 3 English letters and unique in the tenant — change it if you re-send this request. The response returns the generated company ID (prefix + running number, e.g. ALN-0001)."
           },
           "event": [
@@ -1278,11 +3353,21 @@
           "name": "Show Client Company",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Accept", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
             "url": {
               "raw": "{{api_base}}/companies/{{last_company_id}}",
-              "host": ["{{api_base}}"],
-              "path": ["companies", "{{last_company_id}}"]
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "companies",
+                "{{last_company_id}}"
+              ]
             },
             "description": "Returns the company with its contract / commercial-registration / tax-registration blocks (each with a download_url when a file was uploaded) and the placeholder stats."
           }
@@ -1291,7 +3376,12 @@
           "name": "Update Client Company",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Accept", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "formdata",
               "formdata": [
@@ -1301,18 +3391,48 @@
                   "type": "text",
                   "description": "method spoofing — multipart PATCH is not parsed by PHP"
                 },
-                { "key": "name", "value": "Client Co {{$timestamp}}", "type": "text" },
+                {
+                  "key": "name",
+                  "value": "Client Co {{$timestamp}}",
+                  "type": "text"
+                },
                 {
                   "key": "prefix",
                   "value": "TCX",
                   "type": "text",
                   "description": "LOCKED after creation — any value sent here is ignored (the company ID ALN-0001 is built from it)."
                 },
-                { "key": "business_sector", "value": "Construction", "type": "text", "disabled": true },
-                { "key": "logo", "type": "file", "src": [], "disabled": true, "description": "image, max 2MB" },
-                { "key": "phone", "value": "+966500000000", "type": "text", "disabled": true },
-                { "key": "email", "value": "info@client.test", "type": "text", "disabled": true },
-                { "key": "address", "value": "Riyadh", "type": "text", "disabled": true },
+                {
+                  "key": "business_sector",
+                  "value": "Construction",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "logo",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true,
+                  "description": "image, max 2MB"
+                },
+                {
+                  "key": "phone",
+                  "value": "+966500000000",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "email",
+                  "value": "info@client.test",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "address",
+                  "value": "Riyadh",
+                  "type": "text",
+                  "disabled": true
+                },
                 {
                   "key": "location_url",
                   "value": "https://maps.google.com/?q=riyadh",
@@ -1320,8 +3440,19 @@
                   "disabled": true,
                   "description": "http/https only"
                 },
-                { "key": "contract_number", "value": "1001", "type": "text", "disabled": true, "description": "digits only" },
-                { "key": "contract_start_date", "value": "2026-01-01", "type": "text", "disabled": true },
+                {
+                  "key": "contract_number",
+                  "value": "1001",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "digits only"
+                },
+                {
+                  "key": "contract_start_date",
+                  "value": "2026-01-01",
+                  "type": "text",
+                  "disabled": true
+                },
                 {
                   "key": "contract_end_date",
                   "value": "2026-12-31",
@@ -1336,17 +3467,49 @@
                   "disabled": true,
                   "description": "pdf/jpg/png, max 4MB — private, downloadable only through the download endpoint"
                 },
-                { "key": "cr_number", "value": "2002", "type": "text", "disabled": true, "description": "digits only" },
-                { "key": "cr_attachment", "type": "file", "src": [], "disabled": true },
-                { "key": "tax_number", "value": "3003", "type": "text", "disabled": true, "description": "digits only" },
-                { "key": "tax_attachment", "type": "file", "src": [], "disabled": true },
-                { "key": "additional_data", "value": "<p>notes</p>", "type": "text", "disabled": true }
+                {
+                  "key": "cr_number",
+                  "value": "2002",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "digits only"
+                },
+                {
+                  "key": "cr_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "tax_number",
+                  "value": "3003",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "digits only"
+                },
+                {
+                  "key": "tax_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "additional_data",
+                  "value": "<p>notes</p>",
+                  "type": "text",
+                  "disabled": true
+                }
               ]
             },
             "url": {
               "raw": "{{api_base}}/companies/{{last_company_id}}",
-              "host": ["{{api_base}}"],
-              "path": ["companies", "{{last_company_id}}"]
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "companies",
+                "{{last_company_id}}"
+              ]
             },
             "description": "Every field is editable (FRD §1.11.4) except the status, which has its own endpoint. Re-send the full form; a file field left out keeps the stored file, a new file replaces it. The short name (prefix) is locked after creation: it is ignored on update and the company ID (prefix + number) never changes."
           }
@@ -1355,12 +3518,31 @@
           "name": "Change Status",
           "request": {
             "method": "PATCH",
-            "header": [{ "key": "Accept", "value": "application/json" }],
-            "body": { "mode": "raw", "raw": "{\n  \"status\": \"deactivated\"\n}", "options": { "raw": { "language": "json" } } },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"deactivated\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
               "raw": "{{api_base}}/companies/{{last_company_id}}/status",
-              "host": ["{{api_base}}"],
-              "path": ["companies", "{{last_company_id}}", "status"]
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "companies",
+                "{{last_company_id}}",
+                "status"
+              ]
             },
             "description": "status: active | deactivated. system_admin / data_entry. Nothing cascades — the FRD does not say a company status affects its projects."
           }
@@ -1369,11 +3551,23 @@
           "name": "Download Document",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Accept", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
             "url": {
               "raw": "{{api_base}}/companies/{{last_company_id}}/documents/contract",
-              "host": ["{{api_base}}"],
-              "path": ["companies", "{{last_company_id}}", "documents", "contract"]
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "companies",
+                "{{last_company_id}}",
+                "documents",
+                "contract"
+              ]
             },
             "description": "Change the last path segment: contract | cr | tax. Private file — 404 when nothing was uploaded for that type, 403 without view access."
           }
@@ -1382,15 +3576,36 @@
           "name": "Export Client Companies (Excel)",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Accept", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
             "url": {
               "raw": "{{api_base}}/companies/export?format=xlsx",
-              "host": ["{{api_base}}"],
-              "path": ["companies", "export"],
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "companies",
+                "export"
+              ],
               "query": [
-                { "key": "format", "value": "xlsx" },
-                { "key": "operational_status", "value": "active", "disabled": true },
-                { "key": "search", "value": "Noor", "disabled": true }
+                {
+                  "key": "format",
+                  "value": "xlsx"
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "Noor",
+                  "disabled": true
+                }
               ]
             },
             "description": "Same filters and search as the list — the file holds exactly the rows the list shows."
@@ -1400,15 +3615,36 @@
           "name": "Export Client Companies (PDF)",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Accept", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
             "url": {
               "raw": "{{api_base}}/companies/export?format=pdf",
-              "host": ["{{api_base}}"],
-              "path": ["companies", "export"],
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "companies",
+                "export"
+              ],
               "query": [
-                { "key": "format", "value": "pdf" },
-                { "key": "operational_status", "value": "active", "disabled": true },
-                { "key": "search", "value": "Noor", "disabled": true }
+                {
+                  "key": "format",
+                  "value": "pdf"
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "Noor",
+                  "disabled": true
+                }
               ]
             },
             "description": "Arabic output follows the session locale, like the other exports."
@@ -1417,15 +3653,26 @@
       ]
     },
     {
-      "name": "9. Platform Auth (Super Admin)",
+      "name": "10. Platform Auth (Super Admin)",
       "item": [
         {
           "name": "Get Login Page (capture CSRF)",
           "request": {
-            "auth": { "type": "noauth" },
+            "auth": {
+              "type": "noauth"
+            },
             "method": "GET",
             "header": [],
-            "url": { "raw": "{{base_url}}/platform/login", "host": ["{{base_url}}"], "path": ["platform", "login"] },
+            "url": {
+              "raw": "{{base_url}}/platform/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "platform",
+                "login"
+              ]
+            },
             "description": "Platform is classic session+CSRF Blade auth (guard `platform`), not Bearer — separate from the tenant API entirely. Run this once to seed {{platform_csrf}} and a session cookie in Postman's cookie jar before Login below."
           },
           "event": [
@@ -1450,18 +3697,43 @@
         {
           "name": "Login",
           "request": {
-            "auth": { "type": "noauth" },
+            "auth": {
+              "type": "noauth"
+            },
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/x-www-form-urlencoded" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
             "body": {
               "mode": "urlencoded",
               "urlencoded": [
-                { "key": "_token", "value": "{{platform_csrf}}" },
-                { "key": "email", "value": "{{platform_email}}" },
-                { "key": "password", "value": "{{platform_password}}" }
+                {
+                  "key": "_token",
+                  "value": "{{platform_csrf}}"
+                },
+                {
+                  "key": "email",
+                  "value": "{{platform_email}}"
+                },
+                {
+                  "key": "password",
+                  "value": "{{platform_password}}"
+                }
               ]
             },
-            "url": { "raw": "{{base_url}}/platform/login", "host": ["{{base_url}}"], "path": ["platform", "login"] },
+            "url": {
+              "raw": "{{base_url}}/platform/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "platform",
+                "login"
+              ]
+            },
             "description": "On success this redirects (302) to /platform/dashboard and sets the platform session cookie, which Postman's cookie jar then attaches to every request in folders 9-11 automatically."
           },
           "event": [
@@ -1479,50 +3751,118 @@
         {
           "name": "Logout",
           "request": {
-            "auth": { "type": "noauth" },
+            "auth": {
+              "type": "noauth"
+            },
             "method": "POST",
             "header": [],
             "body": {
               "mode": "urlencoded",
-              "urlencoded": [{ "key": "_token", "value": "{{platform_csrf}}" }]
+              "urlencoded": [
+                {
+                  "key": "_token",
+                  "value": "{{platform_csrf}}"
+                }
+              ]
             },
-            "url": { "raw": "{{base_url}}/platform/logout", "host": ["{{base_url}}"], "path": ["platform", "logout"] }
+            "url": {
+              "raw": "{{base_url}}/platform/logout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "platform",
+                "logout"
+              ]
+            }
           }
         }
       ]
     },
     {
-      "name": "10. Platform - Tenants",
-      "auth": { "type": "noauth" },
+      "name": "11. Platform - Tenants",
+      "auth": {
+        "type": "noauth"
+      },
       "item": [
         {
           "name": "List Tenants",
           "request": {
             "method": "GET",
             "header": [],
-            "url": { "raw": "{{base_url}}/platform/tenants", "host": ["{{base_url}}"], "path": ["platform", "tenants"] }
+            "url": {
+              "raw": "{{base_url}}/platform/tenants",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "platform",
+                "tenants"
+              ]
+            }
           }
         },
         {
           "name": "Create Tenant (+ its first System Admin)",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/x-www-form-urlencoded" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
             "body": {
               "mode": "urlencoded",
               "urlencoded": [
-                { "key": "_token", "value": "{{platform_csrf}}" },
-                { "key": "name", "value": "New Client Co" },
-                { "key": "slug", "value": "new-client-{{$timestamp}}" },
-                { "key": "domain", "value": "" },
-                { "key": "admin_name", "value": "New Client Admin" },
-                { "key": "admin_email", "value": "admin+{{$timestamp}}@newclient.test" },
-                { "key": "admin_phone", "value": "0100000000" },
-                { "key": "admin_password", "value": "Password123!" },
-                { "key": "admin_password_confirmation", "value": "Password123!" }
+                {
+                  "key": "_token",
+                  "value": "{{platform_csrf}}"
+                },
+                {
+                  "key": "name",
+                  "value": "New Client Co"
+                },
+                {
+                  "key": "slug",
+                  "value": "new-client-{{$timestamp}}"
+                },
+                {
+                  "key": "domain",
+                  "value": ""
+                },
+                {
+                  "key": "admin_name",
+                  "value": "New Client Admin"
+                },
+                {
+                  "key": "admin_email",
+                  "value": "admin+{{$timestamp}}@newclient.test"
+                },
+                {
+                  "key": "admin_phone",
+                  "value": "0100000000"
+                },
+                {
+                  "key": "admin_password",
+                  "value": "Password123!"
+                },
+                {
+                  "key": "admin_password_confirmation",
+                  "value": "Password123!"
+                }
               ]
             },
-            "url": { "raw": "{{base_url}}/platform/tenants", "host": ["{{base_url}}"], "path": ["platform", "tenants"] }
+            "url": {
+              "raw": "{{base_url}}/platform/tenants",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "platform",
+                "tenants"
+              ]
+            }
           },
           "event": [
             {
@@ -1548,8 +3888,15 @@
             "header": [],
             "url": {
               "raw": "{{base_url}}/platform/tenants/{{last_tenant_id}}/edit",
-              "host": ["{{base_url}}"],
-              "path": ["platform", "tenants", "{{last_tenant_id}}", "edit"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "platform",
+                "tenants",
+                "{{last_tenant_id}}",
+                "edit"
+              ]
             },
             "description": "Set {{last_tenant_id}} manually (no auto-capture — the create form redirects to the index, not the new row, so the id isn't in the response). Check the Tenants list or DB for the id."
           }
@@ -1558,20 +3905,43 @@
           "name": "Update Tenant",
           "request": {
             "method": "PUT",
-            "header": [{ "key": "Content-Type", "value": "application/x-www-form-urlencoded" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
             "body": {
               "mode": "urlencoded",
               "urlencoded": [
-                { "key": "_token", "value": "{{platform_csrf}}" },
-                { "key": "name", "value": "New Client Co (Updated)" },
-                { "key": "slug", "value": "new-client-updated" },
-                { "key": "domain", "value": "" }
+                {
+                  "key": "_token",
+                  "value": "{{platform_csrf}}"
+                },
+                {
+                  "key": "name",
+                  "value": "New Client Co (Updated)"
+                },
+                {
+                  "key": "slug",
+                  "value": "new-client-updated"
+                },
+                {
+                  "key": "domain",
+                  "value": ""
+                }
               ]
             },
             "url": {
               "raw": "{{base_url}}/platform/tenants/{{last_tenant_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["platform", "tenants", "{{last_tenant_id}}"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "platform",
+                "tenants",
+                "{{last_tenant_id}}"
+              ]
             },
             "description": "Sent as a real HTTP PUT — Laravel accepts it natively, no _method spoofing needed outside an HTML form."
           },
@@ -1596,18 +3966,37 @@
           "name": "Suspend / Reactivate Tenant",
           "request": {
             "method": "PATCH",
-            "header": [{ "key": "Content-Type", "value": "application/x-www-form-urlencoded" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
             "body": {
               "mode": "urlencoded",
               "urlencoded": [
-                { "key": "_token", "value": "{{platform_csrf}}" },
-                { "key": "status", "value": "suspended", "description": "active | suspended" }
+                {
+                  "key": "_token",
+                  "value": "{{platform_csrf}}"
+                },
+                {
+                  "key": "status",
+                  "value": "suspended",
+                  "description": "active | suspended"
+                }
               ]
             },
             "url": {
               "raw": "{{base_url}}/platform/tenants/{{last_tenant_id}}/status",
-              "host": ["{{base_url}}"],
-              "path": ["platform", "tenants", "{{last_tenant_id}}", "status"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "platform",
+                "tenants",
+                "{{last_tenant_id}}",
+                "status"
+              ]
             },
             "description": "No hard delete — this is the only lifecycle mutation a Tenant gets. Suspending force-logs-out every session belonging to that tenant (EnsureTenant)."
           },
@@ -1631,31 +4020,65 @@
       ]
     },
     {
-      "name": "11. Platform - Roles",
-      "auth": { "type": "noauth" },
+      "name": "12. Platform - Roles",
+      "auth": {
+        "type": "noauth"
+      },
       "item": [
         {
           "name": "List Roles",
           "request": {
             "method": "GET",
             "header": [],
-            "url": { "raw": "{{base_url}}/platform/roles", "host": ["{{base_url}}"], "path": ["platform", "roles"] }
+            "url": {
+              "raw": "{{base_url}}/platform/roles",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "platform",
+                "roles"
+              ]
+            }
           }
         },
         {
           "name": "Create Role",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/x-www-form-urlencoded" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
             "body": {
               "mode": "urlencoded",
               "urlencoded": [
-                { "key": "_token", "value": "{{platform_csrf}}" },
-                { "key": "name", "value": "new_role_{{$timestamp}}" },
-                { "key": "permissions[]", "value": "users.view_any" }
+                {
+                  "key": "_token",
+                  "value": "{{platform_csrf}}"
+                },
+                {
+                  "key": "name",
+                  "value": "new_role_{{$timestamp}}"
+                },
+                {
+                  "key": "permissions[]",
+                  "value": "users.view_any"
+                }
               ]
             },
-            "url": { "raw": "{{base_url}}/platform/roles", "host": ["{{base_url}}"], "path": ["platform", "roles"] }
+            "url": {
+              "raw": "{{base_url}}/platform/roles",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "platform",
+                "roles"
+              ]
+            }
           },
           "event": [
             {
@@ -1681,8 +4104,15 @@
             "header": [],
             "url": {
               "raw": "{{base_url}}/platform/roles/{{last_role_id}}/edit",
-              "host": ["{{base_url}}"],
-              "path": ["platform", "roles", "{{last_role_id}}", "edit"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "platform",
+                "roles",
+                "{{last_role_id}}",
+                "edit"
+              ]
             },
             "description": "Set {{last_role_id}} manually from the Roles list response."
           }
@@ -1691,20 +4121,43 @@
           "name": "Update Role",
           "request": {
             "method": "PUT",
-            "header": [{ "key": "Content-Type", "value": "application/x-www-form-urlencoded" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
             "body": {
               "mode": "urlencoded",
               "urlencoded": [
-                { "key": "_token", "value": "{{platform_csrf}}" },
-                { "key": "name", "value": "renamed_role" },
-                { "key": "permissions[]", "value": "users.view_any" },
-                { "key": "permissions[]", "value": "users.export" }
+                {
+                  "key": "_token",
+                  "value": "{{platform_csrf}}"
+                },
+                {
+                  "key": "name",
+                  "value": "renamed_role"
+                },
+                {
+                  "key": "permissions[]",
+                  "value": "users.view_any"
+                },
+                {
+                  "key": "permissions[]",
+                  "value": "users.export"
+                }
               ]
             },
             "url": {
               "raw": "{{base_url}}/platform/roles/{{last_role_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["platform", "roles", "{{last_role_id}}"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "platform",
+                "roles",
+                "{{last_role_id}}"
+              ]
             }
           },
           "event": [
@@ -1728,15 +4181,31 @@
           "name": "Delete Role",
           "request": {
             "method": "DELETE",
-            "header": [{ "key": "Content-Type", "value": "application/x-www-form-urlencoded" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
             "body": {
               "mode": "urlencoded",
-              "urlencoded": [{ "key": "_token", "value": "{{platform_csrf}}" }]
+              "urlencoded": [
+                {
+                  "key": "_token",
+                  "value": "{{platform_csrf}}"
+                }
+              ]
             },
             "url": {
               "raw": "{{base_url}}/platform/roles/{{last_role_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["platform", "roles", "{{last_role_id}}"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "platform",
+                "roles",
+                "{{last_role_id}}"
+              ]
             },
             "description": "Fails with a validation error (redirect + errors bag) if the role is still assigned to any user, in any tenant."
           },
@@ -1760,30 +4229,61 @@
       ]
     },
     {
-      "name": "12. Platform - Permissions",
-      "auth": { "type": "noauth" },
+      "name": "13. Platform - Permissions",
+      "auth": {
+        "type": "noauth"
+      },
       "item": [
         {
           "name": "List Permissions",
           "request": {
             "method": "GET",
             "header": [],
-            "url": { "raw": "{{base_url}}/platform/permissions", "host": ["{{base_url}}"], "path": ["platform", "permissions"] }
+            "url": {
+              "raw": "{{base_url}}/platform/permissions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "platform",
+                "permissions"
+              ]
+            }
           }
         },
         {
           "name": "Create Permission",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/x-www-form-urlencoded" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
             "body": {
               "mode": "urlencoded",
               "urlencoded": [
-                { "key": "_token", "value": "{{platform_csrf}}" },
-                { "key": "name", "value": "drivers.export" }
+                {
+                  "key": "_token",
+                  "value": "{{platform_csrf}}"
+                },
+                {
+                  "key": "name",
+                  "value": "drivers.export"
+                }
               ]
             },
-            "url": { "raw": "{{base_url}}/platform/permissions", "host": ["{{base_url}}"], "path": ["platform", "permissions"] }
+            "url": {
+              "raw": "{{base_url}}/platform/permissions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "platform",
+                "permissions"
+              ]
+            }
           },
           "event": [
             {
@@ -1806,18 +4306,35 @@
           "name": "Update Permission",
           "request": {
             "method": "PUT",
-            "header": [{ "key": "Content-Type", "value": "application/x-www-form-urlencoded" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
             "body": {
               "mode": "urlencoded",
               "urlencoded": [
-                { "key": "_token", "value": "{{platform_csrf}}" },
-                { "key": "name", "value": "drivers.export.renamed" }
+                {
+                  "key": "_token",
+                  "value": "{{platform_csrf}}"
+                },
+                {
+                  "key": "name",
+                  "value": "drivers.export.renamed"
+                }
               ]
             },
             "url": {
               "raw": "{{base_url}}/platform/permissions/{{last_permission_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["platform", "permissions", "{{last_permission_id}}"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "platform",
+                "permissions",
+                "{{last_permission_id}}"
+              ]
             },
             "description": "Name-only edit — FRD/app pattern: a permission's identity (the `name` string roles are matched against) is the only editable field."
           },
@@ -1842,15 +4359,31 @@
           "name": "Delete Permission",
           "request": {
             "method": "DELETE",
-            "header": [{ "key": "Content-Type", "value": "application/x-www-form-urlencoded" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
             "body": {
               "mode": "urlencoded",
-              "urlencoded": [{ "key": "_token", "value": "{{platform_csrf}}" }]
+              "urlencoded": [
+                {
+                  "key": "_token",
+                  "value": "{{platform_csrf}}"
+                }
+              ]
             },
             "url": {
               "raw": "{{base_url}}/platform/permissions/{{last_permission_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["platform", "permissions", "{{last_permission_id}}"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "platform",
+                "permissions",
+                "{{last_permission_id}}"
+              ]
             },
             "description": "Set {{last_permission_id}} manually from the Permissions list response."
           },

@@ -6,6 +6,7 @@ use App\Domain\Drivers\Actions\CreateDriverAction;
 use App\Models\Asset;
 use App\Models\AssetCapacityCategory;
 use App\Models\Company;
+use App\Models\IntermediateFacility;
 use App\Models\Tenant;
 use App\Models\User;
 use App\Models\Vehicle;
@@ -159,6 +160,29 @@ class ExportFiltersTest extends TestCase
         $auditor = User::factory()->create();
         $auditor->assignRole('auditor');
         $this->actingAs($auditor, 'web')->get('/api/v1/vehicle-categories/export?format=xlsx')->assertForbidden();
+    }
+
+    public function test_facility_export_honours_search_and_filters(): void
+    {
+        IntermediateFacility::factory()->create(['name' => 'Alpha Landfill', 'prefix' => 'ALP']);
+        IntermediateFacility::factory()->recycling()->create(['name' => 'Beta Recycler', 'prefix' => 'BET']);
+        IntermediateFacility::factory()->sewage()->deactivated()->create(['name' => 'Gamma Works', 'prefix' => 'GAM']);
+
+        $names = fn (string $qs) => $this->exported('/api/v1/facilities/export?format=xlsx'.$qs, 'facilities.xlsx')->pluck('name')->all();
+
+        $this->assertCount(3, $this->exported('/api/v1/facilities/export?format=xlsx', 'facilities.xlsx'));
+        $this->assertSame(['Beta Recycler'], $names('&environmental_service=recycle'));
+        $this->assertSame(['Gamma Works'], $names('&operational_status=deactivated'));
+        $this->assertSame(['Alpha Landfill'], $names('&search=Alpha'));
+        $this->assertSame(['Beta Recycler'], $names('&search=BET'));
+        $this->assertSame([], $names('&environmental_service=recycle&search=Alpha'));
+    }
+
+    public function test_facility_export_pdf_works(): void
+    {
+        IntermediateFacility::factory()->recycling()->create(['name' => 'مصنع التدوير', 'prefix' => 'REC']);
+
+        $this->actingAs($this->admin, 'web')->get('/api/v1/facilities/export?format=pdf&search=REC')->assertOk();
     }
 
     public function test_driver_export_honours_search_and_filters(): void
