@@ -40,92 +40,99 @@
 <div id="user-add-status" class="alert alert-success d-none"></div>
 <div id="user-add-error" class="alert alert-danger d-none"></div>
 
-<!-- Multi Column with Form Separator -->
-<div class="card mb-6">
-  <form class="card-body" id="userAddForm">
+<form id="userAddForm">
 
-    <h6>1. {{ __('Account Details') }}</h6>
-    <div class="row g-6">
-      <div class="col-md-6">
-        <label class="form-label" for="name">{{ __('Full Name') }}</label>
-        <input type="text" id="name" class="form-control" required />
-      </div>
-      <div class="col-md-6">
-        <label class="form-label" for="email">{{ __('Email') }}</label>
-        <input type="email" id="email" class="form-control" required />
-      </div>
-      <div class="col-md-6">
-        <label class="form-label" for="phone">{{ __('Mobile Number') }}</label>
-        <input type="tel" id="phone" class="form-control" required />
-      </div>
-      <div class="col-md-6">
-        <label class="form-label" for="photo">{{ __('Photo') }}</label>
-        <input type="file" id="photo" class="form-control" accept="image/*" />
-      </div>
-      <div class="col-md-6">
-        <div class="form-password-toggle">
-          <label class="form-label" for="password">{{ __('Password') }}</label>
-          <div class="input-group input-group-merge">
-            <input type="password" id="password" class="form-control" required />
-            <span class="input-group-text cursor-pointer"><i class="ti ti-eye-off"></i></span>
+  <div class="card mb-6">
+    <h5 class="card-header">{{ __('Account Details') }}</h5>
+    <div class="card-body">
+      <div class="row g-6">
+        <div class="col-md-6">
+          <label class="form-label" for="name">{{ __('Full Name') }}</label>
+          <input type="text" id="name" class="form-control" required />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label" for="email">{{ __('Email') }}</label>
+          <input type="email" id="email" class="form-control" required />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label" for="phone">{{ __('Mobile Number') }}</label>
+          <input type="tel" id="phone" class="form-control" required />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label" for="photo">{{ __('Photo') }}</label>
+          <input type="file" id="photo" class="form-control" accept="image/*" />
+        </div>
+        <div class="col-md-6">
+          <div class="form-password-toggle">
+            <label class="form-label" for="password">{{ __('Password') }}</label>
+            <div class="input-group input-group-merge">
+              <input type="password" id="password" class="form-control" required />
+              <span class="input-group-text cursor-pointer"><i class="ti ti-eye-off"></i></span>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-password-toggle">
+            <label class="form-label" for="password_confirmation">{{ __('Confirm Password') }}</label>
+            <div class="input-group input-group-merge">
+              <input type="password" id="password_confirmation" class="form-control" required />
+              <span class="input-group-text cursor-pointer"><i class="ti ti-eye-off"></i></span>
+            </div>
           </div>
         </div>
       </div>
-      <div class="col-md-6">
-        <div class="form-password-toggle">
-          <label class="form-label" for="password_confirmation">{{ __('Confirm Password') }}</label>
-          <div class="input-group input-group-merge">
-            <input type="password" id="password_confirmation" class="form-control" required />
-            <span class="input-group-text cursor-pointer"><i class="ti ti-eye-off"></i></span>
+    </div>
+  </div>
+
+  <div class="card mb-6">
+    <h5 class="card-header">{{ __('Role & Status') }}</h5>
+    <div class="card-body">
+      <div class="row g-6">
+        <div class="col-md-6" id="job-role-wrapper">
+          <label class="form-label d-block">{{ __('Job Role') }}</label>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="role" id="role-data-entry" value="data_entry" checked>
+            <label class="form-check-label" for="role-data-entry">{{ __('Data Entry') }}</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="role" id="role-auditor" value="auditor">
+            <label class="form-check-label" for="role-auditor">{{ __('System Auditor') }}</label>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label d-block">{{ __('Account Status') }}</label>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="status" id="status-active" value="active" checked>
+            <label class="form-check-label" for="status-active">{{ __('Active') }}</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="status" id="status-vacation" value="on_vacation">
+            <label class="form-check-label" for="status-vacation">{{ __('On Vacation') }}</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="status" id="status-deactivated" value="deactivated">
+            <label class="form-check-label" for="status-deactivated">{{ __('Deactivated') }}</label>
           </div>
         </div>
       </div>
     </div>
+  </div>
 
-    <hr class="my-6 mx-n4" />
-    <h6>2. {{ __('Role & Status') }}</h6>
-    <div class="row g-6">
-      <div class="col-md-6" id="job-role-wrapper">
-        <label class="form-label d-block">{{ __('Job Role') }}</label>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="role" id="role-data-entry" value="data_entry" checked>
-          <label class="form-check-label" for="role-data-entry">{{ __('Data Entry') }}</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="role" id="role-auditor" value="auditor">
-          <label class="form-check-label" for="role-auditor">{{ __('System Auditor') }}</label>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <label class="form-label d-block">{{ __('Account Status') }}</label>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="status" id="status-active" value="active" checked>
-          <label class="form-check-label" for="status-active">{{ __('Active') }}</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="status" id="status-vacation" value="on_vacation">
-          <label class="form-check-label" for="status-vacation">{{ __('On Vacation') }}</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="status" id="status-deactivated" value="deactivated">
-          <label class="form-check-label" for="status-deactivated">{{ __('Deactivated') }}</label>
+  <div class="card mb-6">
+    <h5 class="card-header">{{ __('Additional Info') }}</h5>
+    <div class="card-body">
+      <div class="row g-6">
+        <div class="col-12">
+          <label class="form-label">{{ __('Additional Data') }}</label>
+          <div class="comment-editor border" id="additional-data-editor"></div>
         </div>
       </div>
     </div>
+  </div>
 
-    <hr class="my-6 mx-n4" />
-    <h6>3. {{ __('Additional Info') }}</h6>
-    <div class="row g-6">
-      <div class="col-12">
-        <label class="form-label">{{ __('Additional Data') }}</label>
-        <div class="comment-editor border" id="additional-data-editor"></div>
-      </div>
-    </div>
-
-    <div class="pt-6">
-      <button type="submit" class="btn btn-primary me-4">{{ __('Submit') }}</button>
-      <a href="{{ route('app-user-list') }}" class="btn btn-label-secondary">{{ __('Back to list') }}</a>
-    </div>
-  </form>
-</div>
+  <div class="pt-2">
+    <button type="submit" class="btn btn-primary me-4">{{ __('Submit') }}</button>
+    <a href="{{ route('app-user-list') }}" class="btn btn-label-secondary">{{ __('Back to list') }}</a>
+  </div>
+</form>
 @endsection
