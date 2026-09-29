@@ -85,6 +85,7 @@ Route::middleware(['auth', 'tenant'])->group(function () {
 
     Route::get('/app/asset-category/list', [AssetCategoryController::class, 'list'])->name('app-asset-category-list');
     Route::get('/app/asset-category/add', [AssetCategoryController::class, 'add'])->name('app-asset-category-add');
+    Route::get('/app/asset-category/view/{category}', [AssetCategoryController::class, 'view'])->whereNumber('category')->name('app-asset-category-view');
     Route::get('/app/asset-category/edit/{category}', [AssetCategoryController::class, 'edit'])->whereNumber('category')->name('app-asset-category-edit');
 
     // Intermediate waste facilities — {facility} kept as a raw numeric id.

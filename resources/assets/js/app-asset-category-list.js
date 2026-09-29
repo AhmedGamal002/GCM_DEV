@@ -2,8 +2,9 @@
  * Asset capacity categories DataTable (FRD §1.7.2). Server-side
  * processing wired to /api/v1/asset-capacity-categories — same pattern as
  * the assets / vehicles / users lists (see datatables-server-side.js).
- * The detail link goes straight to the edit page; there is no separate
- * details page.
+ * The "Details" column links to a dedicated details page (a client
+ * add-on beyond the FRD — see AssetCategoryController's docblock);
+ * editing happens from there or via the pencil icon.
  */
 'use strict';
 
@@ -75,10 +76,15 @@ $(function () {
         searchable: false,
         orderable: false,
         render: function (d, type, full) {
+          const viewUrl = (t.view_url_base || '/app/asset-category/view') + '/' + full.id;
           const editUrl = (t.edit_url_base || '/app/asset-category/edit') + '/' + full.id;
           return (
+            '<div class="d-flex align-items-center">' +
+            '<a href="' + viewUrl + '" class="btn btn-icon btn-text-secondary waves-effect waves-light rounded-pill" title="' +
+            (t.view || 'View') + '"><i class="ti ti-eye ti-md"></i></a>' +
             '<a href="' + editUrl + '" class="btn btn-icon btn-text-secondary waves-effect waves-light rounded-pill" title="' +
-            (t.edit || 'Edit') + '"><i class="ti ti-edit ti-md"></i></a>'
+            (t.edit || 'Edit') + '"><i class="ti ti-edit ti-md"></i></a>' +
+            '</div>'
           );
         }
       }
