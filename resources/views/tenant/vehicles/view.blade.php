@@ -3,7 +3,18 @@
 @section('title', __('Vehicle Details'))
 
 @section('page-style')
-@vite(['resources/assets/vendor/scss/pages/page-user-view.scss'])
+@vite([
+  'resources/assets/vendor/scss/pages/page-user-view.scss',
+  'resources/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.scss',
+  'resources/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.scss'
+])
+@endsection
+
+@section('vendor-script')
+@vite([
+  'resources/assets/vendor/libs/moment/moment.js',
+  'resources/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js'
+])
 @endsection
 
 @section('page-script')
@@ -24,7 +35,12 @@
       inspection_certificate: @json(__('Inspection certificate')),
       insurance: @json(__('Vehicle insurance')),
       entry_permit: @json(__('Truck entry permit'))
-    }
+    },
+    search: @json(__('Search')),
+    no_documents: @json(__('No documents recorded for this vehicle.')),
+    no_entry_permits_v: @json(__('No entry permits recorded for this vehicle.')),
+    info: @json(__('Showing _START_ to _END_ of _TOTAL_ entries')),
+    info_empty: @json(__('Showing 0 to 0 of 0 entries'))
   };
   window.vehicleViewId = {{ $vehicleId }};
 </script>
@@ -94,7 +110,7 @@
     <div class="card mb-6 d-none" id="vehicle-docs-card">
       <h5 class="card-header">{{ __('Documents') }}</h5>
       <div class="table-responsive">
-        <table class="table">
+        <table class="table table-hover mb-0" id="vv-docs-table">
           <thead>
             <tr>
               <th>{{ __('Document') }}</th>
@@ -110,8 +126,8 @@
 
     <div class="card mb-6 d-none" id="vehicle-permits-card">
       <h5 class="card-header">{{ __('Truck entry permits') }}</h5>
-      <div class="table-responsive d-none" id="vv-permits-table">
-        <table class="table">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0" id="vv-permits-table">
           <thead>
             <tr>
               <th>{{ __('Area name') }}</th>
@@ -122,9 +138,6 @@
           </thead>
           <tbody id="vv-permits-body"></tbody>
         </table>
-      </div>
-      <div class="card-body d-none" id="vv-permits-empty">
-        <p class="mb-0 text-muted">{{ __('No entry permits recorded for this vehicle.') }}</p>
       </div>
     </div>
 

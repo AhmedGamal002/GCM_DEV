@@ -2,6 +2,20 @@
 
 @section('title', __('Category Details'))
 
+@section('vendor-style')
+@vite([
+  'resources/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.scss',
+  'resources/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.scss'
+])
+@endsection
+
+@section('vendor-script')
+@vite([
+  'resources/assets/vendor/libs/moment/moment.js',
+  'resources/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js'
+])
+@endsection
+
 @section('page-script')
 <script>
   window.assetCategoryViewTranslations = {
@@ -21,11 +35,16 @@
     deactivated: @json(__('Deactivated')),
     gcm: @json(__('GCM')),
     contractor: @json(__('Contractor')),
-    view: @json(__('View'))
+    view: @json(__('View')),
+    no_assets_found: @json(__('No assets found.')),
+    no_permission: @json(__("You don't have permission to view this data.")),
+    search_asset: @json(__('Search Asset')),
+    info: @json(__('Showing _START_ to _END_ of _TOTAL_ entries')),
+    info_empty: @json(__('Showing 0 to 0 of 0 entries'))
   };
   window.assetCategoryViewId = {{ $categoryId }};
 </script>
-@vite('resources/assets/js/app-asset-category-view.js')
+@vite(['resources/assets/js/datatables-server-side.js', 'resources/assets/js/app-asset-category-view.js'])
 @endsection
 
 @section('content')
@@ -73,26 +92,21 @@
   </div>
 
   <div class="col-xl-8 col-lg-7">
-    <div class="card mb-6">
+    <div class="card">
       <h5 class="card-header">{{ __('Assets') }}</h5>
-      <div class="card-body text-center py-6" id="acv-assets-loading">
-        <div class="spinner-border" role="status"></div>
-      </div>
-      <div class="table-responsive d-none" id="acv-assets-table-wrapper">
-        <table class="table table-hover mb-0">
-          <thead>
+      <div class="card-datatable table-responsive">
+        <table class="datatables-category-assets table table-hover">
+          <thead class="border-top">
             <tr>
               <th>{{ __('Name') }}</th>
               <th>{{ __('Type') }}</th>
               <th>{{ __('Affiliation') }}</th>
               <th>{{ __('Status') }}</th>
-              <th></th>
+              <th>{{ __('Actions') }}</th>
             </tr>
           </thead>
-          <tbody id="acv-assets-rows"></tbody>
         </table>
       </div>
-      <div class="alert alert-info m-6 d-none" id="acv-assets-empty">{{ __('No assets found.') }}</div>
     </div>
   </div>
 </div>

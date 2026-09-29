@@ -537,5 +537,7 @@
   "Confirm New Password": "Confirm New Password",
   "Save changes": "Save changes",
   "Reset": "Reset",
-  "Password updated.": "Password updated."
+  "Password updated.": "Password updated.",
+  "No entry permits recorded for this driver.": "No entry permits recorded for this driver.",
+  "No documents recorded for this vehicle.": "No documents recorded for this vehicle."
 }
