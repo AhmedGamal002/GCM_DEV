@@ -2,7 +2,7 @@
   "info": {
     "name": "GCM Portal",
     "_postman_id": "b1e9d8b0-6f5a-4b0a-9c1a-gcmportal0001",
-    "description": "GCM Portal API + Platform (Super Admin) collection. Covers everything shipped through Phase 2 so far (Intermediate Facilities, Client Companies) on top of Week 3 (Assets, Vehicles + Driver Management): Tenant Auth, Users, Roles (read-only), Profile, Drivers, Vehicles, Assets & Supply Hub, Intermediate Facilities, Client Companies, and Platform (Tenants/Roles/Permissions CRUD).\n\nSee postman/README.md in the repo for how the two auth flows work (Bearer token for /api/v1/*, session+CSRF for /platform/*) and the convention to follow when adding a new endpoint's request here.\n\nKeep this file updated alongside the code: every new API/Platform route gets a request added here in the same PR/session that adds the route.",
+    "description": "GCM Portal API + Platform (Super Admin) collection. Covers everything shipped through Phase 2 so far (Intermediate Facilities, Client Companies, Client Projects) on top of Week 3 (Assets, Vehicles + Driver Management): Tenant Auth, Users, Roles (read-only), Profile, Drivers, Vehicles, Assets & Supply Hub, Intermediate Facilities, Client Companies, and Platform (Tenants/Roles/Permissions CRUD).\n\nSee postman/README.md in the repo for how the two auth flows work (Bearer token for /api/v1/*, session+CSRF for /platform/*) and the convention to follow when adding a new endpoint's request here.\n\nKeep this file updated alongside the code: every new API/Platform route gets a request added here in the same PR/session that adds the route.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "auth": {
@@ -93,6 +93,11 @@
     },
     {
       "key": "last_company_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "last_project_id",
       "value": "",
       "type": "string"
     },
@@ -2168,13 +2173,19 @@
                   "key": "operational_status",
                   "value": "active",
                   "disabled": true,
-                  "description": "active | on_maintenance | deactivated"
+                  "description": "active (= available: not in a project) | in_project | on_maintenance | deactivated"
                 },
                 {
                   "key": "affiliation",
                   "value": "gcm",
                   "disabled": true,
                   "description": "gcm | contractor"
+                },
+                {
+                  "key": "project_id",
+                  "value": "{{last_project_id}}",
+                  "disabled": true,
+                  "description": "only the assets inserted into this project"
                 },
                 {
                   "key": "search",
@@ -3137,7 +3148,7 @@
     },
     {
       "name": "9. Client Companies",
-      "description": "Phase 2 · Part 4 — FRD V01.14 §1.11. system_admin / data_entry create, edit and (de)activate; auditor views and exports; driver has no access. No hard delete. Projects, users and contracts counts are 0 until those modules exist.",
+      "description": "Phase 2 · Part 4 — FRD V01.14 §1.11. system_admin / data_entry create, edit and (de)activate; auditor views and exports; driver has no access. No hard delete. The projects count is real (Part 5); users and contracts counts are 0 until those modules exist.",
       "item": [
         {
           "name": "List Client Companies",
@@ -3653,7 +3664,366 @@
       ]
     },
     {
-      "name": "10. Platform Auth (Super Admin)",
+      "name": "10. Client Projects",
+      "description": "FRD V01.14 §1.12 — client projects, plus inserting an asset into a project (§1.7.3). system_admin / data_entry manage; auditor views and exports; driver has no access.",
+      "item": [
+        {
+          "name": "List Client Projects",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/projects?per_page=15",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "projects"
+              ],
+              "query": [
+                {
+                  "key": "per_page",
+                  "value": "15"
+                },
+                {
+                  "key": "company_id",
+                  "value": "{{last_company_id}}",
+                  "disabled": true,
+                  "description": "only this company's projects"
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "disabled": true,
+                  "description": "active | deactivated"
+                },
+                {
+                  "key": "search",
+                  "value": "Tower",
+                  "disabled": true,
+                  "description": "matches the project name, its ID (code, e.g. ALN-P0001) or the company name"
+                },
+                {
+                  "key": "sort_by",
+                  "value": "name",
+                  "disabled": true,
+                  "description": "code | name | operational_status | created_at"
+                },
+                {
+                  "key": "sort_dir",
+                  "value": "asc",
+                  "disabled": true,
+                  "description": "asc | desc"
+                }
+              ]
+            },
+            "description": "system_admin / data_entry / auditor (ProjectPolicy::viewAny). Genuinely paginated server-side. `company_id` also feeds the projects section of a company page."
+          }
+        },
+        {
+          "name": "Create Client Project",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    if (body.data && body.data.id) {",
+                  "        pm.collectionVariables.set('last_project_id', body.data.id);",
+                  "        console.log('last_project_id saved:', body.data.id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Project {{$timestamp}}\",\n  \"company_id\": \"{{last_company_id}}\",\n  \"operational_status\": \"active\",\n  \"operational_region\": \"Riyadh\",\n  \"phone\": \"+966500000000\",\n  \"email\": \"site@client.test\",\n  \"address\": \"Riyadh\",\n  \"location_url\": \"https://maps.google.com/?q=riyadh\",\n  \"additional_data\": \"<p>Notes</p>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/projects",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "projects"
+              ]
+            },
+            "description": "name + company_id + operational_status are required. company_id must be one of the tenant's ACTIVE client companies. The project ID (code) is generated: the company short name + \"P\" + a running number per company, e.g. ALN-P0001. The company cannot be changed after creation. location_url is http/https only."
+          }
+        },
+        {
+          "name": "Show Client Project",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/projects/{{last_project_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "projects",
+                "{{last_project_id}}"
+              ]
+            },
+            "description": "Returns the project with its company block and the placeholder stats (contracts / trips / waste are 0 until those modules exist)."
+          }
+        },
+        {
+          "name": "Update Client Project",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Project renamed\",\n  \"operational_region\": \"Jeddah\",\n  \"phone\": \"+966500000001\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/projects/{{last_project_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "projects",
+                "{{last_project_id}}"
+              ]
+            },
+            "description": "Every field is editable except the company (locked — the project ID is built from it) and the status (own endpoint). A company_id in the payload is ignored."
+          }
+        },
+        {
+          "name": "Change Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"deactivated\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/projects/{{last_project_id}}/status",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "projects",
+                "{{last_project_id}}",
+                "status"
+              ]
+            },
+            "description": "status: active | deactivated. system_admin / data_entry. Nothing cascades: not to the company, not to the assets already in the project. A deactivated project cannot receive new assets."
+          }
+        },
+        {
+          "name": "Insert Asset Into Project",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"asset_id\": \"{{last_asset_id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/projects/{{last_project_id}}/assets",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "projects",
+                "{{last_project_id}}",
+                "assets"
+              ]
+            },
+            "description": "FRD §1.7.3 \"Insert an asset into a project\". system_admin / data_entry (403 otherwise). 201 returns the asset with availability \"in_project\" and its project. 422 when the asset is not available (in maintenance / deactivated / already in a project — error on asset_id) or the project is deactivated (error on project). 404 for a project of another tenant. There is no endpoint to take an asset back out (not defined by the FRD yet)."
+          }
+        },
+        {
+          "name": "List Assets In A Project",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/assets?project_id={{last_project_id}}&per_page=15",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "assets"
+              ],
+              "query": [
+                {
+                  "key": "project_id",
+                  "value": "{{last_project_id}}"
+                },
+                {
+                  "key": "asset_type",
+                  "value": "container",
+                  "disabled": true,
+                  "description": "container | tank"
+                },
+                {
+                  "key": "per_page",
+                  "value": "15"
+                }
+              ]
+            },
+            "description": "The project details page's assets table — the normal assets list filtered by project_id."
+          }
+        },
+        {
+          "name": "Export Client Projects (Excel)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/projects/export?format=xlsx",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "projects",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "xlsx"
+                },
+                {
+                  "key": "company_id",
+                  "value": "{{last_company_id}}",
+                  "disabled": true
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "Tower",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Same filters and search as the list — the file holds exactly the rows the list shows."
+          }
+        },
+        {
+          "name": "Export Client Projects (PDF)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/projects/export?format=pdf",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "projects",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "pdf"
+                },
+                {
+                  "key": "company_id",
+                  "value": "{{last_company_id}}",
+                  "disabled": true
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "Tower",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Same filters and search as the list. Arabic text is rendered correctly."
+          }
+        }
+      ]
+    },
+    {
+      "name": "11. Platform Auth (Super Admin)",
       "item": [
         {
           "name": "Get Login Page (capture CSRF)",
@@ -3780,7 +4150,7 @@
       ]
     },
     {
-      "name": "11. Platform - Tenants",
+      "name": "12. Platform - Tenants",
       "auth": {
         "type": "noauth"
       },
@@ -4020,7 +4390,7 @@
       ]
     },
     {
-      "name": "12. Platform - Roles",
+      "name": "13. Platform - Roles",
       "auth": {
         "type": "noauth"
       },
@@ -4229,7 +4599,7 @@
       ]
     },
     {
-      "name": "13. Platform - Permissions",
+      "name": "14. Platform - Permissions",
       "auth": {
         "type": "noauth"
       },

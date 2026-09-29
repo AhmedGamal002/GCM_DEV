@@ -17,6 +17,7 @@ $(function () {
 
   const statusObj = {
     active: { title: t.active || 'Active', class: 'bg-label-success' },
+    in_project: { title: t.in_project || 'In a project', class: 'bg-label-info' },
     on_maintenance: { title: t.on_maintenance || 'On Maintenance', class: 'bg-label-warning' },
     deactivated: { title: t.deactivated || 'Deactivated', class: 'bg-label-secondary' }
   };
@@ -71,7 +72,7 @@ $(function () {
       { data: 'capacity_category' },
       { data: 'asset_type' },
       { data: 'affiliation' },
-      { data: 'operational_status' },
+      { data: 'availability' },
       { data: 'id' }
     ],
     columnDefs: [
@@ -112,9 +113,14 @@ $(function () {
       {
         targets: 6,
         render: function (data, type, full) {
-          if (type !== 'display') return full.operational_status;
-          const s = statusObj[full.operational_status] || { title: full.operational_status, class: 'bg-label-secondary' };
-          return '<span class="badge ' + s.class + '">' + s.title + '</span>';
+          if (type !== 'display') return full.availability;
+          const s = statusObj[full.availability] || { title: full.availability, class: 'bg-label-secondary' };
+          // FRD V01.14 §1.7.3: "in a project" shows the project's name next to it.
+          const projectName =
+            full.availability === 'in_project' && full.project
+              ? ' <span class="text-muted">' + escapeHtml(full.project.name) + '</span>'
+              : '';
+          return '<span class="badge ' + s.class + '">' + s.title + '</span>' + projectName;
         }
       },
       {
@@ -181,7 +187,18 @@ $(function () {
         className: 'add-new btn btn-primary waves-effect waves-light',
         action: () => window.location.assign(t.add_asset_url || '/app/asset/add')
       }
-    ],
+    ].concat(
+      // FRD V01.14 §1.7.3: "Insert asset into project" — (system admin / data entry) only.
+      t.can_insert_asset
+        ? [
+            {
+              text: '<i class="ti ti-briefcase me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">' + (t.insert_asset || 'Insert asset into project') + '</span>',
+              className: 'btn btn-label-primary ms-4 waves-effect waves-light',
+              action: () => window.location.assign(t.insert_asset_url || '/app/asset/insert-into-project')
+            }
+          ]
+        : []
+    ),
     responsive: {
       details: {
         display: $.fn.dataTable.Responsive.display.modal({
@@ -222,7 +239,7 @@ $(function () {
           currentStatus = $(this).val();
           api.draw();
         });
-      ['active', 'on_maintenance', 'deactivated'].forEach((status) => {
+      ['active', 'in_project', 'on_maintenance', 'deactivated'].forEach((status) => {
         statusSelect.append('<option value="' + status + '">' + statusObj[status].title + '</option>');
       });
 

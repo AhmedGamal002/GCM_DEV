@@ -96,7 +96,7 @@
       <span>تم: <b id="s-pass">0</b></span>
       <span>فشل: <b id="s-fail" style="color:var(--bad)">0</b></span>
       <span>متبقي: <b id="s-left">0</b></span>
-      <span>من <b>72</b> بند</span>
+      <span>من <b>86</b> بند</span>
     </div>
     <div class="prog"><i class="p" id="b-pass"></i><i class="f" id="b-fail"></i></div>
     <div class="tools">
@@ -480,7 +480,7 @@
         <h3>الكروت منفصلة للحاويات والصهاريج</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.7 (إحصائيات لكل من الحاويات والصهاريج بشكل منفصل)</dd></div><div class="row"><dt>الخطوات</dt><dd>أنشئ أصلين (حاوية + صهريج) وافتح القائمة.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>مجموعتين كروت منفصلتين، كل مجموعة: متاح / في مشاريع=0 / في الصيانة / معطّل.</dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.7 (إحصائيات لكل من الحاويات والصهاريج بشكل منفصل)</dd></div><div class="row"><dt>الخطوات</dt><dd>أنشئ أصلين (حاوية + صهريج) وافتح القائمة.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>مجموعتين كروت منفصلتين، كل مجموعة: متاح / في مشاريع / في الصيانة / معطّل (في مشاريع = الأصول النشطة المدرجة في مشروع).</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-vehicles-drivers-assets#19" data-title="تصنيف السعة يتفلتر حسب نوع الأصل">
@@ -612,7 +612,7 @@
         <h3>عرض قائمة شركات العملاء</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.11 إدارة شركات العملاء</dd></div><div class="row"><dt>الدور</dt><dd>مدير النظام</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>من القائمة الجانبية افتح <strong>Client Companies</strong> (تحت عنوان &quot;Clients &amp; Projects&quot;) ثم List.</li><li>جرّب البحث باسم شركة، وبالاسم المختصر، وبالرقم التعريفي (زي <code>ALN-0001</code>).</li><li>جرّب فلتر الحالة (نشطة / معطلة).</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>جدول فيه الأعمدة (الرقم التعريفي بصيغة حروف + رقم زي <code>ALN-0001</code>، الشركة، ممثل الشركة، المشروعات، المستخدمين، الحالة، الإجراءات)، والبحث والفلتر شغالين. ممثل الشركة بيظهر <code>—</code> والمشروعات والمستخدمين <code>0</code> (بيتحدّثوا لما تتضاف مشروعات ومستخدمين للشركة).</dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.11 إدارة شركات العملاء</dd></div><div class="row"><dt>الدور</dt><dd>مدير النظام</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>من القائمة الجانبية افتح <strong>Client Companies</strong> (تحت عنوان &quot;Clients &amp; Projects&quot;) ثم List.</li><li>جرّب البحث باسم شركة، وبالاسم المختصر، وبالرقم التعريفي (زي <code>ALN-0001</code>).</li><li>جرّب فلتر الحالة (نشطة / معطلة).</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>جدول فيه الأعمدة (الرقم التعريفي بصيغة حروف + رقم زي <code>ALN-0001</code>، الشركة، ممثل الشركة، المشروعات، المستخدمين، الحالة، الإجراءات)، والبحث والفلتر شغالين. ممثل الشركة بيظهر <code>—</code> والمستخدمين <code>0</code> (بيتحدّثوا لما تتضاف حسابات العملاء)، والمشروعات بتعرض <strong>العدد الحقيقي</strong> لمشروعات الشركة.</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-4-client-companies#2" data-title="إنشاء شركة عميل بالحد الأدنى">
@@ -662,7 +662,7 @@
         <h3>صفحة تفاصيل الشركة</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.11.3 صفحة عرض تفاصيل شركة عميل</dd></div><div class="row"><dt>الدور</dt><dd>مدير النظام</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>من القائمة دوس أيقونة العين على شركة فيها مرفقات (مثلًا اللي عملتها في البند 3).</li><li>دوس &quot;Download&quot; جنب العقد وجنب السجلين.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الاسم واللوجو والحالة والنشاط وبيانات التواصل والعقد (الرقم والمدة) والسجلات وآخر تحديث بواسطة مين. المرفقات بتتنزّل. الإحصائيات (المشروعات والتعاقدات والرحلات والنفايات المنقولة) بـ <code>0</code>، وقسما المشروعات والتعاقدات فيهم رسالة &quot;هتظهر هنا لما الموديول يبقى متاح&quot;.</dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.11.3 صفحة عرض تفاصيل شركة عميل</dd></div><div class="row"><dt>الدور</dt><dd>مدير النظام</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>من القائمة دوس أيقونة العين على شركة فيها مرفقات (مثلًا اللي عملتها في البند 3).</li><li>دوس &quot;Download&quot; جنب العقد وجنب السجلين.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الاسم واللوجو والحالة والنشاط وبيانات التواصل والعقد (الرقم والمدة) والسجلات وآخر تحديث بواسطة مين. المرفقات بتتنزّل. الإحصائيات: المشروعات (العدد الحقيقي) والتعاقدات والرحلات والنفايات المنقولة (<code>0</code>). قسم المشروعات جدول حقيقي بمشروعات الشركة، وقسم التعاقدات فيه رسالة &quot;هتظهر هنا لما الموديول يبقى متاح&quot;.</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-4-client-companies#7" data-title="تعديل بيانات الشركة">
@@ -697,12 +697,156 @@
     </article>
     </details>
     <details open class="group">
+      <summary>المشروعات <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-5-projects#2" data-title="صفحة القائمة (جدول + بحث + فلاتر)">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">56</span></label>
+        <h3>صفحة القائمة (جدول + بحث + فلاتر)</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.12 (جدول المشروعات: الرقم التعريفي، الشركة، المشروع، التعاقدات، المستخدمين، الحالة، التفاصيل)</dd></div><div class="row"><dt>الخطوات</dt><dd>افتح Client Projects ← List بـ<code>admin</code>. جرّب البحث باسم مشروع، وبالرقم التعريفي (زي <code>ALN-P</code>)، وباسم الشركة. جرّب فلتر &quot;الشركة&quot; وفلتر &quot;الحالة&quot;.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>جدول فيه الأعمدة دي والصفوف الأربعة. البحث بيلاقي بكل واحدة من الثلاثة، وفلتر الشركة بيعرض شركات العميل كلها (حتى المعطّلة)، وفلتر الحالة بيعمل نشط/معطّل. عمودا التعاقدات والمستخدمين <code>0</code>.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-5-projects#3" data-title="إنشاء مشروع بالحد الأدنى + الرقم التعريفي">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">57</span></label>
+        <h3>إنشاء مشروع بالحد الأدنى + الرقم التعريفي</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.12.2 (إنشاء مشروع جديد)</dd></div><div class="row"><dt>الخطوات</dt><dd>دوس &quot;Add Project&quot;. اكتب اسم مشروع، واختار شركة (<code>Al Noor Construction</code>)، واترك الباقي، والحالة &quot;نشطة&quot;. دوس Submit.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>بترجع للقائمة برسالة نجاح والمشروع ظاهر. رقمه التعريفي <strong>من الاسم المختصر للشركة + <code>P</code> + رقم تسلسلي للشركة</strong>: <code>ALN-P0003</code> (بعد مشروعين للشركة دي).</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-5-projects#4" data-title="الترقيم بيعدّ لكل شركة">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">58</span></label>
+        <h3>الترقيم بيعدّ لكل شركة</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.11.2 (الاسم المختصر &quot;يستخدم كخليط مع الأرقام للتعبير عن رقم غير متكرر يخص الشركة&quot;)</dd></div><div class="row"><dt>الخطوات</dt><dd>أنشئ مشروع تاني لـ<code>Gulf Petrochemicals</code>، وبعده مشروع تالت لـ<code>Al Noor Construction</code>.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>مشروع Gulf ياخد <code>GPC-P0003</code>، والتاني لـAl Noor ياخد <code>ALN-P0004</code> — كل شركة بتعدّ لوحدها.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-5-projects#5" data-title="إنشاء مشروع بكل البيانات">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">59</span></label>
+        <h3>إنشاء مشروع بكل البيانات</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.12.2</dd></div><div class="row"><dt>الخطوات</dt><dd>افتح &quot;Add Project&quot;. املأ: المنطقة التشغيلية، الهاتف، البريد، العنوان، رابط الخريطة (<code>https://maps.google.com/...</code>)، وبيانات إضافية. جرّب رابط <code>javascript:alert(1)</code> في خانة الخريطة أولًا.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>رابط <code>javascript:</code> بيترفض برسالة تحت الخانة، ورابط <code>https</code> عادي بيتقبل. كل البيانات بتظهر في صفحة التفاصيل والرابط قابل للضغط.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-5-projects#6" data-title="الشركة المعطّلة مش بتظهر في اختيارات المشروع الجديد">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">60</span></label>
+        <h3>الشركة المعطّلة مش بتظهر في اختيارات المشروع الجديد</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.11 (شركة العميل المعطّلة &quot;مش متاحة للاختيار في العمليات الجديدة&quot;)</dd></div><div class="row"><dt>الخطوات</dt><dd>افتح &quot;Add Project&quot; وافتح قائمة &quot;شركة العميل&quot; واكتب <code>Riyadh</code> في البحث.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الشركة المعطّلة (<code>Riyadh Real Estate Group</code>) مش موجودة؛ الشركتان النشطتان بس. القائمة بتدعم البحث الحي.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-5-projects#7" data-title="صفحة تفاصيل مشروع">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">61</span></label>
+        <h3>صفحة تفاصيل مشروع</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.12.3 (صفحة عرض تفاصيل مشروع)</dd></div><div class="row"><dt>الخطوات</dt><dd>من القائمة دوس أيقونة العين على <code>Al Noor Tower</code>.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>نفس شكل تفاصيل شركة العميل: كارت شمال (أيقونة + الاسم + الحالة + الرقم التعريفي + الشركة كرابط + المنطقة + الهاتف + البريد + العنوان + رابط الخريطة + بيانات إضافية + زرّي Edit وBack)، ويمين: ثلاث إحصائيات (التعاقدات / الرحلات / النفايات — <code>0</code>)، قسم التعاقدات (رسالة &quot;هتظهر هنا لما الموديول يبقى متاح&quot;)، وجدول <strong>&quot;الأصول الموجودة في هذا المشروع&quot;</strong> فيه <code>Container A-01</code>. آخر تحديث بواسطة ظاهر تحت العنوان.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-5-projects#9" data-title="تعديل مشروع (الشركة والرقم التعريفي مقفولين)">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">62</span></label>
+        <h3>تعديل مشروع (الشركة والرقم التعريفي مقفولين)</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.12.4 (تعديل تفاصيل مشروع)</dd></div><div class="row"><dt>الخطوات</dt><dd>افتح تعديل <code>Al Noor Tower</code>. غيّر الاسم والعنوان واحفظ.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الرقم التعريفي ظاهر فوق الفورم، وخانة الشركة <strong>مقفولة</strong> (الرقم مبني عليها). بعد الحفظ بترجع لصفحة التفاصيل برسالة &quot;Changes saved successfully&quot; وبيانات محدّثة، والرقم التعريفي زي ما هو <code>ALN-P0001</code>، و&quot;آخر تحديث بواسطة&quot; اتغيّر.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-5-projects#10" data-title="تعطيل / إعادة تنشيط مشروع">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">63</span></label>
+        <h3>تعطيل / إعادة تنشيط مشروع</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.12.4 (تعطيل / تنشيط — مدير النظام / مدخل البيانات)</dd></div><div class="row"><dt>الخطوات</dt><dd>في صفحة تعديل <code>Al Noor Residential Complex</code> نزل لكارت &quot;Project Status&quot;، اختار &quot;Deactivated&quot;، علّم &quot;I confirm&quot;، ودوس Update Status. بعدها افتح شركة <code>Al Noor Construction</code> وشوف حالتها.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>رسالة نجاح والمشروع بقى معطّل في القائمة. الشركة <strong>لسه نشطة</strong> — تعطيل المشروع مابيمسّش الشركة (وتعطيل الشركة مابيعطّل مشروعاتها). إعادة التنشيط بنفس الطريقة.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-5-projects#11" data-title="صفحة الإدراج">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">64</span></label>
+        <h3>صفحة الإدراج</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.7.3 (صفحة ادراج أصل في مشروع)</dd></div><div class="row"><dt>الخطوات</dt><dd>افتح Assets ← List ودوس &quot;Insert asset into project&quot;. اختار الشركة ثم المشروع، ثم النوع (حاوية/صهريج)، ثم الأصل. جرّب كمان تفتحها من زر &quot;Insert asset into project&quot; في صفحة تفاصيل مشروع.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>اختيار الشركة بيملّا قائمة المشروعات <strong>النشطة</strong> بس بتاعتها. تغيير النوع بيغيّر قائمة الأصول لأصول <strong>متاحة</strong> بس (نشطة وغير مدرجة في مشروع — مفيش أصل في الصيانة أو معطّل أو مدرج بالفعل). كل القوائم بحث حي. من صفحة المشروع الشركة والمشروع بيتعبّوا لوحدهم. الضغط على Submit من غير اختيار بيطلّع &quot;This field is required&quot; تحت الخانات الفاضية.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-5-projects#12" data-title="بعد الإدراج: الأصل بقى &quot;في مشروع&quot;">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">65</span></label>
+        <h3>بعد الإدراج: الأصل بقى &quot;في مشروع&quot;</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.7.3 (حالة توفر الأصل: &quot;في مشروع + اسم المشروع&quot;)</dd></div><div class="row"><dt>الخطوات</dt><dd>أدرج <code>Container A-02</code> في مشروع (مثلًا <code>Al Noor Residential Complex</code>). بعدها افتح Assets ← List، ثم تفاصيل الأصل، ثم تفاصيل المشروع.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>بيرجعك لصفحة المشروع برسالة نجاح والأصل ظاهر في جدول أصوله. في قائمة الأصول عمود التوفر بيقول <strong>&quot;In a project&quot;</strong> + اسم المشروع، وفلتر الحالة فيه خيار &quot;In a project&quot;، وكارت &quot;In projects&quot; زاد وكارت &quot;Available&quot; نقص. تفاصيل الأصل فيها بادج &quot;In a project&quot; وكارت &quot;Current project&quot; برابط للمشروع. لو بعدها الأصل اتحوّل &quot;في الصيانة&quot; بيظهر بحالة الصيانة (ولسه مرتبط بمشروعه).</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-5-projects#13" data-title="قواعد إدراج أصل في مشروع">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">66</span></label>
+        <h3>قواعد إدراج أصل في مشروع</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.7.3 (&quot;يخرج من أرصدة الأصول المتاحة&quot;)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح صفحة &quot;Insert asset into project&quot; واختار شركة ومشروع.</li><li>بص على قائمة الأصول: لاحظ إن الأصل المدرج بالفعل في مشروع، والأصل &quot;في الصيانة&quot; (Container A-03) مش موجودين فيها.</li><li>اختار الشركة Gulf Petrochemicals وبص على قائمة مشروعاتها.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>قائمة الأصول فيها الأصول <strong>المتاحة</strong> بس (نشطة وغير مدرجة في مشروع)، وقائمة المشروعات فيها المشروعات <strong>النشطة</strong> بس (Gulf Petro Warehouse المعطّل مش موجود). أي أصل بيتدرج بيختفي من القائمة بعدها ومايتدرجش في مشروعين.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-5-projects#15" data-title="تصدير قائمة المشروعات بنفس الفلاتر">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">67</span></label>
+        <h3>تصدير قائمة المشروعات بنفس الفلاتر</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.12 (زر تصدير Excel – PDF)</dd></div><div class="row"><dt>الخطوات</dt><dd>في قائمة المشروعات اختار فلتر شركة (أو اكتب في البحث) وبعدها Export ← Excel ثم Pdf.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الملف بيحتوي <strong>نفس الصفوف اللي على الشاشة</strong> بس (مش الجدول كله). الأعمدة: الرقم التعريفي، الشركة، المشروع، المنطقة، التعاقدات، المستخدمين، الحالة، تاريخ الإنشاء. الـPDF بالعربي بيطلع مقروء.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-5-projects#16" data-title="تصدير الأصول الموجودة في مشروع">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">68</span></label>
+        <h3>تصدير الأصول الموجودة في مشروع</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.12.3 (قسم الأصول المتواجدة بهذا المشروع — زر تصدير)</dd></div><div class="row"><dt>الخطوات</dt><dd>في تفاصيل مشروع فيه أصل اختار نوع الأصل من الفلتر وبعدها Export.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الملف فيه أصول المشروع ده بس (بعد فلتر النوع) وعمود &quot;المشروع&quot; فيه اسمه.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-5-projects#17" data-title="مشروعات الشركة في صفحة تفاصيلها">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">69</span></label>
+        <h3>مشروعات الشركة في صفحة تفاصيلها</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.11.3 (قسم المشاريع التابعة للعميل + إحصائية أعداد المشروعات)</dd></div><div class="row"><dt>الخطوات</dt><dd>افتح تفاصيل <code>Al Noor Construction</code> وقائمة الشركات.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>إحصائية &quot;Projects&quot; فيها العدد الحقيقي (2 بعد الـseed)، وجدول <strong>Projects</strong> فيه مشروعات الشركة دي بس (بحث + فلتر الحالة + تصدير + زر &quot;Add Project&quot; اللي بيفتح الفورم والشركة مختارة). عمود &quot;Projects&quot; في قائمة الشركات بيعرض العدد نفسه، وتصدير الشركات بيحمله.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+    <details open class="group">
       <summary>الملف الشخصي <span class="count"></span></summary>
       
     <article class="item" data-id="week-1-2-auth-users-roles#2" data-title="البريد ثابت بعد الإنشاء">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">56</span></label>
+          <span class="num">70</span></label>
         <h3>البريد ثابت بعد الإنشاء</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -712,7 +856,7 @@
     <article class="item" data-id="week-3-frd-gap-review#4" data-title="الملف الشخصي = صورة + كلمة السر (الاسم والبريد للقراءة فقط)">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">57</span></label>
+          <span class="num">71</span></label>
         <h3>الملف الشخصي = صورة + كلمة السر (الاسم والبريد للقراءة فقط)</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -726,7 +870,7 @@
     <article class="item" data-id="week-3-frd-gap-review#5" data-title="&quot;آخر تحديث: تم بواسطة X — التاريخ والوقت&quot;">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">58</span></label>
+          <span class="num">72</span></label>
         <h3>&quot;آخر تحديث: تم بواسطة X — التاريخ والوقت&quot;</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -736,7 +880,7 @@
     <article class="item" data-id="week-3-frd-gap-review#6" data-title="تسمية &quot;رقم الموبايل (حساب واتساب)&quot;">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">59</span></label>
+          <span class="num">73</span></label>
         <h3>تسمية &quot;رقم الموبايل (حساب واتساب)&quot;</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -746,7 +890,7 @@
     <article class="item" data-id="week-3-frd-gap-review#7" data-title="رقم الموبايل مايتكررش داخل نفس الشركة">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">60</span></label>
+          <span class="num">74</span></label>
         <h3>رقم الموبايل مايتكررش داخل نفس الشركة</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -760,7 +904,7 @@
     <article class="item" data-id="week-1-2-auth-users-roles#1" data-title="دخول مستخدم شركة">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">61</span></label>
+          <span class="num">75</span></label>
         <h3>دخول مستخدم شركة</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -770,7 +914,7 @@
     <article class="item" data-id="week-1-2-auth-users-roles#17" data-title="عناصر القائمة الجانبية لمدير النظام">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">62</span></label>
+          <span class="num">76</span></label>
         <h3>عناصر القائمة الجانبية لمدير النظام</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -780,7 +924,7 @@
     <article class="item" data-id="week-1-2-auth-users-roles#18" data-title="Breadcrumb + عنوان الصفحة مطابق للـ FRD على كل صفحة">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">63</span></label>
+          <span class="num">77</span></label>
         <h3>Breadcrumb + عنوان الصفحة مطابق للـ FRD على كل صفحة</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -790,7 +934,7 @@
     <article class="item" data-id="week-3-frd-gap-review#1" data-title="التاريخ والوقت الحالي">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">64</span></label>
+          <span class="num">78</span></label>
         <h3>التاريخ والوقت الحالي</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -800,7 +944,7 @@
     <article class="item" data-id="week-3-frd-gap-review#2" data-title="تبديل الوضع الداكن / المضيء">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">65</span></label>
+          <span class="num">79</span></label>
         <h3>تبديل الوضع الداكن / المضيء</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -810,7 +954,7 @@
     <article class="item" data-id="week-3-vehicles-drivers-assets#22" data-title="تبديل اللغة يترجم كل الصفحات">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">66</span></label>
+          <span class="num">80</span></label>
         <h3>تبديل اللغة يترجم كل الصفحات</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -820,7 +964,7 @@
     <article class="item" data-id="week-3-frd-gap-review#30" data-title="شاشة التحميل واللوجو والاسم">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">67</span></label>
+          <span class="num">81</span></label>
         <h3>شاشة التحميل واللوجو والاسم</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -834,7 +978,7 @@
     <article class="item" data-id="week-3-frd-gap-review#22" data-title="ملف أكبر من الحد يترفض فورًا من غير رفع">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">68</span></label>
+          <span class="num">82</span></label>
         <h3>ملف أكبر من الحد يترفض فورًا من غير رفع</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -844,7 +988,7 @@
     <article class="item" data-id="week-3-frd-gap-review#23" data-title="التصدير (خصوصًا PDF) بيوضّح إنه شغّال">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">69</span></label>
+          <span class="num">83</span></label>
         <h3>التصدير (خصوصًا PDF) بيوضّح إنه شغّال</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -854,7 +998,7 @@
     <article class="item" data-id="week-3-frd-gap-review#24" data-title="تصدير PDF بالعربي">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">70</span></label>
+          <span class="num">84</span></label>
         <h3>تصدير PDF بالعربي</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -864,7 +1008,7 @@
     <article class="item" data-id="week-3-frd-gap-review#25" data-title="التصدير بيطابق الفلاتر والبحث اللي على الشاشة">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">71</span></label>
+          <span class="num">85</span></label>
         <h3>التصدير بيطابق الفلاتر والبحث اللي على الشاشة</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -874,7 +1018,7 @@
     <article class="item" data-id="week-3-frd-gap-review#29" data-title="نفس شاشة &quot;جاري الحفظ&quot; في كل صفحات الإنشاء والتعديل">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">72</span></label>
+          <span class="num">86</span></label>
         <h3>نفس شاشة &quot;جاري الحفظ&quot; في كل صفحات الإنشاء والتعديل</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>

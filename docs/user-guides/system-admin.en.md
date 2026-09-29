@@ -108,8 +108,8 @@ System Admin only. **Drivers are created and edited exclusively here** — not f
 System Admin: view, create, edit (full data), export, and all status changes.
 
 ### List
-- **Separate stat cards for containers and tanks**: available / in projects (0 for now) / on maintenance / deactivated.
-- Server-side table. Filters: type (container / tank) + status + affiliation. Export button.
+- **Separate stat cards for containers and tanks**: available / in projects / on maintenance / deactivated.
+- Server-side table. Filters: type (container / tank) + status (active = available, **in a project**, on maintenance, deactivated) + affiliation. The "Availability" column shows "In a project" + the project name. Export button + an **Insert asset into project** button.
 - Two items under "Assets" in the sidebar: **List** + **Categories**.
 
 ### Create asset
@@ -117,6 +117,11 @@ System Admin: view, create, edit (full data), export, and all status changes.
 
 ### Edit asset
 - **Name only** is editable — capacity and category are locked after creation (per FRD: they affect contracts and trips).
+
+### Insert an asset into a project — `/app/asset/insert-into-project`
+- From the "Insert asset into project" button on the assets list (or from a project's details page — the company and project are then filled in for you).
+- Pick the **company** → the **project** (that company's active projects only) → the **type** (container / tank) → the **asset** (**available** assets only: active and not already in a project). All lists are live-search.
+- After saving, the asset leaves the available pool and shows as "In a project" + the project name on the list, details and stat cards, and in the project's assets table. An asset is in one project only. **Taking an asset back out of a project is not defined by the FRD yet** (it comes with trips).
 
 ### Asset capacity categories — `/app/asset-category/list`
 - Create and edit. After creation, **name only** is editable (capacity and kind locked). No delete, no deactivate.
@@ -147,7 +152,7 @@ System Admin: view, create, edit, deactivate / reactivate, export. Facilities ar
 Sidebar: heading **Clients & Projects** → **Client Companies** (List + Add).
 
 ### List
-- Server-side table: ID, Company, Company representative (`—` until client accounts exist), Projects and Users (`0` until they exist), Status, Actions. Search by name, short name or ID + a status filter + Excel/PDF export honouring the same filters.
+- Server-side table: ID, Company, Company representative (`—` until client accounts exist), Projects (the real count) and Users (`0` until client accounts exist), Status, Actions. Search by name, short name or ID + a status filter + Excel/PDF export honouring the same filters.
 
 ### Create a client company
 - **Required:** name, short name (3 unique English letters — shown in upper case), status (active by default).
@@ -155,18 +160,36 @@ Sidebar: heading **Clients & Projects** → **Client Companies** (List + Add).
 - **Optional:** business sector, logo, phone, email, address, map link (`http`/`https` only), contract number + start/end dates + contract copy, commercial registration (number + copy), tax registration (number + copy), additional data. Numbers are digits only; attachments are PDF or images up to 4 MB (logo 2 MB).
 
 ### Details and edit
-- Details page: the data + download links for the attachments + statistics (projects, contracts, trips, waste moved — `0` for now).
+- Details page: the data + download links for the attachments + statistics (projects — the real count; contracts, trips and waste moved are `0` for now) + a **company projects** table (search + status filter + export + an "Add Project" button that opens the form with the company selected).
 - Edit page: **every field** is editable except the short name (locked; the ID is shown above the form). A file input left empty keeps the stored file; a new file replaces it.
 - **Deactivate / reactivate** from the "Company Status" card on the edit page (with a confirmation). There is no delete. Deactivating a company does **not** deactivate anything else.
 
-## 11. Features available now
+## 11. Client project management — `/app/project/list`
+
+Sidebar: heading **Clients & Projects** → **Client Projects** (List + Add). A project is a work site of a client company (the place trips leave from).
+
+### List
+- Server-side table: ID, Company, Project, Contracts and Users (`0` until those modules exist), Status, Actions. Search by name, ID or company name + a company filter + a status filter + Excel/PDF export honouring the same filters.
+
+### Create a project
+- **Required:** name, **client company** (live search — **active** companies only), status (active by default).
+- **The ID is generated automatically = the company's short name + `P` + a running number per company** (`ALN-P0001`, `ALN-P0002`…). That is why **the company is locked after creation**.
+- **Optional:** operational region, phone, email, address, map link (`http`/`https` only), additional data. (The "project representative account" field is not there yet — it needs client accounts.)
+
+### Details and edit
+- Details page: the data + statistics (contracts, trips, waste — `0` for now) + the contracts section (not built yet) + a table of the **assets in the project** (type filter + export + an insert-asset button).
+- Edit page: every field except the company (locked; the ID is shown above the form).
+- **Deactivate / reactivate** from the "Project Status" card on the edit page (with a confirmation). There is no delete. Deactivating a project does **not** deactivate the company, and deactivating a company does **not** deactivate its projects; a deactivated project is not offered when inserting an asset.
+
+## 12. Features available now
 
 | Module | Available | Deferred |
 |---|---|---|
 | Users | Full CRUD + status + export | "Client"/"Contractor" options in the Add button (Week 4–5) |
 | Vehicles | Full CRUD + status + export + embedded container | "on a trip" column/counter + vehicle trip log (Week 7) |
 | Drivers | Full CRUD + default vehicle + documents + permits | "on a trip" status (Week 7), mobile app |
-| Assets | Full CRUD + categories + status + export | "Add asset to a project" + "in projects" counter (Week 4) |
+| Assets | Full CRUD + categories + status + export + **insert an asset into a project** + "in a project" availability | Taking an asset out of a project (with trips) |
 | Intermediate facilities | Create / edit / deactivate + prefix + recycling efficiency + contract + export | Sub-service list on the details page and the "in use" lock (with the Services module) |
-| Client companies | Full CRUD + deactivate/reactivate + attachments + export | Representative, projects/users counts and the projects/contracts sections on the details page (Weeks 4–6) |
+| Client companies | Full CRUD + deactivate/reactivate + attachments + export + projects count + company projects table | Representative, users count and the contracts section (Week 6 + client accounts) |
+| Client projects | Full CRUD + deactivate/reactivate + ID from the company short name + project assets + export | Representative, users count, contracts section and trip statistics |
 | Dashboard | Shell screen | Real stats (Week 8) |

@@ -49,12 +49,13 @@ class CompanyResource extends JsonResource
             'operational_status' => $this->operational_status,
             'additional_data' => $this->additional_data,
 
-            // Projects (FRD §1.12) and client users (§1.4) don't exist yet,
-            // so every count below is 0 until those modules land.
-            'projects_count' => 0,
+            // Client users (§1.4), contracts and trips don't exist yet, so
+            // those counts are 0 until those modules land. The project count
+            // comes from withCount('projects') in the controller.
+            'projects_count' => (int) ($this->projects_count ?? 0),
             'users_count' => 0,
             'stats' => [
-                'projects' => 0,
+                'projects' => (int) ($this->projects_count ?? 0),
                 'contracts' => 0,
                 'trips' => 0,
                 'waste_tons' => 0,

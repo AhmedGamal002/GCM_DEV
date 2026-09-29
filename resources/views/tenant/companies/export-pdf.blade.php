@@ -7,8 +7,8 @@
     $c->name,
     $c->prefix,
     $c->business_sector,
-    // Projects and client users don't exist yet (FRD §1.12 / §1.4).
-    0,
+    // Client users don't exist yet (FRD §1.4).
+    $c->projects_count,
     0,
     PdfLabels::of($c->operational_status),
     $c->created_at,

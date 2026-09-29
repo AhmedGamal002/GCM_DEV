@@ -37,7 +37,7 @@ Dashboard, then an **Accounts** section (Users · Drivers), a **Fleet & Assets**
 ## 5. Assets — `/app/asset/list`
 
 - **View** the list + stat cards (containers and tanks) + filters + **export**.
-- **View details** of any asset.
+- **View details** of any asset (including "in a project" + the project name when it is in one).
 - **Asset capacity categories** (`/app/asset-category/list`): view and export only — no create, no edit. The eye icon opens a **details page** (client add-on) with a table of the assets carrying that capacity.
 - **Not allowed:** any create, edit, or status change.
 
@@ -51,12 +51,17 @@ Dashboard, then an **Accounts** section (Users · Drivers), a **Fleet & Assets**
 - **View** the list + filter + **export**, and the **details** of any company (and download its attachments).
 - **Not allowed:** creating, editing or deactivating (the "Add" link is not shown in the sidebar).
 
-## 8. What you cannot do (returns 403)
+## 8. Client projects — `/app/project/list`
 
-- Create, edit, or deactivate any user / driver / vehicle / asset / facility / company / category.
+- **View** the list (search + company and status filters) + **export**, and the **details** of any project (and its assets table, with export).
+- **Not allowed:** creating, editing or deactivating; the "Add" link, the edit icon and the "Insert asset into project" button are not shown.
+
+## 9. What you cannot do (returns 403)
+
+- Create, edit, or deactivate any user / driver / vehicle / asset / facility / company / project / category, or insert an asset into a project.
 - Change your name or email on the profile page.
 - Manage roles & permissions / tenants.
 
-## 9. Features available now
+## 10. Features available now
 
-Full view + export across every built module (Users, Drivers, Vehicles, Assets, Intermediate facilities, Client companies, and categories) — was limited to vehicles and assets only before the FRD V01.14 upgrade. Self-service password change works from the profile page.
+Full view + export across every built module (Users, Drivers, Vehicles, Assets, Intermediate facilities, Client companies, Client projects, and categories) — was limited to vehicles and assets only before the FRD V01.14 upgrade. Self-service password change works from the profile page.

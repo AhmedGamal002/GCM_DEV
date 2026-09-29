@@ -28,7 +28,7 @@ use Maatwebsite\Excel\Facades\Excel;
  */
 class AssetController extends Controller
 {
-    private const LIST_WITH = ['tenant', 'capacityCategory', 'compatibleVehicleCategories'];
+    private const LIST_WITH = ['tenant', 'capacityCategory', 'compatibleVehicleCategories', 'project'];
 
     /**
      * Explicit allowlist for `sort_by` — never the raw request value.
@@ -86,22 +86,30 @@ class AssetController extends Controller
     /**
      * FRD §1.7.3 stat cards — containers and tanks counted separately,
      * each: available / in projects / on maintenance / deactivated.
-     * "in_projects" needs the Project module (Week 4) — 0 for now.
+     * "In projects" = active assets placed in a project; "available" =
+     * active assets still in the pool — same split as the availability
+     * filter (applyStatusFilter).
      */
     public function stats()
     {
         Gate::authorize('viewAny', Asset::class);
 
         $rows = Asset::query()
-            ->selectRaw('asset_type, operational_status, count(*) as total')
-            ->groupBy('asset_type', 'operational_status')
+            ->selectRaw('asset_type, operational_status, (project_id is not null) as in_project, count(*) as total')
+            ->groupBy('asset_type', 'operational_status', 'in_project')
             ->get();
 
+        $count = fn (string $type, string $status, ?bool $inProject = null): int => (int) $rows
+            ->where('asset_type', $type)
+            ->where('operational_status', $status)
+            ->when($inProject !== null, fn ($r) => $r->filter(fn ($row) => (bool) $row->in_project === $inProject))
+            ->sum('total');
+
         $shape = fn (string $type): array => [
-            'available' => (int) $rows->where('asset_type', $type)->firstWhere('operational_status', 'active')?->total,
-            'in_projects' => 0,
-            'on_maintenance' => (int) $rows->where('asset_type', $type)->firstWhere('operational_status', 'on_maintenance')?->total,
-            'deactivated' => (int) $rows->where('asset_type', $type)->firstWhere('operational_status', 'deactivated')?->total,
+            'available' => $count($type, 'active', false),
+            'in_projects' => $count($type, 'active', true),
+            'on_maintenance' => $count($type, 'on_maintenance'),
+            'deactivated' => $count($type, 'deactivated'),
         ];
 
         return response()->json([
@@ -134,6 +142,21 @@ class AssetController extends Controller
     }
 
     /**
+     * "Availability" (FRD V01.14 §1.7.3): `active` means active AND in the
+     * pool (not placed in a project), `in_project` means active and placed
+     * in one; on_maintenance / deactivated are the raw statuses (an asset
+     * in maintenance is shown as such even if it is still at a project).
+     */
+    private function applyStatusFilter(Builder $query, string $status): Builder
+    {
+        return match ($status) {
+            'active' => $query->where('operational_status', 'active')->whereNull('project_id'),
+            'in_project' => $query->where('operational_status', 'active')->whereNotNull('project_id'),
+            default => $query->where('operational_status', $status),
+        };
+    }
+
+    /**
      * The list's filters (dropdowns + search box), shared by index() and
      * export() so an export always contains exactly the rows the user sees
      * on screen — they used to be two copies that drifted apart (export
@@ -145,7 +168,8 @@ class AssetController extends Controller
             ->with(self::LIST_WITH)
             ->when($request->filled('asset_capacity_category_id'), fn ($q) => $q->where('asset_capacity_category_id', $request->integer('asset_capacity_category_id')))
             ->when($request->filled('asset_type'), fn ($q) => $q->where('asset_type', $request->string('asset_type')))
-            ->when($request->filled('operational_status'), fn ($q) => $q->where('operational_status', $request->string('operational_status')))
+            ->when($request->filled('project_id'), fn ($q) => $q->where('project_id', $request->integer('project_id')))
+            ->when($request->filled('operational_status'), fn ($q) => $this->applyStatusFilter($q, $request->string('operational_status')->toString()))
             ->when($request->filled('affiliation'), fn ($q) => $q->where('affiliation', $request->string('affiliation')))
             ->when($request->filled('search'), function ($q) use ($request) {
                 $search = $request->string('search')->toString();

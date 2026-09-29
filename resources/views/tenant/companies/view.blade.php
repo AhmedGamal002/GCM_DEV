@@ -2,8 +2,20 @@
 
 @section('title', __('Client Company Details'))
 
-@section('page-style')
-@vite(['resources/assets/vendor/scss/pages/page-user-view.scss'])
+@section('vendor-style')
+@vite([
+  'resources/assets/vendor/scss/pages/page-user-view.scss',
+  'resources/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.scss',
+  'resources/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.scss',
+  'resources/assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.scss'
+])
+@endsection
+
+@section('vendor-script')
+@vite([
+  'resources/assets/vendor/libs/moment/moment.js',
+  'resources/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js'
+])
 @endsection
 
 @section('page-script')
@@ -16,11 +28,24 @@
     last_updated_by: @json(__('Last updated by :name — :at')),
     download: @json(__('Download')),
     period: @json(__(':from to :to')),
+    all_statuses: @json(__('All statuses')),
+    view: @json(__('View')),
+    actions: @json(__('Actions')),
+    export: @json(__('Export')),
+    search_project: @json(__('Search Project')),
+    no_projects_found: @json(__('This company has no projects yet.')),
+    no_permission: @json(__("You don't have permission to view this data.")),
+    info: @json(__('Showing _START_ to _END_ of _TOTAL_ entries')),
+    info_empty: @json(__('Showing 0 to 0 of 0 entries')),
+    can_manage: @json(auth()->user()->can('create', \App\Models\Project::class)),
+    add_project: @json(__('Add Project')),
+    add_project_url: @json(route('app-project-add')),
+    project_view_url_base: @json(url('/app/project/view')),
     edit_url_base: @json(url('/app/company/edit'))
   };
   window.companyViewId = {{ $companyId }};
 </script>
-@vite('resources/assets/js/app-company-view.js')
+@vite(['resources/assets/js/datatables-server-side.js', 'resources/assets/js/app-company-view.js'])
 @endsection
 
 @section('content')
@@ -83,8 +108,8 @@
   </div>
 
   <div class="col-xl-8 col-lg-7">
-    {{-- FRD V01.14 §1.11.3 statistics. Projects, contracts, trips and
-         quantities come from modules that don't exist yet — 0 until then. --}}
+    {{-- FRD V01.14 §1.11.3 statistics. Projects are real; contracts, trips
+         and quantities come from modules that don't exist yet — 0 until then. --}}
     <div class="row g-4 mb-6">
       @foreach ([
         ['key' => 'projects',   'label' => __('Projects'),         'color' => 'primary', 'icon' => 'ti-briefcase'],
@@ -110,10 +135,24 @@
 
     <div class="card mb-6">
       <h5 class="card-header">{{ __('Projects') }}</h5>
-      <div class="card-body">
-        <div class="alert alert-info mb-0">
-          {{ __('This company\'s projects will appear here once the Projects module is available.') }}
+      <div class="card-header border-top pt-4 pb-0">
+        <div class="row">
+          <div class="col-md-4 company_project_status"></div>
         </div>
+      </div>
+      <div class="card-datatable table-responsive">
+        <table class="datatables-company-projects table">
+          <thead class="border-top">
+            <tr>
+              <th>{{ __('ID') }}</th>
+              <th>{{ __('Project') }}</th>
+              <th>{{ __('Contracts') }}</th>
+              <th>{{ __('Users') }}</th>
+              <th>{{ __('Status') }}</th>
+              <th>{{ __('Actions') }}</th>
+            </tr>
+          </thead>
+        </table>
       </div>
     </div>
 

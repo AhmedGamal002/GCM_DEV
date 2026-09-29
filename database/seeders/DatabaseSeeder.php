@@ -39,6 +39,7 @@ class DatabaseSeeder extends Seeder
             AssetSeeder::class,
             IntermediateFacilitySeeder::class,
             CompanySeeder::class,
+            ProjectSeeder::class,
         ]);
 
         User::factory()->create(['name' => 'System Admin', 'email' => 'admin@gcm.test'])

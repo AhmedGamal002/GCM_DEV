@@ -2,6 +2,7 @@ import './bootstrap';
 import './busy';
 import './page-loader';
 import './gcm-select2';
+import './gcm-fetch-all';
 /*
   Add custom scripts here
 */

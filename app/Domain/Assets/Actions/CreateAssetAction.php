@@ -33,7 +33,7 @@ class CreateAssetAction
 
             $asset->compatibleVehicleCategories()->sync($data['compatible_vehicle_category_ids']);
 
-            return $asset->load(['capacityCategory', 'compatibleVehicleCategories', 'updatedBy']);
+            return $asset->load(['capacityCategory', 'compatibleVehicleCategories', 'project', 'updatedBy']);
         });
     }
 }

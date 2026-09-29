@@ -45,6 +45,7 @@ Dashboard, then an **Accounts** section (Users · Drivers), a **Fleet & Assets**
 - **Create** a new asset (name, type, capacity category, compatible vehicle categories, purchase date, ...) — including directly in "deactivated" status if needed.
 - **Edit** an asset: **name only** — everything else is locked after creation.
 - **Status:** "on maintenance", or **deactivate / reactivate**.
+- **Insert an asset into a project** (`/app/asset/insert-into-project`): company → active project → type → available asset. The asset then shows as "In a project" + the project name.
 
 ### Asset capacity categories — `/app/asset-category/list`
 - **Create** a new category.
@@ -67,7 +68,14 @@ Dashboard, then an **Accounts** section (Users · Drivers), a **Fleet & Assets**
 - **Edit** any company data (every field except the short name — it is locked after creation because the company ID is built from it).
 - **Status:** **deactivate and reactivate** from the edit page. There is no delete.
 
-## 8. What you cannot do (returns 403 or 422)
+## 8. Client projects — `/app/project/list`
+
+- **View** the list (search + company and status filters) + **export**, and the **details** of any project (and its assets table).
+- **Create** a project (name + an active client company are required) — its ID is built from the company's short name (`ALN-P0001`).
+- **Edit** any data except the company (locked after creation).
+- **Status:** **deactivate and reactivate** from the edit page. There is no delete.
+
+## 9. What you cannot do (returns 403 or 422)
 
 | | |
 |---|---|
@@ -76,9 +84,9 @@ Dashboard, then an **Accounts** section (Users · Drivers), a **Fleet & Assets**
 | Anything related to Contracts (PO) | ✖ — you don't see that section at all once it's built |
 | Roles & permissions / Companies management | ✖ |
 
-## 9. Features available now
+## 10. Features available now
 
 Users and Drivers: view/create/edit + every account status (on vacation/deactivate/reactivate) except the System Admin's own account.
 Vehicles, Assets and Intermediate facilities: full CRUD including deactivate/reactivate + export. The embedded container in the vehicle form works.
-Client companies: full CRUD including deactivate/reactivate + export.
-Deferred: "Add asset to a project" (Week 4), "on a trip" column for vehicles (Week 7).
+Client companies and client projects: full CRUD including deactivate/reactivate + export. Inserting an asset into a project works.
+Deferred: "on a trip" column for vehicles (Week 7), taking an asset out of a project (with trips).

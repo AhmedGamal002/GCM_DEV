@@ -27,15 +27,23 @@ class AssetResource extends JsonResource
             ),
 
             'operational_status' => $this->operational_status,
+            // FRD V01.14 §1.7.3 "availability": an active asset placed in a
+            // project shows as "in a project" instead of plain active.
+            'availability' => $this->operational_status === 'active' && $this->project_id !== null
+                ? 'in_project'
+                : $this->operational_status,
             'affiliation' => $this->affiliation,
             // Same pattern as VehicleResource — Contractor affiliations are
             // Week 5, so an affiliated asset's entity is always the
             // tenant's own name for now.
             'entity_name' => $this->affiliation === 'gcm' ? $this->tenant->name : null,
 
-            // "In a project" availability + the project name need the
-            // Project module (Week 4) — always null for now.
-            'project' => null,
+            // The project the asset was inserted into (null = in the pool).
+            'project' => $this->whenLoaded('project', fn () => $this->project ? [
+                'id' => $this->project->id,
+                'code' => $this->project->code,
+                'name' => $this->project->name,
+            ] : null),
 
             'purchase_date' => $this->purchase_date?->toDateString(),
             'additional_data' => $this->additional_data,

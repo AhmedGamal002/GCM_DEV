@@ -10,6 +10,9 @@
 <script>
   window.assetViewTranslations = {
     active: @json(__('Active')),
+    in_project: @json(__('In a project')),
+    no_project: @json(__('This asset is not in any project.')),
+    project_view_url_base: @json(url('/app/project/view')),
     on_maintenance: @json(__('On Maintenance')),
     deactivated: @json(__('Deactivated')),
     container: @json(__('Container')),
@@ -81,11 +84,9 @@
     </div>
 
     <div class="card mb-6">
-      <h5 class="card-header">{{ __('Projects') }}</h5>
+      <h5 class="card-header">{{ __('Current project') }}</h5>
       <div class="card-body">
-        <div class="alert alert-info mb-0">
-          {{ __('Whether this asset is currently out with a project will appear here once the Projects module is available.') }}
-        </div>
+        <p class="mb-0" id="av-project">—</p>
       </div>
     </div>
 

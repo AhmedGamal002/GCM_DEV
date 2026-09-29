@@ -28,8 +28,8 @@ class CompaniesExport implements FromCollection, WithHeadings, WithMapping
             $company->name,
             $company->prefix,
             $company->business_sector,
-            // Projects and client users don't exist yet (FRD §1.12 / §1.4).
-            0,
+            // Client users don't exist yet (FRD §1.4).
+            $company->projects_count,
             0,
             $company->operational_status,
             $company->created_at,

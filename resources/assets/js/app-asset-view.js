@@ -1,6 +1,6 @@
 /**
  * Asset Details — mirrors app-vehicle-view.js. Renders the asset, its
- * compatible vehicle categories, a stubbed Projects section, and the
+ * compatible vehicle categories, the project it is currently in, and the
  * "Asset Status" card (confirm-checkbox-gates-the-button).
  */
 'use strict';
@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const statusObj = {
     active: { title: t.active, class: 'bg-label-success' },
+    in_project: { title: t.in_project, class: 'bg-label-info' },
     on_maintenance: { title: t.on_maintenance, class: 'bg-label-warning' },
     deactivated: { title: t.deactivated, class: 'bg-label-secondary' }
   };
@@ -64,9 +65,21 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     const badge = document.getElementById('av-status');
-    const s = statusObj[a.operational_status] || { title: a.operational_status, class: 'bg-label-secondary' };
+    const s = statusObj[a.availability || a.operational_status] || { title: a.operational_status, class: 'bg-label-secondary' };
     badge.textContent = s.title;
     badge.className = 'badge ' + s.class;
+
+    // The project name is user input — build the anchor with DOM APIs.
+    const projectEl = document.getElementById('av-project');
+    projectEl.textContent = '';
+    if (a.project) {
+      const link = document.createElement('a');
+      link.href = (t.project_view_url_base || '/app/project/view') + '/' + a.project.id;
+      link.textContent = a.project.name + ' (' + a.project.code + ')';
+      projectEl.appendChild(link);
+    } else {
+      projectEl.textContent = t.no_project || 'This asset is not in any project.';
+    }
 
     document.getElementById('av-edit-link').href = (t.edit_url_base || '/app/asset/edit') + '/' + a.id;
 
