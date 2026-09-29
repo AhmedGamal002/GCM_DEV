@@ -437,5 +437,11 @@
   "An asset on maintenance or deactivated cannot be selected for a trip.": "الأصل في الصيانة أو المعطّل لا يمكن اختياره لرحلة.",
   "GLOBAL CLEAR MISSION": "الرسالة الواضحة العالمية",
   "Welcome to :name": "أهلًا بيك في :name",
-  "Category Details": "تفاصيل التصنيف"
+  "Category Details": "تفاصيل التصنيف",
+  "Change Password": "تغيير كلمة المرور",
+  "Current Password": "كلمة المرور الحالية",
+  "Confirm New Password": "تأكيد كلمة المرور الجديدة",
+  "Save changes": "حفظ التغييرات",
+  "Reset": "إعادة تعيين",
+  "Password updated.": "تم تحديث كلمة المرور."
 }

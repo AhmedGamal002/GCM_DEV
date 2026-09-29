@@ -4,6 +4,7 @@
 
 @section('vendor-style')
 @vite([
+  'resources/assets/vendor/libs/select2/select2.scss',
   'resources/assets/vendor/libs/quill/typography.scss',
   'resources/assets/vendor/libs/quill/editor.scss'
 ])
@@ -11,6 +12,7 @@
 
 @section('vendor-script')
 @vite([
+  'resources/assets/vendor/libs/select2/select2.js',
   'resources/assets/vendor/libs/quill/quill.js'
 ])
 @endsection
@@ -96,7 +98,7 @@
         </div>
         <div class="col-md-6">
           <label class="form-label" for="default_vehicle_id">{{ __('Default Vehicle') }}</label>
-          <select id="default_vehicle_id" class="form-select" required>
+          <select id="default_vehicle_id" class="form-select select2" required>
             <option value="">{{ __('Select vehicle type(s) first') }}</option>
           </select>
         </div>

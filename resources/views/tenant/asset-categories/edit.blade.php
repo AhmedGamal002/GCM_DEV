@@ -2,6 +2,14 @@
 
 @section('title', __('Edit category'))
 
+@section('vendor-style')
+@vite(['resources/assets/vendor/libs/select2/select2.scss'])
+@endsection
+
+@section('vendor-script')
+@vite(['resources/assets/vendor/libs/select2/select2.js'])
+@endsection
+
 @section('page-script')
 <script>
   window.assetCategoryFormTranslations = {
