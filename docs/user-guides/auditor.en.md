@@ -43,7 +43,7 @@ Dashboard, then an **Accounts** section (Users · Drivers), a **Fleet & Assets**
 
 ## 6. Intermediate facilities — `/app/facility/list`
 
-- **View** the list + stat cards + search + filters + **export**, and the **details** of any facility (including the contract attachment download).
+- **View** the list (with each facility's **ID**) + stat cards + search + filters + **export**, and the **details** of any facility (including the contract attachment download).
 - **Not allowed:** the "Create new facility" button, the edit icon and the status card aren't shown, and any create / edit / status change returns 403.
 
 ## 7. Client companies — `/app/company/list`

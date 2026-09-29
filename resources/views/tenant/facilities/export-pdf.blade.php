@@ -3,7 +3,7 @@
   'title' => __('Intermediate Facilities'),
   'headers' => [__('ID'), __('Name'), __('Prefix'), __('Environmental service'), __('Recycling efficiency (%)'), __('Status'), __('Created At')],
   'rows' => $facilities->map(fn ($f) => [
-    $f->id,
+    $f->code,
     $f->name,
     $f->prefix,
     PdfLabels::of($f->environmental_service),

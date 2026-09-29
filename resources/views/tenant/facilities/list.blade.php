@@ -97,6 +97,7 @@
       <thead class="border-top">
         <tr>
           <th></th>
+          <th>{{ __('ID') }}</th>
           <th>{{ __('Facility name') }}</th>
           <th>{{ __('Environmental service') }}</th>
           <th>{{ __('Status') }}</th>

@@ -60,7 +60,7 @@ class FacilityListPaginationTest extends TestCase
             ->assertOk();
     }
 
-    public function test_search_matches_the_name_and_the_prefix(): void
+    public function test_search_matches_the_name_the_prefix_and_the_code(): void
     {
         $byName = IntermediateFacility::factory()->create(['name' => 'Zephyr Landfill', 'prefix' => 'AAA']);
         $byPrefix = IntermediateFacility::factory()->create(['name' => 'Ordinary plant', 'prefix' => 'QXZ']);
@@ -68,6 +68,18 @@ class FacilityListPaginationTest extends TestCase
 
         $this->assertSame([$byName->id], $this->actingAs($this->admin, 'web')->getJson('/api/v1/facilities?search=Zephyr')->json('data.*.id'));
         $this->assertSame([$byPrefix->id], $this->actingAs($this->admin, 'web')->getJson('/api/v1/facilities?search=QXZ')->json('data.*.id'));
+        // The "ID" column shown in the list — same code the API returns.
+        $this->assertSame([$byName->id], $this->actingAs($this->admin, 'web')->getJson('/api/v1/facilities?search='.$byName->code)->json('data.*.id'));
+    }
+
+    public function test_sort_by_code_is_allowed(): void
+    {
+        IntermediateFacility::factory()->count(5)->create();
+
+        $asc = $this->actingAs($this->admin, 'web')->getJson('/api/v1/facilities?per_page=50&sort_by=code&sort_dir=asc')->json('data.*.code');
+        $desc = $this->actingAs($this->admin, 'web')->getJson('/api/v1/facilities?per_page=50&sort_by=code&sort_dir=desc')->json('data.*.code');
+
+        $this->assertSame($asc, array_reverse($desc));
     }
 
     public function test_the_service_and_status_filters_are_applied_server_side(): void

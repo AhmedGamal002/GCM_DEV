@@ -71,6 +71,25 @@ class FacilityManagementTest extends TestCase
 
         $this->assertSame(3, IntermediateFacility::count());
         $this->assertSame($this->admin->id, IntermediateFacility::where('prefix', 'ALF')->value('updated_by'));
+        // Same "الرقم التعريفي" pattern as Company: the ID is the prefix mixed with a number.
+        $this->assertSame('ALF-0001', IntermediateFacility::where('prefix', 'ALF')->value('code'));
+    }
+
+    public function test_the_facility_id_is_the_prefix_plus_a_running_number_per_tenant(): void
+    {
+        foreach (['ALF', 'GLR', 'NST'] as $prefix) {
+            $this->actingAs($this->admin, 'web')
+                ->postJson('/api/v1/facilities', $this->payload(['name' => "Facility {$prefix}", 'prefix' => $prefix]))
+                ->assertCreated();
+        }
+
+        $this->assertSame(['ALF-0001', 'GLR-0002', 'NST-0003'], IntermediateFacility::orderBy('sequence')->pluck('code')->all());
+
+        // another tenant counts from 1 again
+        $other = Tenant::create(['name' => 'Other', 'slug' => 'other', 'status' => 'active']);
+        app()->instance('tenant', $other);
+        $first = IntermediateFacility::factory()->create(['prefix' => 'ALF']);
+        $this->assertSame('ALF-0001', $first->code);
     }
 
     public function test_recycling_efficiency_is_required_for_a_recycling_facility_only(): void
@@ -243,11 +262,39 @@ class FacilityManagementTest extends TestCase
     public function test_the_prefix_can_never_be_changed(): void
     {
         $facility = IntermediateFacility::factory()->create(['prefix' => 'OLD']);
+        $code = $facility->code;
 
         $this->actingAs($this->admin, 'web')
             ->patchJson("/api/v1/facilities/{$facility->id}", ['name' => 'X', 'prefix' => 'NEW'])
             ->assertOk()
-            ->assertJsonPath('data.prefix', 'OLD');
+            ->assertJsonPath('data.prefix', 'OLD')
+            ->assertJsonPath('data.code', $code);
+
+        $this->assertSame('OLD', $facility->fresh()->prefix);
+    }
+
+    /** Belt and braces: IntermediateFacility::booted() itself refuses a prefix change, not just the request layer. */
+    public function test_the_model_refuses_to_change_a_saved_prefix_from_any_code_path(): void
+    {
+        $facility = IntermediateFacility::factory()->create(['prefix' => 'BBB']);
+
+        $facility->prefix = 'CCC';
+        $facility->save();
+
+        $this->assertSame('BBB', $facility->fresh()->prefix);
+    }
+
+    public function test_editing_cannot_change_the_code(): void
+    {
+        $facility = IntermediateFacility::factory()->create();
+        $code = $facility->code;
+
+        $this->actingAs($this->admin, 'web')
+            ->patchJson("/api/v1/facilities/{$facility->id}", ['name' => $facility->name, 'code' => '000000'])
+            ->assertOk()
+            ->assertJsonPath('data.code', $code);
+
+        $this->assertSame($code, $facility->fresh()->code);
     }
 
     public function test_the_service_and_efficiency_can_change_while_the_facility_is_unused(): void

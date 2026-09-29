@@ -67,6 +67,7 @@ $(function () {
     ajax: window.gcmServerSideAjax('/api/v1/facilities', listParams),
     columns: [
       { data: 'id' },
+      { data: 'code' },
       { data: 'name' },
       { data: 'environmental_service' },
       { data: 'operational_status' },
@@ -83,6 +84,10 @@ $(function () {
       },
       {
         targets: 1,
+        render: (data, type, full) => escapeHtml(full.code)
+      },
+      {
+        targets: 2,
         responsivePriority: 4,
         // The prefix is shown (and searchable) under the name.
         render: (data, type, full) =>
@@ -90,7 +95,7 @@ $(function () {
           '<small class="text-muted" dir="ltr">' + escapeHtml(full.prefix) + '</small></div>'
       },
       {
-        targets: 2,
+        targets: 3,
         render: function (data, type, full) {
           if (type !== 'display') return full.environmental_service;
           let label = escapeHtml(serviceLabels[full.environmental_service] || full.environmental_service);
@@ -101,7 +106,7 @@ $(function () {
         }
       },
       {
-        targets: 3,
+        targets: 4,
         render: function (data, type, full) {
           if (type !== 'display') return full.operational_status;
           const s = statusObj[full.operational_status] || { title: full.operational_status, class: 'bg-label-secondary' };
@@ -129,7 +134,7 @@ $(function () {
         }
       }
     ],
-    order: [[1, 'asc']],
+    order: [[2, 'asc']],
     language: {
       sLengthMenu: '_MENU_',
       search: '',

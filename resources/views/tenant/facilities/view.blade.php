@@ -58,6 +58,7 @@
 
         <h5 class="pb-4 border-bottom mb-4 mt-6">{{ __('Details') }}</h5>
         <ul class="list-unstyled mb-6">
+          <li class="mb-2"><span class="h6">{{ __('ID') }}:</span> <span id="fv-code" dir="ltr"></span></li>
           <li class="mb-2"><span class="h6">{{ __('Prefix name') }}:</span> <span id="fv-prefix" dir="ltr"></span></li>
           <li class="mb-2"><span class="h6">{{ __('Environmental service') }}:</span> <span id="fv-service"></span></li>
           <li class="mb-2 d-none" id="fv-efficiency-row"><span class="h6">{{ __('Recycling efficiency') }}:</span> <span id="fv-efficiency"></span></li>
