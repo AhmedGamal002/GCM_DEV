@@ -372,6 +372,12 @@
               "roles": ["system_admin", "data_entry", "auditor"]
             },
             {
+              "url": "app/vehicle/add",
+              "name": "Add",
+              "slug": "app-vehicle-add",
+              "roles": ["system_admin", "data_entry"]
+            },
+            {
               "url": "app/vehicle-category/list",
               "name": "Categories",
               "slug": "app-vehicle-category-list",
@@ -412,6 +418,12 @@
               "roles": ["system_admin", "data_entry", "auditor"]
             },
             {
+              "url": "app/asset/add",
+              "name": "Add",
+              "slug": "app-asset-add",
+              "roles": ["system_admin", "data_entry"]
+            },
+            {
               "url": "app/asset-category/list",
               "name": "Categories",
               "slug": "app-asset-category-list",
@@ -420,11 +432,24 @@
           ]
         },
         {
-          "url": "app/facility/list",
           "name": "Facilities",
           "icon": "menu-icon tf-icons ti ti-building-factory-2",
           "slug": "app-facility",
-          "roles": ["system_admin", "data_entry", "auditor"]
+          "roles": ["system_admin", "data_entry", "auditor"],
+          "submenu": [
+            {
+              "url": "app/facility/list",
+              "name": "List",
+              "slug": "app-facility-list",
+              "roles": ["system_admin", "data_entry", "auditor"]
+            },
+            {
+              "url": "app/facility/add",
+              "name": "Add",
+              "slug": "app-facility-add",
+              "roles": ["system_admin", "data_entry"]
+            }
+          ]
         },
         {
           "name": "Client Companies",
