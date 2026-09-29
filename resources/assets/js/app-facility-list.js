@@ -177,7 +177,7 @@ $(function () {
       ...(canManage
         ? [
             {
-              text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">' + (t.add_facility || 'Create new facility') + '</span>',
+              text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">' + (t.add_facility || 'Create New Facility') + '</span>',
               className: 'add-new btn btn-primary waves-effect waves-light',
               action: () => window.location.assign(t.add_facility_url || '/app/facility/add')
             }

@@ -31,7 +31,7 @@
     edit: @json(__('Edit')),
     view: @json(__('View')),
     actions: @json(__('Actions')),
-    add_facility: @json(__('Create new facility')),
+    add_facility: @json(__('Create New Facility')),
     search_facility: @json(__('Search facility')),
     no_facilities_found: @json(__('No facilities found.')),
     generic_error: @json(__('Something went wrong. Please try again.')),
