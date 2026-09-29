@@ -434,5 +434,14 @@
   "System Admin": "System Admin",
   "Auditor": "Auditor",
   "A vehicle on maintenance or deactivated cannot be selected for a trip.": "A vehicle on maintenance or deactivated cannot be selected for a trip.",
-  "An asset on maintenance or deactivated cannot be selected for a trip.": "An asset on maintenance or deactivated cannot be selected for a trip."
+  "An asset on maintenance or deactivated cannot be selected for a trip.": "An asset on maintenance or deactivated cannot be selected for a trip.",
+  "GLOBAL CLEAR MISSION": "GLOBAL CLEAR MISSION",
+  "Welcome to :name": "Welcome to :name",
+  "Category Details": "Category Details",
+  "Change Password": "Change Password",
+  "Current Password": "Current Password",
+  "Confirm New Password": "Confirm New Password",
+  "Save changes": "Save changes",
+  "Reset": "Reset",
+  "Password updated.": "Password updated."
 }

@@ -26,7 +26,7 @@
 
 @section('content')
 
-@include('_partials.breadcrumb', ['pageTitle' => __('Account Details'), 'breadcrumbs' => [
+@include('_partials.breadcrumb', ['updatedId' => 'uv-updated-by', 'pageTitle' => __('Account Details'), 'breadcrumbs' => [
   ['title' => __('Users'), 'url' => route('app-user-list')],
   ['title' => __('View')],
 ]])
@@ -51,7 +51,7 @@
     </div>
 
     <h5 class="pb-4 border-bottom mb-4">{{ __('Details') }}</h5>
-    <p class="small text-muted mb-4" id="uv-updated-by"></p>
+
     <div class="info-container">
       <ul class="list-unstyled mb-6">
         <li class="mb-2"><span class="h6">{{ __('ID') }}:</span> <span id="uv-code"></span></li>

@@ -85,6 +85,7 @@ export function initVehicleCategoryForm(opts) {
     if (!validate()) return;
 
     submitBtn.disabled = true;
+    window.gcmBusy.start({ progress: true });
 
     const payload = {
       name_en: form.querySelector('#name_en').value.trim(),
@@ -93,14 +94,15 @@ export function initVehicleCategoryForm(opts) {
 
     const request =
       mode === 'edit'
-        ? window.axios.patch(`/api/v1/vehicle-categories/${id}`, payload)
-        : window.axios.post('/api/v1/vehicle-categories', payload);
+        ? window.axios.patch(`/api/v1/vehicle-categories/${id}`, payload, { onUploadProgress: window.gcmBusy.onUploadProgress })
+        : window.axios.post('/api/v1/vehicle-categories', payload, { onUploadProgress: window.gcmBusy.onUploadProgress });
 
     request
       .then(() => {
         window.location.href = `${t.list_url || '/app/vehicle-category/list'}?${mode === 'edit' ? 'saved' : 'created'}=1`;
       })
       .catch((error) => {
+        window.gcmBusy.stop();
         submitBtn.disabled = false;
         const res = error.response;
         if (res && res.status === 422 && res.data && res.data.errors) {

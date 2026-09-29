@@ -97,6 +97,10 @@ export function initAssetForm(opts) {
         capSelect.add(opt);
       });
     if (chosen && capSelect.querySelector(`option[value="${chosen}"]`)) capSelect.value = chosen;
+
+    // The <option>s were just rebuilt — Select2 snapshots them at init time,
+    // so it needs a fresh wiring, not just a refresh (see gcm-select2.js).
+    window.refreshGcmSelect(capSelect);
   }
 
   const refsReady = Promise.all([
@@ -199,6 +203,7 @@ export function initAssetForm(opts) {
     if (!validate()) return;
 
     submitBtn.disabled = true;
+    window.gcmBusy.start({ progress: true });
 
     let url = '/api/v1/assets';
     let method = 'post';
@@ -223,7 +228,7 @@ export function initAssetForm(opts) {
       };
     }
 
-    window.axios[method](url, payload)
+    window.axios[method](url, payload, { onUploadProgress: window.gcmBusy.onUploadProgress })
       .then(() => {
         if (mode === 'edit') {
           window.location.href = `${t.view_url_base || '/app/asset/view'}/${id}?saved=1`;
@@ -232,6 +237,7 @@ export function initAssetForm(opts) {
         }
       })
       .catch((error) => {
+        window.gcmBusy.stop();
         submitBtn.disabled = false;
         const res = error.response;
         if (res && res.status === 422 && res.data && res.data.errors) {
@@ -250,6 +256,11 @@ export function initAssetForm(opts) {
       if (el.id !== 'name') el.disabled = true;
     });
     quill.disable();
+
+    // Select2 only reads the disabled state when it's (re-)wired — a plain
+    // .disabled = true on an already-wired select leaves its widget
+    // looking clickable, so re-wire it now that it's disabled.
+    window.refreshGcmSelect(capSelect);
   }
 
   function prefill(a) {
@@ -257,7 +268,12 @@ export function initAssetForm(opts) {
     const typeRadio = form.querySelector(`input[name="asset_type"][value="${a.asset_type}"]`);
     if (typeRadio) typeRadio.checked = true;
     renderCapacityOptions(a.asset_type);
-    if (a.capacity_category) capSelect.value = a.capacity_category.id;
+    if (a.capacity_category) {
+      capSelect.value = a.capacity_category.id;
+      // Select2 is already wired (renderCapacityOptions just did it) — a
+      // plain .value= doesn't refresh its display, only a 'change' event does.
+      $(capSelect).trigger('change');
+    }
     (a.compatible_vehicle_categories || []).forEach((c) => {
       const cb = form.querySelector(`input[name="compatible_vehicle_category_ids[]"][value="${c.id}"]`);
       if (cb) cb.checked = true;

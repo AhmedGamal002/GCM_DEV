@@ -13,7 +13,7 @@ Dashboard, then an **Accounts** section (Users · Drivers) and a **Fleet & Asset
 ## 1. Sign in and profile
 
 - `/login` with email + password.
-- **My Profile**: change your profile photo, **and now your password too** (the "Security" tab is shown to you specifically — not to other GCM staff). Name and email stay read-only.
+- **My Profile**: change your profile photo, **and your password too** (the "Security" tab — you enter your current password first). Name and email stay read-only.
 
 ## 2. Users — `/app/user/list`
 
@@ -38,7 +38,7 @@ Dashboard, then an **Accounts** section (Users · Drivers) and a **Fleet & Asset
 
 - **View** the list + stat cards (containers and tanks) + filters + **export**.
 - **View details** of any asset.
-- **Asset capacity categories** (`/app/asset-category/list`): view and export only — no create, no edit.
+- **Asset capacity categories** (`/app/asset-category/list`): view and export only — no create, no edit. The eye icon opens a **details page** (client add-on) with a table of the assets carrying that capacity.
 - **Not allowed:** any create, edit, or status change.
 
 ## 6. What you cannot do (returns 403)

@@ -96,7 +96,7 @@
       <span>تم: <b id="s-pass">0</b></span>
       <span>فشل: <b id="s-fail" style="color:var(--bad)">0</b></span>
       <span>متبقي: <b id="s-left">0</b></span>
-      <span>من <b>52</b> بند</span>
+      <span>من <b>54</b> بند</span>
     </div>
     <div class="prog"><i class="p" id="b-pass"></i><i class="f" id="b-fail"></i></div>
     <div class="tools">
@@ -518,17 +518,17 @@
         <h3>البريد ثابت بعد الإنشاء</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.3.1 إدارة الملف الشخصي / §1.4 المستخدمين</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح My Profile.</li><li>جرّب تعدّل خانة البريد أو الاسم.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>البريد والاسم للعرض فقط (disabled) — الصورة الشخصية هي الوحيدة القابلة للتغيير من الملف الشخصي.</dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.3.1 إدارة الملف الشخصي / §1.4 المستخدمين</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح My Profile.</li><li>جرّب تعدّل خانة البريد أو الاسم.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>البريد والاسم للعرض فقط (disabled) — اللي بيتغيّر من الملف الشخصي هو الصورة الشخصية وكلمة السر (تاب Security).</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
-    <article class="item" data-id="week-3-frd-gap-review#4" data-title="الملف الشخصي = صورة فقط">
+    <article class="item" data-id="week-3-frd-gap-review#4" data-title="الملف الشخصي = صورة + كلمة السر (الاسم والبريد للقراءة فقط)">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
           <span class="num">39</span></label>
-        <h3>الملف الشخصي = صورة فقط</h3>
+        <h3>الملف الشخصي = صورة + كلمة السر (الاسم والبريد للقراءة فقط)</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.3.1 (&quot;المستخدم يستطيع تغيير البيانات التالية من صفحة الملف الشخصي: الصورة الشخصية&quot;)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح My Profile.</li><li>حاول تكتب في خانة الاسم.</li><li>دوس &quot;Upload new photo&quot; واختار صورة PNG/JPG صغيرة، ولاحظ المعاينة.</li><li>دوس &quot;Save photo&quot;.</li><li>جرّب ملف مش صورة، وجرّب &quot;Save photo&quot; من غير ما تختار صورة.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الاسم والبريد للقراءة فقط، ومفيش تابات &quot;Account/Security&quot;. الصورة بتتحفظ وتظهر في الصفحة <strong>وفي الشريط العلوي</strong>. لو اخترت ملف مش صورة، أو دُست حفظ من غير ما تختار حاجة، هتظهر رسالة خطأ واضحة.</dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.3.1 (&quot;المستخدم يستطيع تغيير البيانات التالية من صفحة الملف الشخصي: الصورة الشخصية&quot; + كلمة المرور)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح My Profile.</li><li>حاول تكتب في خانة الاسم.</li><li>دوس &quot;Upload new photo&quot; واختار صورة PNG/JPG صغيرة، ولاحظ المعاينة.</li><li>دوس &quot;Save photo&quot;.</li><li>جرّب ملف مش صورة، وجرّب &quot;Save photo&quot; من غير ما تختار صورة.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الاسم والبريد للقراءة فقط، وفيه تابين &quot;Account&quot; و&quot;Security&quot; (كلمة السر بتتغيّر من التاب التاني). الصورة بتتحفظ وتظهر في الصفحة <strong>وفي الشريط العلوي</strong>. لو اخترت ملف مش صورة، أو دُست حفظ من غير ما تختار حاجة، هتظهر رسالة خطأ واضحة.</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     </details>
@@ -629,6 +629,16 @@
       <dl><div class="row"><dt>مرجع الـFRD</dt><dd>ثنائية اللغة لصفحات الشركة</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>سجّل دخول، ودوس أيقونة تبديل اللغة في الشريط العلوي واختار <strong>العربية</strong>.</li><li>تصفّح صفحات المركبات/السائقين/الأصول/المستخدمين/الملف الشخصي.</li><li>دوس نفس الأيقونة واختار <strong>English</strong> وكرّر نفس الصفحات.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>مفيش أي كلمة إنجليزية ظاهرة في وضع العربي (لا في العناوين، لا في الجداول، لا في رسائل الفورم، ولا في نصوص الـ JS زي &quot;Loading...&quot; أو &quot;Select a vehicle&quot;).</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
+    <article class="item" data-id="week-3-frd-gap-review#30" data-title="شاشة التحميل واللوجو والاسم">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">49</span></label>
+        <h3>شاشة التحميل واللوجو والاسم</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>الدور</dt><dd>مدير النظام</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح أي صفحة (أو اضغط Refresh) وراقب أول ثواني التحميل. جرّب كمان تدوس على رابط من القائمة الجانبية.</li><li>بصّ على أعلى القائمة الجانبية، وعلى صفحة تسجيل الدخول، وعلى عنوان تبويب المتصفح وفوتر الصفحة.</li><li>بدّل اللغة لعربي ثم إنجليزي.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>أثناء تحميل أي صفحة (وأول طلبات بياناتها) تظهر <strong>شاشة كاملة</strong> فيها لوجو GCM واسم &quot;GLOBAL CLEAR MISSION&quot; وشريط متحرك، وبتختفي لما الصفحة تجهز؛ وبتظهر تاني بمجرد ما تدوس على رابط لصفحة تانية. اللوجو والاسم ظاهرين في القائمة الجانبية وصفحة الدخول، والاسم في تبويب المتصفح والفوتر . بالعربي الاسم بيبقى &quot;الرسالة الواضحة العالمية&quot;.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
     </details>
     <details open class="group">
       <summary>الأداء والتصدير <span class="count"></span></summary>
@@ -636,7 +646,7 @@
     <article class="item" data-id="week-3-frd-gap-review#22" data-title="ملف أكبر من الحد يترفض فورًا من غير رفع">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">49</span></label>
+          <span class="num">50</span></label>
         <h3>ملف أكبر من الحد يترفض فورًا من غير رفع</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -646,7 +656,7 @@
     <article class="item" data-id="week-3-frd-gap-review#23" data-title="التصدير (خصوصًا PDF) بيوضّح إنه شغّال">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">50</span></label>
+          <span class="num">51</span></label>
         <h3>التصدير (خصوصًا PDF) بيوضّح إنه شغّال</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -656,7 +666,7 @@
     <article class="item" data-id="week-3-frd-gap-review#24" data-title="تصدير PDF بالعربي">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">51</span></label>
+          <span class="num">52</span></label>
         <h3>تصدير PDF بالعربي</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -666,11 +676,21 @@
     <article class="item" data-id="week-3-frd-gap-review#25" data-title="التصدير بيطابق الفلاتر والبحث اللي على الشاشة">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">52</span></label>
+          <span class="num">53</span></label>
         <h3>التصدير بيطابق الفلاتر والبحث اللي على الشاشة</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
       <dl><div class="row"><dt>الخطوات</dt><dd><ul><li>في كل قائمة (Users / Drivers / Vehicles / Vehicle Categories / Assets / Asset Categories) اختار فلتر واحد على الأقل (مثلًا الحالة أو التصنيف)، واكتب حاجة في مربع البحث بحيث الجدول يعرض جزء بس من الصفوف.</li><li>دوس Export واختار Excel.</li><li>دوس Export تاني واختار Pdf.</li><li>امسح الفلاتر والبحث، ودوس Export تاني.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الملف (Excel والـPDF) فيه <strong>نفس الصفوف اللي بتظهر في الجدول بالظبط</strong> (نفس الفلاتر ونفس البحث) — مش القائمة كلها. بعد مسح الفلاتر والبحث الملف بيحتوي كل الصفوف. البحث بيشتغل على نفس الأعمدة اللي بيشتغل عليها في الجدول (مثلًا لوحة المركبة بالشكل المعروض، أو كود المستخدم).</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-frd-gap-review#29" data-title="نفس شاشة &quot;جاري الحفظ&quot; في كل صفحات الإنشاء والتعديل">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">54</span></label>
+        <h3>نفس شاشة &quot;جاري الحفظ&quot; في كل صفحات الإنشاء والتعديل</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>الدور</dt><dd>مدير النظام</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>جرّب الحفظ في كل الفورمات دي: مستخدم (إضافة وتعديل)، سائق، مركبة، أصل، تصنيف مركبات، تصنيف سعة أصول، شركة عميل، وصورة My Profile.</li><li>جرّب كمان زراير تغيير الحالة (تعطيل / تنشيط / صيانة) في صفحات التفاصيل، وحذف تصنيف مركبات.</li><li>في الفورمات اللي فيها صورة أو مستند، اختار ملف كبير شوية.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>في كل الحالات تظهر <strong>نفس الشاشة الغامقة</strong> بدايرة التحميل ورسالة &quot;Working...&quot; أول ما تدوس حفظ (ومعاها شريط رفع بالنسبة المئوية لو فيه ملف)، والصفحة مابتقبلش ضغطة تانية لحد ما الطلب يخلص. لو حصل خطأ (بيانات غلط مثلًا) الشاشة بتختفي وتظهر رسالة الخطأ في مكانها.</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     </details>

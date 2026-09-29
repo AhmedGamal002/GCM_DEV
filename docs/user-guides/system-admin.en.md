@@ -22,7 +22,7 @@ The System Admin has full control **within a single company** (Tenant). They can
 ## 3. Profile
 
 - Account menu (top bar) → **My Profile**.
-- **Change your profile photo only.** Name and email are read-only, and there is no "Security" page for changing your password (that is for client/contractor users, Week 4-5).
+- **Change your profile photo and your password** (the "Security" tab — you enter your current password first). Name and email are read-only.
 
 ## 4. User management — `/app/user/list`
 
@@ -46,7 +46,7 @@ The only screen exclusive to the System Admin among tenant roles.
 
 ### View / edit user
 - Separate details and edit pages.
-- **New password (optional):** on the edit page you can set a new password + confirmation for any user or driver — leave it blank to keep the current one. This is the only way to change a GCM staff member's or driver's password.
+- **New password (optional):** on the edit page you can set a new password + confirmation for any user or driver — leave it blank to keep the current one. This is how you set someone else's password (every user can also change their own from the profile page).
 - If the user is a driver, the edit page shows a notice pointing you to the driver-edit page (residence/license/insurance details are edited there).
 - **Empty "Additional Data" does not render** as an empty heading on the details page.
 
@@ -120,6 +120,7 @@ System Admin: view, create, edit (full data), export, and all status changes.
 
 ### Asset capacity categories — `/app/asset-category/list`
 - Create and edit. After creation, **name only** is editable (capacity and kind locked). No delete, no deactivate.
+- The list's eye icon opens a **details page** (a client add-on, not in the FRD): the category's own data plus a table of every asset carrying it, linking to each asset's own details page.
 
 ## 8. Change asset status
 - **System Admin**: "on maintenance" + **deactivate** + **reactivate from deactivated**.

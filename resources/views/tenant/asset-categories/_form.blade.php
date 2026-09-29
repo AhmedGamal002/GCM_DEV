@@ -13,7 +13,7 @@
     @unless($isCreate)
       <div class="alert alert-info" role="alert">
         {{ __('Only the name can be edited. The capacity and applicability are locked after creation.') }}
-        <span class="d-block mt-1 small" id="asset-category-last-updated"></span>
+
       </div>
     @endunless
 
@@ -26,7 +26,7 @@
 
       <div class="col-md-6">
         <label class="form-label" for="applies_to">{{ __('Applies to') }}</label>
-        <select id="applies_to" name="applies_to" class="form-select" required>
+        <select id="applies_to" name="applies_to" class="form-select select2" required>
           <option value="container">{{ __('Containers') }}</option>
           <option value="tank">{{ __('Tanks') }}</option>
           <option value="both">{{ __('All') }}</option>

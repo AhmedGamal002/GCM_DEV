@@ -4,6 +4,7 @@
 
 @section('vendor-style')
 @vite([
+  'resources/assets/vendor/libs/select2/select2.scss',
   'resources/assets/vendor/libs/quill/typography.scss',
   'resources/assets/vendor/libs/quill/editor.scss'
 ])
@@ -11,6 +12,7 @@
 
 @section('vendor-script')
 @vite([
+  'resources/assets/vendor/libs/select2/select2.js',
   'resources/assets/vendor/libs/quill/quill.js'
 ])
 @endsection
@@ -33,7 +35,7 @@
 
 @section('content')
 
-@include('_partials.breadcrumb', ['pageTitle' => __('Edit Asset Details'), 'breadcrumbs' => [
+@include('_partials.breadcrumb', ['updatedId' => 'asset-last-updated', 'pageTitle' => __('Edit Asset Details'), 'breadcrumbs' => [
   ['title' => __('Assets'), 'url' => route('app-asset-list')],
   ['title' => __('Edit Asset')],
 ]])

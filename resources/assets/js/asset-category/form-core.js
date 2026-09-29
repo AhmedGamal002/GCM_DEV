@@ -19,6 +19,10 @@ export function initAssetCategoryForm(opts) {
   const form = document.getElementById('assetCategoryForm');
   if (!form) return;
 
+  // `applies_to`'s three options are already in the Blade markup — live
+  // search wiring happens once, up front (see resources/js/gcm-select2.js).
+  window.initGcmSelects(form);
+
   const errorBox = document.getElementById('asset-category-form-error');
   const loading = document.getElementById('asset-category-form-loading');
   const submitBtn = form.querySelector('button[type="submit"]');
@@ -100,6 +104,7 @@ export function initAssetCategoryForm(opts) {
     if (!validate()) return;
 
     submitBtn.disabled = true;
+    window.gcmBusy.start({ progress: true });
 
     let url = '/api/v1/asset-capacity-categories';
     let method = 'post';
@@ -119,11 +124,12 @@ export function initAssetCategoryForm(opts) {
       };
     }
 
-    window.axios[method](url, payload)
+    window.axios[method](url, payload, { onUploadProgress: window.gcmBusy.onUploadProgress })
       .then(() => {
         window.location.href = `${t.list_url || '/app/asset-category/list'}?created=1`;
       })
       .catch((error) => {
+        window.gcmBusy.stop();
         submitBtn.disabled = false;
         const res = error.response;
         if (res && res.status === 422 && res.data && res.data.errors) {
@@ -153,6 +159,11 @@ export function initAssetCategoryForm(opts) {
         form.querySelectorAll('input, select, textarea').forEach((el) => {
           if (el.id !== 'name') el.disabled = true;
         });
+
+        // Select2 only reads the disabled state when it's (re-)wired — a
+        // plain .disabled = true on an already-wired select leaves its
+        // widget looking clickable, so re-wire it now that it's disabled.
+        window.refreshGcmSelect(form.querySelector('#applies_to'));
 
         const stamp = document.getElementById('asset-category-last-updated');
         if (stamp && c.updated_by_name && t.last_updated_by) {

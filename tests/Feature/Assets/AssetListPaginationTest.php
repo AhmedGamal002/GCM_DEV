@@ -94,4 +94,20 @@ class AssetListPaginationTest extends TestCase
         $response->assertOk();
         $this->assertSame(2, $response->json('meta.total'));
     }
+
+    /** Backs the "Assets" table on the capacity category details page (a client add-on beyond the FRD). */
+    public function test_capacity_category_filter_is_applied_server_side(): void
+    {
+        $target = AssetCapacityCategory::where('applies_to', 'container')->firstOrFail();
+        $other = AssetCapacityCategory::factory()->container()->create();
+
+        Asset::factory()->count(3)->create(['asset_capacity_category_id' => $target->id]);
+        Asset::factory()->count(2)->create(['asset_capacity_category_id' => $other->id]);
+
+        $response = $this->actingAs($this->admin, 'web')
+            ->getJson("/api/v1/assets?asset_capacity_category_id={$target->id}&per_page=50");
+
+        $response->assertOk();
+        $this->assertSame(3, $response->json('meta.total'));
+    }
 }

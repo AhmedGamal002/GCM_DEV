@@ -22,8 +22,7 @@ $navbarUserPhotoUrl = (Auth::check() && Auth::user() instanceof \App\Models\User
       @if(isset($navbarFull))
         <div class="navbar-brand app-brand demo d-none d-xl-flex py-0 me-4">
           <a href="{{url('/')}}" class="app-brand-link">
-            <span class="app-brand-logo demo">@include('_partials.macros',["height"=>20])</span>
-            <span class="app-brand-text demo menu-text fw-bold">{{config('variables.templateName')}}</span>
+            @include('_partials.brand')
           </a>
           @if(isset($menuHorizontal))
             <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-xl-none">

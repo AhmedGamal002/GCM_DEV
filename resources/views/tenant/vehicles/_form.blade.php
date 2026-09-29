@@ -10,10 +10,6 @@
 
   <form class="card-body {{ $isCreate ? '' : 'd-none' }}" id="vehicleForm" enctype="multipart/form-data" novalidate>
 
-    @unless($isCreate)
-      <p class="small text-muted mb-4" id="ve-updated-by"></p>
-    @endunless
-
     <h6>1. {{ __('Basic Data') }}</h6>
     <div class="row g-6">
       <div class="col-md-3">
@@ -28,7 +24,7 @@
       </div>
       <div class="col-md-6">
         <label class="form-label" for="vehicle_category_id">{{ __('Vehicle category') }}</label>
-        <select id="vehicle_category_id" name="vehicle_category_id" class="form-select" required>
+        <select id="vehicle_category_id" name="vehicle_category_id" class="form-select select2" required>
           <option value="">{{ __('Select...') }}</option>
         </select>
         <div class="text-danger small mt-1 d-none" data-feedback></div>
@@ -60,7 +56,7 @@
       </div>
       <div class="col-md-6 d-none" id="embedded-capacity-wrapper">
         <label class="form-label" for="embedded_asset_capacity_category_id">{{ __('Capacity') }}</label>
-        <select id="embedded_asset_capacity_category_id" name="embedded_asset_capacity_category_id" class="form-select" required>
+        <select id="embedded_asset_capacity_category_id" name="embedded_asset_capacity_category_id" class="form-select select2" required>
           <option value="">{{ __('Select...') }}</option>
         </select>
         <div class="form-text" id="embedded-capacity-hint">{{ __('Choose the vehicle category and container type first.') }}</div>

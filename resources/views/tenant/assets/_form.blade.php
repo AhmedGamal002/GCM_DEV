@@ -13,7 +13,7 @@
     @unless($isCreate)
       <div class="alert alert-info" role="alert">
         {{ __('Only the asset name can be edited. Capacity, type, affiliation and compatible vehicle categories are locked after creation.') }}
-        <span class="d-block mt-1 small" id="asset-last-updated"></span>
+
       </div>
     @endunless
 
@@ -40,7 +40,7 @@
 
       <div class="col-md-6">
         <label class="form-label" for="asset_capacity_category_id">{{ __('Asset capacity') }}</label>
-        <select id="asset_capacity_category_id" name="asset_capacity_category_id" class="form-select" required>
+        <select id="asset_capacity_category_id" name="asset_capacity_category_id" class="form-select select2" required>
           <option value="">{{ __('Select...') }}</option>
         </select>
         <div class="form-text">{{ __('Only capacities matching the selected type are shown.') }}</div>

@@ -28,7 +28,7 @@
 
 @section('content')
 
-@include('_partials.breadcrumb', ['pageTitle' => __('Asset Details'), 'breadcrumbs' => [
+@include('_partials.breadcrumb', ['updatedId' => 'av-updated-by', 'pageTitle' => __('Asset Details'), 'breadcrumbs' => [
   ['title' => __('Assets'), 'url' => route('app-asset-list')],
   ['title' => __('Asset Details')],
 ]])
@@ -63,7 +63,7 @@
           <span class="h6 d-block mb-2">{{ __('Additional Data') }}:</span>
           <div id="av-additional"></div>
         </div>
-        <p class="small text-muted mb-4" id="av-updated-by"></p>
+
         <div class="d-flex justify-content-center">
           <a href="#" id="av-edit-link" class="btn btn-primary me-4">{{ __('Edit') }}</a>
           <a href="{{ route('app-asset-list') }}" class="btn btn-label-secondary">{{ __('Back to list') }}</a>

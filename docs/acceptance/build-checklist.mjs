@@ -386,8 +386,8 @@ const CLIENT_GROUPS = [
   { title: 'تصنيفات سعة الأصول', ids: ['week-3-vehicles-drivers-assets#20'] },
   { title: 'الملف الشخصي', ids: ['week-1-2-auth-users-roles#2', 'week-3-frd-gap-review#4'] },
   { title: 'قواعد عامة عبر الموديولات', ids: ['week-3-frd-gap-review#5', 'week-3-frd-gap-review#6', 'week-3-frd-gap-review#7'] },
-  { title: 'الواجهة والتنقل', ids: ['week-1-2-auth-users-roles#1', 'week-1-2-auth-users-roles#17', 'week-1-2-auth-users-roles#18', 'week-3-frd-gap-review#1', 'week-3-frd-gap-review#2', 'week-3-vehicles-drivers-assets#22'] },
-  { title: 'الأداء والتصدير', ids: ['week-3-frd-gap-review#22', 'week-3-frd-gap-review#23', 'week-3-frd-gap-review#24', 'week-3-frd-gap-review#25'] },
+  { title: 'الواجهة والتنقل', ids: ['week-1-2-auth-users-roles#1', 'week-1-2-auth-users-roles#17', 'week-1-2-auth-users-roles#18', 'week-3-frd-gap-review#1', 'week-3-frd-gap-review#2', 'week-3-vehicles-drivers-assets#22', 'week-3-frd-gap-review#30'] },
+  { title: 'الأداء والتصدير', ids: ['week-3-frd-gap-review#22', 'week-3-frd-gap-review#23', 'week-3-frd-gap-review#24', 'week-3-frd-gap-review#25', 'week-3-frd-gap-review#29'] },
 ];
 
 const CLIENT_OVERRIDES = {
@@ -423,7 +423,7 @@ const CLIENT_OVERRIDES = {
       'جرّب ملف مش صورة، وجرّب "Save photo" من غير ما تختار صورة.',
     ],
     expected:
-      'الاسم والبريد للقراءة فقط، ومفيش تابات "Account/Security". الصورة بتتحفظ وتظهر في الصفحة **وفي الشريط العلوي**. لو اخترت ملف مش صورة، أو دُست حفظ من غير ما تختار حاجة، هتظهر رسالة خطأ واضحة.',
+      'الاسم والبريد للقراءة فقط، وفيه تابين "Account" و"Security" (كلمة السر بتتغيّر من التاب التاني). الصورة بتتحفظ وتظهر في الصفحة **وفي الشريط العلوي**. لو اخترت ملف مش صورة، أو دُست حفظ من غير ما تختار حاجة، هتظهر رسالة خطأ واضحة.',
   },
   'week-3-frd-gap-review#6': {
     steps: 'افتح فورم إنشاء مستخدم، فورم إنشاء سائق، وصفحة تعديل/تفاصيل كل واحد، بالعربي والإنجليزي.',
