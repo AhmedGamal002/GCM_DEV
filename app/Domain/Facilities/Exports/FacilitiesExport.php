@@ -24,7 +24,7 @@ class FacilitiesExport implements FromCollection, WithHeadings, WithMapping
     public function map($facility): array
     {
         return [
-            $facility->id,
+            $facility->code,
             $facility->name,
             $facility->prefix,
             $facility->environmental_service,

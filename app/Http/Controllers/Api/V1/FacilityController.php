@@ -34,7 +34,7 @@ class FacilityController extends Controller
     /**
      * Explicit allowlist for `sort_by` — never the raw request value.
      */
-    private const SORTABLE_COLUMNS = ['name', 'environmental_service', 'operational_status', 'created_at'];
+    private const SORTABLE_COLUMNS = ['code', 'name', 'environmental_service', 'operational_status', 'created_at'];
 
     public function index(Request $request)
     {
@@ -156,7 +156,7 @@ class FacilityController extends Controller
      * The list's filters (dropdowns + search box), shared by index() and
      * export() so an export always contains exactly the rows the user sees
      * on screen. Search covers every column the list shows that holds free
-     * text: the name and the prefix.
+     * text: the ID (code), the name and the prefix.
      */
     private function filteredQuery(Request $request): Builder
     {
@@ -165,7 +165,7 @@ class FacilityController extends Controller
             ->when($request->filled('operational_status'), fn ($q) => $q->where('operational_status', $request->string('operational_status')->toString()))
             ->when($request->filled('search'), function ($q) use ($request) {
                 $term = '%'.$request->string('search')->toString().'%';
-                $q->where(fn ($w) => $w->where('name', 'like', $term)->orWhere('prefix', 'like', $term));
+                $q->where(fn ($w) => $w->where('name', 'like', $term)->orWhere('prefix', 'like', $term)->orWhere('code', 'like', $term));
             });
     }
 

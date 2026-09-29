@@ -16,7 +16,6 @@
       @unless($isCreate)
         <div class="alert alert-info" role="alert">
           {{ __('The prefix can\'t be changed after creation. The environmental service and recycling efficiency can be changed only while no sub-service or trip uses this facility.') }}
-          <span class="d-block mt-1 small" id="facility-last-updated"></span>
         </div>
         <div class="alert alert-warning d-none" role="alert" id="facility-locked-alert">
           {{ __('This facility is in use, so its environmental service and recycling efficiency are locked.') }}

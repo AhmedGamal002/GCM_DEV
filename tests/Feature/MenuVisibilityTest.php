@@ -228,6 +228,27 @@ class MenuVisibilityTest extends TestCase
             ->assertDontSee('app/facility/list', false);
     }
 
+    /** The "Add" sub-item under Facilities/Vehicles/Assets matches each module's create ability: system_admin/data_entry only. */
+    public function test_only_managers_see_the_add_sub_item_under_facilities_vehicles_and_assets(): void
+    {
+        $dataEntry = User::factory()->create();
+        $dataEntry->assignRole('data_entry');
+        $auditor = User::factory()->create();
+        $auditor->assignRole('auditor');
+
+        foreach ([$this->tenantAdmin, $dataEntry] as $manager) {
+            $this->actingAs($manager, 'web')->get('/dashboard')->assertOk()
+                ->assertSee('app/facility/add', false)
+                ->assertSee('app/vehicle/add', false)
+                ->assertSee('app/asset/add', false);
+        }
+
+        $this->actingAs($auditor, 'web')->get('/dashboard')->assertOk()
+            ->assertDontSee('app/facility/add', false)
+            ->assertDontSee('app/vehicle/add', false)
+            ->assertDontSee('app/asset/add', false);
+    }
+
     /** Client Companies (FRD V01.14 §1.11): admin/data_entry manage it, auditor views it, driver never sees it. */
     public function test_client_companies_menu_visibility_per_role(): void
     {

@@ -12,6 +12,7 @@ class IntermediateFacilityResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'code' => $this->code,
             'name' => $this->name,
             'prefix' => $this->prefix,
             'logo_url' => $this->logo ? Storage::disk('public')->url($this->logo) : null,

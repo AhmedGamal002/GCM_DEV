@@ -49,6 +49,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function render(f) {
     document.getElementById('fv-name').textContent = f.name;
+    document.getElementById('fv-code').textContent = f.code;
     document.getElementById('fv-prefix').textContent = f.prefix;
     document.getElementById('fv-service').textContent = serviceLabels[f.environmental_service] || f.environmental_service;
 

@@ -56,6 +56,7 @@ Dashboard, then an **Accounts** section (Users · Drivers), a **Fleet & Assets**
 
 - **View** + stat cards (one per environmental service) + search (name / prefix) + filters + **export**.
 - **Create** a facility: name, prefix (3 English letters, unique, locked after creation), logo, environmental service (recycling also needs the recycling efficiency %), status, address, map link, contract (number, dates, attachment), additional data.
+- Saving generates the facility's **ID** (prefix + running number, `ALF-0001`...) — same as Client Companies.
 - **Edit:** the name and all optional data. The environmental service and recycling efficiency change only while no sub-service or trip uses the facility.
 - **Status:** deactivate / reactivate from the details page. Facilities are never deleted.
 

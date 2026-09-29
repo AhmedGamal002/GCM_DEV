@@ -32,7 +32,7 @@
 
 @section('content')
 
-@include('_partials.breadcrumb', ['pageTitle' => __('Intermediate Facility Details'), 'breadcrumbs' => [
+@include('_partials.breadcrumb', ['updatedId' => 'fv-updated-by', 'pageTitle' => __('Intermediate Facility Details'), 'breadcrumbs' => [
   ['title' => __('Facilities'), 'url' => route('app-facility-list')],
   ['title' => __('Facility Details')],
 ]])
@@ -58,6 +58,7 @@
 
         <h5 class="pb-4 border-bottom mb-4 mt-6">{{ __('Details') }}</h5>
         <ul class="list-unstyled mb-6">
+          <li class="mb-2"><span class="h6">{{ __('ID') }}:</span> <span id="fv-code" dir="ltr"></span></li>
           <li class="mb-2"><span class="h6">{{ __('Prefix name') }}:</span> <span id="fv-prefix" dir="ltr"></span></li>
           <li class="mb-2"><span class="h6">{{ __('Environmental service') }}:</span> <span id="fv-service"></span></li>
           <li class="mb-2 d-none" id="fv-efficiency-row"><span class="h6">{{ __('Recycling efficiency') }}:</span> <span id="fv-efficiency"></span></li>
@@ -77,7 +78,6 @@
           <span class="h6 d-block mb-2">{{ __('Additional Data') }}:</span>
           <div id="fv-additional"></div>
         </div>
-        <p class="small text-muted mb-4" id="fv-updated-by"></p>
         <div class="d-flex justify-content-center">
           <a href="#" id="fv-edit-link" class="btn btn-primary me-4 d-none">{{ __('Edit') }}</a>
           <a href="{{ route('app-facility-list') }}" class="btn btn-label-secondary">{{ __('Back to list') }}</a>

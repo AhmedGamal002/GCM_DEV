@@ -13,6 +13,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  *
  * $fillable excludes:
  *  - tenant_id          — stamped by BelongsToTenant
+ *  - sequence, code     — generated in booted() (code = prefix + number),
+ *                         same "الرقم التعريفي" pattern as Company
  *  - operational_status — only ever set through UpdateFacilityStatusAction
  *  - updated_by         — set explicitly by the actions
  *
@@ -47,6 +49,34 @@ class IntermediateFacility extends Model
             'contract_start' => 'date',
             'contract_end' => 'date',
         ];
+    }
+
+    /**
+     * `code` is the FRD's "الرقم التعريفي": the prefix mixed with a
+     * number — ALF-0001 — where the number is a running counter per
+     * tenant. The prefix is locked after creation precisely because the
+     * code is built from it, so the stored code can never drift from it.
+     * Same pattern as Company::booted().
+     */
+    protected static function booted(): void
+    {
+        static::creating(function (IntermediateFacility $facility) {
+            if (is_null($facility->sequence)) {
+                $facility->sequence = ((int) static::max('sequence')) + 1;
+            }
+
+            if (is_null($facility->code)) {
+                $facility->code = sprintf('%s-%04d', $facility->prefix, $facility->sequence);
+            }
+        });
+
+        // Belt and braces: the request layer never lets the prefix through
+        // on edit, and this keeps any other code path from changing it.
+        static::updating(function (IntermediateFacility $facility) {
+            if ($facility->isDirty('prefix')) {
+                $facility->prefix = $facility->getOriginal('prefix');
+            }
+        });
     }
 
     /**

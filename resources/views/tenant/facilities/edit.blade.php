@@ -38,7 +38,7 @@
 
 @section('content')
 
-@include('_partials.breadcrumb', ['pageTitle' => __('Edit Facility Details'), 'breadcrumbs' => [
+@include('_partials.breadcrumb', ['updatedId' => 'facility-last-updated', 'pageTitle' => __('Edit Facility Details'), 'breadcrumbs' => [
   ['title' => __('Facilities'), 'url' => route('app-facility-list')],
   ['title' => __('Edit Facility')],
 ]])

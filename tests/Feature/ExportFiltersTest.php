@@ -164,7 +164,7 @@ class ExportFiltersTest extends TestCase
 
     public function test_facility_export_honours_search_and_filters(): void
     {
-        IntermediateFacility::factory()->create(['name' => 'Alpha Landfill', 'prefix' => 'ALP']);
+        $alpha = IntermediateFacility::factory()->create(['name' => 'Alpha Landfill', 'prefix' => 'ALP']);
         IntermediateFacility::factory()->recycling()->create(['name' => 'Beta Recycler', 'prefix' => 'BET']);
         IntermediateFacility::factory()->sewage()->deactivated()->create(['name' => 'Gamma Works', 'prefix' => 'GAM']);
 
@@ -176,6 +176,9 @@ class ExportFiltersTest extends TestCase
         $this->assertSame(['Alpha Landfill'], $names('&search=Alpha'));
         $this->assertSame(['Beta Recycler'], $names('&search=BET'));
         $this->assertSame([], $names('&environmental_service=recycle&search=Alpha'));
+        // the ID (code) is searchable too, and is what the "ID" column exports as.
+        $this->assertSame(['Alpha Landfill'], $names('&search='.$alpha->code));
+        $this->assertSame([$alpha->code], $this->exported('/api/v1/facilities/export?format=xlsx&search=Alpha', 'facilities.xlsx')->pluck('code')->all());
     }
 
     public function test_facility_export_pdf_works(): void

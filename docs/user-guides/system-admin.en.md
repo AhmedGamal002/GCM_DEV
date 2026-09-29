@@ -136,6 +136,7 @@ System Admin: view, create, edit, deactivate / reactivate, export. Facilities ar
 
 ### Create facility
 - Name, **prefix** (3 English letters, unique within your company — locked after creation), logo (up to 2 MB), **environmental service** (exactly one: safe disposal / sewage treatment / recycling), **recycling efficiency %** (appears — and is required — for recycling only), status, address, map link, contract (number, start / end dates, attachment up to 4 MB), additional data.
+- Saving generates the facility's **ID** — the prefix plus a running number per company (`ALF-0001`, then `ALF-0002`...), same as Client Companies — shown in the list and the details page. Nothing can change it.
 
 ### Details, edit and status
 - Details show everything, the contract attachment download, and "Supported sub-services" (empty until the Services module exists). A **Facility Status** card deactivates / reactivates the facility (confirm checkbox).
