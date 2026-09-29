@@ -33,7 +33,7 @@
 
 @section('content')
 
-@include('_partials.breadcrumb', ['pageTitle' => __('Vehicle Details'), 'breadcrumbs' => [
+@include('_partials.breadcrumb', ['updatedId' => 'vv-updated-by', 'pageTitle' => __('Vehicle Details'), 'breadcrumbs' => [
   ['title' => __('Vehicles'), 'url' => route('app-vehicle-list')],
   ['title' => __('View')],
 ]])
@@ -55,7 +55,7 @@
         </div>
 
         <h5 class="pb-4 border-bottom mb-4 mt-6">{{ __('Details') }}</h5>
-        <p class="small text-muted mb-4" id="vv-updated-by"></p>
+
         <ul class="list-unstyled mb-6">
           <li class="mb-2"><span class="h6">{{ __('Category') }}:</span> <span id="vv-category"></span></li>
           <li class="mb-2"><span class="h6">{{ __('Embedded container') }}:</span> <span id="vv-embedded"></span></li>

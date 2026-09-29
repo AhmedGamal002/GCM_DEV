@@ -96,7 +96,7 @@
       <span>تم: <b id="s-pass">0</b></span>
       <span>فشل: <b id="s-fail" style="color:var(--bad)">0</b></span>
       <span>متبقي: <b id="s-left">0</b></span>
-      <span>من <b>61</b> بند</span>
+      <span>من <b>72</b> بند</span>
     </div>
     <div class="prog"><i class="p" id="b-pass"></i><i class="f" id="b-fail"></i></div>
     <div class="tools">
@@ -603,26 +603,120 @@
     </article>
     </details>
     <details open class="group">
+      <summary>شركات العملاء <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-4-client-companies#1" data-title="عرض قائمة شركات العملاء">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">47</span></label>
+        <h3>عرض قائمة شركات العملاء</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.11 إدارة شركات العملاء</dd></div><div class="row"><dt>الدور</dt><dd>مدير النظام</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>من القائمة الجانبية افتح <strong>Client Companies</strong> (تحت عنوان &quot;Clients &amp; Projects&quot;) ثم List.</li><li>جرّب البحث باسم شركة، وبالاسم المختصر، وبالرقم التعريفي (زي <code>ALN-0001</code>).</li><li>جرّب فلتر الحالة (نشطة / معطلة).</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>جدول فيه الأعمدة (الرقم التعريفي بصيغة حروف + رقم زي <code>ALN-0001</code>، الشركة، ممثل الشركة، المشروعات، المستخدمين، الحالة، الإجراءات)، والبحث والفلتر شغالين. ممثل الشركة بيظهر <code>—</code> والمشروعات والمستخدمين <code>0</code> (بيتحدّثوا لما تتضاف مشروعات ومستخدمين للشركة).</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-4-client-companies#2" data-title="إنشاء شركة عميل بالحد الأدنى">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">48</span></label>
+        <h3>إنشاء شركة عميل بالحد الأدنى</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.11.2 إنشاء شركة عميل جديدة</dd></div><div class="row"><dt>الدور</dt><dd>مدير النظام</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>من القائمة دوس &quot;Add Client Company&quot;.</li><li>اكتب اسم الشركة واسم مختصر من 3 حروف إنجليزية (مثلًا <code>abc</code>) واترك الباقي فاضي، والحالة &quot;نشطة&quot;.</li><li>دوس Submit.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>بترجع للقائمة برسالة نجاح والشركة ظاهرة، ورقمها التعريفي اتولّد تلقائي من <strong>الاسم المختصر + رقم تسلسلي</strong> (<code>ABC-0001</code> للشركة الأولى، و<code>XYZ-0002</code> للتانية وهكذا)، والاسم المختصر اتحوّل لحروف كبيرة (<code>ABC</code>).</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-4-client-companies#3" data-title="إنشاء شركة عميل بكل البيانات والمرفقات">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">49</span></label>
+        <h3>إنشاء شركة عميل بكل البيانات والمرفقات</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.11.2</dd></div><div class="row"><dt>الدور</dt><dd>مدير النظام</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح &quot;Add Client Company&quot;.</li><li>املأ كل الخانات: نشاط العميل، الهاتف، البريد، العنوان، رابط الخريطة، رقم العقد + تاريخ البداية والنهاية، السجل التجاري، السجل الضريبي.</li><li>ارفع شعار (صورة) وصورة العقد وصورة السجل التجاري وصورة السجل الضريبي (PDF أو صورة).</li><li>اكتب ملاحظات في &quot;Additional Data&quot; واحفظ.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الشركة بتتحفظ وكل البيانات والمرفقات ظاهرة في صفحة التفاصيل.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-4-client-companies#4" data-title="الاسم المختصر: 3 حروف إنجليزية وغير متكرر، ومنه بيتكوّن الرقم التعريفي">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">50</span></label>
+        <h3>الاسم المختصر: 3 حروف إنجليزية وغير متكرر، ومنه بيتكوّن الرقم التعريفي</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.11.2 (&quot;الاسم المختصر — 3 حروف انجليزية مميزة وغير متكررة وتستخدم عند الحاجة كخليط مع الأرقام للتعبير عن رقم غير متكرر يخص الشركة&quot;)</dd></div><div class="row"><dt>الدور</dt><dd>مدير النظام</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>في فورم الإضافة، اكتب في الاسم المختصر حروف عربي أو أرقام أو أكتر من 3 حروف أو أقل من 3 — لاحظ إن الخانة بتقبل حروف إنجليزية بس وبتحوّلها لحروف كبيرة.</li><li>اكتب اسم مختصر مستخدم لشركة تانية (زي <code>ALN</code>) واحفظ.</li><li>افتح تعديل أي شركة وبصّ على خانة الاسم المختصر.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>رسالة خطأ تحت الخانة (&quot;الاسم المختصر لازم يكون 3 حروف إنجليزية&quot; أو &quot;مستخدم لشركة تانية&quot;)، والشركة ماتتحفظش. في صفحة التعديل الخانة <strong>مقفولة</strong> والرقم التعريفي ظاهر فوق الفورم — لأن الرقم مبني على الاسم المختصر فمينفعش يتغيّر بعد الإنشاء.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-4-client-companies#5" data-title="التحقق من باقي الحقول">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">51</span></label>
+        <h3>التحقق من باقي الحقول</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.11.2</dd></div><div class="row"><dt>الدور</dt><dd>مدير النظام</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>في فورم الإضافة اكتب حروف في رقم العقد أو السجل التجاري أو الضريبي.</li><li>خلّي تاريخ النهاية قبل تاريخ البداية.</li><li>اكتب بريد غلط، ورابط خريطة مش بيبدأ بـ <code>http</code>.</li><li>ارفع ملف أكبر من 4 ميجا أو نوعه مش PDF/صورة، وشعار أكبر من 2 ميجا.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>كل حقل بيرفض برسالة واضحة تحته (أو رسالة حجم الملف قبل الرفع)، ومفيش حاجة بتتحفظ.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-4-client-companies#6" data-title="صفحة تفاصيل الشركة">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">52</span></label>
+        <h3>صفحة تفاصيل الشركة</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.11.3 صفحة عرض تفاصيل شركة عميل</dd></div><div class="row"><dt>الدور</dt><dd>مدير النظام</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>من القائمة دوس أيقونة العين على شركة فيها مرفقات (مثلًا اللي عملتها في البند 3).</li><li>دوس &quot;Download&quot; جنب العقد وجنب السجلين.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الاسم واللوجو والحالة والنشاط وبيانات التواصل والعقد (الرقم والمدة) والسجلات وآخر تحديث بواسطة مين. المرفقات بتتنزّل. الإحصائيات (المشروعات والتعاقدات والرحلات والنفايات المنقولة) بـ <code>0</code>، وقسما المشروعات والتعاقدات فيهم رسالة &quot;هتظهر هنا لما الموديول يبقى متاح&quot;.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-4-client-companies#7" data-title="تعديل بيانات الشركة">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">53</span></label>
+        <h3>تعديل بيانات الشركة</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.11.4 صفحة تعديل شركة عميل</dd></div><div class="row"><dt>الدور</dt><dd>مدير النظام</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح صفحة تعديل شركة. لاحظ إن كل الخانات معبّية والمرفقات الحالية ظاهرة كروابط.</li><li>غيّر الاسم وباقي البيانات (الاسم المختصر مقفول)، ومن غير ما تختار ملفات جديدة دوس Submit.</li><li>افتح التعديل تاني وارفع صورة عقد جديدة واحفظ.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>التعديلات بتتحفظ وتظهر في التفاصيل. المرفقات القديمة بتفضل لو ماغيرتهاش، ولو رفعت جديد بتحل محل القديم. الاسم المختصر والرقم التعريفي بيفضلوا زي ما هما.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-4-client-companies#8" data-title="تعطيل الشركة وإعادة تنشيطها">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">54</span></label>
+        <h3>تعطيل الشركة وإعادة تنشيطها</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.11.4 (تعطيل / تنشيط)</dd></div><div class="row"><dt>الدور</dt><dd>مدير النظام</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>في صفحة تعديل شركة نشطة انزل لكارت &quot;Company Status&quot;.</li><li>اختار &quot;Deactivated&quot;، علّم &quot;I confirm this status change&quot; وادوس &quot;Update Status&quot;.</li><li>ارجع للقائمة وافلتر بـ &quot;Deactivated&quot;، وبعدها رجّع الشركة لـ &quot;Active&quot; بنفس الطريقة.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الحالة بتتغير وتظهر في القائمة والتفاصيل، وزر التأكيد مايشتغلش إلا بعد التعليم. مفيش زر حذف في أي مكان.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-4-client-companies#9" data-title="تصدير القائمة بنفس الفلاتر والبحث">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">55</span></label>
+        <h3>تصدير القائمة بنفس الفلاتر والبحث</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.11 (زر تصدير Excel / PDF)</dd></div><div class="row"><dt>الدور</dt><dd>مدير النظام</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>في قائمة شركات العملاء اكتب في البحث جزء من اسم شركة، أو اختار فلتر &quot;Deactivated&quot;.</li><li>دوس Export واختار Excel، وبعدها Pdf.</li><li>غيّر اللغة للعربي وصدّر PDF تاني.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الملفين فيهم نفس الصفوف اللي ظاهرة على الشاشة بس (مش الجدول كله). الـPDF بالعربي بيطلع بحروف متصلة وترتيب صحيح.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+    <details open class="group">
       <summary>الملف الشخصي <span class="count"></span></summary>
       
     <article class="item" data-id="week-1-2-auth-users-roles#2" data-title="البريد ثابت بعد الإنشاء">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">47</span></label>
+          <span class="num">56</span></label>
         <h3>البريد ثابت بعد الإنشاء</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.3.1 إدارة الملف الشخصي / §1.4 المستخدمين</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح My Profile.</li><li>جرّب تعدّل خانة البريد أو الاسم.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>البريد والاسم للعرض فقط (disabled) — الصورة الشخصية هي الوحيدة القابلة للتغيير من الملف الشخصي.</dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.3.1 إدارة الملف الشخصي / §1.4 المستخدمين</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح My Profile.</li><li>جرّب تعدّل خانة البريد أو الاسم.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>البريد والاسم للعرض فقط (disabled) — اللي بيتغيّر من الملف الشخصي هو الصورة الشخصية وكلمة السر (تاب Security).</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
-    <article class="item" data-id="week-3-frd-gap-review#4" data-title="الملف الشخصي = صورة فقط">
+    <article class="item" data-id="week-3-frd-gap-review#4" data-title="الملف الشخصي = صورة + كلمة السر (الاسم والبريد للقراءة فقط)">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">48</span></label>
-        <h3>الملف الشخصي = صورة فقط</h3>
+          <span class="num">57</span></label>
+        <h3>الملف الشخصي = صورة + كلمة السر (الاسم والبريد للقراءة فقط)</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.3.1 (&quot;المستخدم يستطيع تغيير البيانات التالية من صفحة الملف الشخصي: الصورة الشخصية&quot;)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح My Profile.</li><li>حاول تكتب في خانة الاسم.</li><li>دوس &quot;Upload new photo&quot; واختار صورة PNG/JPG صغيرة، ولاحظ المعاينة.</li><li>دوس &quot;Save photo&quot;.</li><li>جرّب ملف مش صورة، وجرّب &quot;Save photo&quot; من غير ما تختار صورة.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الاسم والبريد للقراءة فقط، ومفيش تابات &quot;Account/Security&quot;. الصورة بتتحفظ وتظهر في الصفحة <strong>وفي الشريط العلوي</strong>. لو اخترت ملف مش صورة، أو دُست حفظ من غير ما تختار حاجة، هتظهر رسالة خطأ واضحة.</dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.3.1 (&quot;المستخدم يستطيع تغيير البيانات التالية من صفحة الملف الشخصي: الصورة الشخصية&quot; + كلمة المرور)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح My Profile.</li><li>حاول تكتب في خانة الاسم.</li><li>دوس &quot;Upload new photo&quot; واختار صورة PNG/JPG صغيرة، ولاحظ المعاينة.</li><li>دوس &quot;Save photo&quot;.</li><li>جرّب ملف مش صورة، وجرّب &quot;Save photo&quot; من غير ما تختار صورة.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الاسم والبريد للقراءة فقط، وفيه تابين &quot;Account&quot; و&quot;Security&quot; (كلمة السر بتتغيّر من التاب التاني). الصورة بتتحفظ وتظهر في الصفحة <strong>وفي الشريط العلوي</strong>. لو اخترت ملف مش صورة، أو دُست حفظ من غير ما تختار حاجة، هتظهر رسالة خطأ واضحة.</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     </details>
@@ -632,7 +726,7 @@
     <article class="item" data-id="week-3-frd-gap-review#5" data-title="&quot;آخر تحديث: تم بواسطة X — التاريخ والوقت&quot;">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">49</span></label>
+          <span class="num">58</span></label>
         <h3>&quot;آخر تحديث: تم بواسطة X — التاريخ والوقت&quot;</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -642,7 +736,7 @@
     <article class="item" data-id="week-3-frd-gap-review#6" data-title="تسمية &quot;رقم الموبايل (حساب واتساب)&quot;">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">50</span></label>
+          <span class="num">59</span></label>
         <h3>تسمية &quot;رقم الموبايل (حساب واتساب)&quot;</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -652,7 +746,7 @@
     <article class="item" data-id="week-3-frd-gap-review#7" data-title="رقم الموبايل مايتكررش داخل نفس الشركة">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">51</span></label>
+          <span class="num">60</span></label>
         <h3>رقم الموبايل مايتكررش داخل نفس الشركة</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -666,7 +760,7 @@
     <article class="item" data-id="week-1-2-auth-users-roles#1" data-title="دخول مستخدم شركة">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">52</span></label>
+          <span class="num">61</span></label>
         <h3>دخول مستخدم شركة</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -676,17 +770,17 @@
     <article class="item" data-id="week-1-2-auth-users-roles#17" data-title="عناصر القائمة الجانبية لمدير النظام">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">53</span></label>
+          <span class="num">62</span></label>
         <h3>عناصر القائمة الجانبية لمدير النظام</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>جداول الصلاحيات لكل قسم</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>سجّل دخول بحسابك (مدير النظام) وبصّ على القائمة الجانبية.</li><li>بدّل اللغة لعربي.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>تشوف Dashboard، وتحت عنوان <strong>Accounts</strong>: Users وDrivers، وتحت عنوان <strong>Fleet &amp; Assets</strong>: Vehicles وAssets، وتحت عنوان <strong>Operations</strong>: Facilities — من غير أي بنود تانية. بالعربي العناوين بتبقى &quot;الحسابات&quot; و&quot;الأسطول والأصول&quot; و&quot;العمليات&quot;.</dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>جداول الصلاحيات لكل قسم</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>سجّل دخول بحسابك (مدير النظام) وبصّ على القائمة الجانبية.</li><li>بدّل اللغة لعربي.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>تشوف Dashboard، وتحت عنوان <strong>Accounts</strong>: Users وDrivers، وتحت عنوان <strong>Fleet &amp; Assets</strong>: Vehicles وAssets، وتحت عنوان <strong>Operations</strong>: Facilities، وتحت عنوان <strong>Clients &amp; Projects</strong>: Client Companies — من غير أي بنود تانية. بالعربي العناوين بتبقى &quot;الحسابات&quot; و&quot;الأسطول والأصول&quot; و&quot;العمليات&quot; و&quot;العملاء والمشروعات&quot;.</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-1-2-auth-users-roles#18" data-title="Breadcrumb + عنوان الصفحة مطابق للـ FRD على كل صفحة">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">54</span></label>
+          <span class="num">63</span></label>
         <h3>Breadcrumb + عنوان الصفحة مطابق للـ FRD على كل صفحة</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -696,7 +790,7 @@
     <article class="item" data-id="week-3-frd-gap-review#1" data-title="التاريخ والوقت الحالي">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">55</span></label>
+          <span class="num">64</span></label>
         <h3>التاريخ والوقت الحالي</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -706,7 +800,7 @@
     <article class="item" data-id="week-3-frd-gap-review#2" data-title="تبديل الوضع الداكن / المضيء">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">56</span></label>
+          <span class="num">65</span></label>
         <h3>تبديل الوضع الداكن / المضيء</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -716,11 +810,21 @@
     <article class="item" data-id="week-3-vehicles-drivers-assets#22" data-title="تبديل اللغة يترجم كل الصفحات">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">57</span></label>
+          <span class="num">66</span></label>
         <h3>تبديل اللغة يترجم كل الصفحات</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
       <dl><div class="row"><dt>مرجع الـFRD</dt><dd>ثنائية اللغة لصفحات الشركة</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>سجّل دخول، ودوس أيقونة تبديل اللغة في الشريط العلوي واختار <strong>العربية</strong>.</li><li>تصفّح صفحات المركبات/السائقين/الأصول/المستخدمين/الملف الشخصي.</li><li>دوس نفس الأيقونة واختار <strong>English</strong> وكرّر نفس الصفحات.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>مفيش أي كلمة إنجليزية ظاهرة في وضع العربي (لا في العناوين، لا في الجداول، لا في رسائل الفورم، ولا في نصوص الـ JS زي &quot;Loading...&quot; أو &quot;Select a vehicle&quot;).</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-frd-gap-review#30" data-title="شاشة التحميل واللوجو والاسم">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">67</span></label>
+        <h3>شاشة التحميل واللوجو والاسم</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>الدور</dt><dd>مدير النظام</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح أي صفحة (أو اضغط Refresh) وراقب أول ثواني التحميل. جرّب كمان تدوس على رابط من القائمة الجانبية.</li><li>بصّ على أعلى القائمة الجانبية، وعلى صفحة تسجيل الدخول، وعلى عنوان تبويب المتصفح وفوتر الصفحة.</li><li>بدّل اللغة لعربي ثم إنجليزي.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>أثناء تحميل أي صفحة (وأول طلبات بياناتها) تظهر <strong>شاشة كاملة</strong> فيها لوجو GCM واسم &quot;GLOBAL CLEAR MISSION&quot; وشريط متحرك، وبتختفي لما الصفحة تجهز؛ وبتظهر تاني بمجرد ما تدوس على رابط لصفحة تانية. اللوجو والاسم ظاهرين في القائمة الجانبية وصفحة الدخول، والاسم في تبويب المتصفح والفوتر . بالعربي الاسم بيبقى &quot;الرسالة الواضحة العالمية&quot;.</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     </details>
@@ -730,7 +834,7 @@
     <article class="item" data-id="week-3-frd-gap-review#22" data-title="ملف أكبر من الحد يترفض فورًا من غير رفع">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">58</span></label>
+          <span class="num">68</span></label>
         <h3>ملف أكبر من الحد يترفض فورًا من غير رفع</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -740,7 +844,7 @@
     <article class="item" data-id="week-3-frd-gap-review#23" data-title="التصدير (خصوصًا PDF) بيوضّح إنه شغّال">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">59</span></label>
+          <span class="num">69</span></label>
         <h3>التصدير (خصوصًا PDF) بيوضّح إنه شغّال</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -750,7 +854,7 @@
     <article class="item" data-id="week-3-frd-gap-review#24" data-title="تصدير PDF بالعربي">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">60</span></label>
+          <span class="num">70</span></label>
         <h3>تصدير PDF بالعربي</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -760,11 +864,21 @@
     <article class="item" data-id="week-3-frd-gap-review#25" data-title="التصدير بيطابق الفلاتر والبحث اللي على الشاشة">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">61</span></label>
+          <span class="num">71</span></label>
         <h3>التصدير بيطابق الفلاتر والبحث اللي على الشاشة</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
       <dl><div class="row"><dt>الخطوات</dt><dd><ul><li>في كل قائمة (Users / Drivers / Vehicles / Vehicle Categories / Assets / Asset Categories) اختار فلتر واحد على الأقل (مثلًا الحالة أو التصنيف)، واكتب حاجة في مربع البحث بحيث الجدول يعرض جزء بس من الصفوف.</li><li>دوس Export واختار Excel.</li><li>دوس Export تاني واختار Pdf.</li><li>امسح الفلاتر والبحث، ودوس Export تاني.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الملف (Excel والـPDF) فيه <strong>نفس الصفوف اللي بتظهر في الجدول بالظبط</strong> (نفس الفلاتر ونفس البحث) — مش القائمة كلها. بعد مسح الفلاتر والبحث الملف بيحتوي كل الصفوف. البحث بيشتغل على نفس الأعمدة اللي بيشتغل عليها في الجدول (مثلًا لوحة المركبة بالشكل المعروض، أو كود المستخدم).</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-frd-gap-review#29" data-title="نفس شاشة &quot;جاري الحفظ&quot; في كل صفحات الإنشاء والتعديل">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">72</span></label>
+        <h3>نفس شاشة &quot;جاري الحفظ&quot; في كل صفحات الإنشاء والتعديل</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>الدور</dt><dd>مدير النظام</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>جرّب الحفظ في كل الفورمات دي: مستخدم (إضافة وتعديل)، سائق، مركبة، أصل، تصنيف مركبات، تصنيف سعة أصول، شركة عميل، وصورة My Profile.</li><li>جرّب كمان زراير تغيير الحالة (تعطيل / تنشيط / صيانة) في صفحات التفاصيل، وحذف تصنيف مركبات.</li><li>في الفورمات اللي فيها صورة أو مستند، اختار ملف كبير شوية.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>في كل الحالات تظهر <strong>نفس الشاشة الغامقة</strong> بدايرة التحميل ورسالة &quot;Working...&quot; أول ما تدوس حفظ (ومعاها شريط رفع بالنسبة المئوية لو فيه ملف)، والصفحة مابتقبلش ضغطة تانية لحد ما الطلب يخلص. لو حصل خطأ (بيانات غلط مثلًا) الشاشة بتختفي وتظهر رسالة الخطأ في مكانها.</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     </details>

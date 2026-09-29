@@ -5,6 +5,9 @@ use App\Http\Controllers\Web\Assets\AssetAccountController;
 use App\Http\Controllers\Web\Assets\AssetAddController;
 use App\Http\Controllers\Web\Assets\AssetCategoryController;
 use App\Http\Controllers\Web\Assets\AssetListController;
+use App\Http\Controllers\Web\Companies\CompanyAccountController;
+use App\Http\Controllers\Web\Companies\CompanyAddController;
+use App\Http\Controllers\Web\Companies\CompanyListController;
 use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\Drivers\DriverAccountController;
 use App\Http\Controllers\Web\Facilities\FacilityAccountController;
@@ -89,6 +92,12 @@ Route::middleware(['auth', 'tenant'])->group(function () {
     Route::get('/app/facility/add', [FacilityAddController::class, 'index'])->name('app-facility-add');
     Route::get('/app/facility/view/{facility}', [FacilityAccountController::class, 'view'])->whereNumber('facility')->name('app-facility-view');
     Route::get('/app/facility/edit/{facility}', [FacilityAccountController::class, 'edit'])->whereNumber('facility')->name('app-facility-edit');
+
+    // Client companies — {company} kept as a raw numeric id (see CompanyController's docblock).
+    Route::get('/app/company/list', [CompanyListController::class, 'index'])->name('app-company-list');
+    Route::get('/app/company/add', [CompanyAddController::class, 'index'])->name('app-company-add');
+    Route::get('/app/company/view/{company}', [CompanyAccountController::class, 'view'])->whereNumber('company')->name('app-company-view');
+    Route::get('/app/company/edit/{company}', [CompanyAccountController::class, 'edit'])->whereNumber('company')->name('app-company-edit');
 
     // Profile (any authenticated tenant user)
     Route::get('/pages/account-settings-account', [AccountSettingsController::class, 'index'])->name('pages-account-settings-account');

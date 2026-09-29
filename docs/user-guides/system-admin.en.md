@@ -22,7 +22,7 @@ The System Admin has full control **within a single company** (Tenant). They can
 ## 3. Profile
 
 - Account menu (top bar) → **My Profile**.
-- **Change your profile photo only.** Name and email are read-only, and there is no "Security" page for changing your password (that is for client/contractor users, Week 4-5).
+- **Change your profile photo and your password** (the "Security" tab — you enter your current password first). Name and email are read-only.
 
 ## 4. User management — `/app/user/list`
 
@@ -46,7 +46,7 @@ The only screen exclusive to the System Admin among tenant roles.
 
 ### View / edit user
 - Separate details and edit pages.
-- **New password (optional):** on the edit page you can set a new password + confirmation for any user or driver — leave it blank to keep the current one. This is the only way to change a GCM staff member's or driver's password.
+- **New password (optional):** on the edit page you can set a new password + confirmation for any user or driver — leave it blank to keep the current one. This is how you set someone else's password (every user can also change their own from the profile page).
 - If the user is a driver, the edit page shows a notice pointing you to the driver-edit page (residence/license/insurance details are edited there).
 - **Empty "Additional Data" does not render** as an empty heading on the details page.
 
@@ -140,7 +140,24 @@ System Admin: view, create, edit, deactivate / reactivate, export. Facilities ar
 - Details show everything, the contract attachment download, and "Supported sub-services" (empty until the Services module exists). A **Facility Status** card deactivates / reactivates the facility (confirm checkbox).
 - Edit: the name and all optional data (the logo and contract attachment can be replaced). The **prefix is locked**. The environmental service and recycling efficiency can be changed **only while nothing uses the facility** — they lock once a sub-service or trip uses it.
 
-## 10. Features available now (Phase 2 — facilities)
+## 10. Client company management — `/app/company/list`
+
+Sidebar: heading **Clients & Projects** → **Client Companies** (List + Add).
+
+### List
+- Server-side table: ID, Company, Company representative (`—` until client accounts exist), Projects and Users (`0` until they exist), Status, Actions. Search by name, short name or ID + a status filter + Excel/PDF export honouring the same filters.
+
+### Create a client company
+- **Required:** name, short name (3 unique English letters — shown in upper case), status (active by default).
+- **The ID is generated automatically = the short name + a running number** (`ALN-0001`, then `GPC-0002`…). That is why **the short name is locked after creation**, and the numbers of the company's projects, contracts and trips (once built) will be made from it.
+- **Optional:** business sector, logo, phone, email, address, map link (`http`/`https` only), contract number + start/end dates + contract copy, commercial registration (number + copy), tax registration (number + copy), additional data. Numbers are digits only; attachments are PDF or images up to 4 MB (logo 2 MB).
+
+### Details and edit
+- Details page: the data + download links for the attachments + statistics (projects, contracts, trips, waste moved — `0` for now).
+- Edit page: **every field** is editable except the short name (locked; the ID is shown above the form). A file input left empty keeps the stored file; a new file replaces it.
+- **Deactivate / reactivate** from the "Company Status" card on the edit page (with a confirmation). There is no delete. Deactivating a company does **not** deactivate anything else.
+
+## 11. Features available now
 
 | Module | Available | Deferred |
 |---|---|---|
@@ -149,4 +166,5 @@ System Admin: view, create, edit, deactivate / reactivate, export. Facilities ar
 | Drivers | Full CRUD + default vehicle + documents + permits | "on a trip" status (Week 7), mobile app |
 | Assets | Full CRUD + categories + status + export | "Add asset to a project" + "in projects" counter (Week 4) |
 | Intermediate facilities | Create / edit / deactivate + prefix + recycling efficiency + contract + export | Sub-service list on the details page and the "in use" lock (with the Services module) |
+| Client companies | Full CRUD + deactivate/reactivate + attachments + export | Representative, projects/users counts and the projects/contracts sections on the details page (Weeks 4–6) |
 | Dashboard | Shell screen | Real stats (Week 8) |

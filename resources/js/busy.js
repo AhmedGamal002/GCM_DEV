@@ -53,7 +53,7 @@ function build() {
 }
 
 export const gcmBusy = {
-  start({ message, hint = '', progress = false }) {
+  start({ message, hint = '', progress = false } = {}) {
     build();
     els.spinner.classList.remove('d-none');
     els.msg.textContent = message || (progress ? (T().uploading || '').replace(':percent', 0) : T().working || '');

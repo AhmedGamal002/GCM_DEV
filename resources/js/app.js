@@ -1,5 +1,6 @@
 import './bootstrap';
 import './busy';
+import './page-loader';
 /*
   Add custom scripts here
 */

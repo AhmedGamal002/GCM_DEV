@@ -38,6 +38,7 @@ class DatabaseSeeder extends Seeder
             AssetCapacityCategorySeeder::class,
             AssetSeeder::class,
             IntermediateFacilitySeeder::class,
+            CompanySeeder::class,
         ]);
 
         User::factory()->create(['name' => 'System Admin', 'email' => 'admin@gcm.test'])

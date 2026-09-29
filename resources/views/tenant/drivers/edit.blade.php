@@ -33,7 +33,7 @@
 
 @section('content')
 
-@include('_partials.breadcrumb', ['pageTitle' => __('Edit Account'), 'breadcrumbs' => [
+@include('_partials.breadcrumb', ['updatedId' => 'de-updated-by', 'pageTitle' => __('Edit Account'), 'breadcrumbs' => [
   ['title' => __('Drivers'), 'url' => route('app-driver-list')],
   ['title' => __('Edit')],
 ]])
@@ -47,8 +47,6 @@
 
   <div class="d-none" id="driver-edit-form-wrapper">
     <form class="card-body" id="driverEditForm">
-
-      <p class="small text-muted mb-4" id="de-updated-by"></p>
 
       <h6>1. {{ __('Account Details') }}</h6>
       <div class="row g-6">

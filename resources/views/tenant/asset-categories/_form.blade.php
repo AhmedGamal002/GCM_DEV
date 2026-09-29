@@ -13,7 +13,7 @@
     @unless($isCreate)
       <div class="alert alert-info" role="alert">
         {{ __('Only the name can be edited. The capacity and applicability are locked after creation.') }}
-        <span class="d-block mt-1 small" id="asset-category-last-updated"></span>
+
       </div>
     @endunless
 

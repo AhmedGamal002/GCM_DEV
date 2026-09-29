@@ -23,18 +23,18 @@
 - **الخطوات:**
   - افتح My Profile.
   - جرّب تعدّل خانة البريد أو الاسم.
-- **المتوقع:** البريد والاسم للعرض فقط (disabled) — الصورة الشخصية هي الوحيدة القابلة للتغيير من الملف الشخصي.
+- **المتوقع:** البريد والاسم للعرض فقط (disabled) — اللي بيتغيّر من الملف الشخصي هو الصورة الشخصية وكلمة السر (تاب Security).
 - **يغطيه آليًا:** `Profile/ProfileUpdateTest`
 - **النتيجة:** ⬜
 
-### 3. مدير النظام ومدخل البيانات مايغيّروش كلمة السر بنفسهم — الإدارة هي اللي بتغيّرها
-- **FRD:** §1.4 ("كلمة المرور قابلة للتعديل من قبل مدير النظام او مدخل البيانات") — المراقب والسائق استثناء (بند 28 في مراجعة الفجوات: بيغيّروها من الملف الشخصي)
+### 3. كل مستخدم يغيّر كلمة سره بنفسه، ومدير النظام/مدخل البيانات يحطوا كلمة سر لغيرهم
+- **FRD:** §1.4 ("كلمة المرور قابلة للتعديل من قبل مدير النظام او مدخل البيانات") + تغيير المراقب والسائق لكلمة سرهم من الملف الشخصي (بند 28 في مراجعة الفجوات). **توسيع بطلب العميل:** مدير النظام ومدخل البيانات كمان يغيّروا كلمة سرهم بنفسهم.
 - **الخطوات:**
-  - (أ) سجّل دخول بـ`dataentry@gcm.test` (وكرّر بـ`admin@gcm.test`) وافتح My Profile — لازم تلاقي مفيش تابات "Account/Security" والاسم للقراءة فقط. جرّب كمان تفتح `/pages/account-settings-security` يدويًا (المفروض يرجّع 403).
+  - (أ) سجّل دخول بـ`dataentry@gcm.test` (وكرّر بـ`admin@gcm.test`) وافتح My Profile — لازم تلاقي تابين "Account" و"Security" والاسم للقراءة فقط. من "Security" اكتب كلمة السر الحالية (`password`) وكلمة جديدة مرتين واحفظ، وبعدين اخرج وادخل بالجديدة.
   - (ب) من `admin@gcm.test` أو `dataentry@gcm.test` افتح Users وعدّل `auditor@gcm.test` — اكتب كلمة سر جديدة مع تأكيدها واحفظ. بعدين سجّل دخول بالمراقب بالكلمة الجديدة.
   - (ج) كرّر نفس خطوة (ب) على سائق من صفحة تعديل السائق.
   - (د) سيب خانة كلمة السر فاضية وعدّل الاسم بس واحفظ — كلمة السر القديمة المفروض تفضل شغالة.
-- **المتوقع:** (أ) صورة فقط. (ب)+(ج) الكلمة القديمة ترفض والجديدة تدخل. (د) مفيش تغيير في كلمة السر.
+- **المتوقع:** (أ) تاب "Security" ظاهر وتغيير كلمة السر بينجح ("Password updated") ولو كتبت الكلمة الحالية غلط بيرفض. (ب)+(ج) الكلمة القديمة ترفض والجديدة تدخل. (د) مفيش تغيير في كلمة السر.
 - **يغطيه آليًا:** `Profile/PasswordChangeTest`, `Profile/ProfileUpdateTest`, `Users/UserPolicyTest`, `Drivers/DriverUpdateTest`
 - **النتيجة:** ⬜
 
@@ -184,9 +184,9 @@
 - **FRD:** جداول الصلاحيات لكل قسم
 - **الخطوات:** سجّل دخول بالأربعة بالترتيب وسجّل اللي بيظهر في القائمة الجانبية.
 - **المتوقع:**
-  - `system_admin`: Dashboard + (عنوان **Accounts**: Users, Drivers) + (عنوان **Fleet & Assets**: Vehicles, Assets) + (عنوان **Operations**: Facilities) **فقط** (سقالة القالب الديمو — Layouts/Email/Kanban/Charts... — مخفية عن الكل عمدًا لحد ما نعرض للعميل اللي اتبنى فعلًا).
-  - `data_entry`: نفس الأدمن (Accounts + Fleet & Assets + Operations) — من غير بند "Categories" تحت Vehicles.
-  - `auditor`: Dashboard + عنوان **Fleet & Assets** (Vehicles, Assets) وعنوان **Operations** (Facilities) فقط — مفيش عنوان "Accounts".
+  - `system_admin`: Dashboard + (عنوان **Accounts**: Users, Drivers) + (عنوان **Fleet & Assets**: Vehicles, Assets) + (عنوان **Operations**: Facilities) + (عنوان **Clients & Projects**: Client Companies) **فقط** (سقالة القالب الديمو — Layouts/Email/Kanban/Charts... — مخفية عن الكل عمدًا لحد ما نعرض للعميل اللي اتبنى فعلًا).
+  - `data_entry`: نفس الأدمن (Accounts + Fleet & Assets + Operations + Clients & Projects) — من غير بند "Categories" تحت Vehicles.
+  - `auditor`: نفس عناوين الأدمن الأربعة (Accounts + Fleet & Assets + Operations + Clients & Projects) — عرض/تصدير بس، من غير بند "Add" تحت Client Companies ومن غير "Categories" تحت Vehicles.
   - `driver`: Dashboard فقط.
 - **يغطيه آليًا:** `MenuVisibilityTest`
 - **النتيجة:** ⬜

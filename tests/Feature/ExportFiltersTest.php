@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Domain\Drivers\Actions\CreateDriverAction;
 use App\Models\Asset;
 use App\Models\AssetCapacityCategory;
+use App\Models\Company;
 use App\Models\IntermediateFacility;
 use App\Models\Tenant;
 use App\Models\User;
@@ -114,6 +115,18 @@ class ExportFiltersTest extends TestCase
         $this->assertCount(2, $this->exported('/api/v1/assets/export?format=xlsx', 'assets.xlsx'));
         $this->assertSame(['Tank Two'], $this->exported('/api/v1/assets/export?format=xlsx&asset_type=tank', 'assets.xlsx')->pluck('name')->all());
         $this->assertSame(['Box One'], $this->exported('/api/v1/assets/export?format=xlsx&search=Box', 'assets.xlsx')->pluck('name')->all());
+    }
+
+    public function test_client_company_export_honours_search_and_filter(): void
+    {
+        Company::factory()->create(['name' => 'Alpha Build', 'prefix' => 'ALP']);
+        Company::factory()->deactivated()->create(['name' => 'Beta Gulf', 'prefix' => 'BET']);
+
+        $this->assertCount(2, $this->exported('/api/v1/companies/export?format=xlsx', 'client-companies.xlsx'));
+        $this->assertSame(['Beta Gulf'], $this->exported('/api/v1/companies/export?format=xlsx&operational_status=deactivated', 'client-companies.xlsx')->pluck('name')->all());
+        $this->assertSame(['Alpha Build'], $this->exported('/api/v1/companies/export?format=xlsx&search=Alpha', 'client-companies.xlsx')->pluck('name')->all());
+        // the short name is searchable too
+        $this->assertSame(['Beta Gulf'], $this->exported('/api/v1/companies/export?format=xlsx&search=BET', 'client-companies.xlsx')->pluck('name')->all());
     }
 
     public function test_asset_category_export_honours_search_and_filter(): void

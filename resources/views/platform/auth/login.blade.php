@@ -42,8 +42,7 @@ $customizerHidden = 'customizer-hide';
           <!-- Logo -->
           <div class="app-brand justify-content-center mb-6">
             <a href="{{ route('platform.login') }}" class="app-brand-link">
-              <span class="app-brand-logo demo">@include('_partials.macros',['height'=>20,'withbg' => "fill: #fff;"])</span>
-              <span class="app-brand-text demo text-heading fw-bold">{{ config('variables.templateName') }}</span>
+              @include('_partials.brand', ['textClass' => 'text-heading'])
             </a>
           </div>
           <!-- /Logo -->

@@ -39,7 +39,7 @@
 
 @section('content')
 
-@include('_partials.breadcrumb', ['pageTitle' => __('Edit Vehicle Details'), 'breadcrumbs' => [
+@include('_partials.breadcrumb', ['updatedId' => 've-updated-by', 'pageTitle' => __('Edit Vehicle Details'), 'breadcrumbs' => [
   ['title' => __('Vehicles'), 'url' => route('app-vehicle-list')],
   ['title' => __('Edit')],
 ]])

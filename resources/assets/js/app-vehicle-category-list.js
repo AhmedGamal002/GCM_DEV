@@ -41,6 +41,7 @@ $(function () {
   document.getElementById('delete-category-confirm').addEventListener('click', function () {
     const btn = this;
     btn.disabled = true;
+    window.gcmBusy.start();
     window.axios
       .delete('/api/v1/vehicle-categories/' + pendingDeleteId)
       .then(function () {
@@ -57,6 +58,7 @@ $(function () {
         errorBox.classList.remove('d-none');
       })
       .finally(function () {
+        window.gcmBusy.stop();
         btn.disabled = false;
       });
   });

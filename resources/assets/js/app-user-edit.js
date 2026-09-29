@@ -97,13 +97,26 @@ document.addEventListener('DOMContentLoaded', function () {
       data.append('photo', photo);
     }
 
+    // Server limit: 2 MB per photo — fail now, not after the upload.
+    const tooLarge = window.gcmFileGuard(form, { default: 2048 });
+    if (tooLarge) {
+      showError(tooLarge);
+      return;
+    }
+
+    window.gcmBusy.start({ progress: true });
+
     window.axios
-      .post(`/api/v1/users/${id}`, data, { headers: { 'Content-Type': 'multipart/form-data' } })
+      .post(`/api/v1/users/${id}`, data, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+        onUploadProgress: window.gcmBusy.onUploadProgress
+      })
       .then(() => window.axios.patch(`/api/v1/users/${id}/status`, { status }))
       .then(function () {
         window.location.href = `${t.view_url_base}/${id}?saved=1`;
       })
       .catch(function (error) {
+        window.gcmBusy.stop();
         const message =
           error.response && error.response.data && error.response.data.errors
             ? Object.values(error.response.data.errors).flat().join(' ')

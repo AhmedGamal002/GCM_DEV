@@ -127,3 +127,40 @@
   text-align: center;
   margin-top: 1rem;
 }
+
+/* "Last updated by X — date" line under a page title (_partials/breadcrumb): empty until the record loads, then it sits just below the title. */
+.gcm-updated-by:empty {
+  display: none;
+}
+
+/* Brand (logo + product name) in the sidebar / navbar / sign-in card — _partials/brand.blade.php.
+   The logo has dark-blue lettering, so it sits on a white disc to stay readable on the dark sidebar. */
+.app-brand-logo.gcm-brand-logo {
+  width: 2.5rem;
+  height: 2.5rem;
+  min-width: 2.5rem;
+  border-radius: 50%;
+  background: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.18);
+}
+.app-brand-logo.gcm-brand-logo img {
+  width: 2.1rem;
+  height: 2.1rem;
+  object-fit: contain;
+}
+.app-brand-text.gcm-brand-text {
+  margin-inline-start: 0.65rem;
+  margin-left: 0;
+  font-size: 0.95rem;
+  line-height: 1.15;
+  letter-spacing: 0.03em;
+  white-space: normal;
+  max-width: 9.5rem;
+  text-transform: none;
+}
+.layout-menu-collapsed:not(.layout-menu-hover) .layout-menu .app-brand-text.gcm-brand-text {
+  display: none;
+}

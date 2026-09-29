@@ -168,8 +168,9 @@ class MenuVisibilityTest extends TestCase
     }
 
     /**
-     * The sidebar groups the built modules under three section titles:
-     * "Accounts" (Users, Drivers), "Fleet & Assets" (Vehicles, Assets) and "Operations" (Facilities).
+     * The sidebar groups the built modules under four section titles:
+     * "Accounts" (Users, Drivers), "Fleet & Assets" (Vehicles, Assets),
+     * "Operations" (Facilities) and "Clients & Projects" (Client Companies).
      * A title only shows when something under it survives for the role.
      */
     private function headers(User $user): array
@@ -185,8 +186,8 @@ class MenuVisibilityTest extends TestCase
         $dataEntry = User::factory()->create();
         $dataEntry->assignRole('data_entry');
 
-        $this->assertSame(['Accounts', 'Fleet & Assets', 'Operations'], $this->headers($this->tenantAdmin));
-        $this->assertSame(['Accounts', 'Fleet & Assets', 'Operations'], $this->headers($dataEntry));
+        $this->assertSame(['Accounts', 'Fleet & Assets', 'Operations', 'Clients & Projects'], $this->headers($this->tenantAdmin));
+        $this->assertSame(['Accounts', 'Fleet & Assets', 'Operations', 'Clients & Projects'], $this->headers($dataEntry));
     }
 
     /** FRD V01.14: auditor now sees Users/Drivers too, so it gets the "Accounts" header as well — same set as data_entry/system_admin. */
@@ -195,7 +196,7 @@ class MenuVisibilityTest extends TestCase
         $auditor = User::factory()->create();
         $auditor->assignRole('auditor');
 
-        $this->assertSame(['Accounts', 'Fleet & Assets', 'Operations'], $this->headers($auditor));
+        $this->assertSame(['Accounts', 'Fleet & Assets', 'Operations', 'Clients & Projects'], $this->headers($auditor));
     }
 
     /** FRD V01.14 §1.8: facilities are (view / export) for the auditor, full for system_admin / data_entry, hidden from drivers. */
@@ -225,6 +226,33 @@ class MenuVisibilityTest extends TestCase
             ->assertOk()
             ->assertDontSee('>Facilities<', false)
             ->assertDontSee('app/facility/list', false);
+    }
+
+    /** Client Companies (FRD V01.14 §1.11): admin/data_entry manage it, auditor views it, driver never sees it. */
+    public function test_client_companies_menu_visibility_per_role(): void
+    {
+        $dataEntry = User::factory()->create();
+        $dataEntry->assignRole('data_entry');
+        $auditor = User::factory()->create();
+        $auditor->assignRole('auditor');
+        $driver = User::factory()->create();
+        $driver->assignRole('driver');
+
+        foreach ([$this->tenantAdmin, $dataEntry] as $manager) {
+            $this->actingAs($manager, 'web')->get('/dashboard')->assertOk()
+                ->assertSee('>Client Companies<', false)
+                ->assertSee('app/company/list', false)
+                ->assertSee('app/company/add', false);
+        }
+
+        // the auditor sees the list but not the "Add" link
+        $this->actingAs($auditor, 'web')->get('/dashboard')->assertOk()
+            ->assertSee('app/company/list', false)
+            ->assertDontSee('app/company/add', false);
+
+        $this->actingAs($driver, 'web')->get('/dashboard')->assertOk()
+            ->assertDontSee('>Client Companies<', false)
+            ->assertDontSee('app/company/list', false);
     }
 
     public function test_a_driver_sees_no_section_titles_at_all(): void

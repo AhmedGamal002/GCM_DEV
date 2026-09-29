@@ -33,16 +33,30 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
 
+    // Server limit: 2 MB — fail now, not after the upload.
+    const tooLarge = window.gcmFileGuard(form, { default: 2048 });
+    if (tooLarge) {
+      errorBox.textContent = tooLarge;
+      errorBox.classList.remove('d-none');
+      return;
+    }
+
     const data = new FormData();
     data.append('_method', 'PATCH');
     data.append('photo', photo);
 
+    window.gcmBusy.start({ progress: true });
+
     window.axios
-      .post('/api/v1/me', data, { headers: { 'Content-Type': 'multipart/form-data' } })
+      .post('/api/v1/me', data, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+        onUploadProgress: window.gcmBusy.onUploadProgress
+      })
       .then(function () {
         window.location.reload();
       })
       .catch(function (error) {
+        window.gcmBusy.stop();
         const message =
           error.response && error.response.data && error.response.data.errors
             ? Object.values(error.response.data.errors).flat().join(' ')

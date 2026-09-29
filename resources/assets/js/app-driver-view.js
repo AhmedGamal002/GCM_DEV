@@ -148,6 +148,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const status = statusForm.querySelector('input[name="new_status"]:checked').value;
 
+    window.gcmBusy.start();
+
     window.axios
       .get(`/api/v1/drivers/${id}`)
       .then((response) => window.axios.patch(`/api/v1/users/${response.data.data.user_id}/status`, { status }))
@@ -155,6 +157,7 @@ document.addEventListener('DOMContentLoaded', function () {
         window.location.href = `${window.location.pathname}?status_updated=1`;
       })
       .catch(function (error) {
+        window.gcmBusy.stop();
         errorBox.textContent =
           (error.response && error.response.data && error.response.data.message) || t.generic_error;
         errorBox.classList.remove('d-none');
