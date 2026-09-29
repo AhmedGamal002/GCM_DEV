@@ -40,7 +40,7 @@
 
       <div class="col-md-6">
         <label class="form-label" for="asset_capacity_category_id">{{ __('Asset capacity') }}</label>
-        <select id="asset_capacity_category_id" name="asset_capacity_category_id" class="form-select" required>
+        <select id="asset_capacity_category_id" name="asset_capacity_category_id" class="form-select select2" required>
           <option value="">{{ __('Select...') }}</option>
         </select>
         <div class="form-text">{{ __('Only capacities matching the selected type are shown.') }}</div>

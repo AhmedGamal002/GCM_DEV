@@ -73,21 +73,25 @@ class PasswordChangeTest extends TestCase
         $this->assertTrue(Hash::check('brand-new-password', $user->fresh()->password));
     }
 
+    /**
+     * The password card and the account page are ONE page now (used to be a
+     * separate "Security" tab/route) — the old URL just redirects there.
+     */
     #[DataProvider('everyRoleProvider')]
-    public function test_the_security_page_is_available_to_every_role(string $role): void
+    public function test_the_old_security_url_redirects_to_the_profile_page(string $role): void
     {
         $this->actingAs($this->userWithRole($role), 'web')
             ->get('/pages/account-settings-security')
-            ->assertOk();
+            ->assertRedirect('/pages/account-settings-account');
     }
 
     #[DataProvider('everyRoleProvider')]
-    public function test_the_profile_page_shows_the_security_tab_to_every_role(string $role): void
+    public function test_the_profile_page_shows_the_password_card_to_every_role(string $role): void
     {
         $this->actingAs($this->userWithRole($role), 'web')
             ->get('/pages/account-settings-account')
             ->assertOk()
-            ->assertSee('account-settings-security', false);
+            ->assertSee('id="formPasswordChange"', false);
     }
 
     public function test_changing_your_own_password_does_not_touch_anyone_elses(): void

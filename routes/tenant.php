@@ -16,7 +16,6 @@ use App\Http\Controllers\Web\Facilities\FacilityListController;
 use App\Http\Controllers\Web\NewPasswordController;
 use App\Http\Controllers\Web\PasswordResetLinkController;
 use App\Http\Controllers\Web\Profile\AccountSettingsController;
-use App\Http\Controllers\Web\Profile\SecuritySettingsController;
 use App\Http\Controllers\Web\Users\UserAccountController;
 use App\Http\Controllers\Web\Users\UserAddController;
 use App\Http\Controllers\Web\Users\UserListController;
@@ -100,7 +99,9 @@ Route::middleware(['auth', 'tenant'])->group(function () {
     Route::get('/app/company/view/{company}', [CompanyAccountController::class, 'view'])->whereNumber('company')->name('app-company-view');
     Route::get('/app/company/edit/{company}', [CompanyAccountController::class, 'edit'])->whereNumber('company')->name('app-company-edit');
 
-    // Profile (any authenticated tenant user)
+    // Profile (any authenticated tenant user) — one page, two cards
+    // (photo + password change). Used to be two tabs/pages; merged per the
+    // client's request. The old security URL just lands on the same page.
     Route::get('/pages/account-settings-account', [AccountSettingsController::class, 'index'])->name('pages-account-settings-account');
-    Route::get('/pages/account-settings-security', [SecuritySettingsController::class, 'index'])->name('pages-account-settings-security');
+    Route::redirect('/pages/account-settings-security', '/pages/account-settings-account')->name('pages-account-settings-security');
 });
