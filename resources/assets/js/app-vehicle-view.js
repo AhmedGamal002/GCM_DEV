@@ -112,6 +112,30 @@ document.addEventListener('DOMContentLoaded', function () {
     const documents = allDocs.filter((d) => d.type !== 'entry_permit');
     const permits = allDocs.filter((d) => d.type === 'entry_permit');
 
+    // Same DataTables look as the list pages (search + pagination) for both
+    // tables — data is already loaded with the vehicle, so no server
+    // round-trip, just the shared visual/behaviour shell.
+    const dtOptions = (emptyMessage) => ({
+      responsive: true,
+      searching: true,
+      lengthChange: false,
+      pageLength: 10,
+      language: {
+        search: '',
+        searchPlaceholder: t.search || 'Search',
+        emptyTable: emptyMessage,
+        zeroRecords: emptyMessage,
+        info: t.info || 'Showing _START_ to _END_ of _TOTAL_ entries',
+        infoEmpty: t.info_empty || 'Showing 0 to 0 of 0 entries',
+        paginate: {
+          next: '<i class="ti ti-chevron-right ti-sm"></i>',
+          previous: '<i class="ti ti-chevron-left ti-sm"></i>'
+        }
+      },
+      dom: '<"row"<"col-12"f>>t<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
+      columnDefs: [{ targets: -1, orderable: false }]
+    });
+
     if (documents.length) {
       document.getElementById('vv-docs-body').innerHTML = documents
         .map(
@@ -123,25 +147,22 @@ document.addEventListener('DOMContentLoaded', function () {
             '<td>' + attachmentCell(d) + '</td></tr>'
         )
         .join('');
+      $('#vv-docs-table').DataTable(dtOptions(t.no_documents || 'No documents recorded for this vehicle.'));
       document.getElementById('vehicle-docs-card').classList.remove('d-none');
     }
 
+    document.getElementById('vv-permits-body').innerHTML = permits
+      .map(
+        (d) =>
+          '<tr>' +
+          '<td>' + esc(d.area_name) + '</td>' +
+          '<td>' + esc(d.document_number) + '</td>' +
+          '<td>' + esc(d.valid_to) + '</td>' +
+          '<td>' + attachmentCell(d) + '</td></tr>'
+      )
+      .join('');
+    $('#vv-permits-table').DataTable(dtOptions(t.no_entry_permits_v || 'No entry permits recorded for this vehicle.'));
     document.getElementById('vehicle-permits-card').classList.remove('d-none');
-    if (permits.length) {
-      document.getElementById('vv-permits-body').innerHTML = permits
-        .map(
-          (d) =>
-            '<tr>' +
-            '<td>' + esc(d.area_name) + '</td>' +
-            '<td>' + esc(d.document_number) + '</td>' +
-            '<td>' + esc(d.valid_to) + '</td>' +
-            '<td>' + attachmentCell(d) + '</td></tr>'
-        )
-        .join('');
-      document.getElementById('vv-permits-table').classList.remove('d-none');
-    } else {
-      document.getElementById('vv-permits-empty').classList.remove('d-none');
-    }
 
     document.querySelector(`#vehicleStatusForm input[name="new_status"][value="${v.operational_status}"]`).checked = true;
 

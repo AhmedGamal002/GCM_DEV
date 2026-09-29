@@ -104,20 +104,41 @@ document.addEventListener('DOMContentLoaded', function () {
     setDocLink('dv-insurance-download', d.insurance, 'insurance');
 
     const permitsBody = document.getElementById('dv-entry-permits-body');
-    if (d.entry_permits && d.entry_permits.length) {
-      permitsBody.innerHTML = d.entry_permits
-        .map(function (p) {
-          const attachment = p.has_attachment
-            ? '<a href="/api/v1/driver-entry-permits/' + p.id + '/attachment" target="_blank">' + (t.download || 'Download') + '</a>'
-            : t.no_attachment || 'No attachment';
-          return (
-            '<tr><td>' + escapeHtml(p.area_name) + '</td><td>' + escapeHtml(p.permit_number) + '</td><td>' + escapeHtml(p.valid_to) + '</td><td>' + attachment + '</td></tr>'
-          );
-        })
-        .join('');
-    } else {
-      permitsBody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">—</td></tr>';
-    }
+    permitsBody.innerHTML = (d.entry_permits || [])
+      .map(function (p) {
+        const attachment = p.has_attachment
+          ? '<a href="/api/v1/driver-entry-permits/' + p.id + '/attachment" target="_blank">' + (t.download || 'Download') + '</a>'
+          : t.no_attachment || 'No attachment';
+        return (
+          '<tr><td>' + escapeHtml(p.area_name) + '</td><td>' + escapeHtml(p.permit_number) + '</td><td>' + escapeHtml(p.valid_to) + '</td><td>' + attachment + '</td></tr>'
+        );
+      })
+      .join('');
+
+    // Same DataTables look as the list pages (search + pagination), on
+    // data that's already loaded — no server round-trip for a handful of
+    // permit rows. Initialised once the rows are in the DOM.
+    $('#dv-entry-permits-table').DataTable({
+      responsive: true,
+      searching: true,
+      lengthChange: false,
+      pageLength: 10,
+      language: {
+        search: '',
+        searchPlaceholder: t.search || 'Search',
+        emptyTable: t.no_entry_permits || 'No entry permits recorded for this driver.',
+        zeroRecords: t.no_entry_permits || 'No entry permits recorded for this driver.',
+        info: t.info || 'Showing _START_ to _END_ of _TOTAL_ entries',
+        infoEmpty: t.info_empty || 'Showing 0 to 0 of 0 entries',
+        paginate: {
+          next: '<i class="ti ti-chevron-right ti-sm"></i>',
+          previous: '<i class="ti ti-chevron-left ti-sm"></i>'
+        }
+      },
+      dom: '<"row"<"col-12"f>>t<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
+      columnDefs: [{ targets: -1, orderable: false }]
+    });
+    document.getElementById('driver-permits-card').classList.remove('d-none');
 
     document.querySelector(`#driverStatusForm input[name="new_status"][value="${d.status}"]`).checked = true;
 

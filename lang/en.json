@@ -531,5 +531,13 @@
   "Clients & Projects": "Clients & Projects",
   "GLOBAL CLEAR MISSION": "GLOBAL CLEAR MISSION",
   "Welcome to :name": "Welcome to :name",
-  "Category Details": "Category Details"
+  "Category Details": "Category Details",
+  "Change Password": "Change Password",
+  "Current Password": "Current Password",
+  "Confirm New Password": "Confirm New Password",
+  "Save changes": "Save changes",
+  "Reset": "Reset",
+  "Password updated.": "Password updated.",
+  "No entry permits recorded for this driver.": "No entry permits recorded for this driver.",
+  "No documents recorded for this vehicle.": "No documents recorded for this vehicle."
 }

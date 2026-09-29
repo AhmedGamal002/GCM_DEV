@@ -531,5 +531,13 @@
   "Clients & Projects": "العملاء والمشروعات",
   "GLOBAL CLEAR MISSION": "الرسالة الواضحة العالمية",
   "Welcome to :name": "أهلًا بيك في :name",
-  "Category Details": "تفاصيل التصنيف"
+  "Category Details": "تفاصيل التصنيف",
+  "Change Password": "تغيير كلمة المرور",
+  "Current Password": "كلمة المرور الحالية",
+  "Confirm New Password": "تأكيد كلمة المرور الجديدة",
+  "Save changes": "حفظ التغييرات",
+  "Reset": "إعادة تعيين",
+  "Password updated.": "تم تحديث كلمة المرور.",
+  "No entry permits recorded for this driver.": "مفيش تصاريح دخول مسجّلة لهذا السائق.",
+  "No documents recorded for this vehicle.": "مفيش مستندات مسجّلة لهذه المركبة."
 }

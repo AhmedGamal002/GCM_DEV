@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const addPermitBtn = document.getElementById('add-entry-permit');
   const categoryCheckboxes = document.getElementById('vehicle-category-checkboxes');
   const defaultVehicleSelect = document.getElementById('default_vehicle_id');
+  window.initGcmSelects(form);
 
   const editorEl = document.getElementById('additional-data-editor');
   const quill = new Quill(editorEl, { theme: 'snow', placeholder: '' });
@@ -24,11 +25,13 @@ document.addEventListener('DOMContentLoaded', function () {
     if (checked.length === 0) {
       defaultVehicleSelect.innerHTML = '<option value="">' + (t.select_types_first || 'Select vehicle type(s) first') + '</option>';
       defaultVehicleSelect.disabled = true;
+      window.refreshGcmSelect(defaultVehicleSelect);
       return;
     }
 
     defaultVehicleSelect.disabled = true;
     defaultVehicleSelect.innerHTML = '<option value="">' + (t.loading || 'Loading...') + '</option>';
+    window.refreshGcmSelect(defaultVehicleSelect);
 
     Promise.all(
       checked.map((cb) => window.axios.get('/api/v1/vehicles', {
@@ -54,9 +57,11 @@ document.addEventListener('DOMContentLoaded', function () {
           defaultVehicleSelect.value = previousValue;
         }
         defaultVehicleSelect.disabled = false;
+        window.refreshGcmSelect(defaultVehicleSelect);
       })
       .catch(function () {
         defaultVehicleSelect.innerHTML = '<option value="">' + (t.generic_error || 'Something went wrong. Please try again.') + '</option>';
+        window.refreshGcmSelect(defaultVehicleSelect);
       });
   }
 

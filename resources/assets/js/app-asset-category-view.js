@@ -48,45 +48,67 @@ document.addEventListener('DOMContentLoaded', function () {
     errorBox.classList.remove('d-none');
   }
 
-  function renderAssets(assets) {
-    const loadingEl = document.getElementById('acv-assets-loading');
-    const wrapper = document.getElementById('acv-assets-table-wrapper');
-    const empty = document.getElementById('acv-assets-empty');
-    const rows = document.getElementById('acv-assets-rows');
-
-    loadingEl.classList.add('d-none');
-
-    if (!assets.length) {
-      empty.classList.remove('d-none');
-      return;
-    }
-
-    rows.innerHTML = assets
-      .map((a) => {
-        const s = statusObj[a.operational_status] || { title: a.operational_status, class: 'bg-label-secondary' };
-        const viewUrl = (t.asset_view_url_base || '/app/asset/view') + '/' + a.id;
-        return (
-          '<tr>' +
-          '<td><span class="fw-medium">' + escapeHtml(a.name) + '</span></td>' +
-          '<td>' + escapeHtml(typeLabels[a.asset_type] || a.asset_type) + '</td>' +
-          '<td>' + (a.affiliation === 'gcm' ? escapeHtml(t.gcm || 'GCM') : escapeHtml(t.contractor || a.affiliation)) + '</td>' +
-          '<td><span class="badge ' + s.class + '">' + escapeHtml(s.title) + '</span></td>' +
-          '<td class="text-end">' +
-          '<a href="' + viewUrl + '" class="btn btn-icon btn-text-secondary waves-effect waves-light rounded-pill" title="' +
-          (t.view || 'View') + '"><i class="ti ti-eye ti-md"></i></a>' +
-          '</td>' +
-          '</tr>'
-        );
-      })
-      .join('');
-    wrapper.classList.remove('d-none');
-  }
-
-  function loadAssets() {
-    window.axios
-      .get('/api/v1/assets', { params: { asset_capacity_category_id: id, per_page: 100, sort_by: 'name', sort_dir: 'asc' } })
-      .then((response) => renderAssets(response.data.data))
-      .catch(() => renderAssets([]));
+  // Real (server-side, searchable, paginated) DataTable — same shell as
+  // the Assets list page, filtered to just this category's assets so the
+  // count here is never capped like a plain single fetch would be.
+  function initAssetsTable() {
+    $('.datatables-category-assets').DataTable({
+      processing: true,
+      serverSide: true,
+      searchDelay: 500,
+      ajax: window.gcmServerSideAjax('/api/v1/assets', () => ({ asset_capacity_category_id: id }), t.no_permission),
+      columns: [{ data: 'name' }, { data: 'asset_type' }, { data: 'affiliation' }, { data: 'operational_status' }, { data: 'id' }],
+      columnDefs: [
+        {
+          targets: 0,
+          render: (data, type, full) => '<span class="fw-medium">' + escapeHtml(full.name) + '</span>'
+        },
+        {
+          targets: 1,
+          render: (data, type, full) => (type === 'display' ? escapeHtml(typeLabels[full.asset_type] || full.asset_type) : full.asset_type)
+        },
+        {
+          targets: 2,
+          orderable: false,
+          render: (data, type, full) => (full.affiliation === 'gcm' ? escapeHtml(t.gcm || 'GCM') : escapeHtml(t.contractor || full.affiliation))
+        },
+        {
+          targets: 3,
+          render: function (data, type, full) {
+            if (type !== 'display') return full.operational_status;
+            const s = statusObj[full.operational_status] || { title: full.operational_status, class: 'bg-label-secondary' };
+            return '<span class="badge ' + s.class + '">' + escapeHtml(s.title) + '</span>';
+          }
+        },
+        {
+          targets: -1,
+          orderable: false,
+          searchable: false,
+          className: 'text-end',
+          render: function (data, type, full) {
+            const viewUrl = (t.asset_view_url_base || '/app/asset/view') + '/' + full.id;
+            return (
+              '<a href="' + viewUrl + '" class="btn btn-icon btn-text-secondary waves-effect waves-light rounded-pill" title="' +
+              (t.view || 'View') + '"><i class="ti ti-eye ti-md"></i></a>'
+            );
+          }
+        }
+      ],
+      order: [[0, 'asc']],
+      language: {
+        search: '',
+        searchPlaceholder: t.search_asset || 'Search Asset',
+        emptyTable: t.no_assets_found || 'No assets found.',
+        info: t.info || 'Showing _START_ to _END_ of _TOTAL_ entries',
+        infoEmpty: t.info_empty || 'Showing 0 to 0 of 0 entries',
+        paginate: {
+          next: '<i class="ti ti-chevron-right ti-sm"></i>',
+          previous: '<i class="ti ti-chevron-left ti-sm"></i>'
+        }
+      },
+      dom: '<"row"<"col-12"f>>t<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
+      responsive: true
+    });
   }
 
   function render(c) {
@@ -124,5 +146,5 @@ document.addEventListener('DOMContentLoaded', function () {
     .then((response) => render(response.data.data))
     .catch((error) => showError(error.response && error.response.data && error.response.data.message));
 
-  loadAssets();
+  initAssetsTable();
 });

@@ -173,6 +173,7 @@ export function initVehicleForm(opts) {
 
   const refsReady = window.axios.get('/api/v1/vehicle-categories').then((cats) => {
     cats.data.data.forEach((c) => catSelect.add(new Option(c.name, c.id)));
+    window.refreshGcmSelect(catSelect);
   });
 
   // ------------------------------------------------------- embedded toggle
@@ -203,6 +204,7 @@ export function initVehicleForm(opts) {
     if (!has || !type || !vehicleCategoryId) {
       capHint.textContent = t.pick_category_and_type || 'Choose the vehicle category and container type first.';
       capHint.classList.remove('d-none');
+      window.refreshGcmSelect(capSelect);
       return;
     }
 
@@ -228,6 +230,11 @@ export function initVehicleForm(opts) {
     } catch (e) {
       capHint.classList.add('d-none');
     }
+
+    // The <option>s were just rebuilt (or reset to the placeholder above) —
+    // Select2 snapshots them at init time, so it needs a fresh wiring, not
+    // just a refresh (see gcm-select2.js).
+    window.refreshGcmSelect(capSelect);
   }
 
   function toggleEmbedded() {
@@ -353,6 +360,9 @@ export function initVehicleForm(opts) {
     form.querySelector('#plate_letters').value = v.plate_letters;
     form.querySelector('#plate_numbers').value = v.plate_numbers;
     catSelect.value = v.category.id;
+    // Select2 is already wired (refsReady did it) — a plain .value= doesn't
+    // refresh its display, only a 'change' event does.
+    $(catSelect).trigger('change');
 
     form.querySelector(`input[name="has_embedded_container"][value="${v.has_embedded_container ? '1' : '0'}"]`).checked = true;
     if (v.embedded_container_type) {

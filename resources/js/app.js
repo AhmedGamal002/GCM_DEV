@@ -1,6 +1,7 @@
 import './bootstrap';
 import './busy';
 import './page-loader';
+import './gcm-select2';
 /*
   Add custom scripts here
 */
