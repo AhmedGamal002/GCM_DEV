@@ -24,6 +24,7 @@
     container: @json(__('Containers')),
     tank: @json(__('Tanks')),
     both: @json(__('All')),
+    view: @json(__('View')),
     edit: @json(__('Edit')),
     actions: @json(__('Actions')),
     add_category: @json(__('Add category')),
@@ -35,6 +36,7 @@
     info_empty: @json(__('Showing 0 to 0 of 0 entries')),
     created: @json(__('Category created successfully.')),
     add_category_url: @json(route('app-asset-category-add')),
+    view_url_base: @json(url('/app/asset-category/view')),
     edit_url_base: @json(url('/app/asset-category/edit'))
   };
 </script>

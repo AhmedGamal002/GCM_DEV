@@ -50,6 +50,7 @@ Dashboard, then an **Accounts** section (Users · Drivers) and a **Fleet & Asset
 - **Create** a new category.
 - **Edit:** name only (capacity and kind locked).
 - No delete, no deactivate.
+- The list's eye icon opens a **details page** (client add-on): the category's data plus a table of the assets carrying it.
 
 ## 6. What you cannot do (returns 403 or 422)
 

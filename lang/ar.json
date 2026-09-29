@@ -436,5 +436,6 @@
   "A vehicle on maintenance or deactivated cannot be selected for a trip.": "المركبة في الصيانة أو المعطلة لا يمكن اختيارها ضمن رحلة.",
   "An asset on maintenance or deactivated cannot be selected for a trip.": "الأصل في الصيانة أو المعطّل لا يمكن اختياره لرحلة.",
   "GLOBAL CLEAR MISSION": "الرسالة الواضحة العالمية",
-  "Welcome to :name": "أهلًا بيك في :name"
+  "Welcome to :name": "أهلًا بيك في :name",
+  "Category Details": "تفاصيل التصنيف"
 }

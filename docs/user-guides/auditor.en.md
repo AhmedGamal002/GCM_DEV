@@ -38,7 +38,7 @@ Dashboard, then an **Accounts** section (Users · Drivers) and a **Fleet & Asset
 
 - **View** the list + stat cards (containers and tanks) + filters + **export**.
 - **View details** of any asset.
-- **Asset capacity categories** (`/app/asset-category/list`): view and export only — no create, no edit.
+- **Asset capacity categories** (`/app/asset-category/list`): view and export only — no create, no edit. The eye icon opens a **details page** (client add-on) with a table of the assets carrying that capacity.
 - **Not allowed:** any create, edit, or status change.
 
 ## 6. What you cannot do (returns 403)
