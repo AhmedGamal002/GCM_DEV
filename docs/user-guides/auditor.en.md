@@ -8,7 +8,7 @@ The Auditor is a **read-only** role over every page in the system: view and expo
 
 ## What you see in the sidebar
 
-Dashboard, then an **Accounts** section (Users · Drivers) and a **Fleet & Assets** section (Vehicles · Assets, with Categories). Any other link is hidden — manual access returns "You don't have permission to view this data."
+Dashboard, then an **Accounts** section (Users · Drivers) a **Fleet & Assets** section (Vehicles · Assets, with Categories) and an **Operations** section (Facilities). Any other link is hidden — manual access returns "You don't have permission to view this data."
 
 ## 1. Sign in and profile
 
@@ -41,12 +41,17 @@ Dashboard, then an **Accounts** section (Users · Drivers) and a **Fleet & Asset
 - **Asset capacity categories** (`/app/asset-category/list`): view and export only — no create, no edit.
 - **Not allowed:** any create, edit, or status change.
 
-## 6. What you cannot do (returns 403)
+## 6. Intermediate facilities — `/app/facility/list`
+
+- **View** the list + stat cards + search + filters + **export**, and the **details** of any facility (including the contract attachment download).
+- **Not allowed:** the "Create new facility" button, the edit icon and the status card aren't shown, and any create / edit / status change returns 403.
+
+## 7. What you cannot do (returns 403)
 
 - Create, edit, or deactivate any user / driver / vehicle / asset / category.
 - Change your name or email on the profile page.
 - Manage roles & permissions / companies.
 
-## 7. Features available now
+## 8. Features available now
 
-Full view + export across every built module (Users, Drivers, Vehicles, Assets, and categories) — was limited to vehicles and assets only before the FRD V01.14 upgrade. Self-service password change works from the profile page.
+Full view + export across every built module (Users, Drivers, Vehicles, Assets, Intermediate facilities, and categories) — was limited to vehicles and assets only before the FRD V01.14 upgrade. Self-service password change works from the profile page.

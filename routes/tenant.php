@@ -7,6 +7,9 @@ use App\Http\Controllers\Web\Assets\AssetCategoryController;
 use App\Http\Controllers\Web\Assets\AssetListController;
 use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\Drivers\DriverAccountController;
+use App\Http\Controllers\Web\Facilities\FacilityAccountController;
+use App\Http\Controllers\Web\Facilities\FacilityAddController;
+use App\Http\Controllers\Web\Facilities\FacilityListController;
 use App\Http\Controllers\Web\NewPasswordController;
 use App\Http\Controllers\Web\PasswordResetLinkController;
 use App\Http\Controllers\Web\Profile\AccountSettingsController;
@@ -80,6 +83,12 @@ Route::middleware(['auth', 'tenant'])->group(function () {
     Route::get('/app/asset-category/list', [AssetCategoryController::class, 'list'])->name('app-asset-category-list');
     Route::get('/app/asset-category/add', [AssetCategoryController::class, 'add'])->name('app-asset-category-add');
     Route::get('/app/asset-category/edit/{category}', [AssetCategoryController::class, 'edit'])->whereNumber('category')->name('app-asset-category-edit');
+
+    // Intermediate waste facilities — {facility} kept as a raw numeric id.
+    Route::get('/app/facility/list', [FacilityListController::class, 'index'])->name('app-facility-list');
+    Route::get('/app/facility/add', [FacilityAddController::class, 'index'])->name('app-facility-add');
+    Route::get('/app/facility/view/{facility}', [FacilityAccountController::class, 'view'])->whereNumber('facility')->name('app-facility-view');
+    Route::get('/app/facility/edit/{facility}', [FacilityAccountController::class, 'edit'])->whereNumber('facility')->name('app-facility-edit');
 
     // Profile (any authenticated tenant user)
     Route::get('/pages/account-settings-account', [AccountSettingsController::class, 'index'])->name('pages-account-settings-account');

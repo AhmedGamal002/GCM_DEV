@@ -124,7 +124,23 @@ System Admin: view, create, edit (full data), export, and all status changes.
 ## 8. Change asset status
 - **System Admin**: "on maintenance" + **deactivate** + **reactivate from deactivated**.
 
-## 9. Features available now (end of Week 3)
+## 9. Intermediate facilities — `/app/facility/list`
+
+System Admin: view, create, edit, deactivate / reactivate, export. Facilities are never deleted.
+
+### List
+- One stat card per environmental service (safe disposal / sewage treatment / recycling): how many facilities offer it, and how many of those are active.
+- Server-side table: name (with its prefix), environmental service (recycling shows its efficiency %), status, details. Search by name or prefix; filters: service + status; Export (Excel / PDF) — the file holds exactly the rows on screen.
+- In the sidebar: **Operations ← Facilities**.
+
+### Create facility
+- Name, **prefix** (3 English letters, unique within your company — locked after creation), logo (up to 2 MB), **environmental service** (exactly one: safe disposal / sewage treatment / recycling), **recycling efficiency %** (appears — and is required — for recycling only), status, address, map link, contract (number, start / end dates, attachment up to 4 MB), additional data.
+
+### Details, edit and status
+- Details show everything, the contract attachment download, and "Supported sub-services" (empty until the Services module exists). A **Facility Status** card deactivates / reactivates the facility (confirm checkbox).
+- Edit: the name and all optional data (the logo and contract attachment can be replaced). The **prefix is locked**. The environmental service and recycling efficiency can be changed **only while nothing uses the facility** — they lock once a sub-service or trip uses it.
+
+## 10. Features available now (Phase 2 — facilities)
 
 | Module | Available | Deferred |
 |---|---|---|
@@ -132,4 +148,5 @@ System Admin: view, create, edit (full data), export, and all status changes.
 | Vehicles | Full CRUD + status + export + embedded container | "on a trip" column/counter + vehicle trip log (Week 7) |
 | Drivers | Full CRUD + default vehicle + documents + permits | "on a trip" status (Week 7), mobile app |
 | Assets | Full CRUD + categories + status + export | "Add asset to a project" + "in projects" counter (Week 4) |
+| Intermediate facilities | Create / edit / deactivate + prefix + recycling efficiency + contract + export | Sub-service list on the details page and the "in use" lock (with the Services module) |
 | Dashboard | Shell screen | Real stats (Week 8) |

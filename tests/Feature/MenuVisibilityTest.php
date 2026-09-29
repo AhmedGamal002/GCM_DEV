@@ -168,8 +168,8 @@ class MenuVisibilityTest extends TestCase
     }
 
     /**
-     * The sidebar groups the built modules under two section titles:
-     * "Accounts" (Users, Drivers) and "Fleet & Assets" (Vehicles, Assets).
+     * The sidebar groups the built modules under three section titles:
+     * "Accounts" (Users, Drivers), "Fleet & Assets" (Vehicles, Assets) and "Operations" (Facilities).
      * A title only shows when something under it survives for the role.
      */
     private function headers(User $user): array
@@ -180,22 +180,51 @@ class MenuVisibilityTest extends TestCase
         return array_map('html_entity_decode', $m[1]);
     }
 
-    public function test_system_admin_and_data_entry_see_both_section_titles(): void
+    public function test_system_admin_and_data_entry_see_all_section_titles(): void
     {
         $dataEntry = User::factory()->create();
         $dataEntry->assignRole('data_entry');
 
-        $this->assertSame(['Accounts', 'Fleet & Assets'], $this->headers($this->tenantAdmin));
-        $this->assertSame(['Accounts', 'Fleet & Assets'], $this->headers($dataEntry));
+        $this->assertSame(['Accounts', 'Fleet & Assets', 'Operations'], $this->headers($this->tenantAdmin));
+        $this->assertSame(['Accounts', 'Fleet & Assets', 'Operations'], $this->headers($dataEntry));
     }
 
     /** FRD V01.14: auditor now sees Users/Drivers too, so it gets the "Accounts" header as well — same set as data_entry/system_admin. */
-    public function test_an_auditor_sees_both_section_titles_too(): void
+    public function test_an_auditor_sees_all_section_titles_too(): void
     {
         $auditor = User::factory()->create();
         $auditor->assignRole('auditor');
 
-        $this->assertSame(['Accounts', 'Fleet & Assets'], $this->headers($auditor));
+        $this->assertSame(['Accounts', 'Fleet & Assets', 'Operations'], $this->headers($auditor));
+    }
+
+    /** FRD V01.14 §1.8: facilities are (view / export) for the auditor, full for system_admin / data_entry, hidden from drivers. */
+    #[\PHPUnit\Framework\Attributes\DataProvider('facilityRolesProvider')]
+    public function test_the_facilities_menu_item_shows_for_the_backoffice_roles(string $role): void
+    {
+        $user = User::factory()->create();
+        $user->assignRole($role);
+
+        $this->actingAs($user, 'web')->get('/dashboard')
+            ->assertOk()
+            ->assertSee('>Facilities<', false)
+            ->assertSee('app/facility/list', false);
+    }
+
+    public static function facilityRolesProvider(): array
+    {
+        return [['system_admin'], ['data_entry'], ['auditor']];
+    }
+
+    public function test_a_driver_does_not_see_the_facilities_menu_item(): void
+    {
+        $driver = User::factory()->create();
+        $driver->assignRole('driver');
+
+        $this->actingAs($driver, 'web')->get('/dashboard')
+            ->assertOk()
+            ->assertDontSee('>Facilities<', false)
+            ->assertDontSee('app/facility/list', false);
     }
 
     public function test_a_driver_sees_no_section_titles_at_all(): void

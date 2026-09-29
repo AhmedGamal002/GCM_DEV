@@ -196,7 +196,7 @@
 - **الخطوات:**
   - سجّل دخول بـ`admin@gcm.test` ثم `dataentry@gcm.test` ثم `auditor@gcm.test` ثم `driver@gcm.test` وبص على القائمة الجانبية.
   - بدّل اللغة لعربي.
-- **المتوقع:** الأدمن ومدخل البيانات: Dashboard ثم عنوان **Accounts** (تحته Users وDrivers) ثم عنوان **Fleet & Assets** (تحته Vehicles وAssets). المراقب: Dashboard + عنوان **Fleet & Assets** بس (مفيش "Accounts" لأنه مالوش حاجة تحته). السائق: Dashboard بس ومفيش أي عنوان. بالعربي: "الحسابات" و"الأسطول والأصول".
+- **المتوقع:** الأدمن ومدخل البيانات: Dashboard ثم عنوان **Accounts** (تحته Users وDrivers) ثم عنوان **Fleet & Assets** (تحته Vehicles وAssets) ثم عنوان **Operations** (تحته Facilities). المراقب: Dashboard + عنوان **Fleet & Assets** وعنوان **Operations** بس (مفيش "Accounts" لأنه مالوش حاجة تحته). السائق: Dashboard بس ومفيش أي عنوان. بالعربي: "الحسابات" و"الأسطول والأصول".
 - **يغطيه آليًا:** `MenuVisibilityTest` (`test_system_admin_and_data_entry_see_both_section_titles`, `test_an_auditor_sees_only_the_fleet_and_assets_title`, `test_a_driver_sees_no_section_titles_at_all`)
 - **النتيجة:** ⬜
 

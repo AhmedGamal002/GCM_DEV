@@ -4,7 +4,7 @@
 
 ## الملفات
 
-- `GCM-Portal.postman_collection.json` — المجموعة نفسها (11 مجلد).
+- `GCM-Portal.postman_collection.json` — المجموعة نفسها (12 مجلد).
 - `GCM-Portal-Local.postman_environment.json` — إعدادات بيئة التطوير المحلي (بيانات الدخول الافتراضية من الـ seeders).
 
 ## الاستيراد
@@ -17,19 +17,19 @@
 
 ### 1. تينانت (`/api/v1/*`) — Bearer Token
 
-المجلدات 1-7 (Auth/Me/Roles/Users/Drivers/Vehicles/Assets). الـ collection معمول عليها auth من نوع Bearer على مستوى الـ root بقيمة `{{tenant_token}}`.
+المجلدات 1-8 (Auth/Me/Roles/Users/Drivers/Vehicles/Assets/Intermediate Facilities). الـ collection معمول عليها auth من نوع Bearer على مستوى الـ root بقيمة `{{tenant_token}}`.
 
 - شغّل **"1. Auth (Tenant) → Login"** الأول. Postman مش هيبقى أبدًا من ضمن `SANCTUM_STATEFUL_DOMAINS`، فالسيرفر هيرجّعله `token` (نفس المسار اللي هيتستخدم لموبايل السائق مستقبلًا) بدل session cookie. الـ test script بتاع الريكوست بيحفظ التوكن تلقائي في `tenant_token`.
-- من بعدها أي ريكوست في المجلدات 2-7 هيبعت الـ Authorization header تلقائي.
-- `last_user_id` و`last_driver_id` و`last_vehicle_id` و`last_vehicle_category_id` و`last_asset_id` و`last_asset_capacity_category_id` بيتحفظوا تلقائيًا من ريسبونس "Create User"/"Create Driver"/"Create Vehicle"/"Create Asset"/"Create Capacity Category" عشان تقدر تكمل على طول بـ Show/Update من غير ما تنسخ id يدوي. (`last_vehicle_document_id` بيتحط يدوي من ريسبونس "Show Vehicle" عشان تجرب "Download Document".)
+- من بعدها أي ريكوست في المجلدات 2-8 هيبعت الـ Authorization header تلقائي.
+- `last_user_id` و`last_driver_id` و`last_vehicle_id` و`last_vehicle_category_id` و`last_asset_id` و`last_asset_capacity_category_id` و`last_facility_id` بيتحفظوا تلقائيًا من ريسبونس "Create User"/"Create Driver"/"Create Vehicle"/"Create Asset"/"Create Capacity Category"/"Create Facility" عشان تقدر تكمل على طول بـ Show/Update من غير ما تنسخ id يدوي. (`last_vehicle_document_id` بيتحط يدوي من ريسبونس "Show Vehicle" عشان تجرب "Download Document".)
 
 ### 2. Platform / Super Admin (`/platform/*`) — Session + CSRF
 
-المجلدات 8-11. **مش** Bearer — دي كنترولرز Blade كلاسيكية (guard `platform` منفصل تمامًا)، فمفيش JSON API هنا أصلًا.
+المجلدات 9-12. **مش** Bearer — دي كنترولرز Blade كلاسيكية (guard `platform` منفصل تمامًا)، فمفيش JSON API هنا أصلًا.
 
-- شغّل **"8. Platform Auth → Get Login Page (capture CSRF)"** الأول — بيسحب الـ `_token` من صفحة اللوجن ويحفظه في `platform_csrf`.
+- شغّل **"9. Platform Auth → Get Login Page (capture CSRF)"** الأول — بيسحب الـ `_token` من صفحة اللوجن ويحفظه في `platform_csrf`.
 - بعدين **"Login"** — بيرجّع 302 + session cookie، وPostman بيحتفظ بالكوكي تلقائي (cookie jar بتاعه) لباقي الريكوستات.
-- أي ريكوست POST/PUT/PATCH/DELETE في المجلدات 9-11 معاه **pre-request script** بيسحب توكن CSRF جديد تلقائيًا قبل ما يبعت (من صفحة `/platform/tenants` — أي صفحة مسجّل دخولها كفاية لإن الـ token واحد للـ session كله مش لكل صفحة). مش محتاج تعمل حاجة يدوي.
+- أي ريكوست POST/PUT/PATCH/DELETE في المجلدات 10-12 معاه **pre-request script** بيسحب توكن CSRF جديد تلقائيًا قبل ما يبعت (من صفحة `/platform/tenants` — أي صفحة مسجّل دخولها كفاية لإن الـ token واحد للـ session كله مش لكل صفحة). مش محتاج تعمل حاجة يدوي.
 - بعض الريكوستات (زي "Get Edit Tenant Form"، "Delete Permission") محتاجة id يدوي (`last_tenant_id`, `last_role_id`, `last_permission_id`) — مفيش auto-capture ليهم لإن صفحات الإنشاء بترجّع redirect للقائمة مش JSON فيه الـ id. جيب الـ id من ريسبونس "List..." وحطه في الـ variable يدوي. (نفس الكلام على `last_vehicle_document_id`.)
 
 ## قاعدة التحديث — أي endpoint جديد لازم يتضاف هنا فورًا

@@ -2,7 +2,7 @@
   "info": {
     "name": "GCM Portal",
     "_postman_id": "b1e9d8b0-6f5a-4b0a-9c1a-gcmportal0001",
-    "description": "GCM Portal API + Platform (Super Admin) collection. Covers everything shipped through Week 3 (Assets, Vehicles + Driver Management): Tenant Auth, Users, Roles (read-only), Profile, Drivers, Vehicles, Assets & Supply Hub, and Platform (Tenants/Roles/Permissions CRUD).\n\nSee postman/README.md in the repo for how the two auth flows work (Bearer token for /api/v1/*, session+CSRF for /platform/*) and the convention to follow when adding a new endpoint's request here.\n\nKeep this file updated alongside the code: every new API/Platform route gets a request added here in the same PR/session that adds the route.",
+    "description": "GCM Portal API + Platform (Super Admin) collection. Covers everything shipped through Phase 2 so far (Intermediate Facilities) on top of Week 3 (Assets, Vehicles + Driver Management): Tenant Auth, Users, Roles (read-only), Profile, Drivers, Vehicles, Assets & Supply Hub, Intermediate Facilities, and Platform (Tenants/Roles/Permissions CRUD).\n\nSee postman/README.md in the repo for how the two auth flows work (Bearer token for /api/v1/*, session+CSRF for /platform/*) and the convention to follow when adding a new endpoint's request here.\n\nKeep this file updated alongside the code: every new API/Platform route gets a request added here in the same PR/session that adds the route.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "auth": {
@@ -26,6 +26,7 @@
     { "key": "last_vehicle_document_id", "value": "", "type": "string" },
     { "key": "last_asset_id", "value": "", "type": "string" },
     { "key": "last_asset_capacity_category_id", "value": "", "type": "string" },
+    { "key": "last_facility_id", "value": "", "type": "string" },
     { "key": "last_vehicle_category_id", "value": "", "type": "string" },
     { "key": "last_tenant_id", "value": "", "type": "string" },
     { "key": "last_role_id", "value": "", "type": "string" },
@@ -1168,7 +1169,198 @@
       ]
     },
     {
-      "name": "8. Platform Auth (Super Admin)",
+      "name": "8. Intermediate Facilities",
+      "item": [
+        {
+          "name": "List Facilities",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{api_base}}/facilities?per_page=15",
+              "host": ["{{api_base}}"],
+              "path": ["facilities"],
+              "query": [
+                { "key": "per_page", "value": "15" },
+                { "key": "page", "value": "1", "disabled": true },
+                { "key": "search", "value": "", "disabled": true },
+                { "key": "environmental_service", "value": "recycle", "disabled": true },
+                { "key": "operational_status", "value": "active", "disabled": true },
+                { "key": "sort_by", "value": "name", "disabled": true },
+                { "key": "sort_dir", "value": "asc", "disabled": true }
+              ]
+            },
+            "description": "FRD V01.14 §1.8. System Admin / Data Entry / Auditor. search matches the name and the 3-letter prefix. environmental_service: disposal | sewage_treatment | recycle. operational_status: active | deactivated. sort_by: name | environmental_service | operational_status | created_at."
+          }
+        },
+        {
+          "name": "Facility Stats",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{api_base}}/facilities/stats", "host": ["{{api_base}}"], "path": ["facilities", "stats"] },
+            "description": "Cards on the list page: for each environmental service, how many facilities offer it (`total`) and how many of those are `active`."
+          }
+        },
+        {
+          "name": "Create Facility",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "name", "value": "Green Loop Recycling {{$timestamp}}", "type": "text" },
+                { "key": "prefix", "value": "GLR", "type": "text", "description": "Exactly 3 English letters, unique per company (stored upper-case). Change it on every re-run — it is locked after creation." },
+                { "key": "environmental_service", "value": "recycle", "type": "text", "description": "disposal | sewage_treatment | recycle" },
+                { "key": "recycling_efficiency", "value": "72.5", "type": "text", "description": "Required for `recycle` (0–100), rejected for the other services." },
+                { "key": "operational_status", "value": "active", "type": "text", "description": "active | deactivated" },
+                { "key": "address", "value": "Abu Dhabi, ICAD", "type": "text" },
+                { "key": "location_url", "value": "https://maps.google.com/?q=24.4,54.5", "type": "text" },
+                { "key": "contract_number", "value": "C-1001", "type": "text" },
+                { "key": "contract_start", "value": "2026-01-01", "type": "text" },
+                { "key": "contract_end", "value": "2026-12-31", "type": "text" },
+                { "key": "additional_data", "value": "<p>notes</p>", "type": "text" },
+                { "key": "logo", "type": "file", "src": [], "disabled": true, "description": "Image, max 2 MB." },
+                { "key": "contract_attachment", "type": "file", "src": [], "disabled": true, "description": "pdf / jpg / png, max 4 MB. Private — served only through Download Contract." }
+              ]
+            },
+            "url": { "raw": "{{api_base}}/facilities", "host": ["{{api_base}}"], "path": ["facilities"] },
+            "description": "System Admin / Data Entry. Multipart form (the two files are optional — enable them and pick a file). The tenant is taken from the token."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    if (body.data && body.data.id) {",
+                  "        pm.collectionVariables.set('last_facility_id', body.data.id);",
+                  "        console.log('last_facility_id saved:', body.data.id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Show Facility",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{api_base}}/facilities/{{last_facility_id}}",
+              "host": ["{{api_base}}"],
+              "path": ["facilities", "{{last_facility_id}}"]
+            },
+            "description": "`in_use` is true once a sub-service or trip uses the facility (always false until the Services module exists). `supported_sub_services` is filled by the Services module."
+          }
+        },
+        {
+          "name": "Update Facility",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "_method", "value": "PATCH", "type": "text", "description": "Laravel method spoofing — needed because a multipart body can't be sent with a real PATCH." },
+                { "key": "name", "value": "Green Loop Recycling (renamed)", "type": "text" },
+                { "key": "address", "value": "New address", "type": "text" },
+                { "key": "location_url", "value": "", "type": "text" },
+                { "key": "contract_number", "value": "C-1002", "type": "text" },
+                { "key": "contract_start", "value": "2026-01-01", "type": "text" },
+                { "key": "contract_end", "value": "2027-01-01", "type": "text" },
+                { "key": "additional_data", "value": "<p>updated</p>", "type": "text" },
+                { "key": "environmental_service", "value": "recycle", "type": "text", "disabled": true, "description": "Editable only while the facility is unused — 422 once a sub-service or trip uses it." },
+                { "key": "recycling_efficiency", "value": "80", "type": "text", "disabled": true, "description": "Same lock as environmental_service." },
+                { "key": "logo", "type": "file", "src": [], "disabled": true },
+                { "key": "contract_attachment", "type": "file", "src": [], "disabled": true }
+              ]
+            },
+            "url": {
+              "raw": "{{api_base}}/facilities/{{last_facility_id}}",
+              "host": ["{{api_base}}"],
+              "path": ["facilities", "{{last_facility_id}}"]
+            },
+            "description": "System Admin / Data Entry. The name and the optional data are always editable (a new logo / contract attachment replaces the old file). The prefix is never editable (ignored if sent). operational_status changes via Change Operational Status. A JSON PATCH without files works too."
+          }
+        },
+        {
+          "name": "Change Operational Status",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"deactivated\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{api_base}}/facilities/{{last_facility_id}}/status",
+              "host": ["{{api_base}}"],
+              "path": ["facilities", "{{last_facility_id}}", "status"]
+            },
+            "description": "status: active | deactivated. System Admin / Data Entry. No delete route — facilities are deactivated, never removed."
+          }
+        },
+        {
+          "name": "Download Contract Attachment",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/facilities/{{last_facility_id}}/contract",
+              "host": ["{{api_base}}"],
+              "path": ["facilities", "{{last_facility_id}}", "contract"]
+            },
+            "description": "Private file (disk `local`). 404 if the facility has no attachment. System Admin / Data Entry / Auditor."
+          }
+        },
+        {
+          "name": "Export Facilities (Excel)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/facilities/export?format=xlsx",
+              "host": ["{{api_base}}"],
+              "path": ["facilities", "export"],
+              "query": [
+                { "key": "format", "value": "xlsx" },
+                { "key": "search", "value": "", "disabled": true },
+                { "key": "environmental_service", "value": "", "disabled": true },
+                { "key": "operational_status", "value": "", "disabled": true }
+              ]
+            },
+            "description": "Same filters and search as the list — the file holds exactly the rows the list shows."
+          }
+        },
+        {
+          "name": "Export Facilities (PDF)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/facilities/export?format=pdf",
+              "host": ["{{api_base}}"],
+              "path": ["facilities", "export"],
+              "query": [
+                { "key": "format", "value": "pdf" },
+                { "key": "search", "value": "", "disabled": true },
+                { "key": "environmental_service", "value": "", "disabled": true },
+                { "key": "operational_status", "value": "", "disabled": true }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "9. Platform Auth (Super Admin)",
       "item": [
         {
           "name": "Get Login Page (capture CSRF)",
@@ -1243,7 +1435,7 @@
       ]
     },
     {
-      "name": "9. Platform - Tenants",
+      "name": "10. Platform - Tenants",
       "auth": { "type": "noauth" },
       "item": [
         {
@@ -1382,7 +1574,7 @@
       ]
     },
     {
-      "name": "10. Platform - Roles",
+      "name": "11. Platform - Roles",
       "auth": { "type": "noauth" },
       "item": [
         {
@@ -1511,7 +1703,7 @@
       ]
     },
     {
-      "name": "11. Platform - Permissions",
+      "name": "12. Platform - Permissions",
       "auth": { "type": "noauth" },
       "item": [
         {

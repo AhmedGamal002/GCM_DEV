@@ -289,6 +289,14 @@
 
 ### الأسبوع 5 — الخدمات + المنشآت الوسيطة + المتعهدين
 
+> **الحالة (2026-09-28):** المنشآت الوسيطة (FRD V01.14 §1.8) ✅ اتنفّذت — تفاصيلها في القسم الجاي. الخدمات (§1.9) والمتعهدين (§1.10) لسه. **تنبيه:** جدولا `units_of_measure` و`waste_yards` وجدول الربط `facility_sub_service_recycling_rate` تحت اتكتبوا قبل V01.14 — نسبة إعادة التدوير في V01.14 خاصية على **المنشأة نفسها** (`intermediate_facilities.recycling_efficiency`)، ومفيش في أقسام §1.8–1.10 أي ذكر لوحدات القياس ولا ساحات النفايات، فلازم نراجعهم مقابل الـFRD قبل ما نبنيهم.
+
+#### المنشآت الوسيطة ✅ (branch `phase_2_maaloum`)
+- **الجدول:** `intermediate_facilities` (tenant-scoped): الاسم، `prefix` (3 حروف فريد على `(tenant_id, prefix)`، مقفول بعد الإنشاء)، اللوجو (`public`)، `environmental_service` (`disposal`/`sewage_treatment`/`recycle`)، `recycling_efficiency` (نسبة 0–100، إلزامية للتدوير بس)، `operational_status` (`active`/`deactivated` — مفيش `on_maintenance`)، العنوان + رابط الخريطة، العقد (رقم نصي عشان الأصفار + تاريخين + مرفق **خاص** على `local`)، بيانات إضافية، `updated_by`.
+- **الكود:** `app/Domain/Facilities/{Actions,Exceptions,Exports}`، `IntermediateFacility` + `IntermediateFacilityPolicy` + `IntermediateFacilityResource`، `Api\V1\FacilityController` (نفس نمط `AssetController`: `filteredQuery()` واحدة للقائمة والتصدير، من غير route-model binding)، `Web\Facilities\*`، صفحات `/app/facility/{list,add,view,edit}`، بند "Facilities" تحت عنوان جديد **Operations** في القائمة.
+- **قرارات خارج نص الـFRD (اتفقنا عليها مع صاحب الشغل):** (١) كفاءة التدوير حقل رقمي بنسبة مئوية إلزامي لمنشأة إعادة التدوير فقط — تفسير لصف "نوع الخدمة البيئية" (الـFRD مابيحددش نسبة ولا إلزام). (٢) **الخدمة البيئية والكفاءة قابلين للتعديل طالما المنشأة غير مستخدمة**، ويتقفلوا أول ما تتربط بخدمة فرعية أو رحلة (الـFRD بيحصر التعديل في الاسم والاختياري). `IntermediateFacility::isInUse()` بترجع `false` لحد ما موديول الخدمات (`sub_service_facility`) والرحلات يتبنوا — **تست القفل الحقيقي يتكتب مع الخدمات**. (٣) المراقب: عرض + تصدير فقط (وصفحة القائمة والتفاصيل بتخفي أزرار الإنشاء/التعديل/الحالة عنه).
+- **التحقق:** `Facilities/*` (6 ملفات تست) + `ExportFiltersTest` + `MenuVisibilityTest`، `docs/acceptance/week-5-facilities.md`، و"8. Intermediate Facilities" في Postman (وترقيم مجلدات الـPlatform بقى 9–12).
+
 **مهام الباك اند:**
 - Migration: `main_services`, `sub_services`, `units_of_measure`, `intermediate_facilities`, `facility_sub_service_recycling_rate` (جدول ربط النسب)، `waste_yards`
 - Migration: `contractors` + **إضافة FK constraint على `contractor_id`** في `drivers`, `vehicles`, `assets` (migration منفصلة بـ `Schema::table()`)

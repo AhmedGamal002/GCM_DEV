@@ -23,6 +23,10 @@ final class PdfLabels
         'container' => 'Container',
         'tank' => 'Tank',
         'both' => 'Both',
+        // intermediate facility environmental service
+        'disposal' => 'Safe disposal',
+        'sewage_treatment' => 'Sewage treatment',
+        'recycle' => 'Recycling',
         // GCM roles
         'system_admin' => 'System Admin',
         'data_entry' => 'Data Entry',
