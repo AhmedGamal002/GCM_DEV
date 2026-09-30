@@ -31,6 +31,11 @@ use Symfony\Component\HttpFoundation\Response;
  * the request rejected — defends against a session cookie (or, for
  * mobile, a bearer token) issued for one tenant being replayed against
  * another's.
+ *
+ * Also enforces the FRD's "on vacation" account status here: such a user
+ * can still log in and read (GET/HEAD/OPTIONS pass through) but any
+ * write request is rejected — this is the single choke point both the
+ * API (auth:sanctum+tenant) and tenant web routes (auth+tenant) share.
  */
 class EnsureTenant
 {
@@ -55,6 +60,10 @@ class EnsureTenant
 
                 abort(403, 'Your organization account is not active.');
             }
+        }
+
+        if ($user && $user->status === 'on_vacation' && ! $request->isMethodSafe()) {
+            abort(403, 'Your account is on vacation and can only view data.');
         }
 
         if ($tenant) {
