@@ -18,7 +18,7 @@ class AssetsExport implements FromCollection, WithHeadings, WithMapping
 
     public function headings(): array
     {
-        return ['ID', 'Name', 'Type', 'Capacity Category', 'Affiliation', 'Status', 'Created At'];
+        return ['ID', 'Name', 'Type', 'Capacity Category', 'Affiliation', 'Status', 'Project', 'Created At'];
     }
 
     public function map($asset): array
@@ -30,6 +30,7 @@ class AssetsExport implements FromCollection, WithHeadings, WithMapping
             $asset->capacityCategory?->name,
             $asset->affiliation === 'gcm' ? 'GCM' : $asset->affiliation,
             $asset->operational_status,
+            $asset->project?->name,
             $asset->created_at,
         ];
     }

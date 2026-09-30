@@ -14,10 +14,12 @@ use App\Models\User;
  * internal contradiction in that FRD version; confirmed with the client
  * as their mistake, intent is admin-parity for data_entry here.)
  *
- * FRD also says deactivating / servicing an asset makes it unavailable
- * for trips and "cannot be done while it's out with a vehicle/project" —
- * there's nothing to check that against until the Trip/Project modules
- * exist (Week 4/7), so that guard is deferred.
+ * FRD V01.14 says deactivating / servicing an asset makes it unavailable
+ * for trips ("can't be part of a trip"). It attaches no other condition,
+ * so an asset sitting in a project can still be sent to maintenance or
+ * deactivated — it keeps its project until the FRD defines taking it out
+ * (trips, a later phase); the list then shows it as in maintenance /
+ * deactivated rather than "in a project".
  */
 class UpdateAssetStatusAction
 {

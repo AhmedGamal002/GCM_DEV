@@ -5,6 +5,7 @@ use App\Http\Controllers\Web\Assets\AssetAccountController;
 use App\Http\Controllers\Web\Assets\AssetAddController;
 use App\Http\Controllers\Web\Assets\AssetCategoryController;
 use App\Http\Controllers\Web\Assets\AssetListController;
+use App\Http\Controllers\Web\Assets\AssetProjectController;
 use App\Http\Controllers\Web\Companies\CompanyAccountController;
 use App\Http\Controllers\Web\Companies\CompanyAddController;
 use App\Http\Controllers\Web\Companies\CompanyListController;
@@ -16,6 +17,9 @@ use App\Http\Controllers\Web\Facilities\FacilityListController;
 use App\Http\Controllers\Web\NewPasswordController;
 use App\Http\Controllers\Web\PasswordResetLinkController;
 use App\Http\Controllers\Web\Profile\AccountSettingsController;
+use App\Http\Controllers\Web\Projects\ProjectAccountController;
+use App\Http\Controllers\Web\Projects\ProjectAddController;
+use App\Http\Controllers\Web\Projects\ProjectListController;
 use App\Http\Controllers\Web\Users\UserAccountController;
 use App\Http\Controllers\Web\Users\UserAddController;
 use App\Http\Controllers\Web\Users\UserListController;
@@ -79,6 +83,7 @@ Route::middleware(['auth', 'tenant'])->group(function () {
     // Assets & Supply Hub — {asset}/{category} kept as raw numeric ids.
     Route::get('/app/asset/list', [AssetListController::class, 'index'])->name('app-asset-list');
     Route::get('/app/asset/add', [AssetAddController::class, 'index'])->name('app-asset-add');
+    Route::get('/app/asset/insert-into-project', [AssetProjectController::class, 'create'])->name('app-asset-insert-into-project');
     Route::get('/app/asset/view/{asset}', [AssetAccountController::class, 'view'])->whereNumber('asset')->name('app-asset-view');
     Route::get('/app/asset/edit/{asset}', [AssetAccountController::class, 'edit'])->whereNumber('asset')->name('app-asset-edit');
 
@@ -98,6 +103,12 @@ Route::middleware(['auth', 'tenant'])->group(function () {
     Route::get('/app/company/add', [CompanyAddController::class, 'index'])->name('app-company-add');
     Route::get('/app/company/view/{company}', [CompanyAccountController::class, 'view'])->whereNumber('company')->name('app-company-view');
     Route::get('/app/company/edit/{company}', [CompanyAccountController::class, 'edit'])->whereNumber('company')->name('app-company-edit');
+
+    // Client projects — {project} kept as a raw numeric id (see ProjectController's docblock).
+    Route::get('/app/project/list', [ProjectListController::class, 'index'])->name('app-project-list');
+    Route::get('/app/project/add', [ProjectAddController::class, 'index'])->name('app-project-add');
+    Route::get('/app/project/view/{project}', [ProjectAccountController::class, 'view'])->whereNumber('project')->name('app-project-view');
+    Route::get('/app/project/edit/{project}', [ProjectAccountController::class, 'edit'])->whereNumber('project')->name('app-project-edit');
 
     // Profile (any authenticated tenant user) — one page, two cards
     // (photo + password change). Used to be two tabs/pages; merged per the

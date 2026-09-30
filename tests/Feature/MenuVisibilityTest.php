@@ -276,6 +276,32 @@ class MenuVisibilityTest extends TestCase
             ->assertDontSee('app/company/list', false);
     }
 
+    /** Client Projects (FRD V01.14 §1.12): same visibility as Client Companies — admin/data_entry manage, auditor views, driver never sees it. */
+    public function test_client_projects_menu_visibility_per_role(): void
+    {
+        $dataEntry = User::factory()->create();
+        $dataEntry->assignRole('data_entry');
+        $auditor = User::factory()->create();
+        $auditor->assignRole('auditor');
+        $driver = User::factory()->create();
+        $driver->assignRole('driver');
+
+        foreach ([$this->tenantAdmin, $dataEntry] as $manager) {
+            $this->actingAs($manager, 'web')->get('/dashboard')->assertOk()
+                ->assertSee('>Client Projects<', false)
+                ->assertSee('app/project/list', false)
+                ->assertSee('app/project/add', false);
+        }
+
+        $this->actingAs($auditor, 'web')->get('/dashboard')->assertOk()
+            ->assertSee('app/project/list', false)
+            ->assertDontSee('app/project/add', false);
+
+        $this->actingAs($driver, 'web')->get('/dashboard')->assertOk()
+            ->assertDontSee('>Client Projects<', false)
+            ->assertDontSee('app/project/list', false);
+    }
+
     public function test_a_driver_sees_no_section_titles_at_all(): void
     {
         $driver = User::factory()->create();

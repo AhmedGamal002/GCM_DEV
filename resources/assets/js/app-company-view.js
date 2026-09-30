@@ -123,4 +123,122 @@ document.addEventListener('DOMContentLoaded', function () {
     .get(`/api/v1/companies/${id}`)
     .then((response) => render(response.data.data))
     .catch((error) => showError(error.response && error.response.data && error.response.data.message));
+
+  // ------------------------------------------------------ company projects
+  // Server-side DataTable of this company's projects (FRD V01.14 §1.11.3):
+  // status filter, search, and Excel/PDF export of exactly what is shown.
+  const projectsTable = $('.datatables-company-projects');
+  if (!projectsTable.length) return;
+
+  const projectStatus = {
+    active: { title: t.active, class: 'bg-label-success' },
+    deactivated: { title: t.deactivated, class: 'bg-label-secondary' }
+  };
+  const escapeHtml = (value) => $('<div>').text(value == null ? '' : value).html();
+
+  let currentProjectStatus = '';
+  const projectParams = () => ({ company_id: id, operational_status: currentProjectStatus || undefined });
+
+  const buttons = [
+    {
+      extend: 'collection',
+      className: 'btn btn-label-secondary dropdown-toggle mx-4 waves-effect waves-light',
+      text: '<i class="ti ti-upload me-2 ti-xs"></i>' + (t.export || 'Export'),
+      buttons: [
+        {
+          text: '<i class="ti ti-file-spreadsheet me-2"></i>Excel',
+          className: 'dropdown-item',
+          action: (e, dt) => window.gcmExport('/api/v1/projects/export', 'xlsx', dt, projectParams)
+        },
+        {
+          text: '<i class="ti ti-file-code-2 me-2"></i>Pdf',
+          className: 'dropdown-item',
+          action: (e, dt) => window.gcmExport('/api/v1/projects/export', 'pdf', dt, projectParams)
+        }
+      ]
+    }
+  ];
+
+  if (t.can_manage) {
+    buttons.push({
+      text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">' + (t.add_project || 'Add Project') + '</span>',
+      className: 'btn btn-primary waves-effect waves-light',
+      action: () => window.location.assign((t.add_project_url || '/app/project/add') + '?company_id=' + id)
+    });
+  }
+
+  projectsTable.DataTable({
+    processing: true,
+    serverSide: true,
+    searchDelay: 500,
+    ajax: window.gcmServerSideAjax('/api/v1/projects', projectParams, t.no_permission),
+    columns: [
+      { data: 'code' },
+      { data: 'name' },
+      { data: 'contracts_count' },
+      { data: 'users_count' },
+      { data: 'operational_status' },
+      { data: 'id' }
+    ],
+    columnDefs: [
+      { targets: 0, render: (data, type, full) => escapeHtml(full.code) },
+      { targets: 1, responsivePriority: 1, render: (data, type, full) => '<span class="fw-medium">' + escapeHtml(full.name) + '</span>' },
+      { targets: 2, orderable: false, render: (data, type, full) => escapeHtml(full.contracts_count) },
+      { targets: 3, orderable: false, render: (data, type, full) => escapeHtml(full.users_count) },
+      {
+        targets: 4,
+        render: function (data, type, full) {
+          if (type !== 'display') return full.operational_status;
+          const s = projectStatus[full.operational_status] || { title: full.operational_status, class: 'bg-label-secondary' };
+          return '<span class="badge ' + s.class + '">' + escapeHtml(s.title) + '</span>';
+        }
+      },
+      {
+        targets: -1,
+        title: t.actions || 'Actions',
+        searchable: false,
+        orderable: false,
+        render: (data, type, full) =>
+          '<a href="' + (t.project_view_url_base || '/app/project/view') + '/' + full.id +
+          '" class="btn btn-icon btn-text-secondary waves-effect waves-light rounded-pill" title="' + (t.view || 'View') +
+          '"><i class="ti ti-eye ti-md"></i></a>'
+      }
+    ],
+    order: [[1, 'asc']],
+    language: {
+      sLengthMenu: '_MENU_',
+      search: '',
+      searchPlaceholder: t.search_project || 'Search Project',
+      emptyTable: t.no_projects_found || 'This company has no projects yet.',
+      info: t.info || 'Showing _START_ to _END_ of _TOTAL_ entries',
+      infoEmpty: t.info_empty || 'Showing 0 to 0 of 0 entries',
+      paginate: {
+        next: '<i class="ti ti-chevron-right ti-sm"></i>',
+        previous: '<i class="ti ti-chevron-left ti-sm"></i>'
+      }
+    },
+    dom:
+      '<"row"' +
+      '<"col-md-2"<"ms-n2"l>>' +
+      '<"col-md-10"<"dt-action-buttons text-xl-end text-lg-start text-md-end text-start d-flex align-items-center justify-content-end flex-md-row flex-column mb-6 mb-md-0 mt-n6 mt-md-0"fB>>' +
+      '>t' +
+      '<"row"' +
+      '<"col-sm-12 col-md-6"i>' +
+      '<"col-sm-12 col-md-6"p>' +
+      '>',
+    buttons: buttons,
+    responsive: true,
+    initComplete: function () {
+      const api = this.api();
+      const select = $('<select class="form-select"><option value="">' + (t.all_statuses || 'All statuses') + '</option></select>')
+        .appendTo('.company_project_status')
+        .on('change', function () {
+          currentProjectStatus = $(this).val();
+          api.draw();
+        });
+      ['active', 'deactivated'].forEach((status) => {
+        select.append('<option value="' + status + '">' + projectStatus[status].title + '</option>');
+      });
+    }
+  });
 });

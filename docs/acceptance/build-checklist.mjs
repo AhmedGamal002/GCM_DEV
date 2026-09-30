@@ -386,6 +386,7 @@ const CLIENT_GROUPS = [
   { title: 'تصنيفات سعة الأصول', ids: ['week-3-vehicles-drivers-assets#20'] },
   { title: 'المنشآت الوسيطة', ids: ['week-5-facilities#2', 'week-5-facilities#4', 'week-5-facilities#5', 'week-5-facilities#6', 'week-5-facilities#7', 'week-5-facilities#8', 'week-5-facilities#9', 'week-5-facilities#11', 'week-5-facilities#12'] },
   { title: 'شركات العملاء', ids: ['week-4-client-companies#1', 'week-4-client-companies#2', 'week-4-client-companies#3', 'week-4-client-companies#4', 'week-4-client-companies#5', 'week-4-client-companies#6', 'week-4-client-companies#7', 'week-4-client-companies#8', 'week-4-client-companies#9'] },
+  { title: 'المشروعات', ids: ['week-5-projects#2', 'week-5-projects#3', 'week-5-projects#4', 'week-5-projects#5', 'week-5-projects#6', 'week-5-projects#7', 'week-5-projects#9', 'week-5-projects#10', 'week-5-projects#11', 'week-5-projects#12', 'week-5-projects#13', 'week-5-projects#15', 'week-5-projects#16', 'week-5-projects#17'] },
   { title: 'الملف الشخصي', ids: ['week-1-2-auth-users-roles#2', 'week-3-frd-gap-review#4'] },
   { title: 'قواعد عامة عبر الموديولات', ids: ['week-3-frd-gap-review#5', 'week-3-frd-gap-review#6', 'week-3-frd-gap-review#7'] },
   { title: 'الواجهة والتنقل', ids: ['week-1-2-auth-users-roles#1', 'week-1-2-auth-users-roles#17', 'week-1-2-auth-users-roles#18', 'week-3-frd-gap-review#1', 'week-3-frd-gap-review#2', 'week-3-vehicles-drivers-assets#22', 'week-3-frd-gap-review#30'] },
@@ -393,6 +394,16 @@ const CLIENT_GROUPS = [
 ];
 
 const CLIENT_OVERRIDES = {
+  'week-5-projects#13': {
+    title: 'قواعد إدراج أصل في مشروع',
+    stepsList: [
+      'افتح صفحة "Insert asset into project" واختار شركة ومشروع.',
+      'بص على قائمة الأصول: لاحظ إن الأصل المدرج بالفعل في مشروع، والأصل "في الصيانة" (Container A-03) مش موجودين فيها.',
+      'اختار الشركة Gulf Petrochemicals وبص على قائمة مشروعاتها.',
+    ],
+    expected:
+      'قائمة الأصول فيها الأصول **المتاحة** بس (نشطة وغير مدرجة في مشروع)، وقائمة المشروعات فيها المشروعات **النشطة** بس (Gulf Petro Warehouse المعطّل مش موجود). أي أصل بيتدرج بيختفي من القائمة بعدها ومايتدرجش في مشروعين.',
+  },
   'week-5-facilities#8': {
     expected:
       'عنوان الصفحة "تفاصيل المنشأة الوسيطة". بتعرض: اللوجو، الاسم والحالة، الاسم المختصر، الخدمة البيئية ونسبة الكفاءة، العنوان، رابط الخريطة، بيانات العقد وزر تحميل المرفق، البيانات الإضافية، "آخر تحديث: تم بواسطة ... – التاريخ". قسم "الخدمات الفرعية المدعومة" بيوضّح إن مفيش خدمات فرعية مرتبطة بالمنشأة حاليًا.',

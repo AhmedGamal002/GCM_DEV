@@ -60,7 +60,7 @@ class CompanyController extends Controller
 
     public function show(int $company)
     {
-        $company = Company::with('updatedBy')->findOrFail($company);
+        $company = Company::withCount('projects')->with('updatedBy')->findOrFail($company);
 
         Gate::authorize('view', $company);
 
@@ -72,6 +72,7 @@ class CompanyController extends Controller
         $company = Company::findOrFail($company);
 
         $company = $action->execute($company, $request->validated(), $this->extractFiles($request), $request->user());
+        $company->loadCount('projects');
 
         return CompanyResource::make($company);
     }
@@ -81,7 +82,7 @@ class CompanyController extends Controller
         $company = Company::findOrFail($company);
         $company = $action->execute($company, $request->validated('status'), $request->user());
 
-        return CompanyResource::make($company->load('updatedBy'));
+        return CompanyResource::make($company->load('updatedBy')->loadCount('projects'));
     }
 
     /**
@@ -148,6 +149,7 @@ class CompanyController extends Controller
     private function filteredQuery(Request $request): Builder
     {
         return Company::query()
+            ->withCount('projects')
             ->when($request->filled('operational_status'), fn ($q) => $q->where('operational_status', $request->string('operational_status')))
             ->when($request->filled('search'), function ($q) use ($request) {
                 $search = $request->string('search')->toString();

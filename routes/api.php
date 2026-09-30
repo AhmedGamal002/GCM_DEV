@@ -11,6 +11,8 @@ use App\Http\Controllers\Api\V1\CompanyController;
 use App\Http\Controllers\Api\V1\DriverController;
 use App\Http\Controllers\Api\V1\FacilityController;
 use App\Http\Controllers\Api\V1\ProfileController;
+use App\Http\Controllers\Api\V1\ProjectAssetController;
+use App\Http\Controllers\Api\V1\ProjectController;
 use App\Http\Controllers\Api\V1\RoleController;
 use App\Http\Controllers\Api\V1\UserController;
 use App\Http\Controllers\Api\V1\VehicleCategoryController;
@@ -112,6 +114,17 @@ Route::prefix('v1')->group(function () {
         Route::get('/companies/{company}/documents/{type}', [CompanyController::class, 'downloadDocument'])
             ->whereNumber('company')
             ->name('api.companies.documents.download');
+
+        // Client projects (Part 5 of Phase 2, FRD V01.14 §1.12). /projects/export MUST come
+        // before /projects/{project}. A project's assets are GET /assets?project_id=…;
+        // inserting one is POST /projects/{project}/assets (FRD §1.7.3).
+        Route::get('/projects/export', [ProjectController::class, 'export']);
+        Route::get('/projects', [ProjectController::class, 'index']);
+        Route::post('/projects', [ProjectController::class, 'store']);
+        Route::get('/projects/{project}', [ProjectController::class, 'show'])->whereNumber('project');
+        Route::patch('/projects/{project}', [ProjectController::class, 'update'])->whereNumber('project');
+        Route::patch('/projects/{project}/status', [ProjectController::class, 'status'])->whereNumber('project');
+        Route::post('/projects/{project}/assets', [ProjectAssetController::class, 'store'])->whereNumber('project');
 
         // /drivers/export and /drivers/stats MUST be registered before
         // /drivers/{driver} — same reasoning as /users/export (see above).

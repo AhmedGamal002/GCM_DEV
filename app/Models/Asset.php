@@ -15,6 +15,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * $fillable excludes:
  *  - tenant_id       — stamped by BelongsToTenant
  *  - operational_status — only ever set through UpdateAssetStatusAction
+ *  - project_id      — only ever set through InsertAssetIntoProjectAction
+ *                      (null = in the pool of available assets)
  *  - updated_by      — set explicitly by the create/update actions
  *
  * Per the FRD, once created only the `name` is editable — capacity,
@@ -51,6 +53,11 @@ class Asset extends Model
     public function compatibleVehicleCategories(): BelongsToMany
     {
         return $this->belongsToMany(VehicleCategory::class, 'asset_vehicle_categories');
+    }
+
+    public function project(): BelongsTo
+    {
+        return $this->belongsTo(Project::class);
     }
 
     public function updatedBy(): BelongsTo

@@ -7,6 +7,7 @@ use App\Models\Asset;
 use App\Models\AssetCapacityCategory;
 use App\Models\Company;
 use App\Models\IntermediateFacility;
+use App\Models\Project;
 use App\Models\Tenant;
 use App\Models\User;
 use App\Models\Vehicle;
@@ -127,6 +128,35 @@ class ExportFiltersTest extends TestCase
         $this->assertSame(['Alpha Build'], $this->exported('/api/v1/companies/export?format=xlsx&search=Alpha', 'client-companies.xlsx')->pluck('name')->all());
         // the short name is searchable too
         $this->assertSame(['Beta Gulf'], $this->exported('/api/v1/companies/export?format=xlsx&search=BET', 'client-companies.xlsx')->pluck('name')->all());
+    }
+
+    public function test_project_export_honours_search_and_every_filter(): void
+    {
+        $alpha = Company::factory()->create(['name' => 'Alpha Build', 'prefix' => 'ALP']);
+        $beta = Company::factory()->create(['name' => 'Beta Gulf', 'prefix' => 'BET']);
+        Project::factory()->for($alpha)->create(['name' => 'Tower']);
+        Project::factory()->for($alpha)->deactivated()->create(['name' => 'Warehouse']);
+        Project::factory()->for($beta)->create(['name' => 'Plant']);
+
+        $names = fn (string $query) => $this->exported("/api/v1/projects/export?format=xlsx{$query}", 'projects.xlsx')->pluck('name')->sort()->values()->all();
+
+        $this->assertSame(['Plant', 'Tower', 'Warehouse'], $names(''));
+        $this->assertSame(['Tower', 'Warehouse'], $names("&company_id={$alpha->id}"));
+        $this->assertSame(['Warehouse'], $names('&operational_status=deactivated'));
+        $this->assertSame(['Plant'], $names('&search=Plant'));
+        // the ID and the company name are searchable too, like the list
+        $this->assertSame(['Plant'], $names('&search=BET-P'));
+        $this->assertSame(['Tower', 'Warehouse'], $names('&search=Alpha'));
+        // filters and search combine
+        $this->assertSame(['Tower'], $names("&company_id={$alpha->id}&operational_status=active&search=Tower"));
+    }
+
+    public function test_client_company_export_carries_the_real_project_count(): void
+    {
+        $company = Company::factory()->create(['name' => 'Alpha Build', 'prefix' => 'ALP']);
+        Project::factory()->for($company)->count(2)->create();
+
+        $this->assertSame([2], $this->exported('/api/v1/companies/export?format=xlsx', 'client-companies.xlsx')->pluck('projects_count')->all());
     }
 
     public function test_asset_category_export_honours_search_and_filter(): void

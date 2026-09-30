@@ -43,6 +43,12 @@ class AssetPolicy
         return $actor->hasAnyRole(['system_admin', 'data_entry']);
     }
 
+    /** FRD V01.14 §1.7.3 "Insert an asset into a project" — class-level, the asset is picked on the page. */
+    public function insertIntoProject(User $actor): bool
+    {
+        return $actor->hasAnyRole(['system_admin', 'data_entry']);
+    }
+
     public function updateStatus(User $actor, Asset $asset): bool
     {
         return $actor->hasAnyRole(['system_admin', 'data_entry']);

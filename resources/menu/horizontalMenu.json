@@ -472,6 +472,26 @@
           ]
         },
         {
+          "name": "Client Projects",
+          "icon": "menu-icon tf-icons ti ti-briefcase",
+          "slug": "app-project",
+          "roles": ["system_admin", "data_entry", "auditor"],
+          "submenu": [
+            {
+              "url": "app/project/list",
+              "name": "List",
+              "slug": "app-project-list",
+              "roles": ["system_admin", "data_entry", "auditor"]
+            },
+            {
+              "url": "app/project/add",
+              "name": "Add",
+              "slug": "app-project-add",
+              "roles": ["system_admin", "data_entry"]
+            }
+          ]
+        },
+        {
           "name": "Roles & Permissions",
           "icon": "menu-icon tf-icons ti ti-settings",
           "slug": "app-access",
