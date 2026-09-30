@@ -30,7 +30,7 @@
     view: @json(__('View')),
     actions: @json(__('Actions')),
     add_user: @json(__('Add User')),
-    add_gcm_staff: @json(__('GCM Staff (Data Entry / Auditor)')),
+    add_gcm_staff: @json(__('GCM Staff')),
     add_driver: @json(__('Driver')),
     search_user: @json(__('Search User')),
     no_users_found: @json(__('No users found.')),
