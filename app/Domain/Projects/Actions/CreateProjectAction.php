@@ -20,10 +20,12 @@ class CreateProjectAction
             // company_id and operational_status are outside $fillable — set explicitly.
             $project->company_id = $data['company_id'];
             $project->operational_status = $data['operational_status'] ?? 'active';
+            // Also outside $fillable — the request already validated it.
+            $project->representative_id = $data['representative_id'] ?? null;
             $project->updated_by = $actor->id;
             $project->save();
 
-            return $project->load(['company', 'updatedBy']);
+            return $project->load(['company', 'representative', 'updatedBy']);
         });
     }
 }

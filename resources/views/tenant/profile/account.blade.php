@@ -47,6 +47,39 @@
       </div>
     </div>
 
+    {{-- FRD V01.14 §1.4: a client account also manages its own signature and operational stamp. --}}
+    @if($user->isClient())
+    <div class="card mb-6" id="signature-card">
+      <h5 class="card-header">{{ __('Signature & Stamp') }}</h5>
+      <div class="card-body pt-1">
+        <div id="signature-status" class="alert alert-success d-none"></div>
+        <div id="signature-error" class="alert alert-danger d-none"></div>
+        <form id="formSignatureStamp"
+          data-nothing-message="{{ __('Choose a signature or stamp image first.') }}"
+          data-generic-error="{{ __('Something went wrong. Please try again.') }}">
+          <div class="row">
+            <div class="mb-6 col-md-6">
+              <label class="form-label" for="signature">{{ __('Signature image') }}</label>
+              <input type="file" id="signature" class="form-control" accept="image/*" />
+              @if($user->signature_image)
+                <img src="{{ route('api.users.images.download', ['user' => $user->id, 'type' => 'signature']) }}" alt="" class="border rounded bg-white p-1 mt-3" style="max-width: 100%; max-height: 100px" />
+              @endif
+            </div>
+            <div class="mb-6 col-md-6">
+              <label class="form-label" for="stamp">{{ __('Operational stamp image') }}</label>
+              <input type="file" id="stamp" class="form-control" accept="image/*" />
+              @if($user->stamp_image)
+                <img src="{{ route('api.users.images.download', ['user' => $user->id, 'type' => 'stamp']) }}" alt="" class="border rounded bg-white p-1 mt-3" style="max-width: 100%; max-height: 100px" />
+              @endif
+            </div>
+          </div>
+          <div class="text-muted small mb-4">{{ __('Allowed JPG, PNG. Max size of 2MB.') }}</div>
+          <button type="submit" class="btn btn-primary">{{ __('Save signature & stamp') }}</button>
+        </form>
+      </div>
+    </div>
+    @endif
+
     @if($user->canChangeOwnPassword())
     <div class="card" id="password-card">
       <h5 class="card-header">{{ __('Change Password') }}</h5>

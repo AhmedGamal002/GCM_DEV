@@ -3,6 +3,8 @@
 namespace App\Http\Requests\Projects;
 
 use App\Models\Project;
+use App\Models\User;
+use Closure;
 
 /**
  * FRD V01.14 §1.12.4: every project field is editable by (System Admin /
@@ -30,6 +32,30 @@ class UpdateProjectRequest extends StoreProjectRequest
 
     public function rules(): array
     {
-        return $this->baseRules();
+        return $this->baseRules() + [
+            'representative_id' => ['nullable', 'integer', $this->representativeRule()],
+        ];
+    }
+
+    /**
+     * Any active client account that can see this project qualifies. An
+     * unchanged value is always accepted so saving other fields still works
+     * after the rep was later put on vacation / deactivated.
+     */
+    protected function representativeRule(): Closure
+    {
+        return function (string $attribute, mixed $value, Closure $fail) {
+            $project = $this->targetProject();
+
+            if ((int) $value === $project->representative_id) {
+                return;
+            }
+
+            $user = User::find($value);
+
+            if (! $user || ! $user->isClient() || $user->status !== 'active' || ! $project->isVisibleTo($user)) {
+                $fail(__('Choose an active client account that has access to this project.'));
+            }
+        };
     }
 }

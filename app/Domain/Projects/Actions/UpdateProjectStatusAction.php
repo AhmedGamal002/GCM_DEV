@@ -24,6 +24,6 @@ class UpdateProjectStatusAction
         $project->updated_by = $actor->id;
         $project->save();
 
-        return $project->load(['company', 'updatedBy']);
+        return $project->load(['company', 'representative', 'updatedBy']);
     }
 }

@@ -1,6 +1,6 @@
 # GCM Portal — Postman Collection
 
-مجموعة Postman تغطي كل الـ endpoints الشغالة فعليًا في المشروع حتى الآن (الأسبوع 1 + 2 + موديولات المركبات ومجمع الأصول وإدارة السائقين من الأسبوع 3 + المنشآت الوسيطة وشركات العملاء من المرحلة 2). بتتحدث أول بأول مع كل خاصية جديدة — راجع "قاعدة التحديث" تحت.
+مجموعة Postman تغطي كل الـ endpoints الشغالة فعليًا في المشروع حتى الآن (الأسبوع 1 + 2 + موديولات المركبات ومجمع الأصول وإدارة السائقين من الأسبوع 3 + المنشآت الوسيطة وشركات العملاء ومشروعاتهم وحسابات العملاء من المرحلة 2). بتتحدث أول بأول مع كل خاصية جديدة — راجع "قاعدة التحديث" تحت.
 
 ## الملفات
 
@@ -48,4 +48,10 @@
 - **الـ exports بتحترم نفس فلاتر القائمة وبحثها** (`search` + فلاتر كل قائمة — كلهم params معطّلة في الطلبات، فعّلهم عشان تجرّب)؛ نفس الـ`filteredQuery()` اللي بتستخدمه `index`، فالملف بيحتوي بالظبط الصفوف اللي تظهر على الشاشة.
 - الـ exports (`/users/export`, `/drivers/export`, `/vehicles/export`, `/assets/export`, `/asset-capacity-categories/export`, `/companies/export`, `/projects/export`) بترجّع binary (xlsx/pdf) — في Postman دوس "Save Response" أو استخدم تبويب "Send and Download" بدل "Send" العادي عشان تقدر تفتح الملف.
 - مستندات السائق/المركبة (`/drivers/{id}/documents/{type}`، `/vehicles/{id}/documents/{doc}/download`) بترجع 404 لو مفيش ملف مرفوع فعليًا للمستند ده — طبيعي، مش باگ.
+- **حسابات العملاء** (مجلد 4: "Create Client Account" / "Update Client Account" / "Download Signature / Stamp") — بتتنشئ من `POST /client-users` بس (`POST /users` بيرفض أدوار العميل)، وتعديلها من `PATCH /client-users/{id}` (وتعديلها من `PATCH /users/{id}` بيرجّع 403). صورة التوقيع والختم على قرص خاص وبتتنزّل من `/users/{id}/images/{signature|stamp}` بس. ممثل الشركة/المشروع (`representative_id`) حقل اختياري في طلبات تعديل الشركة وإنشاء/تعديل المشروع.
 - كل حقول الأرقام في فورم المركبة (`plate_numbers`، أرقام الوثائق، رقم التصريح) بتقبل أرقام فقط — أي حروف بترجّع 422.
+
+## نسخة المرحلة الأولى لـ gcm.digitswat.com
+
+- **`GCM-Portal-Phase1.postman_collection.json`** — المرحلة الأولى بس: Auth / Profile / Roles / Users / Drivers / Vehicles / Assets (مجلدات 1-7). **من غير أي حاجة تخص الـPlatform أو تعدد الشركات (multi-tenant)** ومن غير المنشآت الوسيطة وشركات العملاء والمشروعات، وأسماء المتغيرات والأوصاف اتنضّفت من أي إشارة ليهم. متولّدة من الـcollection الكاملة، فلو اتغيّرت حاجة في المرحلة الأولى حدّث الاتنين.
+- **`GCM-Portal-Phase1-digitswat.postman_environment.json`** — `base_url` = `https://gcm.digitswat.com`، و`auth_email`/`auth_password` **فاضيين عمدًا** — املاهم من Postman بعد الـimport ومتحطهمش في الملف قبل ما تعمل commit. شغّل "1. Auth ← Login" الأول (بيحفظ `auth_token` تلقائي).

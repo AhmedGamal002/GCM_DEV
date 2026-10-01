@@ -32,13 +32,14 @@ The only screen exclusive to the System Admin among tenant roles.
 - 7-column table: code / user / affiliation / entity / role / status / actions.
 - **Pagination, sorting, and search are all server-side** — performs well even with thousands of users.
 - Search matches by name, email, or code.
-- Filters: role (data_entry / auditor / driver) + status (active / on vacation / deactivated).
+- Filters: affiliation (GCM / Client) + company + role (data_entry / auditor / client project manager / client project auditor / driver) + status (active / on vacation / deactivated). Client accounts show their company in the "Entity" column.
 - **Export** button (Excel / PDF).
 
 ### "Add User" button — dropdown
-- **GCM Staff (Data Entry / Auditor)** → standard user-creation form.
+- **GCM Staff** → standard user-creation form (Data Entry / Auditor roles).
+- **Client Account (Project Manager / Auditor)** → the dedicated client-account form (`/app/client-user/add`) — see "Client accounts" below.
 - **Driver** → sends you to the dedicated driver-creation page (`/app/driver/add`) — a different form.
-- *(Client and Contractor options land in Week 4–5.)*
+- *(The Contractor-user option arrives with the Contractors module.)*
 
 ### Create GCM user
 - Fields: name, email, phone, photo (optional), password, status, role (data_entry or auditor only — not system_admin or driver), additional data (optional).
@@ -49,6 +50,15 @@ The only screen exclusive to the System Admin among tenant roles.
 - **New password (optional):** on the edit page you can set a new password + confirmation for any user or driver — leave it blank to keep the current one. This is how you set someone else's password (every user can also change their own from the profile page).
 - If the user is a driver, the edit page shows a notice pointing you to the driver-edit page (residence/license/insurance details are edited there).
 - **Empty "Additional Data" does not render** as an empty heading on the details page.
+
+### Client accounts — `/app/client-user/add` and `/app/client-user/edit/{id}`
+A client account is a **Project Manager** or **Project Auditor** of one client company.
+- **Create:** name, email, mobile, password (+ confirm), photo (optional), **company** (live-search list — **active** companies only), **role** (Project Manager / Project Auditor), **projects** — either **All projects** (every project of the company, including ones created later) or **Specific projects** (a checklist of the company's active projects; at least one), status, signature image and operational stamp image (both optional, PNG/JPG, max 2 MB), additional data.
+- **Details** (`/app/user/view/{id}`): the company (link), the projects (links, or "All projects") and the signature/stamp images. The images are private — they load through a permission-checked URL, never a public link.
+- **Edit:** every field except the email. A blank password keeps the current one; a file input left empty keeps the stored image. Changing the company clears the ticked projects (they belong to the old company). Status is changed from the edit form or the details page like any other account.
+- The generic "Edit" form for GCM staff refuses a client account (it shows a link to the client form instead) — it would otherwise re-role the account.
+- **Representatives:** an account can be picked as the **company representative** (Client Companies → Edit; project managers of that company only) or the **project representative** (Projects → Add/Edit; accounts that can see the project). If you later demote it, move it to another company, or remove the project from it, the representative field is cleared automatically.
+- Client accounts currently sign in and reach **My Profile only** (photo, password, signature/stamp) — their trips/contracts/reports pages come with those modules.
 
 ### Change user status
 - Active / on vacation / deactivated — from the details page.
@@ -152,12 +162,12 @@ System Admin: view, create, edit, deactivate / reactivate, export. Facilities ar
 Sidebar: heading **Clients & Projects** → **Client Companies** (List + Add).
 
 ### List
-- Server-side table: ID, Company, Company representative (`—` until client accounts exist), Projects (the real count) and Users (`0` until client accounts exist), Status, Actions. Search by name, short name or ID + a status filter + Excel/PDF export honouring the same filters.
+- Server-side table: ID, Company, Company representative (the name, or `—`), Projects and Users (the real counts), Status, Actions. Search by name, short name or ID + a status filter + Excel/PDF export honouring the same filters.
 
 ### Create a client company
 - **Required:** name, short name (3 unique English letters — shown in upper case), status (active by default).
 - **The ID is generated automatically = the short name + a running number** (`ALN-0001`, then `GPC-0002`…). That is why **the short name is locked after creation**, and the numbers of the company's projects, contracts and trips (once built) will be made from it.
-- **Optional:** business sector, logo, phone, email, address, map link (`http`/`https` only), contract number + start/end dates + contract copy, commercial registration (number + copy), tax registration (number + copy), additional data. Numbers are digits only; attachments are PDF or images up to 4 MB (logo 2 MB).
+- **Optional:** business sector, logo, phone, email, address, map link (`http`/`https` only), contract number + start/end dates + contract copy, commercial registration (number + copy), tax registration (number + copy), additional data. Numbers are digits only; attachments are PDF or images up to 4 MB (logo 2 MB). The **client representative account** is chosen on the **edit** page (one of the company's active project managers) — on the create page the field is shown but locked — a company being created has no accounts yet.
 
 ### Details and edit
 - Details page: the data + download links for the attachments + statistics (projects — the real count; contracts, trips and waste moved are `0` for now) + a **company projects** table (search + status filter + export + an "Add Project" button that opens the form with the company selected).
@@ -169,12 +179,12 @@ Sidebar: heading **Clients & Projects** → **Client Companies** (List + Add).
 Sidebar: heading **Clients & Projects** → **Client Projects** (List + Add). A project is a work site of a client company (the place trips leave from).
 
 ### List
-- Server-side table: ID, Company, Project, Contracts and Users (`0` until those modules exist), Status, Actions. Search by name, ID or company name + a company filter + a status filter + Excel/PDF export honouring the same filters.
+- Server-side table: ID, Company, Project, Contracts (`0` until that module exists) and Users (client accounts that can see the project), Status, Actions. Search by name, ID or company name + a company filter + a status filter + Excel/PDF export honouring the same filters.
 
 ### Create a project
 - **Required:** name, **client company** (live search — **active** companies only), status (active by default).
 - **The ID is generated automatically = the company's short name + `P` + a running number per company** (`ALN-P0001`, `ALN-P0002`…). That is why **the company is locked after creation**.
-- **Optional:** operational region, phone, email, address, map link (`http`/`https` only), additional data. (The "project representative account" field is not there yet — it needs client accounts.)
+- **Optional:** operational region, phone, email, address, map link (`http`/`https` only), additional data, and the **project representative account** (an active client account that can see the project; on create only the chosen company's "all projects" accounts are listed).
 
 ### Details and edit
 - Details page: the data + statistics (contracts, trips, waste — `0` for now) + the contracts section (not built yet) + a table of the **assets in the project** (type filter + export + an insert-asset button).
@@ -185,11 +195,11 @@ Sidebar: heading **Clients & Projects** → **Client Projects** (List + Add). A 
 
 | Module | Available | Deferred |
 |---|---|---|
-| Users | Full CRUD + status + export | "Client"/"Contractor" options in the Add button (Week 4–5) |
+| Users | Full CRUD + status + export + **client accounts** (company, all/specific projects, signature & stamp) | "Contractor user" option in the Add button (with the Contractors module) |
 | Vehicles | Full CRUD + status + export + embedded container | "on a trip" column/counter + vehicle trip log (Week 7) |
 | Drivers | Full CRUD + default vehicle + documents + permits | "on a trip" status (Week 7), mobile app |
 | Assets | Full CRUD + categories + status + export + **insert an asset into a project** + "in a project" availability | Taking an asset out of a project (with trips) |
 | Intermediate facilities | Create / edit / deactivate + prefix + recycling efficiency + contract + export | Sub-service list on the details page and the "in use" lock (with the Services module) |
-| Client companies | Full CRUD + deactivate/reactivate + attachments + export + projects count + company projects table | Representative, users count and the contracts section (Week 6 + client accounts) |
-| Client projects | Full CRUD + deactivate/reactivate + ID from the company short name + project assets + export | Representative, users count, contracts section and trip statistics |
+| Client companies | Full CRUD + deactivate/reactivate + attachments + export + projects count + company projects table + **representative + users count** | The contracts section (with Contracts) |
+| Client projects | Full CRUD + deactivate/reactivate + ID from the company short name + project assets + export + **representative + users count** | Contracts section and trip statistics |
 | Dashboard | Shell screen | Real stats (Week 8) |

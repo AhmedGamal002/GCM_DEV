@@ -28,4 +28,21 @@ class DatabaseSeederTest extends TestCase
         $this->assertTrue($driverUser->hasRole('driver'));
         $this->assertNotNull($driverUser->driver, 'Seeded driver@gcm.test has no matching drivers row.');
     }
+
+    public function test_seeded_client_accounts_belong_to_a_company_with_the_right_project_access(): void
+    {
+        $this->seed(DatabaseSeeder::class);
+
+        $manager = User::where('email', 'client.manager@gcm.test')->firstOrFail();
+        $auditor = User::where('email', 'client.auditor@gcm.test')->firstOrFail();
+
+        $this->assertTrue($manager->hasRole('client_project_manager'));
+        $this->assertTrue($manager->all_projects);
+        $this->assertSame('ALN', $manager->company->prefix);
+        $this->assertSame($manager->id, $manager->company->representative_id);
+
+        $this->assertTrue($auditor->hasRole('client_project_auditor'));
+        $this->assertSame(['Al Noor Tower'], $auditor->projects()->pluck('name')->all());
+        $this->assertSame($auditor->id, $auditor->projects()->first()->representative_id);
+    }
 }

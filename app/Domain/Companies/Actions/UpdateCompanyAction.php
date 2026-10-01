@@ -22,13 +22,19 @@ class UpdateCompanyAction
     {
         return DB::transaction(function () use ($company, $data, $files, $actor) {
             $company->fill($data);
+
+            // Outside $fillable — the request already validated it.
+            if (array_key_exists('representative_id', $data)) {
+                $company->representative_id = $data['representative_id'];
+            }
+
             $company->updated_by = $actor->id;
 
             StoreCompanyFiles::into($company, $files);
 
             $company->save();
 
-            return $company->load('updatedBy');
+            return $company->load(['updatedBy', 'representative']);
         });
     }
 }

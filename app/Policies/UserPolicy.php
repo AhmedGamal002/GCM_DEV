@@ -39,7 +39,8 @@ class UserPolicy
 
     /**
      * A driver's editable record lives entirely under the Drivers module
-     * (PATCH /api/v1/drivers/{id}) — never here, regardless of payload.
+     * (PATCH /api/v1/drivers/{id}) — never here, regardless of payload; a
+     * client account's under the client accounts endpoint (see updateClient()).
      * Blocking it at the policy level (not just UserAddController's/the
      * FormRequest's role whitelist) means it holds even if someone posts
      * directly to this endpoint bypassing the UI. See StoreUserRequest's
@@ -47,7 +48,19 @@ class UserPolicy
      */
     public function update(User $actor, User $target): bool
     {
-        return $this->canManage($actor, $target) && ! $target->hasRole('driver');
+        return $this->canManage($actor, $target) && ! $target->hasRole('driver') && ! $target->isClient();
+    }
+
+    /**
+     * A client account's editable record lives entirely under the client
+     * accounts endpoint (PATCH /api/v1/client-users/{id}) — its company,
+     * project access and signature/stamp don't exist on the generic form,
+     * and that form would re-role it to data_entry/auditor. Same split as
+     * drivers (see update()).
+     */
+    public function updateClient(User $actor, User $target): bool
+    {
+        return $this->canManage($actor, $target) && $target->isClient();
     }
 
     public function updateStatus(User $actor, User $target): bool

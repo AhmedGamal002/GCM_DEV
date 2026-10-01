@@ -7,9 +7,9 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
 
 /**
- * GCM-side roles only for Week 1. Client/contractor roles
- * (client_project_manager, client_project_auditor, contractor_user) are
- * added in Week 4-5 once Company/Contractor exist.
+ * The four GCM-side roles plus the two client-company roles (FRD V01.14
+ * §1.4: Project Manager / Project Auditor). The contractor-user role is
+ * added with the Contractor module.
  */
 class RoleSeeder extends Seeder
 {
@@ -17,7 +17,7 @@ class RoleSeeder extends Seeder
     {
         app(PermissionRegistrar::class)->forgetCachedPermissions();
 
-        foreach (['system_admin', 'data_entry', 'auditor', 'driver'] as $role) {
+        foreach (['system_admin', 'data_entry', 'auditor', 'driver', 'client_project_manager', 'client_project_auditor'] as $role) {
             Role::firstOrCreate(['name' => $role, 'guard_name' => 'web']);
         }
     }

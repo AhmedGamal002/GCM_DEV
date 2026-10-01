@@ -33,7 +33,7 @@ class ReadOnlyRoleListTest extends TestCase
 
         $response->assertOk();
         $this->assertEqualsCanonicalizing(
-            ['system_admin', 'data_entry', 'auditor', 'driver'],
+            ['system_admin', 'data_entry', 'auditor', 'driver', 'client_project_manager', 'client_project_auditor'],
             $response->json()
         );
     }
@@ -45,6 +45,8 @@ class ReadOnlyRoleListTest extends TestCase
             ['data_entry'],
             ['auditor'],
             ['driver'],
+            ['client_project_manager'],
+            ['client_project_auditor'],
         ];
     }
 

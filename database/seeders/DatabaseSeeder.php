@@ -51,6 +51,9 @@ class DatabaseSeeder extends Seeder
         User::factory()->create(['name' => 'Auditor', 'email' => 'auditor@gcm.test'])
             ->assignRole('auditor');
 
+        // Client-company accounts (FRD §1.4) — need the companies/projects seeded above.
+        $this->call(ClientUserSeeder::class);
+
         // A driver needs a matching `drivers` row (residence/license/
         // insurance), not just the role — assignRole() alone reproduced
         // the real bug this seeder is now written to avoid: a driver

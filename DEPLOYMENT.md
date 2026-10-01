@@ -153,6 +153,14 @@ php artisan migrate --force
 - غيّر الباسوردات فورًا بعد الزرع، أو
 - احمي البيئة كلها بـ HTTP Basic Auth من hPanel (Advanced → Password Protect Directories) لحد ما يبقى فيها بيانات حقيقية.
 
+**⚠️ أدوار العميل (`client_project_manager` / `client_project_auditor`) بتتزرع من `RoleSeeder` مش من migration** — على بيئة موجودة أصلًا (`staging`/`production`) شغّل بعد `migrate` مرة واحدة:
+
+```bash
+php artisan db:seed --class=RoleSeeder --force
+```
+
+(آمن يتكرر — `firstOrCreate`). من غيرها إنشاء أول حساب عميل هيرمي `RoleDoesNotExist`. وpartial `migrate` بيغيّر عمود `users.affiliation` (enum بقى فيه `client`) وبيضيف `company_id`/`all_projects`/`signature_image`/`stamp_image` وجدول `project_user` وعمود `representative_id` على الشركات والمشروعات.
+
 **متستخدمش `migrate:fresh` على أي بيئة بيانها محتفظ بيه بين مرات** (خصوصًا `staging`/`production`) — بيمسح كل حاجة. `migrate:fresh` مقبول بس في `dev` أو `testing` لما تصفّر التجربة عن قصد.
 
 ## 8. الأصول (JS/CSS)

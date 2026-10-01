@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V1\Auth\LogoutController;
 use App\Http\Controllers\Api\V1\Auth\MeController;
 use App\Http\Controllers\Api\V1\Auth\NewPasswordController;
 use App\Http\Controllers\Api\V1\Auth\PasswordResetLinkController;
+use App\Http\Controllers\Api\V1\ClientUserController;
 use App\Http\Controllers\Api\V1\CompanyController;
 use App\Http\Controllers\Api\V1\DriverController;
 use App\Http\Controllers\Api\V1\FacilityController;
@@ -48,6 +49,14 @@ Route::prefix('v1')->group(function () {
         Route::get('/users/{user}', [UserController::class, 'show']);
         Route::patch('/users/{user}', [UserController::class, 'update']);
         Route::patch('/users/{user}/status', [UserController::class, 'status']);
+        Route::get('/users/{user}/images/{type}', [UserController::class, 'downloadImage'])
+            ->whereNumber('user')
+            ->name('api.users.images.download');
+
+        // Client accounts (Part 6 of Phase 2, FRD V01.14 §1.4) — created and edited only here,
+        // never through the generic /users form (see StoreClientUserRequest).
+        Route::post('/client-users', [ClientUserController::class, 'store']);
+        Route::patch('/client-users/{user}', [ClientUserController::class, 'update'])->whereNumber('user');
 
         // Fleet — Vehicles (Week 3). Read-only reference lists first, then
         // the resource. /vehicles/export and /vehicles/stats MUST come

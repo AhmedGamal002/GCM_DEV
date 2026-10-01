@@ -67,6 +67,19 @@
           <div class="text-danger small mt-1 d-none" data-feedback></div>
         </div>
 
+        <div class="col-md-6">
+          <label class="form-label" for="representative_id">{{ __('Project representative account') }}</label>
+          <select id="representative_id" name="representative_id" class="select2 form-select" data-placeholder="{{ __('No representative') }}">
+            <option value=""></option>
+          </select>
+          <div class="form-text">
+            {{ $isCreate
+              ? __('Optional. Lists the selected company\'s accounts that have access to all its projects — you can also choose one later, once accounts are assigned to this project.')
+              : __('Optional. Lists the client accounts that have access to this project.') }}
+          </div>
+          <div class="text-danger small mt-1 d-none" data-feedback></div>
+        </div>
+
         @if($isCreate)
           <div class="col-md-6">
             <label class="form-label d-block">{{ __('Operational status') }}</label>

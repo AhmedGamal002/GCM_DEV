@@ -19,6 +19,7 @@ final class PdfLabels
         // affiliation
         'gcm' => 'GCM',
         'contractor' => 'Contractor',
+        'client' => 'Client',
         // asset type / category scope
         'container' => 'Container',
         'tank' => 'Tank',
@@ -32,6 +33,9 @@ final class PdfLabels
         'data_entry' => 'Data Entry',
         'auditor' => 'Auditor',
         'driver' => 'Driver',
+        // client-company roles
+        'client_project_manager' => 'Project Manager',
+        'client_project_auditor' => 'Project Auditor',
     ];
 
     public static function of(?string $value): string

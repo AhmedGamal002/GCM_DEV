@@ -17,6 +17,13 @@
     saved: @json(__('Changes saved successfully.')),
     generic_error: @json(__('Something went wrong. Please try again.')),
     edit_url_base: @json(url('/app/user/edit')),
+    client_edit_url_base: @json(url('/app/client-user/edit')),
+    all_projects: @json(__('All projects')),
+    role_client_project_manager: @json(__('Project Manager')),
+    role_client_project_auditor: @json(__('Project Auditor')),
+    affiliation_client: @json(__('Client')),
+    company_url_base: @json(url('/app/company/view')),
+    project_url_base: @json(url('/app/project/view')),
     last_updated_by: @json(__('Last updated by :name — :at'))
   };
   window.userViewId = {{ $userId }};
@@ -55,7 +62,19 @@
           <li class="mb-2"><span class="h6">{{ __('Affiliation') }}:</span> <span id="uv-affiliation"></span></li>
           <li class="mb-2"><span class="h6">{{ __('Entity') }}:</span> <span id="uv-entity"></span></li>
           <li class="mb-2"><span class="h6">{{ __('Job Role') }}:</span> <span id="uv-role"></span></li>
+          {{-- Client accounts only (FRD §1.4) --}}
+          <li class="mb-2 d-none" id="uv-projects-row"><span class="h6">{{ __('Projects') }}:</span> <span id="uv-projects"></span></li>
         </ul>
+        <div id="uv-images" class="d-none mb-6">
+          <div class="mb-3 d-none" id="uv-signature-wrap">
+            <span class="h6 d-block mb-2">{{ __('Signature image') }}:</span>
+            <img id="uv-signature" class="border rounded bg-white p-1" style="max-width: 100%; max-height: 120px" alt="" />
+          </div>
+          <div class="mb-3 d-none" id="uv-stamp-wrap">
+            <span class="h6 d-block mb-2">{{ __('Operational stamp image') }}:</span>
+            <img id="uv-stamp" class="border rounded bg-white p-1" style="max-width: 100%; max-height: 120px" alt="" />
+          </div>
+        </div>
         <div id="uv-additional-wrapper" class="mb-6 d-none">
           <span class="h6 d-block mb-2">{{ __('Additional Data') }}:</span>
           <div id="uv-additional"></div>

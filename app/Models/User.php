@@ -4,10 +4,12 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Concerns\BelongsToTenant;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
@@ -15,6 +17,9 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable
 {
   use BelongsToTenant, HasApiTokens, HasFactory, HasRoles, Notifiable;
+
+  /** FRD §1.4 — the two roles that belong to a client company. */
+  public const CLIENT_ROLES = ['client_project_manager', 'client_project_auditor'];
 
   protected $guard_name = 'web';
 
@@ -59,6 +64,7 @@ class User extends Authenticatable
     return [
       'email_verified_at' => 'datetime',
       'password' => 'hashed',
+      'all_projects' => 'boolean',
     ];
   }
 
@@ -84,6 +90,49 @@ class User extends Authenticatable
   public function driver(): HasOne
   {
     return $this->hasOne(Driver::class);
+  }
+
+  /** The client company a client account belongs to (null for everyone else). */
+  public function company(): BelongsTo
+  {
+    return $this->belongsTo(Company::class);
+  }
+
+  /** The projects a client account was assigned to (only used when all_projects is false). */
+  public function projects(): BelongsToMany
+  {
+    return $this->belongsToMany(Project::class);
+  }
+
+  /**
+   * The FRD list's "اسم الجهة التابع لها": the operating company (the
+   * tenant) for GCM staff and drivers, the client company for a client
+   * account. Contractor accounts land with the Contractor module.
+   */
+  public function entityName(): ?string
+  {
+    return match ($this->affiliation) {
+      'gcm' => $this->tenant?->name,
+      'client' => $this->company?->name,
+      default => null,
+    };
+  }
+
+  public function isClient(): bool
+  {
+    return $this->hasAnyRole(self::CLIENT_ROLES);
+  }
+
+  /**
+   * FRD §1.4 — a client account sees the projects of ITS company only:
+   * every one of them when it was given "all projects" (current and
+   * future), otherwise just the ones it was assigned. Anyone who isn't a
+   * client account gets an empty list here (GCM staff aren't limited to a
+   * company, so callers don't ask them this question).
+   */
+  public function accessibleProjects(): Builder
+  {
+    return Project::query()->visibleTo($this);
   }
 
   /** FRD: view/edit pages show "Last updated by X — <datetime>". */

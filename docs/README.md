@@ -32,4 +32,5 @@
 | 4 (جزء من المرحلة 2) | شركات العملاء | ✅ | `acceptance/week-4-client-companies.md` |
 | 5 (المرحلة 2) | المنشآت الوسيطة (الخدمات والمتعهدين لسه) | ✅ | `acceptance/week-5-facilities.md` |
 | 5 (المرحلة 2) | مشروعات العملاء + إدراج أصل في مشروع | ✅ | `acceptance/week-5-projects.md` |
+| 5 (المرحلة 2) | حسابات العملاء (مدير/مراقب مشروعات) + ممثل الشركة والمشروع | ✅ | `acceptance/week-5-client-accounts.md` |
 | 6+ | Contracts / Trips … | — (مؤجل) | — (مؤجل) |

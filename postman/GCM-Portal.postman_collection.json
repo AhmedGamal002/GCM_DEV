@@ -2,7 +2,7 @@
   "info": {
     "name": "GCM Portal",
     "_postman_id": "b1e9d8b0-6f5a-4b0a-9c1a-gcmportal0001",
-    "description": "GCM Portal API + Platform (Super Admin) collection. Covers everything shipped through Phase 2 so far (Intermediate Facilities, Client Companies, Client Projects) on top of Week 3 (Assets, Vehicles + Driver Management): Tenant Auth, Users, Roles (read-only), Profile, Drivers, Vehicles, Assets & Supply Hub, Intermediate Facilities, Client Companies, and Platform (Tenants/Roles/Permissions CRUD).\n\nSee postman/README.md in the repo for how the two auth flows work (Bearer token for /api/v1/*, session+CSRF for /platform/*) and the convention to follow when adding a new endpoint's request here.\n\nKeep this file updated alongside the code: every new API/Platform route gets a request added here in the same PR/session that adds the route.",
+    "description": "GCM Portal API + Platform (Super Admin) collection. Covers everything shipped through Phase 1 .",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "auth": {
@@ -334,6 +334,48 @@
           }
         },
         {
+          "name": "Update Profile (Signature & Stamp — client accounts)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "_method",
+                  "value": "PATCH",
+                  "type": "text"
+                },
+                {
+                  "key": "signature",
+                  "type": "file",
+                  "src": [],
+                  "description": "Client accounts only (422 for everyone else). Either one alone is enough; the other is kept."
+                },
+                {
+                  "key": "stamp",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{api_base}}/me",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "me"
+              ]
+            }
+          }
+        },
+        {
           "name": "Change Password",
           "request": {
             "method": "PATCH",
@@ -430,7 +472,7 @@
                   "key": "role",
                   "value": "data_entry",
                   "disabled": true,
-                  "description": "data_entry | auditor | driver | system_admin"
+                  "description": "data_entry | auditor | client_project_manager | client_project_auditor | driver | system_admin"
                 },
                 {
                   "key": "search",
@@ -449,6 +491,24 @@
                   "value": "asc",
                   "disabled": true,
                   "description": "asc | desc"
+                },
+                {
+                  "key": "affiliation",
+                  "value": "client",
+                  "disabled": true,
+                  "description": "gcm | client"
+                },
+                {
+                  "key": "company_id",
+                  "value": "{{last_company_id}}",
+                  "disabled": true,
+                  "description": "client accounts of one company"
+                },
+                {
+                  "key": "project_id",
+                  "value": "{{last_project_id}}",
+                  "disabled": true,
+                  "description": "accounts that can see one project (all-projects holders + assigned) — feeds the project representative picker"
                 }
               ]
             },
@@ -730,6 +790,188 @@
               ]
             },
             "description": "status: active | on_vacation | deactivated. Deactivating a system_admin always fails (422) regardless of who asks — see CannotDeactivateSystemAdminException."
+          }
+        },
+        {
+          "name": "Create Client Account",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Client Project Manager",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "client.pm+{{$timestamp}}@gcm.test",
+                  "type": "text"
+                },
+                {
+                  "key": "phone",
+                  "value": "0100000{{$timestamp}}",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "Password123!",
+                  "type": "text"
+                },
+                {
+                  "key": "password_confirmation",
+                  "value": "Password123!",
+                  "type": "text"
+                },
+                {
+                  "key": "company_id",
+                  "value": "{{last_company_id}}",
+                  "type": "text",
+                  "description": "An ACTIVE client company"
+                },
+                {
+                  "key": "role",
+                  "value": "client_project_manager",
+                  "type": "text",
+                  "description": "client_project_manager | client_project_auditor"
+                },
+                {
+                  "key": "projects_scope",
+                  "value": "all",
+                  "type": "text",
+                  "description": "all = every project of the company (current and future) | specific = only project_ids[]"
+                },
+                {
+                  "key": "project_ids[]",
+                  "value": "{{last_project_id}}",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "Required when projects_scope=specific; active projects of the chosen company"
+                },
+                {
+                  "key": "status",
+                  "value": "active",
+                  "type": "text",
+                  "description": "active | on_vacation | deactivated"
+                },
+                {
+                  "key": "photo",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "signature",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true,
+                  "description": "Image, max 2 MB — stored privately"
+                },
+                {
+                  "key": "stamp",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true,
+                  "description": "Operational stamp image, max 2 MB — stored privately"
+                },
+                {
+                  "key": "additional_data",
+                  "value": "",
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{api_base}}/client-users",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "client-users"
+              ]
+            },
+            "description": "FRD V01.14 §1.4. Client accounts are created ONLY here (POST /users refuses client roles). Saves last_user_id."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    if (body.data && body.data.id) {",
+                  "        pm.collectionVariables.set('last_user_id', body.data.id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Client Account",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Client Project Manager (edited)\",\n  \"phone\": \"0100000000\",\n  \"role\": \"client_project_manager\",\n  \"company_id\": {{last_company_id}},\n  \"projects_scope\": \"all\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/client-users/{{last_user_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "client-users",
+                "{{last_user_id}}"
+              ]
+            },
+            "description": "Every field except the email. Omit password to keep the current one. Status goes through \"Update User Status\". To replace the signature/stamp send multipart (POST with _method=PATCH) with signature/stamp files. 403 for a non-client account."
+          }
+        },
+        {
+          "name": "Download Signature / Stamp",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/users/{{last_user_id}}/images/signature",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "users",
+                "{{last_user_id}}",
+                "images",
+                "signature"
+              ]
+            },
+            "description": "signature | stamp — private disk, served only through this Gate-checked route (the account itself, system_admin, data_entry, auditor). 404 if none uploaded."
           }
         }
       ]
@@ -3509,6 +3751,13 @@
                   "value": "<p>notes</p>",
                   "type": "text",
                   "disabled": true
+                },
+                {
+                  "key": "representative_id",
+                  "value": "{{last_user_id}}",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "Optional. An active client_project_manager of THIS company (offered on edit only — a new company has no accounts yet). Empty = none."
                 }
               ]
             },
@@ -3770,7 +4019,7 @@
                 "projects"
               ]
             },
-            "description": "name + company_id + operational_status are required. company_id must be one of the tenant's ACTIVE client companies. The project ID (code) is generated: the company short name + \"P\" + a running number per company, e.g. ALN-P0001. The company cannot be changed after creation. location_url is http/https only."
+            "description": "name + company_id + operational_status are required. company_id must be one of the tenant's ACTIVE client companies. The project ID (code) is generated: the company short name + \"P\" + a running number per company, e.g. ALN-P0001. The company cannot be changed after creation. location_url is http/https only. Optional \"representative_id\": an active client account that can see the project (on create: the company's all-projects accounts only)."
           }
         },
         {
@@ -3825,7 +4074,7 @@
                 "{{last_project_id}}"
               ]
             },
-            "description": "Every field is editable except the company (locked — the project ID is built from it) and the status (own endpoint). A company_id in the payload is ignored."
+            "description": "Every field is editable except the company (locked — the project ID is built from it) and the status (own endpoint). A company_id in the payload is ignored. Optional \"representative_id\": an active client account that can see the project (on create: the company's all-projects accounts only)."
           }
         },
         {

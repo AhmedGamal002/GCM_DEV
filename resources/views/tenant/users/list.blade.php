@@ -4,16 +4,16 @@
 
 @section('vendor-style')
 @vite([
-  'resources/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.scss',
-  'resources/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.scss',
-  'resources/assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.scss'
+'resources/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.scss',
+'resources/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.scss',
+'resources/assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.scss'
 ])
 @endsection
 
 @section('vendor-script')
 @vite([
-  'resources/assets/vendor/libs/moment/moment.js',
-  'resources/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js'
+'resources/assets/vendor/libs/moment/moment.js',
+'resources/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js'
 ])
 @endsection
 
@@ -22,6 +22,10 @@
   window.userListTranslations = {
     no_permission: @json(__("You don't have permission to view this data.")),
     all_roles: @json(__('All roles')),
+    all_affiliations: @json(__('All affiliations')),
+    all_companies: @json(__('All companies')),
+    affiliation_gcm: @json(__('GCM')),
+    affiliation_client: @json(__('Client')),
     all_statuses: @json(__('All statuses')),
     active: @json(__('Active')),
     on_vacation: @json(__('On Vacation')),
@@ -30,8 +34,9 @@
     view: @json(__('View')),
     actions: @json(__('Actions')),
     add_user: @json(__('Add User')),
-    add_gcm_staff: @json(__('GCM Staff (Data Entry / Auditor)')),
+    add_gcm_staff: @json(__('GCM Staff')),
     add_driver: @json(__('Driver')),
+    add_client: @json(__('Client Account (Project Manager / Auditor)')),
     search_user: @json(__('Search User')),
     no_users_found: @json(__('No users found.')),
     generic_error: @json(__('Something went wrong. Please try again.')),
@@ -41,6 +46,7 @@
     created: @json(__('User created successfully.')),
     add_user_url: @json(route('app-user-add')),
     add_driver_url: @json(route('app-driver-add')),
+    add_client_url: @json(route('app-client-user-add')),
     view_url_base: @json(url('/app/user/view')),
     edit_url_base: @json(url('/app/user/edit'))
   };
@@ -51,8 +57,8 @@
 @section('content')
 
 @include('_partials.breadcrumb', ['pageTitle' => __('User Management'), 'breadcrumbs' => [
-  ['title' => __('Users'), 'url' => route('app-user-list')],
-  ['title' => __('List')],
+['title' => __('Users'), 'url' => route('app-user-list')],
+['title' => __('List')],
 ]])
 
 <div id="user-list-status" class="alert alert-success d-none"></div>
@@ -62,8 +68,10 @@
   <div class="card-header border-bottom">
     <h5 class="card-title mb-0">{{ __('Filters') }}</h5>
     <div class="d-flex justify-content-between align-items-center row pt-4 gap-4 gap-md-0">
-      <div class="col-md-4 user_role"></div>
-      <div class="col-md-4 user_status"></div>
+      <div class="col-md-3 user_affiliation"></div>
+      <div class="col-md-3 user_company"></div>
+      <div class="col-md-3 user_role"></div>
+      <div class="col-md-3 user_status"></div>
     </div>
   </div>
   <div class="card-datatable table-responsive">

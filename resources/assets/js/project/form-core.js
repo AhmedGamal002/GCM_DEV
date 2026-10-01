@@ -166,6 +166,40 @@ export function initProjectForm(opts) {
       });
   });
 
+  // ------------------------------------------- representative account picker
+  // FRD V01.12: "حساب ممثل المشروع" — one of the project's client accounts.
+  // On create the project has no explicitly assigned accounts yet, so only
+  // the chosen company's "all projects" accounts qualify; on edit it is every
+  // account that can see the project (`project_id` filter of /users).
+  const repSelect = form.querySelector('#representative_id');
+  const CLIENT_ROLES = ['client_project_manager', 'client_project_auditor'];
+
+  function fillRepresentatives(users, selectedId, current) {
+    repSelect.innerHTML = '<option value=""></option>';
+    const seen = new Set();
+    const add = (u) => {
+      if (seen.has(u.id)) return;
+      seen.add(u.id);
+      const opt = document.createElement('option');
+      opt.value = u.id;
+      opt.textContent = `${u.name} (${u.email})`;
+      repSelect.appendChild(opt);
+    };
+    users.forEach(add);
+    // Keep the saved representative selectable even if it is no longer listed
+    // (e.g. put on vacation since) — otherwise saving would silently drop it.
+    if (current) add(current);
+    repSelect.value = selectedId ? String(selectedId) : '';
+    window.refreshGcmSelect(repSelect);
+  }
+
+  function loadRepresentatives(params, selectedId, current, keepOnly) {
+    return window
+      .gcmFetchAll('/api/v1/users', Object.assign({ status: 'active', sort_by: 'name' }, params))
+      .then((users) => fillRepresentatives(users.filter((u) => u.roles.some((r) => CLIENT_ROLES.includes(r)) && (!keepOnly || keepOnly(u))), selectedId, current))
+      .catch(() => fillRepresentatives([], selectedId, current));
+  }
+
   // --------------------------------------------------------- mode bootstrap
   function prefill(p) {
     const set = (field, value) => {
@@ -195,7 +229,15 @@ export function initProjectForm(opts) {
     const companySelect = form.querySelector('#company_id');
     // A change made through Select2 is a jQuery event, not a native one.
     window.$(companySelect).on('change', () => clearFieldError(companySelect));
+    window.$(repSelect).on('change', () => clearFieldError(repSelect));
     window.initGcmSelects(form);
+    fillRepresentatives([], null);
+
+    const reloadRepresentatives = () => {
+      if (!companySelect.value) return fillRepresentatives([], null);
+      return loadRepresentatives({ company_id: companySelect.value }, null, null, (u) => u.projects_scope === 'all');
+    };
+    window.$(companySelect).on('change', reloadRepresentatives);
 
     window
       .gcmFetchAll('/api/v1/companies', { operational_status: 'active', sort_by: 'name' })
@@ -213,6 +255,7 @@ export function initProjectForm(opts) {
           companySelect.value = preselected;
         }
         window.refreshGcmSelect(companySelect);
+        if (companySelect.value) reloadRepresentatives();
       })
       .catch((error) => {
         errorBox.textContent = (error.response && error.response.data && error.response.data.message) || t.generic_error;
@@ -232,6 +275,9 @@ export function initProjectForm(opts) {
       .then((res) => {
         const project = res.data.data;
         prefill(project);
+        window.$(repSelect).on('change', () => clearFieldError(repSelect));
+        window.initGcmSelects(form);
+        loadRepresentatives({ project_id: id }, project.representative && project.representative.id, project.representative);
         loading.classList.add('d-none');
         form.classList.remove('d-none');
         onLoaded(project);

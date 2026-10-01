@@ -6,7 +6,7 @@
     $u->code,
     $u->name,
     PdfLabels::of($u->affiliation),
-    $u->affiliation === 'gcm' ? $u->tenant->name : '',
+    $u->entityName() ?? '',
     $u->getRoleNames()->map(fn ($r) => PdfLabels::of($r))->implode(', '),
     PdfLabels::of($u->status),
   ]),

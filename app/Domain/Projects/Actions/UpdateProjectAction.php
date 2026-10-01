@@ -18,9 +18,15 @@ class UpdateProjectAction
     public function execute(Project $project, array $data, User $actor): Project
     {
         $project->fill($data);
+
+        // Outside $fillable — the request already validated it.
+        if (array_key_exists('representative_id', $data)) {
+            $project->representative_id = $data['representative_id'];
+        }
+
         $project->updated_by = $actor->id;
         $project->save();
 
-        return $project->load(['company', 'updatedBy']);
+        return $project->load(['company', 'representative', 'updatedBy']);
     }
 }

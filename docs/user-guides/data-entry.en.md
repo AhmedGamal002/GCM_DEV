@@ -18,8 +18,8 @@ Dashboard, then an **Accounts** section (Users · Drivers), a **Fleet & Assets**
 ## 2. Users — `/app/user/list`
 
 - **View** the list of GCM staff accounts (not drivers — they have their own page) + **export** (Excel / PDF).
-- **Create** a new account (data_entry or auditor — there is no "system_admin" option here at all).
-- **Edit** any account (except drivers) — and set a **new password** (optional) from the edit page. **You cannot edit the System Admin's account** or change its status (returns 403).
+- **Create** a new account (data_entry or auditor — there is no "system_admin" option here at all), or a **client account** (Project Manager / Auditor of a client company, with all or specific projects + signature/stamp images) from the "Add User" menu.
+- **Edit** any account (except drivers; client accounts are edited on their own client-account form, which the Edit button opens) — and set a **new password** (optional) from the edit page. **You cannot edit the System Admin's account** or change its status (returns 403).
 - **Status:** you can move an account to **"on vacation"**, or **deactivate / reactivate it**.
   - **The one exception:** the **System Admin's own account** — nobody can touch it, System Admin included.
 
@@ -64,7 +64,7 @@ Dashboard, then an **Accounts** section (Users · Drivers), a **Fleet & Assets**
 ## 7. Client companies — `/app/company/list`
 
 - **View** the list + filter + **export**, and the **details** of any company (and download its attachments).
-- **Create** a client company (name + short name are required) — including creating it deactivated.
+- **Create** a client company (name + short name are required) — including creating it deactivated. From its edit page you can also pick the **client representative** (one of its active project managers); projects have a **project representative** picker too.
 - **Edit** any company data (every field except the short name — it is locked after creation because the company ID is built from it).
 - **Status:** **deactivate and reactivate** from the edit page. There is no delete.
 

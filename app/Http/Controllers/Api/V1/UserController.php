@@ -12,10 +12,13 @@ use App\Http\Requests\Users\StoreUserRequest;
 use App\Http\Requests\Users\UpdateUserRequest;
 use App\Http\Requests\Users\UpdateUserStatusRequest;
 use App\Http\Resources\UserResource;
+use App\Domain\Users\Actions\StoreUserImages;
+use App\Models\Project;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 
 /**
@@ -69,7 +72,7 @@ class UserController extends Controller
         // driver_id (see UserResource) to detect a driver-role user and
         // redirect to the dedicated Drivers edit page instead of showing
         // the (policy-blocked, see UserPolicy::update()) generic form.
-        $user = User::with(['driver', 'updatedBy'])->findOrFail($user);
+        $user = User::with(['driver', 'updatedBy', 'company', 'projects'])->findOrFail($user);
 
         Gate::authorize('view', $user);
 
@@ -96,6 +99,26 @@ class UserController extends Controller
         }
 
         return UserResource::make($user->load(['driver', 'updatedBy']));
+    }
+
+    /**
+     * A client account's signature / stamp (private disk). Visible to the
+     * account's owner and to whoever may view accounts (system_admin /
+     * data_entry / auditor); anyone else gets 403.
+     */
+    public function downloadImage(Request $request, int $user, string $type)
+    {
+        abort_unless(array_key_exists($type, StoreUserImages::COLUMNS), 404);
+
+        $user = User::findOrFail($user);
+
+        abort_unless($request->user()->id === $user->id || $request->user()->can('view', $user), 403);
+
+        $path = $user->{StoreUserImages::COLUMNS[$type]};
+
+        abort_if($path === null, 404);
+
+        return Storage::disk('local')->response($path);
     }
 
     public function export(Request $request)
@@ -133,12 +156,26 @@ class UserController extends Controller
             // calls loadMissing('roles')), an N+1 query per user on both
             // the paginated list and the (unpaginated) export. Same
             // reasoning for 'driver' — UserResource::driver_id touches it.
-            ->with(['tenant', 'roles', 'driver'])
+            ->with(['tenant', 'roles', 'driver', 'company'])
             // This is "manage other users", not self-service — the
             // caller's own row is never listed here. Editing yourself
             // goes through /api/v1/me (ProfileController) instead.
             ->where('id', '!=', $request->user()->id)
             ->when($request->filled('status'), fn ($q) => $q->where('status', $request->string('status')))
+            ->when($request->filled('affiliation'), fn ($q) => $q->where('affiliation', $request->string('affiliation')))
+            ->when($request->filled('company_id'), fn ($q) => $q->where('company_id', $request->integer('company_id')))
+            // The accounts that can see one project (FRD §1.4): its company's
+            // accounts that hold "all projects" plus the ones assigned to it —
+            // feeds the project representative picker.
+            ->when($request->filled('project_id'), function ($q) use ($request) {
+                $project = Project::find($request->integer('project_id'));
+
+                return $project === null
+                    ? $q->whereRaw('0 = 1')
+                    : $q->where('company_id', $project->company_id)
+                        ->where(fn ($w) => $w->where('all_projects', true)
+                            ->orWhereHas('projects', fn ($p) => $p->whereKey($project->id)));
+            })
             ->when($request->filled('role'), fn ($q) => $q->role($request->string('role')->toString()))
             ->when($request->filled('search'), function ($q) use ($request) {
                 // The list column shown first is `code` (see
