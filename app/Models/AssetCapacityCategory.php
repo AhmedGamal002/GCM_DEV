@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
@@ -36,6 +37,12 @@ class AssetCapacityCategory extends Model
     public function assets(): HasMany
     {
         return $this->hasMany(Asset::class);
+    }
+
+    /** Sub-services that list this capacity as compatible (FRD §1.9.2). */
+    public function subServices(): BelongsToMany
+    {
+        return $this->belongsToMany(SubService::class, 'sub_service_asset_capacity');
     }
 
     public function updatedBy(): BelongsTo

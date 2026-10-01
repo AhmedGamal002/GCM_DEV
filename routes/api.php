@@ -10,10 +10,12 @@ use App\Http\Controllers\Api\V1\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Api\V1\CompanyController;
 use App\Http\Controllers\Api\V1\DriverController;
 use App\Http\Controllers\Api\V1\FacilityController;
+use App\Http\Controllers\Api\V1\MainServiceController;
 use App\Http\Controllers\Api\V1\ProfileController;
 use App\Http\Controllers\Api\V1\ProjectAssetController;
 use App\Http\Controllers\Api\V1\ProjectController;
 use App\Http\Controllers\Api\V1\RoleController;
+use App\Http\Controllers\Api\V1\SubServiceController;
 use App\Http\Controllers\Api\V1\UserController;
 use App\Http\Controllers\Api\V1\VehicleCategoryController;
 use App\Http\Controllers\Api\V1\VehicleController;
@@ -102,6 +104,20 @@ Route::prefix('v1')->group(function () {
         Route::patch('/facilities/{facility}', [FacilityController::class, 'update'])->whereNumber('facility');
         Route::patch('/facilities/{facility}/status', [FacilityController::class, 'status'])->whereNumber('facility');
         Route::get('/facilities/{facility}/contract', [FacilityController::class, 'downloadContract'])->whereNumber('facility');
+
+        // Services (FRD §1.9) — /main-services/export MUST come before
+        // /main-services/{service}. Sub-services have no export (FRD).
+        Route::get('/main-services/export', [MainServiceController::class, 'export']);
+        Route::get('/main-services', [MainServiceController::class, 'index']);
+        Route::post('/main-services', [MainServiceController::class, 'store']);
+        Route::get('/main-services/{service}', [MainServiceController::class, 'show'])->whereNumber('service');
+        Route::patch('/main-services/{service}', [MainServiceController::class, 'update'])->whereNumber('service');
+        Route::patch('/main-services/{service}/status', [MainServiceController::class, 'status'])->whereNumber('service');
+        Route::get('/sub-services', [SubServiceController::class, 'index']);
+        Route::post('/sub-services', [SubServiceController::class, 'store']);
+        Route::get('/sub-services/{service}', [SubServiceController::class, 'show'])->whereNumber('service');
+        Route::patch('/sub-services/{service}', [SubServiceController::class, 'update'])->whereNumber('service');
+        Route::patch('/sub-services/{service}/status', [SubServiceController::class, 'status'])->whereNumber('service');
 
         // Client companies (Part 4 of Phase 2, FRD V01.14 §1.11). /companies/export
         // MUST come before /companies/{company} — same reasoning as /vehicles above.

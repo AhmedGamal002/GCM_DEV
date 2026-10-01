@@ -8,7 +8,7 @@ The Auditor is a **read-only** role over every page in the system: view and expo
 
 ## What you see in the sidebar
 
-Dashboard, then an **Accounts** section (Users · Drivers), a **Fleet & Assets** section (Vehicles · Assets, with Categories), an **Operations** section (Facilities) and a **Clients & Projects** section (Client Companies). Any other link is hidden — manual access returns "You don't have permission to view this data."
+Dashboard, then an **Accounts** section (Users · Drivers), a **Fleet & Assets** section (Vehicles · Assets, with Categories), an **Operations** section (Facilities · Services — the lists only, no "Add") and a **Clients & Projects** section (Client Companies). Any other link is hidden — manual access returns "You don't have permission to view this data."
 
 ## 1. Sign in and profile
 
@@ -46,22 +46,27 @@ Dashboard, then an **Accounts** section (Users · Drivers), a **Fleet & Assets**
 - **View** the list (with each facility's **ID**) + stat cards + search + filters + **export**, and the **details** of any facility (including the contract attachment download).
 - **Not allowed:** the "Create new facility" button, the edit icon and the status card aren't shown, and any create / edit / status change returns 403.
 
-## 7. Client companies — `/app/company/list`
+## 7. Services — `/app/main-service/list` and `/app/sub-service/list`
+
+- **View** the main services list (search + type and status filters) + **export**, the sub-services accordion page, and the details of any main service or sub-service.
+- **Not allowed:** creating, editing or deactivating — the create buttons, edit icons and the Edit button are not shown, and any attempt through the API returns 403.
+
+## 8. Client companies — `/app/company/list`
 
 - **View** the list + filter + **export**, and the **details** of any company (and download its attachments).
 - **Not allowed:** creating, editing or deactivating (the "Add" link is not shown in the sidebar).
 
-## 8. Client projects — `/app/project/list`
+## 9. Client projects — `/app/project/list`
 
 - **View** the list (search + company and status filters) + **export**, and the **details** of any project (and its assets table, with export).
 - **Not allowed:** creating, editing or deactivating; the "Add" link, the edit icon and the "Insert asset into project" button are not shown.
 
-## 9. What you cannot do (returns 403)
+## 10. What you cannot do (returns 403)
 
-- Create, edit, or deactivate any user / driver / vehicle / asset / facility / company / project / category, or insert an asset into a project.
+- Create, edit, or deactivate any user / driver / vehicle / asset / facility / service / company / project / category, or insert an asset into a project.
 - Change your name or email on the profile page.
 - Manage roles & permissions / tenants.
 
-## 10. Features available now
+## 11. Features available now
 
-Full view + export across every built module (Users, Drivers, Vehicles, Assets, Intermediate facilities, Client companies, Client projects, and categories) — was limited to vehicles and assets only before the FRD V01.14 upgrade. Self-service password change works from the profile page.
+Full view + export across every built module (Users, Drivers, Vehicles, Assets, Intermediate facilities, Main & sub-services, Client companies, Client projects, and categories) — was limited to vehicles and assets only before the FRD V01.14 upgrade. Self-service password change works from the profile page.

@@ -228,6 +228,37 @@ class MenuVisibilityTest extends TestCase
             ->assertDontSee('app/facility/list', false);
     }
 
+    /**
+     * Services (FRD V01.14 §1.9) under Operations: everyone back-office sees
+     * the two lists; only system_admin / data_entry see the two "Add" items;
+     * a driver sees nothing. One actor per test (see CLAUDE.md).
+     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('servicesMenuProvider')]
+    public function test_services_menu_visibility_per_role(string $role, bool $sees, bool $canAdd): void
+    {
+        $user = User::factory()->create();
+        $user->assignRole($role);
+
+        $page = $this->actingAs($user, 'web')->get('/dashboard')->assertOk();
+
+        foreach (['>Services<', 'app/main-service/list', 'app/sub-service/list'] as $needle) {
+            $sees ? $page->assertSee($needle, false) : $page->assertDontSee($needle, false);
+        }
+        foreach (['app/main-service/add', 'app/sub-service/add'] as $needle) {
+            $canAdd ? $page->assertSee($needle, false) : $page->assertDontSee($needle, false);
+        }
+    }
+
+    public static function servicesMenuProvider(): array
+    {
+        return [
+            'system_admin' => ['system_admin', true, true],
+            'data_entry' => ['data_entry', true, true],
+            'auditor' => ['auditor', true, false],
+            'driver' => ['driver', false, false],
+        ];
+    }
+
     /** The "Add" sub-item under Facilities/Vehicles/Assets matches each module's create ability: system_admin/data_entry only. */
     public function test_only_managers_see_the_add_sub_item_under_facilities_vehicles_and_assets(): void
     {

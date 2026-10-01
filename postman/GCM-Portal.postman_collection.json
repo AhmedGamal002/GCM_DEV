@@ -120,6 +120,16 @@
       "key": "last_permission_id",
       "value": "",
       "type": "string"
+    },
+    {
+      "key": "last_main_service_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "last_sub_service_id",
+      "value": "",
+      "type": "string"
     }
   ],
   "item": [
@@ -3147,7 +3157,484 @@
       ]
     },
     {
-      "name": "9. Client Companies",
+      "name": "9. Services",
+      "description": "FRD V01.14 §1.9 — main services (a category: non_hazardous | hazardous | supplying, with its supported vehicle categories) and sub-services (asset type, compatible capacities, intermediate facilities, recycle-receipt flag, skip colour). System Admin / Data Entry manage; Auditor views/exports; Driver 403. JSON bodies (no files). No delete routes — deactivate instead.",
+      "item": [
+        {
+          "name": "List Main Services",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/main-services?per_page=15",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "main-services"
+              ],
+              "query": [
+                {
+                  "key": "per_page",
+                  "value": "15"
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "service_type",
+                  "value": "hazardous",
+                  "disabled": true
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "disabled": true
+                },
+                {
+                  "key": "sort_by",
+                  "value": "name",
+                  "disabled": true
+                },
+                {
+                  "key": "sort_dir",
+                  "value": "asc",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "search matches the main service name AND its sub-services' names (both columns are on screen). service_type: non_hazardous | hazardous | supplying. operational_status: active | deactivated. sort_by: name | service_type | operational_status | created_at. Each row carries sub_services [{id,name,operational_status}] and vehicle_categories."
+          }
+        },
+        {
+          "name": "Create Main Service",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Solid Waste Transport {{$timestamp}}\",\n  \"service_type\": \"non_hazardous\",\n  \"vehicle_category_ids\": [\n    1,\n    2\n  ],\n  \"operational_status\": \"active\",\n  \"additional_data\": \"<p>notes</p>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/main-services",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "main-services"
+              ]
+            },
+            "description": "vehicle_category_ids: at least one, from GET /vehicle-categories (tenant-scoped ids). service_type is locked after creation. operational_status: active | deactivated."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    if (body.data && body.data.id) {",
+                  "        pm.collectionVariables.set('last_main_service_id', body.data.id);",
+                  "        console.log('last_main_service_id saved:', body.data.id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Show Main Service",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/main-services/{{last_main_service_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "main-services",
+                "{{last_main_service_id}}"
+              ]
+            },
+            "description": "Includes vehicle_categories, sub_services, in_use (true once a PO includes it — always false until POs exist), stats (zeros until trips/POs exist) and meta.embedded_capacities: the embedded containers of vehicles in the supported categories (shown as information on the sub-service form)."
+          }
+        },
+        {
+          "name": "Update Main Service",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Solid Waste Transport (renamed)\",\n  \"vehicle_category_ids\": [\n    1,\n    2,\n    3\n  ],\n  \"additional_data\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/main-services/{{last_main_service_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "main-services",
+                "{{last_main_service_id}}"
+              ]
+            },
+            "description": "name + additional_data; vehicle_category_ids optional. service_type / operational_status are ignored here. 422 when the service is in a PO."
+          }
+        },
+        {
+          "name": "Change Main Service Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"deactivated\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/main-services/{{last_main_service_id}}/status",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "main-services",
+                "{{last_main_service_id}}",
+                "status"
+              ]
+            },
+            "description": "status: active | deactivated. Deactivating also deactivates every sub-service under it; reactivating does NOT reactivate them. 422 when the service is in a PO."
+          }
+        },
+        {
+          "name": "Export Main Services (Excel)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/main-services/export?format=xlsx",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "main-services",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "xlsx"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "service_type",
+                  "value": "hazardous",
+                  "disabled": true
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Same filters as the list (one filteredQuery). Use \"Send and Download\"."
+          }
+        },
+        {
+          "name": "Export Main Services (PDF)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/main-services/export?format=pdf",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "main-services",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "pdf"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "service_type",
+                  "value": "hazardous",
+                  "disabled": true
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Same filters as the list. Use \"Send and Download\"."
+          }
+        },
+        {
+          "name": "List Sub-services",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/sub-services?per_page=15",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "sub-services"
+              ],
+              "query": [
+                {
+                  "key": "per_page",
+                  "value": "15"
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "main_service_id",
+                  "value": "{{last_main_service_id}}",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "asset_type",
+                  "value": "container",
+                  "disabled": true
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "disabled": true
+                },
+                {
+                  "key": "sort_by",
+                  "value": "name",
+                  "disabled": true
+                },
+                {
+                  "key": "sort_dir",
+                  "value": "asc",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "search matches the sub-service name and its main service name. asset_type: container | tank. sort_by: name | asset_type | operational_status | created_at. No export — the FRD sub-services page (accordion) has none."
+          }
+        },
+        {
+          "name": "Create Sub-service",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Construction debris {{$timestamp}}\",\n  \"main_service_id\": \"{{last_main_service_id}}\",\n  \"asset_type\": \"container\",\n  \"capacity_ids\": [\n    1\n  ],\n  \"facility_ids\": [\n    \"{{last_facility_id}}\"\n  ],\n  \"requires_recycle_receipt\": true,\n  \"skip_color_code\": \"light_concrete\",\n  \"operational_status\": \"active\",\n  \"additional_data\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/sub-services",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "sub-services"
+              ]
+            },
+            "description": "main_service_id must be ACTIVE and is locked after creation. capacity_ids (GET /asset-capacity-categories) must fit asset_type (applies_to container/tank/both). facility_ids: active facilities, required unless the main service is `supplying`. skip_color_code (optional): designated_yard | white_paper | brown_cardboard | light_blue_wood | gray_plastic | red_metal_scrap | black_hazardous | green_general | yellow_food | light_concrete | green_glass."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    if (body.data && body.data.id) {",
+                  "        pm.collectionVariables.set('last_sub_service_id', body.data.id);",
+                  "        console.log('last_sub_service_id saved:', body.data.id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Show Sub-service",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/sub-services/{{last_sub_service_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "sub-services",
+                "{{last_sub_service_id}}"
+              ]
+            },
+            "description": "Includes main_service (with its vehicle_categories — inherited), capacities, facilities, locked (ongoing trip / main in a PO — always false until trips/POs exist), stats (zeros)."
+          }
+        },
+        {
+          "name": "Update Sub-service",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Construction debris (renamed)\",\n  \"asset_type\": \"container\",\n  \"capacity_ids\": [\n    1\n  ],\n  \"requires_recycle_receipt\": false,\n  \"skip_color_code\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/sub-services/{{last_sub_service_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "sub-services",
+                "{{last_sub_service_id}}"
+              ]
+            },
+            "description": "name + additional_data, and — while unlocked — asset_type, capacity_ids, facility_ids, requires_recycle_receipt, skip_color_code (any omitted field keeps its value). main_service_id / operational_status are ignored here. 422 when locked."
+          }
+        },
+        {
+          "name": "Change Sub-service Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"deactivated\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/sub-services/{{last_sub_service_id}}/status",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "sub-services",
+                "{{last_sub_service_id}}",
+                "status"
+              ]
+            },
+            "description": "status: active | deactivated. Reactivating is refused (422) while the main service is deactivated; deactivating is refused while locked."
+          }
+        }
+      ]
+    },
+    {
+      "name": "10. Client Companies",
       "description": "Phase 2 · Part 4 — FRD V01.14 §1.11. system_admin / data_entry create, edit and (de)activate; auditor views and exports; driver has no access. No hard delete. The projects count is real (Part 5); users and contracts counts are 0 until those modules exist.",
       "item": [
         {
@@ -3664,7 +4151,7 @@
       ]
     },
     {
-      "name": "10. Client Projects",
+      "name": "11. Client Projects",
       "description": "FRD V01.14 §1.12 — client projects, plus inserting an asset into a project (§1.7.3). system_admin / data_entry manage; auditor views and exports; driver has no access.",
       "item": [
         {
@@ -4023,7 +4510,7 @@
       ]
     },
     {
-      "name": "11. Platform Auth (Super Admin)",
+      "name": "12. Platform Auth (Super Admin)",
       "item": [
         {
           "name": "Get Login Page (capture CSRF)",
@@ -4150,7 +4637,7 @@
       ]
     },
     {
-      "name": "12. Platform - Tenants",
+      "name": "13. Platform - Tenants",
       "auth": {
         "type": "noauth"
       },
@@ -4390,7 +4877,7 @@
       ]
     },
     {
-      "name": "13. Platform - Roles",
+      "name": "14. Platform - Roles",
       "auth": {
         "type": "noauth"
       },
@@ -4599,7 +5086,7 @@
       ]
     },
     {
-      "name": "14. Platform - Permissions",
+      "name": "15. Platform - Permissions",
       "auth": {
         "type": "noauth"
       },

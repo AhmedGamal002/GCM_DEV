@@ -21,9 +21,10 @@ class DeleteVehicleCategoryAction
         $vehicles = $category->vehicles()->count();
         $drivers = $category->drivers()->count();
         $assets = $category->assets()->count();
+        $mainServices = $category->mainServices()->count();
 
-        if ($vehicles || $drivers || $assets) {
-            throw new VehicleCategoryInUseException($vehicles, $drivers, $assets);
+        if ($vehicles || $drivers || $assets || $mainServices) {
+            throw new VehicleCategoryInUseException($vehicles, $drivers, $assets, $mainServices);
         }
 
         $category->delete();

@@ -154,6 +154,38 @@
       ]
     },
     {
+      "name": "Services",
+      "icon": "menu-icon tf-icons ti ti-list-details",
+      "slug": ["app-main-service", "app-sub-service"],
+      "roles": ["system_admin", "data_entry", "auditor"],
+      "submenu": [
+        {
+          "url": "app/main-service/list",
+          "name": "Main Services",
+          "slug": "app-main-service-list",
+          "roles": ["system_admin", "data_entry", "auditor"]
+        },
+        {
+          "url": "app/main-service/add",
+          "name": "Add Main Service",
+          "slug": "app-main-service-add",
+          "roles": ["system_admin", "data_entry"]
+        },
+        {
+          "url": "app/sub-service/list",
+          "name": "Sub Services",
+          "slug": "app-sub-service-list",
+          "roles": ["system_admin", "data_entry", "auditor"]
+        },
+        {
+          "url": "app/sub-service/add",
+          "name": "Add Sub Service",
+          "slug": "app-sub-service-add",
+          "roles": ["system_admin", "data_entry"]
+        }
+      ]
+    },
+    {
       "menuHeader": "Clients & Projects"
     },
     {

@@ -6,6 +6,7 @@ use App\Concerns\BelongsToTenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * FRD V01.14 §1.8 — an intermediate waste facility (safe disposal, sewage
@@ -79,19 +80,23 @@ class IntermediateFacility extends Model
         });
     }
 
+    /** The sub-services whose waste may go to this facility (FRD §1.9.2). */
+    public function subServices(): BelongsToMany
+    {
+        return $this->belongsToMany(SubService::class, 'sub_service_facility');
+    }
+
     /**
-     * Whether the facility is already part of something — a sub-service's
-     * facility list or a trip. Once it is, its environmental service and
-     * recycling efficiency are locked (they would silently change what past
-     * and planned work means).
+     * Whether the facility is already part of something — any sub-service's
+     * facility list (active or deactivated) or a trip. Once it is, its
+     * environmental service and recycling efficiency are locked (they would
+     * silently change what past and planned work means).
      *
-     * Nothing can reference a facility yet: sub-services (FRD §1.9) and
-     * trips don't exist. Wire the `sub_service_facility` pivot in here when
-     * the Services module lands (and trips after that).
+     * Trips (FRD §1.14) don't exist yet; add them here when they land.
      */
     public function isInUse(): bool
     {
-        return false;
+        return $this->subServices()->exists();
     }
 
     public function updatedBy(): BelongsTo

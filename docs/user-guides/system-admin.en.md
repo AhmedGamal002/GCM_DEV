@@ -144,10 +144,30 @@ System Admin: view, create, edit, deactivate / reactivate, export. Facilities ar
 - Saving generates the facility's **ID** — the prefix plus a running number per company (`ALF-0001`, then `ALF-0002`...), same as Client Companies — shown in the list and the details page. Nothing can change it.
 
 ### Details, edit and status
-- Details show everything, the contract attachment download, and "Supported sub-services" (empty until the Services module exists). A **Facility Status** card deactivates / reactivates the facility (confirm checkbox).
-- Edit: the name and all optional data (the logo and contract attachment can be replaced). The **prefix is locked**. The environmental service and recycling efficiency can be changed **only while nothing uses the facility** — they lock once a sub-service or trip uses it.
+- Details show everything, the contract attachment download, and "Supported sub-services" (the sub-services that list this facility — each one links to its details). A **Facility Status** card deactivates / reactivates the facility (confirm checkbox).
+- Edit: the name and all optional data (the logo and contract attachment can be replaced). The **prefix is locked**. The environmental service and recycling efficiency can be changed **only while nothing uses the facility** — they lock once any sub-service (even a deactivated one) lists the facility — trips join the same lock once they exist.
 
-## 10. Client company management — `/app/company/list`
+## 10. Services — `/app/main-service/list` and `/app/sub-service/list`
+
+Sidebar: **Operations ← Services** (Main Services · Add Main Service · Sub Services · Add Sub Service). System Admin: view, create, edit, deactivate / reactivate, export. Services are never deleted.
+
+### Main services
+- A main service is a **category** that groups sub-services, and the building block of a contract (PO).
+- **List:** server-side table: main service name (link to its details), type of service, its sub-services (each a link), status, details. The search covers the main service name **and its sub-services' names**; filters: type + status; Excel/PDF export honouring the same filters.
+- **Create:** name (unique), **type of service** (non-hazardous waste / hazardous waste / supplying), **supported vehicle categories** (at least one — from your company's vehicle categories), status (active by default), additional data.
+- **Details:** the data + statistics (trips, projects, quantities in tons and cubic metres, drivers, resources — `0` until trips and contracts exist) + a table of **its sub-services** and a "Create New Sub-service" button with the service pre-selected.
+- **Edit:** the name, additional data and supported categories. **The type of service is locked after creation.** (Once contracts exist, a service in a PO becomes fully locked and can't be deactivated.)
+- **Status:** from the "Service Status" card on the edit page. **Deactivating a main service deactivates all its sub-services**; reactivating it does **not** bring them back — each sub-service is reactivated on its own. A deactivated main service isn't offered for new sub-services.
+
+### Sub-services
+- **Page:** an accordion with one tab per main service, open by default and collapsible, listing its sub-services with a view and an edit icon + a name search.
+- **Create:** name, **main service** (live search — active only; its supported vehicle categories show automatically), **type** (container / tank), **compatible capacities** (listed by type; embedded containers of vehicles in the supported categories show underneath as information only), **intermediate facilities** (active ones — required unless the main service is "supplying"), **requires recycle receipt** (off by default), status, **skip colour code** (optional), additional data.
+- **Details:** the data + statistics (`0` for now) + the compatible capacities table + the intermediate facilities table.
+- **Edit:** every field except the **main service** (locked after creation). (Once trips and contracts exist, a sub-service tied to an ongoing trip — or whose main service is in a PO — becomes fully locked and can't be deactivated.)
+- **Status:** from the "Service Status" card on the edit page. **A sub-service can't be reactivated while its main service is deactivated.**
+- A vehicle category that a main service supports **can't be deleted**.
+
+## 11. Client company management — `/app/company/list`
 
 Sidebar: heading **Clients & Projects** → **Client Companies** (List + Add).
 
@@ -164,7 +184,7 @@ Sidebar: heading **Clients & Projects** → **Client Companies** (List + Add).
 - Edit page: **every field** is editable except the short name (locked; the ID is shown above the form). A file input left empty keeps the stored file; a new file replaces it.
 - **Deactivate / reactivate** from the "Company Status" card on the edit page (with a confirmation). There is no delete. Deactivating a company does **not** deactivate anything else.
 
-## 11. Client project management — `/app/project/list`
+## 12. Client project management — `/app/project/list`
 
 Sidebar: heading **Clients & Projects** → **Client Projects** (List + Add). A project is a work site of a client company (the place trips leave from).
 
@@ -181,7 +201,7 @@ Sidebar: heading **Clients & Projects** → **Client Projects** (List + Add). A 
 - Edit page: every field except the company (locked; the ID is shown above the form).
 - **Deactivate / reactivate** from the "Project Status" card on the edit page (with a confirmation). There is no delete. Deactivating a project does **not** deactivate the company, and deactivating a company does **not** deactivate its projects; a deactivated project is not offered when inserting an asset.
 
-## 12. Features available now
+## 13. Features available now
 
 | Module | Available | Deferred |
 |---|---|---|
@@ -189,7 +209,8 @@ Sidebar: heading **Clients & Projects** → **Client Projects** (List + Add). A 
 | Vehicles | Full CRUD + status + export + embedded container | "on a trip" column/counter + vehicle trip log (Week 7) |
 | Drivers | Full CRUD + default vehicle + documents + permits | "on a trip" status (Week 7), mobile app |
 | Assets | Full CRUD + categories + status + export + **insert an asset into a project** + "in a project" availability | Taking an asset out of a project (with trips) |
-| Intermediate facilities | Create / edit / deactivate + prefix + recycling efficiency + contract + export | Sub-service list on the details page and the "in use" lock (with the Services module) |
+| Intermediate facilities | Create / edit / deactivate + prefix + recycling efficiency + contract + export + supported sub-services + service lock once in use | The trip side of the lock (Week 7) |
+| Main & sub-services | Create / edit / deactivate (cascading to sub-services) + categories, capacities and facilities + recycle receipt + skip colour + main-services export | Real statistics and the PO/trip lock (Weeks 6–7) |
 | Client companies | Full CRUD + deactivate/reactivate + attachments + export + projects count + company projects table | Representative, users count and the contracts section (Week 6 + client accounts) |
 | Client projects | Full CRUD + deactivate/reactivate + ID from the company short name + project assets + export | Representative, users count, contracts section and trip statistics |
 | Dashboard | Shell screen | Real stats (Week 8) |
