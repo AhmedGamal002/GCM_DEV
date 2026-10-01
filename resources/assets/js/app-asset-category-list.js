@@ -25,7 +25,7 @@ $(function () {
 
   if (new URLSearchParams(window.location.search).get('created')) {
     const box = document.getElementById('asset-category-list-status');
-    box.textContent = t.created || 'Category created successfully.';
+    box.textContent = t.created || 'Capacity created successfully.';
     box.classList.remove('d-none');
   }
 
@@ -94,7 +94,7 @@ $(function () {
       sLengthMenu: '_MENU_',
       search: '',
       searchPlaceholder: t.search || 'Search',
-      emptyTable: t.none_found || 'No categories found.',
+      emptyTable: t.none_found || 'No capacities found.',
       info: t.info || 'Showing _START_ to _END_ of _TOTAL_ entries',
       infoEmpty: t.info_empty || 'Showing 0 to 0 of 0 entries',
       paginate: {
@@ -130,7 +130,7 @@ $(function () {
         ]
       },
       {
-        text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">' + (t.add_category || 'Add category') + '</span>',
+        text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">' + (t.add_category || 'Add Capacity') + '</span>',
         className: 'add-new btn btn-primary waves-effect waves-light',
         action: () => window.location.assign(t.add_category_url || '/app/asset-category/add')
       }

@@ -1,6 +1,6 @@
 @extends('layouts/layoutMaster')
 
-@section('title', __('Asset capacity categories'))
+@section('title', __('Assets Capacities'))
 
 @section('vendor-style')
 @vite([
@@ -27,14 +27,14 @@
     view: @json(__('View')),
     edit: @json(__('Edit')),
     actions: @json(__('Actions')),
-    add_category: @json(__('Add category')),
+    add_category: @json(__('Add Capacity')),
     search: @json(__('Search')),
-    none_found: @json(__('No categories found.')),
+    none_found: @json(__('No capacities found.')),
     generic_error: @json(__('Something went wrong. Please try again.')),
     export: @json(__('Export')),
     info: @json(__('Showing _START_ to _END_ of _TOTAL_ entries')),
     info_empty: @json(__('Showing 0 to 0 of 0 entries')),
-    created: @json(__('Category created successfully.')),
+    created: @json(__('Capacity created successfully.')),
     add_category_url: @json(route('app-asset-category-add')),
     view_url_base: @json(url('/app/asset-category/view')),
     edit_url_base: @json(url('/app/asset-category/edit'))
@@ -45,9 +45,9 @@
 
 @section('content')
 
-@include('_partials.breadcrumb', ['pageTitle' => __('Asset Capacity Categories'), 'breadcrumbs' => [
+@include('_partials.breadcrumb', ['pageTitle' => __('Assets Capacities'), 'breadcrumbs' => [
   ['title' => __('Assets'), 'url' => route('app-asset-list')],
-  ['title' => __('Asset capacity categories')],
+  ['title' => __('Assets Capacities')],
 ]])
 
 <div id="asset-category-list-status" class="alert alert-success d-none"></div>

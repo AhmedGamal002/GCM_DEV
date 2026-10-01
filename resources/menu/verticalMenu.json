@@ -112,7 +112,7 @@
         },
         {
           "url": "app/asset-category/list",
-          "name": "Categories",
+          "name": "Capacities",
           "slug": "app-asset-category-list",
           "roles": ["system_admin", "data_entry", "auditor"]
         }

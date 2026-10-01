@@ -1,6 +1,6 @@
 @extends('layouts/layoutMaster')
 
-@section('title', __('Edit category'))
+@section('title', __('Edit Capacity'))
 
 @section('vendor-style')
 @vite(['resources/assets/vendor/libs/select2/select2.scss'])
@@ -26,10 +26,10 @@
 
 @section('content')
 
-@include('_partials.breadcrumb', ['updatedId' => 'asset-category-last-updated', 'pageTitle' => __('Edit Category'), 'breadcrumbs' => [
+@include('_partials.breadcrumb', ['updatedId' => 'asset-category-last-updated', 'pageTitle' => __('Edit Capacity'), 'breadcrumbs' => [
   ['title' => __('Assets'), 'url' => route('app-asset-list')],
-  ['title' => __('Asset capacity categories'), 'url' => route('app-asset-category-list')],
-  ['title' => __('Edit category')],
+  ['title' => __('Assets Capacities'), 'url' => route('app-asset-category-list')],
+  ['title' => __('Edit Capacity')],
 ]])
 
 <div id="asset-category-form-error" class="alert alert-danger d-none"></div>

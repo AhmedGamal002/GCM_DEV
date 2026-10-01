@@ -18,7 +18,7 @@ class AssetsExport implements FromCollection, WithHeadings, WithMapping
 
     public function headings(): array
     {
-        return ['ID', 'Name', 'Type', 'Capacity Category', 'Affiliation', 'Status', 'Created At'];
+        return ['ID', 'Name', 'Type', 'Capacity', 'Affiliation', 'Status', 'Created At'];
     }
 
     public function map($asset): array

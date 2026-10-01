@@ -383,7 +383,7 @@ const CLIENT_GROUPS = [
   { title: 'المركبات', ids: ['week-3-vehicles-drivers-assets#1', 'week-3-vehicles-drivers-assets#2', 'week-3-vehicles-drivers-assets#25', 'week-3-vehicles-drivers-assets#6', 'week-3-vehicles-drivers-assets#3', 'week-3-vehicles-drivers-assets#4', 'week-3-vehicles-drivers-assets#5', 'week-3-vehicles-drivers-assets#8'] },
   { title: 'تصنيفات المركبات', ids: ['week-3-frd-gap-review#10', 'week-3-frd-gap-review#11', 'week-3-frd-gap-review#13', 'week-3-frd-gap-review#14', 'week-3-frd-gap-review#12', 'week-3-frd-gap-review#17', 'week-3-frd-gap-review#19'] },
   { title: 'الأصول', ids: ['week-3-vehicles-drivers-assets#16', 'week-3-vehicles-drivers-assets#26', 'week-3-vehicles-drivers-assets#18', 'week-3-vehicles-drivers-assets#27', 'week-3-vehicles-drivers-assets#17', 'week-3-vehicles-drivers-assets#19'] },
-  { title: 'تصنيفات سعة الأصول', ids: ['week-3-vehicles-drivers-assets#20'] },
+  { title: 'سعات الأصول', ids: ['week-3-vehicles-drivers-assets#20'] },
   { title: 'الملف الشخصي', ids: ['week-1-2-auth-users-roles#2', 'week-3-frd-gap-review#4'] },
   { title: 'قواعد عامة عبر الموديولات', ids: ['week-3-frd-gap-review#5', 'week-3-frd-gap-review#6', 'week-3-frd-gap-review#7'] },
   { title: 'الواجهة والتنقل', ids: ['week-1-2-auth-users-roles#1', 'week-1-2-auth-users-roles#17', 'week-1-2-auth-users-roles#18', 'week-3-frd-gap-review#1', 'week-3-frd-gap-review#2', 'week-3-vehicles-drivers-assets#22', 'week-3-frd-gap-review#30'] },
@@ -484,7 +484,7 @@ const CLIENT_OVERRIDES = {
     title: 'عرض قائمة الأصول',
     frd: '§1.7.3 (الإنشاء والتعديل مسؤولية مدير النظام أو مدخل البيانات؛ المراقب عرض فقط)',
     steps: 'افتح قائمة الأصول.',
-    expected: 'تشوف "Assets" (List + Categories).',
+    expected: 'تشوف "Assets" (List + Capacities).',
   },
 };
 

@@ -28,8 +28,8 @@
     select: @json(__('Select...')),
     container: @json(__('Container')),
     tank: @json(__('Tank')),
-    pick_category_and_type: @json(__('Choose the vehicle category and container type first.')),
-    no_compatible_capacity: @json(__('There is no compatible :type capacity recorded for the selected vehicle category.')),
+    pick_type: @json(__('Choose the container type first.')),
+    no_capacity_of_type: @json(__('No :type capacities are defined yet.')),
     list_url: @json(route('app-vehicle-list')),
     view_url_base: @json(url('/app/vehicle/view')),
     last_updated_by: @json(__('Last updated by :name — :at'))

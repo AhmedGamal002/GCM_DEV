@@ -8,7 +8,7 @@ Data Entry is responsible for **creating, editing, and deactivating users, drive
 
 ## What you see in the sidebar
 
-Dashboard, then an **Accounts** section (Users · Drivers) and a **Fleet & Assets** section (Vehicles · Assets — with a Categories sub-item under Assets). Any other link (Roles & Permissions, and the demo template scaffold) is **hidden** — and if you open it manually it returns "You don't have permission to view this data."
+Dashboard, then an **Accounts** section (Users · Drivers) and a **Fleet & Assets** section (Vehicles · Assets — with a Capacities sub-item under Assets). Any other link (Roles & Permissions, and the demo template scaffold) is **hidden** — and if you open it manually it returns "You don't have permission to view this data."
 
 ## 1. Sign in and profile
 
@@ -46,11 +46,11 @@ Dashboard, then an **Accounts** section (Users · Drivers) and a **Fleet & Asset
 - **Edit** an asset: **name only** — everything else is locked after creation.
 - **Status:** "on maintenance", or **deactivate / reactivate**.
 
-### Asset capacity categories — `/app/asset-category/list`
-- **Create** a new category.
+### Assets capacities — `/app/asset-category/list`
+- **Create** a new capacity.
 - **Edit:** name only (capacity and kind locked).
 - No delete, no deactivate.
-- The list's eye icon opens a **details page** (client add-on): the category's data plus a table of the assets carrying it.
+- The list's eye icon opens a **details page** (client add-on): the capacity's data plus a table of the assets carrying it.
 
 ## 6. What you cannot do (returns 403 or 422)
 

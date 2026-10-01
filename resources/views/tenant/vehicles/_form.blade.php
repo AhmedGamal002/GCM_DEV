@@ -59,7 +59,7 @@
         <select id="embedded_asset_capacity_category_id" name="embedded_asset_capacity_category_id" class="form-select select2" required>
           <option value="">{{ __('Select...') }}</option>
         </select>
-        <div class="form-text" id="embedded-capacity-hint">{{ __('Choose the vehicle category and container type first.') }}</div>
+        <div class="form-text" id="embedded-capacity-hint">{{ __('Choose the container type first.') }}</div>
         <div class="text-danger small mt-1 d-none" data-feedback></div>
       </div>
 

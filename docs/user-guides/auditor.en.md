@@ -8,7 +8,7 @@ The Auditor is a **read-only** role over every page in the system: view and expo
 
 ## What you see in the sidebar
 
-Dashboard, then an **Accounts** section (Users · Drivers) and a **Fleet & Assets** section (Vehicles · Assets, with Categories). Any other link is hidden — manual access returns "You don't have permission to view this data."
+Dashboard, then an **Accounts** section (Users · Drivers) and a **Fleet & Assets** section (Vehicles · Assets, with Capacities). Any other link is hidden — manual access returns "You don't have permission to view this data."
 
 ## 1. Sign in and profile
 
@@ -38,7 +38,7 @@ Dashboard, then an **Accounts** section (Users · Drivers) and a **Fleet & Asset
 
 - **View** the list + stat cards (containers and tanks) + filters + **export**.
 - **View details** of any asset.
-- **Asset capacity categories** (`/app/asset-category/list`): view and export only — no create, no edit. The eye icon opens a **details page** (client add-on) with a table of the assets carrying that capacity.
+- **Assets capacities** (`/app/asset-category/list`): view and export only — no create, no edit. The eye icon opens a **details page** (client add-on) with a table of the assets carrying that capacity.
 - **Not allowed:** any create, edit, or status change.
 
 ## 6. What you cannot do (returns 403)
@@ -49,4 +49,4 @@ Dashboard, then an **Accounts** section (Users · Drivers) and a **Fleet & Asset
 
 ## 7. Features available now
 
-Full view + export across every built module (Users, Drivers, Vehicles, Assets, and categories) — was limited to vehicles and assets only before the FRD V01.14 upgrade. Self-service password change works from the profile page.
+Full view + export across every built module (Users, Drivers, Vehicles, Assets, and asset capacities) — was limited to vehicles and assets only before the FRD V01.14 upgrade. Self-service password change works from the profile page.

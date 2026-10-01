@@ -571,7 +571,7 @@
         <h3>زر &quot;Add category&quot; مش لازق في خانة البحث + زر Export</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح Vehicles، وبعدين Categories.</li><li>قارن المسافة بين خانة البحث وأزرار <strong>Export</strong> و<strong>Add category</strong> بنفس الصفحة.</li><li>كرّر المقارنة مع صفحة Assets، وبعدين Categories.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>نفس الترتيب والمسافات بالظبط في الصفحتين (بحث، بعده Export، بعده Add). زر Export بيفتح قايمة Excel / Pdf.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>ExportFiltersTest::test_vehicle_category_export_*</code> (الصفوف المصدّرة مع البحث + PDF + أدمن فقط). الترتيب والمسافات يدوي.</dd></div></dl>
+      <dl><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح Vehicles، وبعدين Categories.</li><li>قارن المسافة بين خانة البحث وأزرار <strong>Export</strong> و<strong>Add category</strong> بنفس الصفحة.</li><li>كرّر المقارنة مع صفحة Assets، وبعدين Capacities (الزر هناك اسمه <strong>Add Capacity</strong>).</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>نفس الترتيب والمسافات بالظبط في الصفحتين (بحث، بعده Export، بعده Add). زر Export بيفتح قايمة Excel / Pdf.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>ExportFiltersTest::test_vehicle_category_export_*</code> (الصفوف المصدّرة مع البحث + PDF + أدمن فقط). الترتيب والمسافات يدوي.</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-frd-gap-review#20" data-title="المحتوى بعرض الشاشة كله (Wide) كوضع افتراضي">
@@ -679,7 +679,7 @@
         <h3>نفس شاشة &quot;جاري الحفظ&quot; في كل صفحات الإنشاء والتعديل</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>الدور</dt><dd>مدير النظام</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>جرّب الحفظ في كل الفورمات دي: مستخدم (إضافة وتعديل)، سائق، مركبة، أصل، تصنيف مركبات، تصنيف سعة أصول، شركة عميل، وصورة My Profile.</li><li>جرّب كمان زراير تغيير الحالة (تعطيل / تنشيط / صيانة) في صفحات التفاصيل، وحذف تصنيف مركبات.</li><li>في الفورمات اللي فيها صورة أو مستند، اختار ملف كبير شوية.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>في كل الحالات تظهر <strong>نفس الشاشة الغامقة</strong> بدايرة التحميل ورسالة &quot;Working...&quot; أول ما تدوس حفظ (ومعاها شريط رفع بالنسبة المئوية لو فيه ملف)، والصفحة مابتقبلش ضغطة تانية لحد ما الطلب يخلص. لو حصل خطأ (بيانات غلط مثلًا) الشاشة بتختفي وتظهر رسالة الخطأ في مكانها.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Unit/BusyOverlayConsistencyTest</code> (بيفشل لو أي صفحة إنشاء/تعديل جديدة اتضافت من غير الشاشة دي)</dd></div></dl>
+      <dl><div class="row"><dt>الدور</dt><dd>مدير النظام</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>جرّب الحفظ في كل الفورمات دي: مستخدم (إضافة وتعديل)، سائق، مركبة، أصل، تصنيف مركبات، سعة أصول، شركة عميل، وصورة My Profile.</li><li>جرّب كمان زراير تغيير الحالة (تعطيل / تنشيط / صيانة) في صفحات التفاصيل، وحذف تصنيف مركبات.</li><li>في الفورمات اللي فيها صورة أو مستند، اختار ملف كبير شوية.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>في كل الحالات تظهر <strong>نفس الشاشة الغامقة</strong> بدايرة التحميل ورسالة &quot;Working...&quot; أول ما تدوس حفظ (ومعاها شريط رفع بالنسبة المئوية لو فيه ملف)، والصفحة مابتقبلش ضغطة تانية لحد ما الطلب يخلص. لو حصل خطأ (بيانات غلط مثلًا) الشاشة بتختفي وتظهر رسالة الخطأ في مكانها.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Unit/BusyOverlayConsistencyTest</code> (بيفشل لو أي صفحة إنشاء/تعديل جديدة اتضافت من غير الشاشة دي)</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-frd-gap-review#30" data-title="شاشة التحميل واللوجو والاسم">
@@ -771,14 +771,14 @@
       <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.5.3</dd></div><div class="row"><dt>الخطوات</dt><dd>(Postman) بـ<code>dataentry</code> أرسل <code>POST /api/v1/vehicles</code> بـ<code>operational_status: deactivated</code>.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>رفض. نفس الطلب بـ<code>admin</code> ينجح.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleManagementTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
-    <article class="item" data-id="week-3-vehicles-drivers-assets#8" data-title="الحاوية المدمجة — فلترة السعة من مجمع الأصول">
+    <article class="item" data-id="week-3-vehicles-drivers-assets#8" data-title="الحاوية المدمجة — قائمة السعة حسب النوع">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
           <span class="num">8</span></label>
-        <h3>الحاوية المدمجة — فلترة السعة من مجمع الأصول</h3>
+        <h3>الحاوية المدمجة — قائمة السعة حسب النوع</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.5.3 (لو المركبة تشمل حاوية مدمجة: قائمة السعة تتفلتر)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>في فورم المركبة فعّل &quot;تشمل حاوية مدمجة&quot;.</li><li>اختر النوع (حاوية/صهريج) وفئة المركبة.</li><li>لاحظ قائمة السعة.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>تظهر فقط تصنيفات السعة اللي عندها أصل من النوع المختار متوافق مع فئة المركبة. لو مفيش، بيظهر <strong>خطأ inline، بدون fallback لكل السعات</strong>.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleEmbeddedCapacityTest</code> (6 حالات)</dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.5.3 (لو المركبة تشمل حاوية مدمجة: يتم اختيار نوعها ثم سعتها من قائمة سعات الأصول التي تم إنشاؤها)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>في فورم المركبة فعّل &quot;تشمل حاوية مدمجة&quot;.</li><li>اختر النوع &quot;حاوية&quot; ولاحظ قائمة السعة، وبعدين بدّل لـ&quot;صهريج&quot;.</li><li>غيّر فئة المركبة ولاحظ إن القائمة مابتتغيرش.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>مع &quot;حاوية&quot; تظهر السعات المعرّفة للحاويات، ومع &quot;صهريج&quot; السعات المعرّفة للصهاريج، والسعة المعرّفة لـ&quot;الجميع&quot; تظهر في الحالتين. القائمة <strong>مش مرتبطة</strong> بفئة المركبة ولا بوجود أصول في المجمع. لو مفيش ولا سعة معرّفة للنوع المختار بيظهر خطأ inline. السيرفر بيرفض سعة مش من نفس النوع.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleEmbeddedCapacityTest</code> (10 حالات)</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-vehicles-drivers-assets#9" data-title="الترقيم السيرفر-سايد (حجم واقعي)">
@@ -866,7 +866,7 @@
         <h3>صلاحيات الأصول (نفس نمط المركبات)</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.7.3 (الإنشاء والتعديل مسؤولية مدير النظام أو مدخل البيانات؛ المراقب عرض فقط)</dd></div><div class="row"><dt>الخطوات</dt><dd>سجّل دخول بالأربعة، افحص قائمة &quot;Assets&quot; الجانبية والوصول.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd><code>admin</code>/<code>dataentry</code>/<code>auditor</code> يشوفوا &quot;Assets&quot; (List + Categories). <code>driver</code> لأ. <code>auditor</code> عرض/تصدير بس.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Assets/AssetPolicyTest</code>, <code>MenuVisibilityTest</code> (<code>test_an_auditor_sees_assets</code>, <code>test_a_data_entry_user_sees_vehicles_and_assets...</code>)</dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.7.3 (الإنشاء والتعديل مسؤولية مدير النظام أو مدخل البيانات؛ المراقب عرض فقط)</dd></div><div class="row"><dt>الخطوات</dt><dd>سجّل دخول بالأربعة، افحص قائمة &quot;Assets&quot; الجانبية والوصول.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd><code>admin</code>/<code>dataentry</code>/<code>auditor</code> يشوفوا &quot;Assets&quot; (List + Capacities). <code>driver</code> لأ. <code>auditor</code> عرض/تصدير بس.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Assets/AssetPolicyTest</code>, <code>MenuVisibilityTest</code> (<code>test_an_auditor_sees_assets</code>, <code>test_a_data_entry_user_sees_vehicles_and_assets...</code>)</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-vehicles-drivers-assets#17" data-title="الكروت منفصلة للحاويات والصهاريج">
@@ -899,14 +899,14 @@
       <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.7.3 (قائمة السعة تتفلتر حسب النوع المختار)</dd></div><div class="row"><dt>الخطوات</dt><dd>في فورم إنشاء أصل، بدّل النوع بين &quot;حاوية&quot; و&quot;صهريج&quot; ولاحظ قائمة تصنيف السعة.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>كل نوع يعرض تصنيفات السعة المتوافقة معه (و<code>both</code> يظهر للاتنين).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Assets/AssetManagementTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
-    <article class="item" data-id="week-3-vehicles-drivers-assets#20" data-title="تصنيفات سعة الأصول — الاسم فقط للتعديل">
+    <article class="item" data-id="week-3-vehicles-drivers-assets#20" data-title="سعات الأصول — الاسم فقط للتعديل">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
           <span class="num">20</span></label>
-        <h3>تصنيفات سعة الأصول — الاسم فقط للتعديل</h3>
+        <h3>سعات الأصول — الاسم فقط للتعديل</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.7.2 (تعديل التصنيف الاسم فقط، السعة والنوعية مقفولين، لا حذف ولا تعطيل)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح <code>/app/asset-category/list</code>.</li><li>أنشئ تصنيف.</li><li>عدّله.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>التعديل الاسم فقط؛ مفيش زر حذف ولا تعطيل.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Assets/AssetCapacityCategoryManagementTest</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.7.2 (تعديل الاسم فقط — حجم السعة والنوعية مقفولين، لا حذف ولا تعطيل)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح <code>/app/asset-category/list</code>.</li><li>أنشئ سعة (زر &quot;Add Capacity&quot;).</li><li>عدّلها.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>التعديل الاسم فقط؛ مفيش زر حذف ولا تعطيل.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Assets/AssetCapacityCategoryManagementTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-vehicles-drivers-assets#21" data-title="البيانات الإضافية الفاضية مبتظهرش (كل الموديولات)">
@@ -989,7 +989,7 @@
     </article>
     </details>
   </section>
-  <p class="foot">اتولّد تلقائيًا من ملفات <code>docs/acceptance/week-*.md</code> بتاريخ 2026-09-28 — للتحديث: <code>node docs/acceptance/build-checklist.mjs</code>. متعدّلش الملف ده بإيدك.</p>
+  <p class="foot">اتولّد تلقائيًا من ملفات <code>docs/acceptance/week-*.md</code> بتاريخ 2026-10-01 — للتحديث: <code>node docs/acceptance/build-checklist.mjs</code>. متعدّلش الملف ده بإيدك.</p>
 </div>
 
 <script>

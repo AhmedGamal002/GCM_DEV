@@ -65,7 +65,7 @@ The System Admin has **full access**: view, create, edit, export, and all status
 - **Add Vehicle** button.
 
 ### Create / edit vehicle
-- Basics: plate (letters + digits, digits only), category, affiliation, whether it has an embedded container (if yes: its type + capacity — the list filters by what is available in the Asset Pool).
+- Basics: plate (letters + digits, digits only), category, affiliation, whether it has an embedded container (if yes: its type + capacity — the list shows the capacities defined for that type: "container" lists container capacities, "tank" lists tank capacities, and a capacity defined for both shows under either).
 - Photos (front/back) + documents (registration card / fitness / inspection certificate / insurance) with numbers and expiry dates.
 - Repeatable entry permits (area / number / expiry / attachment).
 - **All document and permit numbers are digits only.**
@@ -110,7 +110,7 @@ System Admin: view, create, edit (full data), export, and all status changes.
 ### List
 - **Separate stat cards for containers and tanks**: available / in projects (0 for now) / on maintenance / deactivated.
 - Server-side table. Filters: type (container / tank) + status + affiliation. Export button.
-- Two items under "Assets" in the sidebar: **List** + **Categories**.
+- Two items under "Assets" in the sidebar: **List** + **Capacities**.
 
 ### Create asset
 - Name, type (container / tank), capacity category (filtered by type), compatible vehicle categories (checkboxes, per-asset), status, affiliation, purchase date, additional data.
@@ -118,9 +118,9 @@ System Admin: view, create, edit (full data), export, and all status changes.
 ### Edit asset
 - **Name only** is editable — capacity and category are locked after creation (per FRD: they affect contracts and trips).
 
-### Asset capacity categories — `/app/asset-category/list`
+### Assets capacities — `/app/asset-category/list`
 - Create and edit. After creation, **name only** is editable (capacity and kind locked). No delete, no deactivate.
-- The list's eye icon opens a **details page** (a client add-on, not in the FRD): the category's own data plus a table of every asset carrying it, linking to each asset's own details page.
+- The list's eye icon opens a **details page** (a client add-on, not in the FRD): the capacity's own data plus a table of every asset carrying it, linking to each asset's own details page.
 
 ## 8. Change asset status
 - **System Admin**: "on maintenance" + **deactivate** + **reactivate from deactivated**.
@@ -132,5 +132,5 @@ System Admin: view, create, edit (full data), export, and all status changes.
 | Users | Full CRUD + status + export | "Client"/"Contractor" options in the Add button (Week 4–5) |
 | Vehicles | Full CRUD + status + export + embedded container | "on a trip" column/counter + vehicle trip log (Week 7) |
 | Drivers | Full CRUD + default vehicle + documents + permits | "on a trip" status (Week 7), mobile app |
-| Assets | Full CRUD + categories + status + export | "Add asset to a project" + "in projects" counter (Week 4) |
+| Assets | Full CRUD + capacities + status + export | "Add asset to a project" + "in projects" counter (Week 4) |
 | Dashboard | Shell screen | Real stats (Week 8) |

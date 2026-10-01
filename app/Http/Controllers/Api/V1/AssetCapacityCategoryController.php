@@ -111,21 +111,11 @@ class AssetCapacityCategoryController extends Controller
     private function filteredQuery(Request $request): Builder
     {
         return AssetCapacityCategory::query()
-            // The asset form asks for capacities matching a chosen asset
-            // type — `both` fits either.
+            // The asset form AND the vehicle form's embedded-container
+            // dropdown (FRD §1.5.3) ask for the capacities matching a chosen
+            // type (container / tank) — `both` fits either.
             ->when($request->filled('for_type'), fn ($q) => $q->whereIn('applies_to', [$request->string('for_type')->toString(), 'both']))
             ->when($request->filled('applies_to'), fn ($q) => $q->where('applies_to', $request->string('applies_to')))
-            // The vehicle form's embedded-container dropdown: capacities the
-            // fleet can actually field for a given vehicle category +
-            // container/tank kind, derived through the asset pool
-            // (FRD §1.5.3). Both params required together.
-            ->when(
-                $request->filled('vehicle_category_id') && $request->filled('asset_type'),
-                fn ($q) => $q->compatibleWithVehicle(
-                    $request->integer('vehicle_category_id'),
-                    $request->string('asset_type')->toString(),
-                )
-            )
             ->when($request->filled('search'), fn ($q) => $q->where('name', 'like', '%'.$request->string('search')->toString().'%'));
     }
 }
