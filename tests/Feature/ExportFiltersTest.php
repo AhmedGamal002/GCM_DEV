@@ -7,7 +7,9 @@ use App\Models\Asset;
 use App\Models\AssetCapacityCategory;
 use App\Models\Company;
 use App\Models\IntermediateFacility;
+use App\Models\MainService;
 use App\Models\Project;
+use App\Models\SubService;
 use App\Models\Tenant;
 use App\Models\User;
 use App\Models\Vehicle;
@@ -216,6 +218,31 @@ class ExportFiltersTest extends TestCase
         IntermediateFacility::factory()->recycling()->create(['name' => 'مصنع التدوير', 'prefix' => 'REC']);
 
         $this->actingAs($this->admin, 'web')->get('/api/v1/facilities/export?format=pdf&search=REC')->assertOk();
+    }
+
+    public function test_main_service_export_honours_search_and_filters(): void
+    {
+        $solid = MainService::factory()->create(['name' => 'Solid Waste']);
+        SubService::factory()->forService($solid)->create(['name' => 'Construction debris']);
+        MainService::factory()->ofType('hazardous')->create(['name' => 'Hazardous Transport']);
+        MainService::factory()->supplying()->deactivated()->create(['name' => 'Water Supply']);
+
+        $names = fn (string $qs) => $this->exported('/api/v1/main-services/export?format=xlsx'.$qs, 'main-services.xlsx')->pluck('name')->all();
+
+        $this->assertCount(3, $this->exported('/api/v1/main-services/export?format=xlsx', 'main-services.xlsx'));
+        $this->assertSame(['Hazardous Transport'], $names('&service_type=hazardous'));
+        $this->assertSame(['Water Supply'], $names('&operational_status=deactivated'));
+        $this->assertSame(['Solid Waste'], $names('&search=Solid'));
+        // The sub-services column is on screen, so the search covers it too.
+        $this->assertSame(['Solid Waste'], $names('&search=debris'));
+        $this->assertSame([], $names('&service_type=hazardous&search=Solid'));
+    }
+
+    public function test_main_service_export_pdf_works(): void
+    {
+        MainService::factory()->create(['name' => 'نقل المخلفات الصلبة']);
+
+        $this->actingAs($this->admin, 'web')->get('/api/v1/main-services/export?format=pdf&search=المخلفات')->assertOk();
     }
 
     public function test_driver_export_honours_search_and_filters(): void

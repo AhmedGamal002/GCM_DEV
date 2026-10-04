@@ -8,7 +8,7 @@ Data Entry is responsible for **creating, editing, and deactivating users, drive
 
 ## What you see in the sidebar
 
-Dashboard, then an **Accounts** section (Users · Drivers), a **Fleet & Assets** section (Vehicles · Assets — with a Categories sub-item under Assets), an **Operations** section (Facilities) and a **Clients & Projects** section (Client Companies). Any other link (Roles & Permissions, and the demo template scaffold) is **hidden** — and if you open it manually it returns "You don't have permission to view this data."
+Dashboard, then an **Accounts** section (Users · Drivers), a **Fleet & Assets** section (Vehicles · Assets — with a Capacities sub-item under Assets), an **Operations** section (Facilities · Services) and a **Clients & Projects** section (Client Companies). Any other link (Roles & Permissions, and the demo template scaffold) is **hidden** — and if you open it manually it returns "You don't have permission to view this data."
 
 ## 1. Sign in and profile
 
@@ -48,11 +48,11 @@ Dashboard, then an **Accounts** section (Users · Drivers), a **Fleet & Assets**
 - **Status:** "on maintenance", or **deactivate / reactivate**.
 - **Insert an asset into a project** (`/app/asset/insert-into-project`): company → active project → type → available asset. The asset then shows as "In a project" + the project name.
 
-### Asset capacity categories — `/app/asset-category/list`
-- **Create** a new category.
+### Assets capacities — `/app/asset-category/list`
+- **Create** a new capacity.
 - **Edit:** name only (capacity and kind locked).
 - No delete, no deactivate.
-- The list's eye icon opens a **details page** (client add-on): the category's data plus a table of the assets carrying it.
+- The list's eye icon opens a **details page** (client add-on): the capacity's data plus a table of the assets carrying it.
 
 ## 6. Intermediate facilities — `/app/facility/list`
 
@@ -62,21 +62,27 @@ Dashboard, then an **Accounts** section (Users · Drivers), a **Fleet & Assets**
 - **Edit:** the name and all optional data. The environmental service and recycling efficiency change only while no sub-service or trip uses the facility.
 - **Status:** deactivate / reactivate from the details page. Facilities are never deleted.
 
-## 7. Client companies — `/app/company/list`
+## 7. Services — `/app/main-service/list` and `/app/sub-service/list`
+
+- Exactly the System Admin's permissions (see the System Admin guide — Services).
+- **Main services:** view + search (which also covers sub-service names) + filters + **export**; create (name, type of service, supported vehicle categories); edit (the type is locked); deactivate / reactivate from the edit page — **deactivating also deactivates every sub-service under it**.
+- **Sub-services:** the accordion page; create (main service, type, capacities, facilities — optional only for supplying, recycle receipt, skip colour); edit (the main service is locked); deactivate / reactivate (not while its main service is deactivated).
+
+## 8. Client companies — `/app/company/list`
 
 - **View** the list + filter + **export**, and the **details** of any company (and download its attachments).
 - **Create** a client company (name + short name are required) — including creating it deactivated. From its edit page you can also pick the **client representative** (one of its active project managers); projects have a **project representative** picker too.
 - **Edit** any company data (every field except the short name — it is locked after creation because the company ID is built from it).
 - **Status:** **deactivate and reactivate** from the edit page. There is no delete.
 
-## 8. Client projects — `/app/project/list`
+## 9. Client projects — `/app/project/list`
 
 - **View** the list (search + company and status filters) + **export**, and the **details** of any project (and its assets table).
 - **Create** a project (name + an active client company are required) — its ID is built from the company's short name (`ALN-P0001`).
 - **Edit** any data except the company (locked after creation).
 - **Status:** **deactivate and reactivate** from the edit page. There is no delete.
 
-## 9. What you cannot do (returns 403 or 422)
+## 10. What you cannot do (returns 403 or 422)
 
 | | |
 |---|---|
@@ -85,9 +91,9 @@ Dashboard, then an **Accounts** section (Users · Drivers), a **Fleet & Assets**
 | Anything related to Contracts (PO) | ✖ — you don't see that section at all once it's built |
 | Roles & permissions / Companies management | ✖ |
 
-## 10. Features available now
+## 11. Features available now
 
 Users and Drivers: view/create/edit + every account status (on vacation/deactivate/reactivate) except the System Admin's own account.
-Vehicles, Assets and Intermediate facilities: full CRUD including deactivate/reactivate + export. The embedded container in the vehicle form works.
+Vehicles, Assets, Intermediate facilities and Services (main and sub): full CRUD including deactivate/reactivate + export. The embedded container in the vehicle form works.
 Client companies and client projects: full CRUD including deactivate/reactivate + export. Inserting an asset into a project works.
 Deferred: "on a trip" column for vehicles (Week 7), taking an asset out of a project (with trips).

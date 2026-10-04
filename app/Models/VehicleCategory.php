@@ -85,6 +85,12 @@ class VehicleCategory extends Model
         return $this->belongsToMany(Asset::class, 'asset_vehicle_categories');
     }
 
+    /** Main services this category is able to perform (FRD §1.9.1). */
+    public function mainServices(): BelongsToMany
+    {
+        return $this->belongsToMany(MainService::class, 'main_service_vehicle_category');
+    }
+
     /**
      * Localised label for the current app locale.
      */

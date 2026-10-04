@@ -36,9 +36,15 @@ class IntermediateFacilityResource extends JsonResource
             // Locks the service + efficiency fields on the edit form.
             'in_use' => $this->isInUse(),
 
-            // The sub-services that list this facility — filled in once the
-            // Services module (FRD §1.9) exists.
-            'supported_sub_services' => [],
+            // FRD §1.8 "supported sub-services": taken from the sub-services
+            // that list this facility (loaded on the details endpoint only).
+            'supported_sub_services' => $this->whenLoaded('subServices', fn () => $this->subServices
+                ->map(fn ($s) => [
+                    'id' => $s->id,
+                    'name' => $s->name,
+                    'main_service_name' => $s->mainService?->name,
+                    'operational_status' => $s->operational_status,
+                ])->values()),
 
             'updated_by_name' => $this->whenLoaded('updatedBy', fn () => $this->updatedBy?->name),
             'updated_at' => $this->updated_at,

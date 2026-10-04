@@ -41,9 +41,9 @@ class FormAccessAndMessagesTest extends TestCase
         return array_map(fn ($p) => [$p], [
             '/app/user/add', '/app/client-user/add', '/app/driver/add', '/app/vehicle/add', '/app/vehicle-category/add',
             '/app/asset/add', '/app/asset/insert-into-project', '/app/asset-category/add', '/app/facility/add',
-            '/app/company/add', '/app/project/add',
+            '/app/company/add', '/app/project/add', '/app/main-service/add', '/app/sub-service/add',
             '/app/user/edit/1', '/app/client-user/edit/1', '/app/driver/edit/1', '/app/vehicle/edit/1', '/app/vehicle-category/edit/1',
-            '/app/asset/edit/1', '/app/asset-category/edit/1', '/app/facility/edit/1', '/app/company/edit/1', '/app/project/edit/1',
+            '/app/main-service/edit/1', '/app/sub-service/edit/1', '/app/asset/edit/1', '/app/asset-category/edit/1', '/app/facility/edit/1', '/app/company/edit/1', '/app/project/edit/1',
         ]);
     }
 

@@ -20,6 +20,8 @@ use App\Http\Controllers\Web\Profile\AccountSettingsController;
 use App\Http\Controllers\Web\Projects\ProjectAccountController;
 use App\Http\Controllers\Web\Projects\ProjectAddController;
 use App\Http\Controllers\Web\Projects\ProjectListController;
+use App\Http\Controllers\Web\Services\MainServicePageController;
+use App\Http\Controllers\Web\Services\SubServicePageController;
 use App\Http\Controllers\Web\Users\ClientUserController;
 use App\Http\Controllers\Web\Users\UserAccountController;
 use App\Http\Controllers\Web\Users\UserAddController;
@@ -102,6 +104,16 @@ Route::middleware(['auth', 'tenant'])->group(function () {
     Route::get('/app/facility/add', [FacilityAddController::class, 'index'])->middleware('can:create,App\\Models\\IntermediateFacility')->name('app-facility-add');
     Route::get('/app/facility/view/{facility}', [FacilityAccountController::class, 'view'])->whereNumber('facility')->name('app-facility-view');
     Route::get('/app/facility/edit/{facility}', [FacilityAccountController::class, 'edit'])->whereNumber('facility')->middleware('can:create,App\\Models\\IntermediateFacility')->name('app-facility-edit');
+
+    // Services (FRD §1.9) — {service} kept as a raw numeric id.
+    Route::get('/app/main-service/list', [MainServicePageController::class, 'list'])->name('app-main-service-list');
+    Route::get('/app/main-service/add', [MainServicePageController::class, 'add'])->middleware('can:create,App\\Models\\MainService')->name('app-main-service-add');
+    Route::get('/app/main-service/view/{service}', [MainServicePageController::class, 'view'])->whereNumber('service')->name('app-main-service-view');
+    Route::get('/app/main-service/edit/{service}', [MainServicePageController::class, 'edit'])->whereNumber('service')->middleware('can:create,App\\Models\\MainService')->name('app-main-service-edit');
+    Route::get('/app/sub-service/list', [SubServicePageController::class, 'list'])->name('app-sub-service-list');
+    Route::get('/app/sub-service/add', [SubServicePageController::class, 'add'])->middleware('can:create,App\\Models\\SubService')->name('app-sub-service-add');
+    Route::get('/app/sub-service/view/{service}', [SubServicePageController::class, 'view'])->whereNumber('service')->name('app-sub-service-view');
+    Route::get('/app/sub-service/edit/{service}', [SubServicePageController::class, 'edit'])->whereNumber('service')->middleware('can:create,App\\Models\\SubService')->name('app-sub-service-edit');
 
     // Client companies — {company} kept as a raw numeric id (see CompanyController's docblock).
     Route::get('/app/company/list', [CompanyListController::class, 'index'])->name('app-company-list');

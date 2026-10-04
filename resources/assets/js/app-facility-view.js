@@ -104,12 +104,24 @@ document.addEventListener('DOMContentLoaded', function () {
     edit.href = (t.edit_url_base || '/app/facility/edit') + '/' + f.id;
     if (canManage) edit.classList.remove('d-none');
 
-    // Sub-services that list this facility (empty until the Services module exists).
+    // Sub-services that list this facility — each a link to its details page.
     const subs = f.supported_sub_services || [];
     const subsBox = document.getElementById('fv-sub-services');
     const subsEmpty = document.getElementById('fv-sub-services-empty');
     if (subs.length) {
-      subsBox.innerHTML = subs.map((s) => '<span class="badge bg-label-primary">' + esc(s.name) + '</span>').join('');
+      subsBox.innerHTML = subs
+        .map(
+          (s) =>
+            '<a href="/app/sub-service/view/' +
+            encodeURIComponent(s.id) +
+            '" class="badge ' +
+            (s.operational_status === 'active' ? 'bg-label-primary' : 'bg-label-secondary') +
+            '">' +
+            esc(s.name) +
+            (s.main_service_name ? ' <small class="opacity-75">(' + esc(s.main_service_name) + ')</small>' : '') +
+            '</a>'
+        )
+        .join('');
     } else {
       subsEmpty.textContent = t.no_sub_services || '';
       subsEmpty.classList.remove('d-none');

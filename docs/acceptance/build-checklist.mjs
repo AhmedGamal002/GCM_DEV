@@ -384,8 +384,9 @@ const CLIENT_GROUPS = [
   { title: 'المركبات', ids: ['week-3-vehicles-drivers-assets#1', 'week-3-vehicles-drivers-assets#2', 'week-3-vehicles-drivers-assets#25', 'week-3-vehicles-drivers-assets#6', 'week-3-vehicles-drivers-assets#3', 'week-3-vehicles-drivers-assets#4', 'week-3-vehicles-drivers-assets#5', 'week-3-vehicles-drivers-assets#8'] },
   { title: 'تصنيفات المركبات', ids: ['week-3-frd-gap-review#10', 'week-3-frd-gap-review#11', 'week-3-frd-gap-review#13', 'week-3-frd-gap-review#14', 'week-3-frd-gap-review#12', 'week-3-frd-gap-review#17', 'week-3-frd-gap-review#19'] },
   { title: 'الأصول', ids: ['week-3-vehicles-drivers-assets#16', 'week-3-vehicles-drivers-assets#26', 'week-3-vehicles-drivers-assets#18', 'week-3-vehicles-drivers-assets#27', 'week-3-vehicles-drivers-assets#17', 'week-3-vehicles-drivers-assets#19'] },
-  { title: 'تصنيفات سعة الأصول', ids: ['week-3-vehicles-drivers-assets#20'] },
+  { title: 'سعات الأصول', ids: ['week-3-vehicles-drivers-assets#20'] },
   { title: 'المنشآت الوسيطة', ids: ['week-5-facilities#2', 'week-5-facilities#4', 'week-5-facilities#5', 'week-5-facilities#6', 'week-5-facilities#7', 'week-5-facilities#8', 'week-5-facilities#9', 'week-5-facilities#11', 'week-5-facilities#12'] },
+  { title: 'الخدمات', ids: ['week-5-services#2', 'week-5-services#4', 'week-5-services#5', 'week-5-services#6', 'week-5-services#7', 'week-5-services#8', 'week-5-services#9', 'week-5-services#10', 'week-5-services#11', 'week-5-services#12', 'week-5-services#13', 'week-5-services#14', 'week-5-services#15', 'week-5-services#16'] },
   { title: 'شركات العملاء', ids: ['week-4-client-companies#1', 'week-4-client-companies#2', 'week-4-client-companies#3', 'week-4-client-companies#4', 'week-4-client-companies#5', 'week-4-client-companies#6', 'week-4-client-companies#7', 'week-4-client-companies#8', 'week-4-client-companies#9'] },
   { title: 'المشروعات', ids: ['week-5-projects#2', 'week-5-projects#3', 'week-5-projects#4', 'week-5-projects#5', 'week-5-projects#6', 'week-5-projects#7', 'week-5-projects#9', 'week-5-projects#10', 'week-5-projects#11', 'week-5-projects#12', 'week-5-projects#13', 'week-5-projects#15', 'week-5-projects#16', 'week-5-projects#17'] },
   { title: 'الملف الشخصي', ids: ['week-1-2-auth-users-roles#2', 'week-3-frd-gap-review#4'] },
@@ -407,7 +408,40 @@ const CLIENT_OVERRIDES = {
   },
   'week-5-facilities#8': {
     expected:
-      'عنوان الصفحة "تفاصيل المنشأة الوسيطة". بتعرض: اللوجو، الاسم والحالة، الاسم المختصر، الخدمة البيئية ونسبة الكفاءة، العنوان، رابط الخريطة، بيانات العقد وزر تحميل المرفق، البيانات الإضافية، "آخر تحديث: تم بواسطة ... – التاريخ". قسم "الخدمات الفرعية المدعومة" بيوضّح إن مفيش خدمات فرعية مرتبطة بالمنشأة حاليًا.',
+      'عنوان الصفحة "تفاصيل المنشأة الوسيطة". بتعرض: اللوجو، الاسم والحالة، الاسم المختصر، الخدمة البيئية ونسبة الكفاءة، العنوان، رابط الخريطة، بيانات العقد وزر تحميل المرفق، البيانات الإضافية، "آخر تحديث: تم بواسطة ... – التاريخ". قسم "الخدمات الفرعية المدعومة" فيه الخدمات الفرعية اللي مختارة المنشأة دي (كل واحدة رابط لتفاصيلها)، أو رسالة إن مفيش لو مفيش.',
+  },
+  'week-5-services#2': {
+    expected:
+      'أعمدة الجدول: اسم الخدمة الأساسية (رابط لتفاصيلها) / نوعية الخدمة / الخدمات الفرعية (كل واحدة رابط لتفاصيلها) / الحالة / التفاصيل (عين + قلم). البحث بـ`sludge` يطلّع "Hazardous Waste Transport" لأن البحث بيشمل أسماء الخدمات الفرعية الظاهرة في الجدول. فلترا النوعية والحالة وترقيم الصفحات وترتيب الأعمدة شغالين.',
+  },
+  'week-5-services#4': {
+    stepsList: [
+      'من القائمة الجانبية افتح Services ← Add Main Service.',
+      'دوس Submit والفورم فاضي.',
+      'اكتب اسم، اختار "نفايات خطرة"، وعلّم تصنيفين مركبات.',
+      'دوس Submit.',
+    ],
+  },
+  'week-5-services#6': {
+    expected:
+      'عنوان الصفحة "تعديل تفاصيل خدمة أساسية". نوعية الخدمة ظاهرة ومقفولة مع توضيح إنها ماتتغيرش بعد الإنشاء. الاسم والبيانات الإضافية والتصنيفات بيتحفظوا وترجع للتفاصيل برسالة نجاح. زر "Cancel" بيرجّع للتفاصيل من غير حفظ.',
+  },
+  'week-5-services#7': {
+    expected:
+      'الكارت بينبّه إن التعطيل بيعطّل كل الخدمات الفرعية. بعد التعطيل: الخدمة الأساسية معطّلة والخدمتين الفرعيتين تحتها معطّلين كمان. إعادة تنشيط الأساسية مابترجّعش الفرعيات تلقائيًا — كل واحدة بتتنشّط لوحدها. الخدمة الأساسية المعطّلة مابتظهرش في قائمة الاختيار عند إنشاء خدمة فرعية.',
+  },
+  'week-5-services#13': {
+    expected:
+      'عنوان الصفحة "تعديل تفاصيل خدمة". الفورم متعبّي بالبيانات الحالية، والخدمة الأساسية للقراءة فقط. السعة اللي مابتناسبش النوع الجديد بتختفي من الاختيارات. بعد الحفظ بترجع للتفاصيل برسالة نجاح.',
+  },
+  'week-5-services#5': {
+    expected:
+      'عنوان الصفحة "تفاصيل خدمة أساسية" وتحته "آخر تحديث: تم بواسطة ... – التاريخ". الكارت الشمال: الاسم، الحالة، نوعية الخدمة، عدد الخدمات الفرعية، التصنيفات الداعمة، البيانات الإضافية، وزرا Edit وBack. اليمين: **الإحصائيات** (إجمالي الرحلات، المشاريع التي طلبت الخدمة، السائقين، الكميات بالطن والمتر المكعب، الموارد: مركبات/حاويات/صهاريج)، وتحتها جدول **"الخدمات الفرعية التابعة لها"** (بحث + ترقيم، كل اسم رابط) وزر "Create New Sub-service" بيفتح الفورم والخدمة الأساسية مختارة.',
+  },
+  'week-5-services#15': {
+    frd: '§1.8 (الخدمات الفرعية المدعومة تُحدَّد من مدخلات الخدمات الفرعية)',
+    expected:
+      'قسم "الخدمات الفرعية المدعومة" فيه "Oily sludge (Hazardous Waste Transport)" كرابط لتفاصيلها. في صفحة التعديل الخدمة البيئية والكفاءة مقفولين برسالة إن المنشأة مستخدمة، والاسم وباقي البيانات قابلين للتعديل.',
   },
   'week-1-2-auth-users-roles#8': {
     title: 'إنشاء مستخدم GCM (مدخل بيانات / مراقب فقط)',
@@ -502,7 +536,7 @@ const CLIENT_OVERRIDES = {
     title: 'عرض قائمة الأصول',
     frd: '§1.7.3 (الإنشاء والتعديل مسؤولية مدير النظام أو مدخل البيانات؛ المراقب عرض فقط)',
     steps: 'افتح قائمة الأصول.',
-    expected: 'تشوف "Assets" (List + Categories).',
+    expected: 'تشوف "Assets" (List + Capacities).',
   },
 };
 

@@ -5,6 +5,7 @@ namespace Tests\Feature\Facilities;
 use App\Domain\Facilities\Actions\UpdateFacilityAction;
 use App\Domain\Facilities\Exceptions\FacilityInUseException;
 use App\Models\IntermediateFacility;
+use App\Models\SubService;
 use App\Models\Tenant;
 use App\Models\User;
 use Database\Seeders\RoleSeeder;
@@ -362,6 +363,36 @@ class FacilityManagementTest extends TestCase
         // ...the service and the efficiency are not.
         $this->expectException(FacilityInUseException::class);
         $action->execute($facility, ['name' => 'Used renamed', 'environmental_service' => 'disposal'], $this->admin);
+    }
+
+    /**
+     * The real lock, end to end: once a sub-service lists the facility
+     * (sub_service_facility), its service and efficiency can't change —
+     * even after that sub-service is deactivated.
+     */
+    public function test_a_facility_listed_by_a_sub_service_is_in_use_and_its_service_is_locked(): void
+    {
+        $facility = IntermediateFacility::factory()->recycling(60)->create();
+        $sub = SubService::factory()->deactivated()->create(['name' => 'Cardboard']);
+        $sub->facilities()->sync([$facility->id]);
+
+        $this->actingAs($this->admin, 'web');
+
+        $this->getJson("/api/v1/facilities/{$facility->id}")
+            ->assertOk()
+            ->assertJsonPath('data.in_use', true)
+            ->assertJsonPath('data.supported_sub_services.0.name', 'Cardboard');
+
+        $this->patchJson("/api/v1/facilities/{$facility->id}", ['name' => $facility->name, 'environmental_service' => 'disposal'])
+            ->assertStatus(422);
+        $this->patchJson("/api/v1/facilities/{$facility->id}", ['name' => $facility->name, 'recycling_efficiency' => 80])
+            ->assertStatus(422);
+
+        // The name is still editable.
+        $this->patchJson("/api/v1/facilities/{$facility->id}", ['name' => 'Renamed'])
+            ->assertOk()
+            ->assertJsonPath('data.environmental_service', 'recycle')
+            ->assertJsonPath('data.recycling_efficiency', 60);
     }
 
     public function test_the_in_use_flag_is_exposed_for_the_edit_form(): void
