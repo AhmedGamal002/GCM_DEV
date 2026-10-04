@@ -60,7 +60,8 @@ class FacilityController extends Controller
 
     public function show(int $facility)
     {
-        $facility = IntermediateFacility::with('updatedBy')->findOrFail($facility);
+        $facility = IntermediateFacility::with(['updatedBy', 'subServices' => fn ($q) => $q->with('mainService')->orderBy('name')])
+            ->findOrFail($facility);
 
         Gate::authorize('view', $facility);
 

@@ -102,7 +102,7 @@
       <span>تم: <b id="s-pass">0</b></span>
       <span>فشل: <b id="s-fail" style="color:var(--bad)">0</b></span>
       <span>متبقي: <b id="s-left">0</b></span>
-      <span>من <b>145</b> بند</span>
+      <span>من <b>163</b> بند</span>
     </div>
     <div class="prog"><i class="p" id="b-pass"></i><i class="f" id="b-fail"></i></div>
     <div class="tools">
@@ -571,7 +571,7 @@
         <h3>زر &quot;Add category&quot; مش لازق في خانة البحث + زر Export</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح Vehicles، وبعدين Categories.</li><li>قارن المسافة بين خانة البحث وأزرار <strong>Export</strong> و<strong>Add category</strong> بنفس الصفحة.</li><li>كرّر المقارنة مع صفحة Assets، وبعدين Categories.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>نفس الترتيب والمسافات بالظبط في الصفحتين (بحث، بعده Export، بعده Add). زر Export بيفتح قايمة Excel / Pdf.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>ExportFiltersTest::test_vehicle_category_export_*</code> (الصفوف المصدّرة مع البحث + PDF + أدمن فقط). الترتيب والمسافات يدوي.</dd></div></dl>
+      <dl><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح Vehicles، وبعدين Categories.</li><li>قارن المسافة بين خانة البحث وأزرار <strong>Export</strong> و<strong>Add category</strong> بنفس الصفحة.</li><li>كرّر المقارنة مع صفحة Assets، وبعدين Capacities (الزر هناك اسمه <strong>Add Capacity</strong>).</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>نفس الترتيب والمسافات بالظبط في الصفحتين (بحث، بعده Export، بعده Add). زر Export بيفتح قايمة Excel / Pdf.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>ExportFiltersTest::test_vehicle_category_export_*</code> (الصفوف المصدّرة مع البحث + PDF + أدمن فقط). الترتيب والمسافات يدوي.</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-frd-gap-review#20" data-title="المحتوى بعرض الشاشة كله (Wide) كوضع افتراضي">
@@ -679,7 +679,7 @@
         <h3>نفس شاشة &quot;جاري الحفظ&quot; في كل صفحات الإنشاء والتعديل</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>الدور</dt><dd>مدير النظام</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>جرّب الحفظ في كل الفورمات دي: مستخدم (إضافة وتعديل)، سائق، مركبة، أصل، تصنيف مركبات، تصنيف سعة أصول، شركة عميل، وصورة My Profile.</li><li>جرّب كمان زراير تغيير الحالة (تعطيل / تنشيط / صيانة) في صفحات التفاصيل، وحذف تصنيف مركبات.</li><li>في الفورمات اللي فيها صورة أو مستند، اختار ملف كبير شوية.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>في كل الحالات تظهر <strong>نفس الشاشة الغامقة</strong> بدايرة التحميل ورسالة &quot;Working...&quot; أول ما تدوس حفظ (ومعاها شريط رفع بالنسبة المئوية لو فيه ملف)، والصفحة مابتقبلش ضغطة تانية لحد ما الطلب يخلص. لو حصل خطأ (بيانات غلط مثلًا) الشاشة بتختفي وتظهر رسالة الخطأ في مكانها.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Unit/BusyOverlayConsistencyTest</code> (بيفشل لو أي صفحة إنشاء/تعديل جديدة اتضافت من غير الشاشة دي)</dd></div></dl>
+      <dl><div class="row"><dt>الدور</dt><dd>مدير النظام</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>جرّب الحفظ في كل الفورمات دي: مستخدم (إضافة وتعديل)، سائق، مركبة، أصل، تصنيف مركبات، سعة أصول، شركة عميل، وصورة My Profile.</li><li>جرّب كمان زراير تغيير الحالة (تعطيل / تنشيط / صيانة) في صفحات التفاصيل، وحذف تصنيف مركبات.</li><li>في الفورمات اللي فيها صورة أو مستند، اختار ملف كبير شوية.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>في كل الحالات تظهر <strong>نفس الشاشة الغامقة</strong> بدايرة التحميل ورسالة &quot;Working...&quot; أول ما تدوس حفظ (ومعاها شريط رفع بالنسبة المئوية لو فيه ملف)، والصفحة مابتقبلش ضغطة تانية لحد ما الطلب يخلص. لو حصل خطأ (بيانات غلط مثلًا) الشاشة بتختفي وتظهر رسالة الخطأ في مكانها.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Unit/BusyOverlayConsistencyTest</code> (بيفشل لو أي صفحة إنشاء/تعديل جديدة اتضافت من غير الشاشة دي)</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-frd-gap-review#30" data-title="شاشة التحميل واللوجو والاسم">
@@ -771,14 +771,14 @@
       <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.5.3</dd></div><div class="row"><dt>الخطوات</dt><dd>(Postman) بـ<code>dataentry</code> أرسل <code>POST /api/v1/vehicles</code> بـ<code>operational_status: deactivated</code>.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>رفض. نفس الطلب بـ<code>admin</code> ينجح.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleManagementTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
-    <article class="item" data-id="week-3-vehicles-drivers-assets#8" data-title="الحاوية المدمجة — فلترة السعة من مجمع الأصول">
+    <article class="item" data-id="week-3-vehicles-drivers-assets#8" data-title="الحاوية المدمجة — قائمة السعة حسب النوع">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
           <span class="num">8</span></label>
-        <h3>الحاوية المدمجة — فلترة السعة من مجمع الأصول</h3>
+        <h3>الحاوية المدمجة — قائمة السعة حسب النوع</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.5.3 (لو المركبة تشمل حاوية مدمجة: قائمة السعة تتفلتر)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>في فورم المركبة فعّل &quot;تشمل حاوية مدمجة&quot;.</li><li>اختر النوع (حاوية/صهريج) وفئة المركبة.</li><li>لاحظ قائمة السعة.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>تظهر فقط تصنيفات السعة اللي عندها أصل من النوع المختار متوافق مع فئة المركبة. لو مفيش، بيظهر <strong>خطأ inline، بدون fallback لكل السعات</strong>.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleEmbeddedCapacityTest</code> (6 حالات)</dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.5.3 (لو المركبة تشمل حاوية مدمجة: يتم اختيار نوعها ثم سعتها من قائمة سعات الأصول التي تم إنشاؤها)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>في فورم المركبة فعّل &quot;تشمل حاوية مدمجة&quot;.</li><li>اختر النوع &quot;حاوية&quot; ولاحظ قائمة السعة، وبعدين بدّل لـ&quot;صهريج&quot;.</li><li>غيّر فئة المركبة ولاحظ إن القائمة مابتتغيرش.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>مع &quot;حاوية&quot; تظهر السعات المعرّفة للحاويات، ومع &quot;صهريج&quot; السعات المعرّفة للصهاريج، والسعة المعرّفة لـ&quot;الجميع&quot; تظهر في الحالتين. القائمة <strong>مش مرتبطة</strong> بفئة المركبة ولا بوجود أصول في المجمع. لو مفيش ولا سعة معرّفة للنوع المختار بيظهر خطأ inline. السيرفر بيرفض سعة مش من نفس النوع.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleEmbeddedCapacityTest</code> (10 حالات)</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-vehicles-drivers-assets#9" data-title="الترقيم السيرفر-سايد (حجم واقعي)">
@@ -866,7 +866,7 @@
         <h3>صلاحيات الأصول (نفس نمط المركبات)</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.7.3 (الإنشاء والتعديل مسؤولية مدير النظام أو مدخل البيانات؛ المراقب عرض فقط)</dd></div><div class="row"><dt>الخطوات</dt><dd>سجّل دخول بالأربعة، افحص قائمة &quot;Assets&quot; الجانبية والوصول.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd><code>admin</code>/<code>dataentry</code>/<code>auditor</code> يشوفوا &quot;Assets&quot; (List + Categories). <code>driver</code> لأ. <code>auditor</code> عرض/تصدير بس.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Assets/AssetPolicyTest</code>, <code>MenuVisibilityTest</code> (<code>test_an_auditor_sees_assets</code>, <code>test_a_data_entry_user_sees_vehicles_and_assets...</code>)</dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.7.3 (الإنشاء والتعديل مسؤولية مدير النظام أو مدخل البيانات؛ المراقب عرض فقط)</dd></div><div class="row"><dt>الخطوات</dt><dd>سجّل دخول بالأربعة، افحص قائمة &quot;Assets&quot; الجانبية والوصول.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd><code>admin</code>/<code>dataentry</code>/<code>auditor</code> يشوفوا &quot;Assets&quot; (List + Capacities). <code>driver</code> لأ. <code>auditor</code> عرض/تصدير بس.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Assets/AssetPolicyTest</code>, <code>MenuVisibilityTest</code> (<code>test_an_auditor_sees_assets</code>, <code>test_a_data_entry_user_sees_vehicles_and_assets...</code>)</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-vehicles-drivers-assets#17" data-title="الكروت منفصلة للحاويات والصهاريج">
@@ -899,14 +899,14 @@
       <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.7.3 (قائمة السعة تتفلتر حسب النوع المختار)</dd></div><div class="row"><dt>الخطوات</dt><dd>في فورم إنشاء أصل، بدّل النوع بين &quot;حاوية&quot; و&quot;صهريج&quot; ولاحظ قائمة تصنيف السعة.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>كل نوع يعرض تصنيفات السعة المتوافقة معه (و<code>both</code> يظهر للاتنين).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Assets/AssetManagementTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
-    <article class="item" data-id="week-3-vehicles-drivers-assets#20" data-title="تصنيفات سعة الأصول — الاسم فقط للتعديل">
+    <article class="item" data-id="week-3-vehicles-drivers-assets#20" data-title="سعات الأصول — الاسم فقط للتعديل">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
           <span class="num">20</span></label>
-        <h3>تصنيفات سعة الأصول — الاسم فقط للتعديل</h3>
+        <h3>سعات الأصول — الاسم فقط للتعديل</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.7.2 (تعديل التصنيف الاسم فقط، السعة والنوعية مقفولين، لا حذف ولا تعطيل)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح <code>/app/asset-category/list</code>.</li><li>أنشئ تصنيف.</li><li>عدّله.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>التعديل الاسم فقط؛ مفيش زر حذف ولا تعطيل.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Assets/AssetCapacityCategoryManagementTest</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.7.2 (تعديل الاسم فقط — حجم السعة والنوعية مقفولين، لا حذف ولا تعطيل)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح <code>/app/asset-category/list</code>.</li><li>أنشئ سعة (زر &quot;Add Capacity&quot;).</li><li>عدّلها.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>التعديل الاسم فقط؛ مفيش زر حذف ولا تعطيل.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Assets/AssetCapacityCategoryManagementTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-vehicles-drivers-assets#21" data-title="البيانات الإضافية الفاضية مبتظهرش (كل الموديولات)">
@@ -1351,7 +1351,7 @@
   </section>
 
   <section class="doc" data-doc="week-5-facilities">
-    <h2 class="doc-title">قبول التنفيذ — المرحلة 2: المنشآت الوسيطة<small>آخر مزامنة: FRD V01.14 (2026-09-28)</small></h2>
+    <h2 class="doc-title">قبول التنفيذ — المرحلة 2: المنشآت الوسيطة<small>آخر مزامنة: FRD V01.14 (2026-09-30)</small></h2>
     
     <details open class="group">
       <summary>أ) القائمة والصلاحيات — <code>/app/facility/list</code> <span class="count"></span></summary>
@@ -1441,7 +1441,7 @@
         <h3>صفحة تفاصيل المنشأة الوسيطة</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.8 (صفحة عرض تفاصيل المنشأة الوسيطة)</dd></div><div class="row"><dt>الخطوات</dt><dd>من القائمة افتح تفاصيل منشأة إعادة تدوير كاملة البيانات.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>عنوان الصفحة &quot;تفاصيل المنشأة الوسيطة&quot;. بتعرض: اللوجو، الاسم والحالة، الاسم المختصر، الخدمة البيئية ونسبة الكفاءة، العنوان، رابط الخريطة، بيانات العقد وزر تحميل المرفق، البيانات الإضافية، &quot;آخر تحديث: تم بواسطة ... – التاريخ&quot;. قسم <strong>&quot;الخدمات الفرعية المدعومة&quot;</strong> بيقول إن مفيش خدمات فرعية مرتبطة لسه (بيتملي لما موديول الخدمات يتبني).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Facilities/FacilityPagesTest</code>, <code>Facilities/FacilityManagementTest::test_the_in_use_flag_is_exposed_for_the_edit_form</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.8 (صفحة عرض تفاصيل المنشأة الوسيطة)</dd></div><div class="row"><dt>الخطوات</dt><dd>من القائمة افتح تفاصيل منشأة إعادة تدوير كاملة البيانات.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>عنوان الصفحة &quot;تفاصيل المنشأة الوسيطة&quot;. بتعرض: اللوجو، الاسم والحالة، الاسم المختصر، الخدمة البيئية ونسبة الكفاءة، العنوان، رابط الخريطة، بيانات العقد وزر تحميل المرفق، البيانات الإضافية، &quot;آخر تحديث: تم بواسطة ... – التاريخ&quot;. قسم <strong>&quot;الخدمات الفرعية المدعومة&quot;</strong> فيه الخدمات الفرعية اللي مختارة المنشأة دي (كل واحدة رابط لتفاصيلها واسم خدمتها الأساسية بين قوسين)، أو رسالة إن مفيش خدمات فرعية مرتبطة لو مفيش.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Facilities/FacilityPagesTest</code>, <code>Facilities/FacilityManagementTest</code> (<code>test_the_in_use_flag_is_exposed_for_the_edit_form</code>, <code>test_a_facility_listed_by_a_sub_service_is_in_use_and_its_service_is_locked</code>)</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-5-facilities#9" data-title="التعديل — الاسم والبيانات الاختيارية، والاختصار مقفول">
@@ -1461,7 +1461,7 @@
         <h3>الخدمة البيئية والكفاءة — قابلة للتعديل طالما المنشأة غير مستخدمة</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.8 (تعديل الخدمة مرتبط بالاستخدام — قرار العميل، بيوسّع نص الـFRD اللي بيحصر التعديل في الاسم والاختياري)</dd></div><div class="row"><dt>الخطوات</dt><dd>على منشأة <strong>غير مستخدمة</strong> (كل المنشآت حاليًا، لأن الخدمات الفرعية والرحلات لسه مش موجودة) غيّر الخدمة من &quot;دفن آمن&quot; لـ&quot;إعادة تدوير&quot; وأدخل كفاءة، واحفظ. بعدين رجّعها لـ&quot;دفن آمن&quot;.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>التغيير بيتحفظ. التحويل لـ&quot;إعادة التدوير&quot; من غير كفاءة يترفض. الرجوع لخدمة تانية بيمسح الكفاءة. <strong>عند وجود خدمة فرعية أو رحلة بتستخدم المنشأة</strong> حقلي الخدمة والكفاءة بيتقفلوا (مع تنبيه) والـAPI يرجّع 422 — ده بيتفعّل ويتختبر مع موديول الخدمات (مؤجل عمدًا: مفيش حاجة تربط منشأة دلوقتي).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Facilities/FacilityManagementTest</code> (<code>test_the_service_and_efficiency_can_change_while_*</code>, <code>test_switching_to_recycle_*</code>, <code>test_a_locked_form_that_omits_*</code>, <code>test_the_service_and_efficiency_are_locked_once_the_facility_is_in_use</code>)</dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.8 (تعديل الخدمة مرتبط بالاستخدام — قرار العميل، بيوسّع نص الـFRD اللي بيحصر التعديل في الاسم والاختياري)</dd></div><div class="row"><dt>الخطوات</dt><dd>على منشأة <strong>غير مستخدمة</strong> (مثلًا أنشئ منشأة جديدة — المنشآت اللي في الـseed مربوطة بخدمات فرعية) غيّر الخدمة من &quot;دفن آمن&quot; لـ&quot;إعادة تدوير&quot; وأدخل كفاءة، واحفظ. بعدين رجّعها لـ&quot;دفن آمن&quot;. بعدها افتح تعديل منشأة مختارة في خدمة فرعية (مثلًا &quot;Al Ain Safe Landfill&quot;).</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>على المنشأة غير المستخدمة التغيير بيتحفظ، والتحويل لـ&quot;إعادة التدوير&quot; من غير كفاءة يترفض، والرجوع لخدمة تانية بيمسح الكفاءة. <strong>المنشأة المختارة في أي خدمة فرعية</strong> (حتى لو الخدمة الفرعية معطّلة): حقلا الخدمة والكفاءة مقفولين مع تنبيه، والـAPI يرجّع 422 لو اتبعتوا بقيمة مختلفة — والاسم وباقي البيانات لسه قابلين للتعديل. (الرحلات هتتضاف لنفس القفل لما تتبني.)</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Facilities/FacilityManagementTest</code> (<code>test_the_service_and_efficiency_can_change_while_*</code>, <code>test_switching_to_recycle_*</code>, <code>test_a_locked_form_that_omits_*</code>, <code>test_the_service_and_efficiency_are_locked_once_the_facility_is_in_use</code>, <code>test_a_facility_listed_by_a_sub_service_is_in_use_and_its_service_is_locked</code>)</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-5-facilities#11" data-title="تعطيل المنشأة وإعادة تنشيطها">
@@ -1761,7 +1761,208 @@
     </article>
     </details>
   </section>
-  <p class="foot">اتولّد تلقائيًا من ملفات <code>docs/acceptance/week-*.md</code> بتاريخ 2026-10-01 — للتحديث: <code>node docs/acceptance/build-checklist.mjs</code>. متعدّلش الملف ده بإيدك.</p>
+
+  <section class="doc" data-doc="week-5-services">
+    <h2 class="doc-title">قبول التنفيذ — المرحلة 2: الخدمات (الأساسية والفرعية)<small>آخر مزامنة: FRD V01.14 (2026-09-30)</small></h2>
+    
+    <details open class="group">
+      <summary>أ) القائمة والصلاحيات <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-5-services#1" data-title="القائمة الجانبية">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">1</span></label>
+        <h3>القائمة الجانبية</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.9 (إدارة الخدمات)</dd></div><div class="row"><dt>الخطوات</dt><dd>سجّل دخول بـ<code>admin</code> ثم <code>dataentry</code> ثم <code>auditor</code> ثم <code>driver</code> وبص على القائمة الجانبية تحت عنوان <strong>Operations</strong>.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>بند <strong>Services</strong> وتحته: Main Services / Add Main Service / Sub Services / Add Sub Service. المراقب بيشوف القائمتين بس (من غير &quot;Add&quot;). السائق مايشوفش البند خالص، و<code>/api/v1/main-services</code> و<code>/api/v1/sub-services</code> يرجّعوا له 403.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>MenuVisibilityTest::test_services_menu_visibility_per_role</code>, <code>Services/ServicePolicyTest</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-5-services#2" data-title="قائمة الخدمات الأساسية (جدول + بحث + فلاتر)">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">2</span></label>
+        <h3>قائمة الخدمات الأساسية (جدول + بحث + فلاتر)</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.9.1 (جدول الخدمات: اسم الخدمة الأساسية كرابط + الخدمات الفرعية التابعة لها كروابط)</dd></div><div class="row"><dt>الخطوات</dt><dd>افتح Services ← Main Services بـ<code>admin</code>. دوس على اسم خدمة أساسية، وارجع ودوس على اسم خدمة فرعية في نفس الصف. جرّب البحث بـ<code>sludge</code> (اسم خدمة فرعية)، وفلتر &quot;نوعية الخدمة&quot; وفلتر &quot;الحالة&quot;.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>أعمدة الجدول: اسم الخدمة الأساسية (رابط لتفاصيلها) / نوعية الخدمة / الخدمات الفرعية (كل واحدة رابط لتفاصيلها) / الحالة / التفاصيل (عين + قلم). البحث بـ<code>sludge</code> يطلّع &quot;Hazardous Waste Transport&quot; لأن البحث بيشمل أسماء الخدمات الفرعية الظاهرة في الجدول. الفلاتر والترقيم والترتيب شغالين على السيرفر. (قرار: فلتر &quot;اختيار خدمة أساسية&quot; الحرفي في الـFRD اتبدّل بفلتري النوعية والحالة — تكرار للبحث في جدول كله خدمات أساسية.)</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Services/MainServiceManagementTest</code> (<code>test_the_list_*</code>)</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-5-services#3" data-title="المراقب للعرض والتصدير فقط">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">3</span></label>
+        <h3>المراقب للعرض والتصدير فقط</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.9 + أدوار النظام (المراقب: عرض/تصدير فقط)</dd></div><div class="row"><dt>الخطوات</dt><dd>بـ<code>auditor</code> افتح Main Services وSub Services وتفاصيل خدمة أساسية وتفاصيل خدمة فرعية.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>مفيش أزرار إنشاء ولا أيقونات تعديل ولا زر Edit في أي صفحة، لكن التصدير شغّال. أي محاولة إنشاء/تعديل/تعطيل عبر الـAPI ترجّع 403.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Services/ServicePolicyTest</code>, <code>Services/ServicePagesTest::test_the_pages_are_read_only_for_the_auditor</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+    <details open class="group">
+      <summary>ب) الخدمات الأساسية <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-5-services#4" data-title="إنشاء خدمة أساسية جديدة">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">4</span></label>
+        <h3>إنشاء خدمة أساسية جديدة</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.9.1 (انشاء خدمة أساسية جديدة)</dd></div><div class="row"><dt>الخطوات</dt><dd>بـ<code>dataentry</code> افتح &quot;Add Main Service&quot;. جرّب &quot;Submit&quot; والفورم فاضي. بعدين اكتب اسم، اختار &quot;نفايات خطرة&quot;، علّم تصنيفين مركبات، واحفظ.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>عنوان الصفحة &quot;إنشاء خدمة أساسية جديدة&quot;. الفورم كروت: البيانات الأساسية (الاسم، نوعية الخدمة radio: غير خطرة/خطرة/توريد، حالة الخدمة وافتراضيها &quot;نشط&quot;) ثم <strong>تصنيف المركبات الداعم</strong> (checkboxes بتصنيفات الشركة الحالية — الستة الافتراضيين + أي تصنيف متضاف) ثم البيانات الإضافية. الفورم الفاضي بيطلّع &quot;This field is required&quot; تحت الاسم والنوعية و&quot;اختر تصنيف مركبات واحدًا على الأقل&quot;. بعد الحفظ بتروح لصفحة التفاصيل برسالة نجاح. تكرار نفس الاسم يترفض.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Services/MainServiceManagementTest</code> (<code>test_it_creates_*</code>, <code>test_required_fields</code>, <code>test_at_least_one_vehicle_category_is_required</code>, <code>test_the_name_is_unique_per_tenant</code>)</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-5-services#5" data-title="تفاصيل خدمة أساسية">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">5</span></label>
+        <h3>تفاصيل خدمة أساسية</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.9.1 (صفحة عرض تفاصيل خدمة أساسية)</dd></div><div class="row"><dt>الخطوات</dt><dd>افتح تفاصيل &quot;Solid Waste Transport&quot;.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>عنوان الصفحة &quot;تفاصيل خدمة أساسية&quot; وتحته &quot;آخر تحديث: تم بواسطة ... – التاريخ&quot;. الكارت الشمال: الاسم، الحالة، نوعية الخدمة، عدد الخدمات الفرعية، التصنيفات الداعمة، البيانات الإضافية، وزرا Edit وBack. اليمين: <strong>الإحصائيات</strong> (إجمالي الرحلات، المشاريع التي طلبت الخدمة، السائقين، الكميات بالطن والمتر المكعب، الموارد: مركبات/حاويات/صهاريج) — كلها <strong>0</strong> لحد ما الرحلات والتعاقدات تتبني — وتحتها جدول <strong>&quot;الخدمات الفرعية التابعة لها&quot;</strong> (بحث + ترقيم، كل اسم رابط) وزر &quot;Create New Sub-service&quot; بيفتح الفورم والخدمة الأساسية مختارة.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Services/MainServiceManagementTest::test_the_details_carry_zero_stats_*</code>, <code>Services/ServicePagesTest</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-5-services#6" data-title="تعديل خدمة أساسية — النوعية مقفولة">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">6</span></label>
+        <h3>تعديل خدمة أساسية — النوعية مقفولة</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.9.1 (صفحة تعديل خدمة أساسية: الاسم والبيانات الاختيارية)</dd></div><div class="row"><dt>الخطوات</dt><dd>من التفاصيل اضغط Edit. غيّر الاسم، شيل/ضيف تصنيف مركبات، واحفظ.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>عنوان الصفحة &quot;تعديل تفاصيل خدمة أساسية&quot;. نوعية الخدمة <strong>ظاهرة ومقفولة</strong> مع توضيح إنها ماتتغيرش بعد الإنشاء (الخدمات الفرعية مبنية عليها). الاسم والبيانات الإضافية والتصنيفات بيتحفظوا وترجع للتفاصيل برسالة نجاح. زر &quot;Cancel&quot; بيرجّع للتفاصيل. (قرار: التصنيفات قابلة للتعديل طالما الخدمة مش في تعاقد — نفس سابقة المنشآت. <strong>لما الخدمة تبقى في PO</strong> الفورم كله بيتقفل برسالة — بيتفعّل مع موديول التعاقدات.)</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Services/MainServiceManagementTest</code> (<code>test_the_name_additional_data_and_categories_are_editable</code>, <code>test_the_type_of_service_is_locked_after_creation</code>, <code>test_a_service_in_a_purchase_order_cannot_be_edited</code>)</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-5-services#7" data-title="تعطيل الخدمة الأساسية يعطّل خدماتها الفرعية">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">7</span></label>
+        <h3>تعطيل الخدمة الأساسية يعطّل خدماتها الفرعية</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.9.1 (تعطيل الخدمة يعني تلقائيًا تعطيل كل الخدمات الفرعية تحتها)</dd></div><div class="row"><dt>الخطوات</dt><dd>في صفحة تعديل &quot;Hazardous Waste Transport&quot; انزل لكارت &quot;حالة الخدمة&quot; ← Deactivated ← علّم &quot;I confirm&quot; ← Update Status. بعدين افتح Sub Services. بعدها رجّع الخدمة الأساسية &quot;Active&quot;.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الكارت بينبّه إن التعطيل بيعطّل كل الخدمات الفرعية. بعد التعطيل: الخدمة الأساسية معطّلة <strong>والخدمتين الفرعيتين تحتها معطّلين كمان</strong>. إعادة تنشيط الأساسية <strong>مابترجّعش</strong> الفرعيات تلقائيًا — كل واحدة بتتنشّط لوحدها. الخدمة الأساسية المعطّلة مابتظهرش في قائمة الاختيار عند إنشاء خدمة فرعية. (رفض التعطيل لو الخدمة في PO بيتفعّل مع التعاقدات.)</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Services/MainServiceManagementTest</code> (<code>test_deactivating_a_main_service_deactivates_all_its_sub_services</code>, <code>test_reactivating_*</code>, <code>test_a_service_in_a_purchase_order_cannot_be_deactivated</code>, <code>test_a_service_whose_sub_service_has_an_ongoing_trip_*</code>)</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-5-services#8" data-title="تصدير الخدمات الأساسية (Excel/PDF)">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">8</span></label>
+        <h3>تصدير الخدمات الأساسية (Excel/PDF)</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.9.1 (زر تصدير Excel – PDF)</dd></div><div class="row"><dt>الخطوات</dt><dd>في القائمة اختار فلتر &quot;نفايات خطرة&quot; وصدّر Excel وPDF. امسح الفلتر، بدّل للعربي، وصدّر PDF تاني.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الملف فيه <strong>نفس الصفوف اللي على الشاشة بالظبط</strong>. الأعمدة: اسم الخدمة الأساسية، النوعية، التصنيفات الداعمة، الخدمات الفرعية، الحالة، تاريخ الإنشاء. في الـPDF العربي النصوص متوصّلة والنوعية مترجمة (&quot;نفايات خطرة&quot;).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>ExportFiltersTest::test_main_service_export_*</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+    <details open class="group">
+      <summary>ج) الخدمات الفرعية <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-5-services#9" data-title="صفحة الخدمات الفرعية (Accordion)">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">9</span></label>
+        <h3>صفحة الخدمات الفرعية (Accordion)</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.9.2 (تبويبات Accordion With Icon مفتوحة تلقائيًا وقابلة للضم — تبويب لكل خدمة رئيسية)</dd></div><div class="row"><dt>الخطوات</dt><dd>افتح Services ← Sub Services. اضغط على عنوان تبويب عشان تضمّه وتفتحه تاني. اكتب <code>debris</code> في البحث.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>تبويب لكل خدمة أساسية (أيقونة حسب النوعية + الاسم + بادج النوعية + عدد الخدمات الفرعية)، <strong>كلهم مفتوحين</strong> من الأول وبيتضمّوا بالضغط. جوه كل تبويب الخدمات الفرعية التابعة له، جنب كل واحدة: نوع الأصل، &quot;تتطلب إيصال تدوير&quot; لو مفعّل، الحالة، الكود اللوني كدايرة ملونة، و<strong>أيقونة عرض وأيقونة تعديل</strong>. البحث بيفلتر بالاسم (الفرعي أو الأساسي). زر &quot;Create New Sub-service&quot; فوق.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Services/ServicePagesTest</code> (العرض نفسه JS — يدوي)</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-5-services#10" data-title="إنشاء خدمة فرعية جديدة">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">10</span></label>
+        <h3>إنشاء خدمة فرعية جديدة</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.9.2 (انشاء خدمة فرعية جديدة)</dd></div><div class="row"><dt>الخطوات</dt><dd>افتح &quot;Add Sub Service&quot;. اختار الخدمة الأساسية &quot;Hazardous Waste Transport&quot; من القائمة (بحث حي). اختار النوع &quot;حاوية&quot; ثم &quot;صهريج&quot; وبص على السعات. علّم سعة ومنشأة، فعّل &quot;هل تتطلب إيصال تدوير&quot;، اختار كود لوني، واحفظ.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>عنوان الصفحة &quot;إنشاء خدمة فرعية جديدة&quot;. الخدمة الأساسية select2 بالبحث (النشطة بس). أول ما تختارها <strong>التصنيفات الداعمة بتظهر تلقائيًا</strong> (للعرض). السعات بتتغيّر حسب النوع (حاوية ← سعات الحاويات، صهريج ← سعات الصهاريج، والسعة &quot;الاتنين&quot; بتظهر مع الاتنين). لو فيه مركبات بحاوية مدمجة في التصنيفات الداعمة، بتظهر <strong>كمعلومة فقط</strong> تحت السعات. المنشآت الوسيطة = النشطة بس. &quot;إيصال التدوير&quot; افتراضيه off. الكود اللوني اختياري (11 لون + &quot;لا يوجد&quot;). بعد الحفظ بتروح للتفاصيل برسالة نجاح.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Services/SubServiceManagementTest</code> (<code>test_it_creates_*</code>, <code>test_capacities_must_fit_the_asset_type</code>, <code>test_a_tank_sub_service_*</code>, <code>test_the_recycle_receipt_is_off_*</code>, <code>test_a_deactivated_facility_cannot_be_chosen</code>), <code>Services/MainServiceManagementTest::test_the_details_carry_zero_stats_and_the_embedded_containers_*</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-5-services#11" data-title="المنشأة الوسيطة إلزامية — إلا للتوريد">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">11</span></label>
+        <h3>المنشأة الوسيطة إلزامية — إلا للتوريد</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.9.2 (ملحوظة: في حال كون الخدمة الأساسية من نوعية توريد يكون اختيار المنشأة الوسيطة اختياري)</dd></div><div class="row"><dt>الخطوات</dt><dd>في فورم الإنشاء اختار &quot;Solid Waste Transport&quot; وماتعلّمش أي منشأة واضغط حفظ. بعدين بدّل لـ&quot;Water Supply&quot; واحفظ من غير منشأة.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>مع الخدمة غير الخطرة: رسالة &quot;اختر منشأة وسيطة واحدة على الأقل&quot;. مع &quot;Water Supply&quot; بيظهر تنويه &quot;اختياري — الخدمة الأساسية من نوعية توريد&quot; والحفظ بينجح من غير منشأة.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Services/SubServiceManagementTest</code> (<code>test_facilities_are_required_for_a_waste_service</code>, <code>test_facilities_are_optional_for_a_supplying_service</code>)</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-5-services#12" data-title="تفاصيل خدمة فرعية">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">12</span></label>
+        <h3>تفاصيل خدمة فرعية</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.9.2 (صفحة عرض تفاصيل خدمة)</dd></div><div class="row"><dt>الخطوات</dt><dd>افتح تفاصيل &quot;Construction debris&quot;.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>عنوان الصفحة &quot;تفاصيل خدمة&quot; + &quot;آخر تحديث&quot;. الكارت الشمال: الاسم، الحالة، الخدمة الأساسية (رابط)، النوعية، نوع الأصل، <strong>هل تتطلب إيصال تدوير؟</strong>، الكود اللوني، التصنيفات الداعمة. اليمين: الإحصائيات (أصفار)، جدول <strong>سعات الحاويات المتناسبة</strong>، وجدول <strong>منشآت إعادة التدوير/التخلص</strong> (كل منشأة رابط لتفاصيلها) — الجدولين فيهم بحث وترقيم.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Services/SubServiceManagementTest::test_the_details_show_the_inherited_vehicle_categories_and_zero_stats</code>, <code>Services/ServicePagesTest</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-5-services#13" data-title="تعديل خدمة فرعية — الخدمة الأساسية مقفولة">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">13</span></label>
+        <h3>تعديل خدمة فرعية — الخدمة الأساسية مقفولة</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.9.2 (صفحة تعديل خدمة: الاسم والبيانات الاختيارية)</dd></div><div class="row"><dt>الخطوات</dt><dd>من التفاصيل اضغط Edit. غيّر الاسم، بدّل النوع من صهريج لحاوية وبص على السعات المختارة، غيّر المنشآت والكود اللوني، واحفظ.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>عنوان الصفحة &quot;تعديل تفاصيل خدمة&quot;. الفورم متعبّي بالبيانات الحالية، والخدمة الأساسية <strong>للقراءة فقط</strong>. السعة اللي مابتناسبش النوع الجديد بتختفي من الاختيارات (والسيرفر بيرفضها لو اتبعتت). بعد الحفظ بترجع للتفاصيل برسالة نجاح. (قرار: الحقول دي قابلة للتعديل طالما الخدمة مش مرتبطة برحلة جارية أو خدمتها الأساسية في PO — <strong>وقتها</strong> الفورم كله بيتقفل برسالة، بيتفعّل مع الرحلات والتعاقدات.)</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Services/SubServiceManagementTest</code> (<code>test_the_components_are_editable_while_unlocked</code>, <code>test_changing_the_asset_type_rechecks_the_stored_capacities</code>, <code>test_the_main_service_is_locked_after_creation</code>, <code>test_a_locked_sub_service_cannot_be_edited</code>)</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-5-services#14" data-title="تعطيل خدمة فرعية وإعادة تنشيطها">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">14</span></label>
+        <h3>تعطيل خدمة فرعية وإعادة تنشيطها</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.9.2 (تعطيل / تنشيط — مدير النظام / مدخل البيانات)</dd></div><div class="row"><dt>الخطوات</dt><dd>في صفحة تعديل خدمة فرعية نشطة ← كارت &quot;حالة الخدمة&quot; ← Deactivated ← علّم &quot;I confirm&quot; ← Update Status، وبعدين رجّعها Active. بعدها عطّل خدمتها <strong>الأساسية</strong> وجرّب تنشّط الفرعية.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>التعطيل وإعادة التنشيط شغالين (الزر مقفول لحد التأكيد). لما الخدمة الأساسية معطّلة، تنشيط الفرعية <strong>بيترفض</strong> برسالة &quot;الخدمة الأساسية معطّلة — نشّطها أولًا قبل تنشيط هذه الخدمة الفرعية&quot;. مفيش حذف في أي مكان.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Services/SubServiceManagementTest</code> (<code>test_a_sub_service_can_be_deactivated_and_reactivated</code>, <code>test_a_sub_service_cannot_be_reactivated_under_a_deactivated_main_service</code>, <code>test_a_locked_sub_service_cannot_be_deactivated</code>)</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+    <details open class="group">
+      <summary>د) الربط مع الموديولات التانية <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-5-services#15" data-title="المنشأة الوسيطة: &quot;الخدمات الفرعية المدعومة&quot; + قفل الخدمة البيئية">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">15</span></label>
+        <h3>المنشأة الوسيطة: &quot;الخدمات الفرعية المدعومة&quot; + قفل الخدمة البيئية</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.8 (الخدمات الفرعية المدعومة تُحدَّد من مدخلات الخدمات الفرعية) + قرار قفل الخدمة البيئية عند الاستخدام</dd></div><div class="row"><dt>الخطوات</dt><dd>افتح تفاصيل المنشأة &quot;North Sewage Treatment Works&quot;. بعدين افتح صفحة تعديلها.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>قسم &quot;الخدمات الفرعية المدعومة&quot; فيه &quot;Oily sludge (Hazardous Waste Transport)&quot; كرابط لتفاصيلها. في صفحة التعديل <strong>الخدمة البيئية والكفاءة مقفولين</strong> برسالة إن المنشأة مستخدمة، والاسم والباقي قابلين للتعديل. (أي منشأة مش مربوطة بخدمة فرعية لسه قابلة لتغيير خدمتها.)</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Facilities/FacilityManagementTest::test_a_facility_listed_by_a_sub_service_is_in_use_and_its_service_is_locked</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-5-services#16" data-title="تصنيف مركبات مستخدم في خدمة أساسية مايتمسحش">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">16</span></label>
+        <h3>تصنيف مركبات مستخدم في خدمة أساسية مايتمسحش</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>قاعدة إدارة تصنيفات المركبات (طلب العميل) + §1.9.1</dd></div><div class="row"><dt>الخطوات</dt><dd>من Vehicles ← Categories أضف تصنيف جديد، واربطه بخدمة أساسية (من تعديلها)، وبعدين جرّب تمسح التصنيف.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>المسح بيترفض برسالة إن التصنيف مستخدم في &quot;1 خدمة أساسية&quot;، والخدمة بتفضل مربوطة بيه.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Services/MainServiceManagementTest::test_a_vehicle_category_a_main_service_supports_cannot_be_deleted</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-5-services#17" data-title="عزل الشركات">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">17</span></label>
+        <h3>عزل الشركات</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>عام (Multi-tenant)</dd></div><div class="row"><dt>الخطوات</dt><dd>(يحتاج شركة تانية — أنشئها من Super Admin ← Tenants وسجّل دخول بمديرها.) افتح Services.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>مفيش ولا خدمة من GCM. محاولة ربط تصنيف/سعة/منشأة/خدمة أساسية من شركة تانية بالـid بترجع 422، وفتح خدمة شركة تانية بالـid بيرجع 404.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Services/ServiceTenantIsolationTest</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-5-services#18" data-title="عربي / إنجليزي (RTL)">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">18</span></label>
+        <h3>عربي / إنجليزي (RTL)</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>عام (ثنائية اللغة)</dd></div><div class="row"><dt>الخطوات</dt><dd>بدّل للعربية وافتح كل صفحات الخدمات (القائمتين، الإنشاء، التفاصيل، التعديل)، وبعدين رجّع للإنجليزية.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>كل النصوص مترجمة (العناوين زي &quot;إنشاء خدمة أساسية جديدة&quot;، الحقول، الأنواع، ألوان الحاويات، رسائل الخطأ، الإحصائيات)، الصفحة RTL، والقائمة الجانبية &quot;الخدمات&quot; وتحتها &quot;الخدمات الأساسية&quot;/&quot;الخدمات الفرعية&quot;.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Services/ServicePagesTest::test_the_pages_are_translated_in_arabic</code> (الباقي يدوي)</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+  </section>
+  <p class="foot">اتولّد تلقائيًا من ملفات <code>docs/acceptance/week-*.md</code> بتاريخ 2026-10-04 — للتحديث: <code>node docs/acceptance/build-checklist.mjs</code>. متعدّلش الملف ده بإيدك.</p>
 </div>
 
 <script>

@@ -3,10 +3,10 @@
 namespace App\Models;
 
 use App\Concerns\BelongsToTenant;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
@@ -38,36 +38,23 @@ class AssetCapacityCategory extends Model
         return $this->hasMany(Asset::class);
     }
 
+    /** Sub-services that list this capacity as compatible (FRD §1.9.2). */
+    public function subServices(): BelongsToMany
+    {
+        return $this->belongsToMany(SubService::class, 'sub_service_asset_capacity');
+    }
+
     public function updatedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'updated_by');
     }
 
     /**
-     * Whether this capacity can be assigned to an asset of the given
-     * type — `both` matches either.
+     * Whether this capacity can be given to something of the given type —
+     * an asset, or a vehicle's embedded container. `both` matches either.
      */
     public function fitsType(string $assetType): bool
     {
         return $this->applies_to === 'both' || $this->applies_to === $assetType;
-    }
-
-    /**
-     * Capacities usable as a given vehicle category's embedded container —
-     * derived through the asset pool: the tenant must own at least one
-     * asset of the requested kind (container / tank), filed under this
-     * capacity, that is tagged compatible with that vehicle category.
-     *
-     * Used by the vehicle form's embedded-capacity dropdown and by
-     * EmbeddedCapacityFitsVehicleRule. Deliberately does NOT fall back to
-     * "all capacities of that type" — an empty result is the intended
-     * signal that no matching stock is recorded.
-     */
-    public function scopeCompatibleWithVehicle(Builder $query, int $vehicleCategoryId, string $assetType): Builder
-    {
-        return $query->whereHas('assets', function (Builder $asset) use ($vehicleCategoryId, $assetType) {
-            $asset->where('asset_type', $assetType)
-                ->whereHas('compatibleVehicleCategories', fn (Builder $vc) => $vc->where('vehicle_categories.id', $vehicleCategoryId));
-        });
     }
 }

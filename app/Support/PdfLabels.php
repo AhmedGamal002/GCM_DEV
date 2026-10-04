@@ -28,6 +28,10 @@ final class PdfLabels
         'disposal' => 'Safe disposal',
         'sewage_treatment' => 'Sewage treatment',
         'recycle' => 'Recycling',
+        // main service type of service
+        'non_hazardous' => 'Non-Hazardous waste',
+        'hazardous' => 'Hazardous waste',
+        'supplying' => 'Supplying',
         // GCM roles
         'system_admin' => 'System Admin',
         'data_entry' => 'Data Entry',

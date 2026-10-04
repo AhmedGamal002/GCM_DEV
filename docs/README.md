@@ -30,7 +30,8 @@
 | 1–2 | Tenant/Auth + المستخدمين + الأدوار + الملف الشخصي | ✅ (ضمن كل دور) | `acceptance/week-1-2-auth-users-roles.md` |
 | 3 | المركبات + السائقين + مجمع الأصول | ✅ | `acceptance/week-3-vehicles-drivers-assets.md` |
 | 4 (جزء من المرحلة 2) | شركات العملاء | ✅ | `acceptance/week-4-client-companies.md` |
-| 5 (المرحلة 2) | المنشآت الوسيطة (الخدمات والمتعهدين لسه) | ✅ | `acceptance/week-5-facilities.md` |
+| 5 (المرحلة 2) | المنشآت الوسيطة | ✅ | `acceptance/week-5-facilities.md` |
+| 5 (المرحلة 2) | الخدمات الأساسية والفرعية (المتعهدين لسه) | ✅ | `acceptance/week-5-services.md` |
 | 5 (المرحلة 2) | مشروعات العملاء + إدراج أصل في مشروع | ✅ | `acceptance/week-5-projects.md` |
 | 5 (المرحلة 2) | حسابات العملاء (مدير/مراقب مشروعات) + ممثل الشركة والمشروع | ✅ | `acceptance/week-5-client-accounts.md` |
 | 6+ | Contracts / Trips … | — (مؤجل) | — (مؤجل) |

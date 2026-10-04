@@ -111,12 +111,10 @@ export function initVehicleForm(opts) {
       }
 
       if (!el.value || (el.tagName === 'SELECT' && el.value === '')) {
-        // Empty embedded-capacity when the compatible list came back empty
-        // gets the specific "nothing compatible" message, not "required".
-        if (el === capSelect && capSelect.options.length <= 1) {
-          const { type } = embeddedInputs();
-          const typeLabel = type === 'tank' ? t.tank || 'tank' : t.container || 'container';
-          fail(el, (t.no_compatible_capacity || 'There is no compatible :type capacity recorded for the selected vehicle category.').replace(':type', typeLabel));
+        // Empty embedded-capacity when no capacity of that type exists yet
+        // gets the specific "none defined" message, not "required".
+        if (el === capSelect && capSelect.options.length <= 1 && embeddedInputs().type) {
+          fail(el, noCapacityMessage(embeddedInputs().type));
           return;
         }
         fail(el, t.required || REQUIRED_MSG);
@@ -180,14 +178,20 @@ export function initVehicleForm(opts) {
   const typeWrapper = document.getElementById('embedded-type-wrapper');
   const capacityWrapper = document.getElementById('embedded-capacity-wrapper');
 
-  // The embedded-capacity list is NOT the full set of capacity categories:
-  // per FRD §1.5.3 it's only the ones the fleet can actually field for the
-  // chosen (vehicle category + container/tank kind), derived through the
-  // asset pool. Empty result => an error, not a fallback to "all".
+  // The embedded-capacity list is the asset capacities that have been
+  // created (FRD §1.5.3), narrowed to the chosen kind: container => the
+  // capacities that apply to containers, tank => those that apply to tanks,
+  // and a capacity that applies to both shows for either. It does NOT depend
+  // on the vehicle category or on which assets exist.
   function embeddedInputs() {
     const has = form.querySelector('input[name="has_embedded_container"]:checked').value === '1';
     const typeEl = form.querySelector('input[name="embedded_container_type"]:checked');
-    return { has, type: typeEl ? typeEl.value : null, vehicleCategoryId: catSelect.value || null };
+    return { has, type: typeEl ? typeEl.value : null };
+  }
+
+  function noCapacityMessage(type) {
+    const typeLabel = type === 'tank' ? t.tank || 'tank' : t.container || 'container';
+    return (t.no_capacity_of_type || 'No :type capacities are defined yet.').replace(':type', typeLabel);
   }
 
   let capReqSeq = 0;
@@ -195,23 +199,21 @@ export function initVehicleForm(opts) {
   async function refreshEmbeddedCapacities(preserveValue) {
     const seq = ++capReqSeq;
     const keep = preserveValue != null ? preserveValue : capSelect.value;
-    const { has, type, vehicleCategoryId } = embeddedInputs();
+    const { has, type } = embeddedInputs();
 
     clearFieldError(capSelect);
     capSelect.innerHTML = '';
     capSelect.add(new Option(t.select || 'Select...', ''));
 
-    if (!has || !type || !vehicleCategoryId) {
-      capHint.textContent = t.pick_category_and_type || 'Choose the vehicle category and container type first.';
+    if (!has || !type) {
+      capHint.textContent = t.pick_type || 'Choose the container type first.';
       capHint.classList.remove('d-none');
       window.refreshGcmSelect(capSelect);
       return;
     }
 
     try {
-      const res = await window.axios.get('/api/v1/asset-capacity-categories', {
-        params: { vehicle_category_id: vehicleCategoryId, asset_type: type }
-      });
+      const res = await window.axios.get('/api/v1/asset-capacity-categories', { params: { for_type: type } });
       // A newer change already fired — drop this stale response.
       if (seq !== capReqSeq) return;
       const caps = res.data.data;
@@ -221,8 +223,7 @@ export function initVehicleForm(opts) {
 
       if (caps.length === 0) {
         capHint.classList.add('d-none');
-        const typeLabel = type === 'tank' ? t.tank || 'tank' : t.container || 'container';
-        showFieldError(capSelect, (t.no_compatible_capacity || 'There is no compatible :type capacity recorded for the selected vehicle category.').replace(':type', typeLabel));
+        showFieldError(capSelect, noCapacityMessage(type));
       } else {
         capHint.classList.add('d-none');
         if (keep && capSelect.querySelector(`option[value="${keep}"]`)) capSelect.value = keep;
@@ -256,9 +257,6 @@ export function initVehicleForm(opts) {
   form.querySelectorAll('input[name="embedded_container_type"]').forEach((r) =>
     r.addEventListener('change', () => refreshEmbeddedCapacities())
   );
-  catSelect.addEventListener('change', () => {
-    if (embeddedInputs().has) refreshEmbeddedCapacities();
-  });
 
   // --------------------------------------------------------- entry permits
   const container = document.getElementById('entry-permits-container');
