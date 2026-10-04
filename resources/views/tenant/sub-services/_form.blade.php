@@ -49,11 +49,11 @@
           <div class="col-md-6">
             <label class="form-label d-block">{{ __('Service Status') }}</label>
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="operational_status" id="os-active" value="active" checked>
+              <input class="form-check-input" type="radio" name="operational_status" id="os-active" value="active" checked required>
               <label class="form-check-label" for="os-active">{{ __('Active') }}</label>
             </div>
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="operational_status" id="os-deactivated" value="deactivated">
+              <input class="form-check-input" type="radio" name="operational_status" id="os-deactivated" value="deactivated" required>
               <label class="form-check-label" for="os-deactivated">{{ __('Deactivated') }}</label>
             </div>
             <div class="text-danger small mt-1 d-none" data-feedback></div>
@@ -70,11 +70,11 @@
         <div class="col-12">
           <label class="form-label d-block">{{ __('Type') }}</label>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="asset_type" id="at-container" value="container">
+            <input class="form-check-input" type="radio" name="asset_type" id="at-container" value="container" required>
             <label class="form-check-label" for="at-container">{{ __('Container') }}</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="asset_type" id="at-tank" value="tank">
+            <input class="form-check-input" type="radio" name="asset_type" id="at-tank" value="tank" required>
             <label class="form-check-label" for="at-tank">{{ __('Tank') }}</label>
           </div>
           <div class="text-danger small mt-1 d-none" data-feedback></div>
@@ -82,7 +82,7 @@
 
         <div class="col-12" data-error-for="capacity_ids">
           <label class="form-label d-block">{{ __('Compatible capacities') }}</label>
-          <div class="row g-3" id="capacities-box">
+          <div class="row g-3" id="capacities-box" data-required>
             <div class="col-12 text-muted small">{{ __('Choose the asset type first.') }}</div>
           </div>
           <div class="text-danger small mt-2 d-none" data-feedback></div>
