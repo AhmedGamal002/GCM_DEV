@@ -75,7 +75,7 @@ The System Admin has **full access**: view, create, edit, export, and all status
 - **Add Vehicle** button.
 
 ### Create / edit vehicle
-- Basics: plate (letters + digits, digits only), category, affiliation, whether it has an embedded container (if yes: its type + capacity — the list filters by what is available in the Asset Pool).
+- Basics: plate (letters + digits, digits only), category, affiliation, whether it has an embedded container (if yes: its type + capacity — the list shows the capacities defined for that type: "container" lists container capacities, "tank" lists tank capacities, and a capacity defined for both shows under either).
 - Photos (front/back) + documents (registration card / fitness / inspection certificate / insurance) with numbers and expiry dates.
 - Repeatable entry permits (area / number / expiry / attachment).
 - **All document and permit numbers are digits only.**
@@ -120,7 +120,7 @@ System Admin: view, create, edit (full data), export, and all status changes.
 ### List
 - **Separate stat cards for containers and tanks**: available / in projects / on maintenance / deactivated.
 - Server-side table. Filters: type (container / tank) + status (active = available, **in a project**, on maintenance, deactivated) + affiliation. The "Availability" column shows "In a project" + the project name. Export button + an **Insert asset into project** button.
-- Two items under "Assets" in the sidebar: **List** + **Categories**.
+- Two items under "Assets" in the sidebar: **List** + **Capacities**.
 
 ### Create asset
 - Name, type (container / tank), capacity category (filtered by type), compatible vehicle categories (checkboxes, per-asset), status, affiliation, purchase date, additional data.
@@ -133,9 +133,9 @@ System Admin: view, create, edit (full data), export, and all status changes.
 - Pick the **company** → the **project** (that company's active projects only) → the **type** (container / tank) → the **asset** (**available** assets only: active and not already in a project). All lists are live-search.
 - After saving, the asset leaves the available pool and shows as "In a project" + the project name on the list, details and stat cards, and in the project's assets table. An asset is in one project only. **Taking an asset back out of a project is not defined by the FRD yet** (it comes with trips).
 
-### Asset capacity categories — `/app/asset-category/list`
+### Assets capacities — `/app/asset-category/list`
 - Create and edit. After creation, **name only** is editable (capacity and kind locked). No delete, no deactivate.
-- The list's eye icon opens a **details page** (a client add-on, not in the FRD): the category's own data plus a table of every asset carrying it, linking to each asset's own details page.
+- The list's eye icon opens a **details page** (a client add-on, not in the FRD): the capacity's own data plus a table of every asset carrying it, linking to each asset's own details page.
 
 ## 8. Change asset status
 - **System Admin**: "on maintenance" + **deactivate** + **reactivate from deactivated**.
@@ -218,7 +218,7 @@ Sidebar: heading **Clients & Projects** → **Client Projects** (List + Add). A 
 | Users | Full CRUD + status + export + **client accounts** (company, all/specific projects, signature & stamp) | "Contractor user" option in the Add button (with the Contractors module) |
 | Vehicles | Full CRUD + status + export + embedded container | "on a trip" column/counter + vehicle trip log (Week 7) |
 | Drivers | Full CRUD + default vehicle + documents + permits | "on a trip" status (Week 7), mobile app |
-| Assets | Full CRUD + categories + status + export + **insert an asset into a project** + "in a project" availability | Taking an asset out of a project (with trips) |
+| Assets | Full CRUD + capacities + status + export + **insert an asset into a project** + "in a project" availability | Taking an asset out of a project (with trips) |
 | Intermediate facilities | Create / edit / deactivate + prefix + recycling efficiency + contract + export + supported sub-services + service lock once in use | The trip side of the lock (Week 7) |
 | Main & sub-services | Create / edit / deactivate (cascading to sub-services) + categories, capacities and facilities + recycle receipt + skip colour + main-services export | Real statistics and the PO/trip lock (Weeks 6–7) |
 | Client companies | Full CRUD + deactivate/reactivate + attachments + export + projects count + company projects table + **representative + users count** | The contracts section (with Contracts) |

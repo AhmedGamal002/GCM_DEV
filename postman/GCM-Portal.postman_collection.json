@@ -2594,25 +2594,13 @@
                   "key": "for_type",
                   "value": "container",
                   "disabled": true,
-                  "description": "container | tank — returns capacities that fit that type (applies_to matches, or 'both')"
+                  "description": "container | tank — returns capacities that fit that type (applies_to matches, or 'both'). Used by the asset form AND by the vehicle form's embedded-container capacity list."
                 },
                 {
                   "key": "applies_to",
                   "value": "both",
                   "disabled": true,
                   "description": "container | tank | both — exact match"
-                },
-                {
-                  "key": "vehicle_category_id",
-                  "value": "1",
-                  "disabled": true,
-                  "description": "with asset_type — the vehicle form's embedded-container list: only capacities the fleet can field for that vehicle category + kind, derived from the asset pool. Both params required together."
-                },
-                {
-                  "key": "asset_type",
-                  "value": "container",
-                  "disabled": true,
-                  "description": "container | tank — pair with vehicle_category_id"
                 },
                 {
                   "key": "search",
@@ -2640,7 +2628,7 @@
                 }
               ]
             },
-            "description": "Open reference list (any tenant role). Without per_page it returns the full unpaginated array — that's what the vehicle & asset form dropdowns use. With per_page it's genuinely server-side paged/sorted/searched, same as /vehicles (the management list page). With vehicle_category_id + asset_type it returns only the capacities usable as that vehicle category's embedded container (see EmbeddedCapacityFitsVehicleRule)."
+            "description": "Open reference list (any tenant role). Without per_page it returns the full unpaginated array — that's what the vehicle & asset form dropdowns use. With per_page it's genuinely server-side paged/sorted/searched, same as /vehicles (the management list page). With for_type=container|tank it returns the capacities that fit that type — what the asset form and the vehicle form's embedded-container list ask for (see EmbeddedCapacityFitsTypeRule)."
           }
         },
         {

@@ -19,7 +19,7 @@
 
     <div class="row g-6">
       <div class="col-md-6">
-        <label class="form-label" for="name">{{ __('Category name') }}</label>
+        <label class="form-label" for="name">{{ __('Capacity name') }}</label>
         <input type="text" id="name" name="name" class="form-control" required />
         <div class="text-danger small mt-1 d-none" data-feedback></div>
       </div>

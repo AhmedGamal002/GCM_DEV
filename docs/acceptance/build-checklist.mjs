@@ -384,7 +384,7 @@ const CLIENT_GROUPS = [
   { title: 'المركبات', ids: ['week-3-vehicles-drivers-assets#1', 'week-3-vehicles-drivers-assets#2', 'week-3-vehicles-drivers-assets#25', 'week-3-vehicles-drivers-assets#6', 'week-3-vehicles-drivers-assets#3', 'week-3-vehicles-drivers-assets#4', 'week-3-vehicles-drivers-assets#5', 'week-3-vehicles-drivers-assets#8'] },
   { title: 'تصنيفات المركبات', ids: ['week-3-frd-gap-review#10', 'week-3-frd-gap-review#11', 'week-3-frd-gap-review#13', 'week-3-frd-gap-review#14', 'week-3-frd-gap-review#12', 'week-3-frd-gap-review#17', 'week-3-frd-gap-review#19'] },
   { title: 'الأصول', ids: ['week-3-vehicles-drivers-assets#16', 'week-3-vehicles-drivers-assets#26', 'week-3-vehicles-drivers-assets#18', 'week-3-vehicles-drivers-assets#27', 'week-3-vehicles-drivers-assets#17', 'week-3-vehicles-drivers-assets#19'] },
-  { title: 'تصنيفات سعة الأصول', ids: ['week-3-vehicles-drivers-assets#20'] },
+  { title: 'سعات الأصول', ids: ['week-3-vehicles-drivers-assets#20'] },
   { title: 'المنشآت الوسيطة', ids: ['week-5-facilities#2', 'week-5-facilities#4', 'week-5-facilities#5', 'week-5-facilities#6', 'week-5-facilities#7', 'week-5-facilities#8', 'week-5-facilities#9', 'week-5-facilities#11', 'week-5-facilities#12'] },
   { title: 'الخدمات', ids: ['week-5-services#2', 'week-5-services#4', 'week-5-services#5', 'week-5-services#6', 'week-5-services#7', 'week-5-services#8', 'week-5-services#9', 'week-5-services#10', 'week-5-services#11', 'week-5-services#12', 'week-5-services#13', 'week-5-services#14', 'week-5-services#15', 'week-5-services#16'] },
   { title: 'شركات العملاء', ids: ['week-4-client-companies#1', 'week-4-client-companies#2', 'week-4-client-companies#3', 'week-4-client-companies#4', 'week-4-client-companies#5', 'week-4-client-companies#6', 'week-4-client-companies#7', 'week-4-client-companies#8', 'week-4-client-companies#9'] },
@@ -536,7 +536,7 @@ const CLIENT_OVERRIDES = {
     title: 'عرض قائمة الأصول',
     frd: '§1.7.3 (الإنشاء والتعديل مسؤولية مدير النظام أو مدخل البيانات؛ المراقب عرض فقط)',
     steps: 'افتح قائمة الأصول.',
-    expected: 'تشوف "Assets" (List + Categories).',
+    expected: 'تشوف "Assets" (List + Capacities).',
   },
 };
 

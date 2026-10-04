@@ -1,6 +1,6 @@
 @extends('layouts/layoutMaster')
 
-@section('title', __('Category Details'))
+@section('title', __('Capacity Details'))
 
 @section('vendor-style')
 @vite([
@@ -49,10 +49,10 @@
 
 @section('content')
 
-@include('_partials.breadcrumb', ['pageTitle' => __('Category Details'), 'breadcrumbs' => [
+@include('_partials.breadcrumb', ['pageTitle' => __('Capacity Details'), 'breadcrumbs' => [
   ['title' => __('Assets'), 'url' => route('app-asset-list')],
-  ['title' => __('Asset capacity categories'), 'url' => route('app-asset-category-list')],
-  ['title' => __('Category Details')],
+  ['title' => __('Assets Capacities'), 'url' => route('app-asset-category-list')],
+  ['title' => __('Capacity Details')],
 ]])
 
 <div id="asset-category-view-error" class="alert alert-danger d-none"></div>

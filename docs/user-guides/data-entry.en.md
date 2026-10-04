@@ -8,7 +8,7 @@ Data Entry is responsible for **creating, editing, and deactivating users, drive
 
 ## What you see in the sidebar
 
-Dashboard, then an **Accounts** section (Users · Drivers), a **Fleet & Assets** section (Vehicles · Assets — with a Categories sub-item under Assets), an **Operations** section (Facilities · Services) and a **Clients & Projects** section (Client Companies). Any other link (Roles & Permissions, and the demo template scaffold) is **hidden** — and if you open it manually it returns "You don't have permission to view this data."
+Dashboard, then an **Accounts** section (Users · Drivers), a **Fleet & Assets** section (Vehicles · Assets — with a Capacities sub-item under Assets), an **Operations** section (Facilities · Services) and a **Clients & Projects** section (Client Companies). Any other link (Roles & Permissions, and the demo template scaffold) is **hidden** — and if you open it manually it returns "You don't have permission to view this data."
 
 ## 1. Sign in and profile
 
@@ -47,11 +47,11 @@ Dashboard, then an **Accounts** section (Users · Drivers), a **Fleet & Assets**
 - **Status:** "on maintenance", or **deactivate / reactivate**.
 - **Insert an asset into a project** (`/app/asset/insert-into-project`): company → active project → type → available asset. The asset then shows as "In a project" + the project name.
 
-### Asset capacity categories — `/app/asset-category/list`
-- **Create** a new category.
+### Assets capacities — `/app/asset-category/list`
+- **Create** a new capacity.
 - **Edit:** name only (capacity and kind locked).
 - No delete, no deactivate.
-- The list's eye icon opens a **details page** (client add-on): the category's data plus a table of the assets carrying it.
+- The list's eye icon opens a **details page** (client add-on): the capacity's data plus a table of the assets carrying it.
 
 ## 6. Intermediate facilities — `/app/facility/list`
 
