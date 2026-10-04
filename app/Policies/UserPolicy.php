@@ -59,9 +59,14 @@ class UserPolicy
         return $this->canManage($actor, $target) && ! $target->hasRole('driver');
     }
 
+    /**
+     * Nobody changes their OWN status — not to "on vacation", not to "deactivated", not back to
+     * "active". It is a decision about an account taken by someone else (otherwise an admin could
+     * lock out their own session, or take themselves "off the hook" by going on vacation).
+     */
     public function updateStatus(User $actor, User $target): bool
     {
-        return $this->canManage($actor, $target);
+        return $actor->isNot($target) && $this->canManage($actor, $target);
     }
 
     /**

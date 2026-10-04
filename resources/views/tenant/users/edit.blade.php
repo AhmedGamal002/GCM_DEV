@@ -30,6 +30,8 @@
     last_updated_by: @json(__('Last updated by :name — :at'))
   };
   window.userEditId = {{ $userId }};
+  // Nobody changes their own status — the status radios are hidden and not sent on your own account.
+  window.userEditIsSelf = @json(auth()->id() === $userId);
 </script>
 @vite('resources/assets/js/app-user-edit.js')
 @endsection

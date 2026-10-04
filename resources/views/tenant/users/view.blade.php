@@ -8,6 +8,8 @@
 
 @section('page-script')
 <script>
+  // Nobody changes their own status — no status card on your own account's page.
+  window.userViewIsSelf = @json(auth()->id() === $userId);
   window.userViewTranslations = {
     active: @json(__('Active')),
     on_vacation: @json(__('On Vacation')),

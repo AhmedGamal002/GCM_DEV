@@ -52,6 +52,7 @@ The only screen exclusive to the System Admin among tenant roles.
 - **Empty "Additional Data" does not render** as an empty heading on the details page.
 
 ### Change user status
+- **Nobody changes their own status** — not the admin, not Data Entry, not anyone: no "on vacation", no deactivate, no reactivate. The status controls are hidden on your own account's pages and the server refuses the request (403). Ask another account holder who may manage accounts.
 - Active / on vacation / deactivated — from the details page.
 - **Deactivating a System Admin is always blocked.**
 

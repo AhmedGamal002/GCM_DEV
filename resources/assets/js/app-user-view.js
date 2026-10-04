@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     loading.classList.add('d-none');
     content.classList.remove('d-none');
-    document.getElementById('user-status-card').classList.remove('d-none');
+    if (!window.userViewIsSelf) document.getElementById('user-status-card').classList.remove('d-none');
   }
 
   window.axios

@@ -70,6 +70,12 @@ document.addEventListener('DOMContentLoaded', function () {
       }
 
       form.querySelector(`input[name="status"][value="${u.status}"]`).checked = true;
+      if (window.userEditIsSelf) {
+        form.querySelectorAll('input[name="status"]').forEach((r) => {
+          r.required = false;
+          r.closest('.col-md-6').classList.add('d-none');
+        });
+      }
 
       loading.classList.add('d-none');
       formWrapper.classList.remove('d-none');
@@ -87,7 +93,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // The system admin's own account has no role to pick — the role block is hidden for it.
     const roleInput = form.querySelector('input[name="role"]:checked');
-    const status = form.querySelector('input[name="status"]:checked').value;
+    const status = window.userEditIsSelf ? null : form.querySelector('input[name="status"]:checked').value;
 
     const data = new FormData();
     data.append('name', document.getElementById('name').value);
@@ -122,7 +128,7 @@ document.addEventListener('DOMContentLoaded', function () {
         headers: { 'Content-Type': 'multipart/form-data' },
         onUploadProgress: window.gcmBusy.onUploadProgress
       })
-      .then(() => window.axios.patch(`/api/v1/users/${id}/status`, { status }))
+      .then(() => (status ? window.axios.patch(`/api/v1/users/${id}/status`, { status }) : null))
       .then(function () {
         window.location.href = `${t.view_url_base}/${id}?saved=1`;
       })

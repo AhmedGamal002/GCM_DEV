@@ -114,7 +114,7 @@ class AdminEditsEveryAccountTest extends TestCase
     {
         $this->actingAs($this->admin, 'web')
             ->patchJson("/api/v1/users/{$this->admin->id}/status", ['status' => 'deactivated'])
-            ->assertUnprocessable();
+            ->assertForbidden();
     }
 
     public function test_the_admin_sees_their_own_row_in_the_users_list(): void

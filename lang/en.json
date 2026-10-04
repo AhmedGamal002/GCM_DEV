@@ -443,5 +443,6 @@
   "Capacity created successfully.": "Capacity created successfully.",
   "Choose the container type first.": "Choose the container type first.",
   "No :type capacities are defined yet.": "No :type capacities are defined yet.",
-  "The selected capacity doesn't apply to a :type.": "The selected capacity doesn't apply to a :type."
+  "The selected capacity doesn't apply to a :type.": "The selected capacity doesn't apply to a :type.",
+  "You cannot change the status of your own account — ask the System Admin or Data Entry.": "You cannot change the status of your own account — ask the System Admin or Data Entry."
 }
