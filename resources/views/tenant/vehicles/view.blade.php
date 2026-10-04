@@ -19,6 +19,9 @@
 
 @section('page-script')
 <script>
+  // Status changes are for whoever may manage this kind of record (the auditor only views).
+  window.gcmCanManage = @json(auth()->user()->can('create', \App\Models\Vehicle::class));
+  
   window.vehicleViewTranslations = {
     active: @json(__('Active')),
     on_maintenance: @json(__('On Maintenance')),

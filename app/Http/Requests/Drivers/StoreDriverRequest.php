@@ -52,8 +52,9 @@ class StoreDriverRequest extends FormRequest
 
             'vehicle_category_ids' => ['required', 'array', 'min:1'],
             'vehicle_category_ids.*' => ['integer', 'exists:vehicle_categories,id'],
+            // Optional: a driver can be created before a vehicle is chosen for them.
             'default_vehicle_id' => [
-                'required', 'integer',
+                'nullable', 'integer',
                 Rule::exists('vehicles', 'id')->where('tenant_id', $tenantId),
             ],
 

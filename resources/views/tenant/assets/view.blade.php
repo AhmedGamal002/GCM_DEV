@@ -8,6 +8,9 @@
 
 @section('page-script')
 <script>
+  // Status changes are for whoever may manage this kind of record (the auditor only views).
+  window.gcmCanManage = @json(auth()->user()->can('create', \App\Models\Asset::class));
+  
   window.assetViewTranslations = {
     active: @json(__('Active')),
     in_project: @json(__('In a project')),

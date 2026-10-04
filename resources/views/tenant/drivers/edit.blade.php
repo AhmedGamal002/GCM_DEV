@@ -100,11 +100,11 @@
         <div class="row g-6">
           <div class="col-12">
             <label class="form-label d-block">{{ __('Vehicle Types Qualified to Drive') }}</label>
-            <div id="vehicle-category-checkboxes" class="d-flex flex-wrap gap-4"></div>
+            <div id="vehicle-category-checkboxes" data-required class="d-flex flex-wrap gap-4"></div>
           </div>
           <div class="col-md-6">
             <label class="form-label" for="default_vehicle_id">{{ __('Default Vehicle') }}</label>
-            <select id="default_vehicle_id" class="form-select select2" required>
+            <select id="default_vehicle_id" class="form-select select2">
               <option value="">{{ __('Select vehicle type(s) first') }}</option>
             </select>
           </div>

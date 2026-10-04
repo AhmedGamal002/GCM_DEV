@@ -31,7 +31,9 @@ if (el) {
     clearTimeout(settleTimer);
     clearTimeout(failsafeTimer);
     firstHideDone = true;
+    document.documentElement.classList.remove('gcm-pl-active');
     el.classList.add('gcm-pl-hide');
+    document.dispatchEvent(new Event('gcm:page-ready'));
     setTimeout(() => {
       if (el.classList.contains('gcm-pl-hide')) el.style.display = 'none';
     }, 300);
@@ -39,6 +41,7 @@ if (el) {
 
   const show = () => {
     clearTimeout(failsafeTimer);
+    document.documentElement.classList.add('gcm-pl-active');
     el.style.display = 'flex';
     // next frame so the opacity transition runs from 0
     requestAnimationFrame(() => el.classList.remove('gcm-pl-hide'));
@@ -119,5 +122,14 @@ if (el) {
     show();
   });
 
-  window.gcmPageLoader = { show, hide };
+  // `ready` flips once the first hide has happened; pages with non-essential extra requests (filter
+  // reference data) wait for the `gcm:page-ready` event so those never hold the loader up.
+  window.gcmPageLoader = {
+    show,
+    hide,
+    whenReady(callback) {
+      if (firstHideDone) callback();
+      else document.addEventListener('gcm:page-ready', callback, { once: true });
+    }
+  };
 }

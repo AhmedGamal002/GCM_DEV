@@ -62,8 +62,22 @@ class EnsureTenant
             }
         }
 
+        // A deactivated account loses access on its very next request, not only
+        // at the next login: signed out here (session) or its token deleted
+        // (mobile), then told why. The JS side (resources/js/bootstrap.js) turns
+        // this 401 into a redirect to the login page.
+        if ($user && $user->status === 'deactivated') {
+            $this->revokeAuthentication($request, $user);
+
+            if ($request->expectsJson() || $request->is('api/*')) {
+                return response()->json(['message' => __('auth.deactivated'), 'code' => 'account_deactivated'], 401);
+            }
+
+            return redirect()->route('login', ['deactivated' => 1]);
+        }
+
         if ($user && $user->status === 'on_vacation' && ! $request->isMethodSafe()) {
-            abort(403, 'Your account is on vacation and can only view data.');
+            abort(403, __('Your account is on vacation — you can view but not make changes.'));
         }
 
         if ($tenant) {
@@ -122,8 +136,12 @@ class EnsureTenant
     {
         if (Auth::guard('web')->check()) {
             Auth::guard('web')->logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
+
+            // An API request without a session (not from a stateful domain) has none to end.
+            if ($request->hasSession()) {
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+            }
 
             return;
         }

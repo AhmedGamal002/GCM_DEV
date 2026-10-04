@@ -98,11 +98,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // company → its projects
   $(companySelect).on('change', () => {
     fill(projectSelect, [], t.select_project, () => '');
-    loadProjects(companySelect.value).catch(() => showFormError(t.generic_error));
+    loadProjects(companySelect.value).catch((error) => showFormError(window.gcmErrorMessage(error)));
   });
 
   form.querySelectorAll('input[name="asset_type"]').forEach((radio) => {
-    radio.addEventListener('change', () => loadAssets().catch(() => showFormError(t.generic_error)));
+    radio.addEventListener('change', () => loadAssets().catch((error) => showFormError(window.gcmErrorMessage(error))));
   });
 
   // --------------------------------------------------------- initial load
@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return loadProjects(project.company.id, project.id);
       });
     })
-    .catch(() => showFormError(t.generic_error));
+    .catch((error) => showFormError(window.gcmErrorMessage(error)));
 
   // ---------------------------------------------------------------- submit
   form.addEventListener('submit', (e) => {

@@ -35,7 +35,7 @@ $customizerHidden = 'customizer-hide';
           <h4 class="mb-1">{{ __('Welcome to :name', ['name' => \App\Support\Brand::name()]) }} 👋</h4>
           <p class="mb-6">Please sign-in to your account and start the adventure</p>
 
-          <div id="login-error" class="alert alert-danger d-none"></div>
+          <div id="login-error" class="alert alert-danger {{ request()->boolean('deactivated') ? '' : 'd-none' }}">{{ request()->boolean('deactivated') ? __('auth.deactivated') : '' }}</div>
 
           <form id="formAuthentication" class="mb-4">
             <div class="mb-6">

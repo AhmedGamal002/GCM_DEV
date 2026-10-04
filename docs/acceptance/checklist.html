@@ -102,7 +102,7 @@
       <span>تم: <b id="s-pass">0</b></span>
       <span>فشل: <b id="s-fail" style="color:var(--bad)">0</b></span>
       <span>متبقي: <b id="s-left">0</b></span>
-      <span>من <b>145</b> بند</span>
+      <span>من <b>152</b> بند</span>
     </div>
     <div class="prog"><i class="p" id="b-pass"></i><i class="f" id="b-fail"></i></div>
     <div class="tools">
@@ -1159,6 +1159,53 @@
     </details>
   </section>
 
+  <section class="doc" data-doc="week-5-account-status">
+    <h2 class="doc-title">قبول التنفيذ — حالة الحساب (تعطيل فوري / في إجازة) وإخفاء مدير النظام عن مدخل البيانات<small>آخر مزامنة: FRD V01.14 (2026-10-01)</small></h2>
+    
+    <details open class="group">
+      <summary>أ) مدخل البيانات مايشوفش مدير النظام <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-5-account-status#1" data-title="حساب مدير النظام مختفي من قايمة مدخل البيانات">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">1</span></label>
+        <h3>حساب مدير النظام مختفي من قايمة مدخل البيانات</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.4 (مدخل البيانات &quot;كامل صلاحيات مدير النظام&quot; — وحساب مدير النظام نفسه محدّش يلمسه)</dd></div><div class="row"><dt>الدور</dt><dd>مدخل البيانات</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>سجّل دخول بـ<code>dataentry</code> وافتح Users ← List، وجرّب البحث بـ<code>admin@gcm.test</code> وفلتر الدور.</li><li>جرّب تفتح <code>/app/user/view/1</code> (رقم حساب مدير النظام) مباشرة، وجرّب تصدير Excel.</li><li>بعدها سجّل دخول بـ<code>auditor</code> وبص على نفس القايمة.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>مدير النظام <strong>مش ظاهر</strong> في القايمة ولا البحث ولا التصدير، وفتح صفحته مباشرة بيرفض (403). المراقب بيشوفه عادي (عرض بس).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Auth/AccountStatusAccessTest::test_data_entry_does_not_see_the_system_admin_in_the_list</code>, <code>test_data_entry_cannot_open_the_system_admin_by_id_or_search_or_export_it</code>, <code>test_the_export_for_data_entry_leaves_the_system_admin_out</code>, <code>test_the_auditor_and_the_admin_still_see_the_system_admin_where_they_may</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+    <details open class="group">
+      <summary>ب) التعطيل بيشتغل فورًا <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-5-account-status#2" data-title="مستخدم متسجّل دخول واتعطّل">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">2</span></label>
+        <h3>مستخدم متسجّل دخول واتعطّل</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>سياسات الحسابات (&quot;عند محاولته تسجيل الدخول ستظهر له رسالة حسابك معطل...&quot;)</dd></div><div class="row"><dt>الدور</dt><dd>مدير النظام + مستخدم تاني</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>في نافذة سجّل دخول بـ<code>dataentry</code> وسيب أي صفحة مفتوحة.</li><li>في النافذة التانية بـ<code>admin</code> عطّل حساب <code>dataentry</code> (تفاصيل الحساب ← Account Status ← Deactivated).</li><li>في نافذة <code>dataentry</code> دوس على أي رابط أو زرار (أو حدّث الصفحة).</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>من أول طلب بعد التعطيل بيتحوّل لصفحة تسجيل الدخول برسالة &quot;حسابك معطل من قبل مدير النظام...&quot;. مش بيكمّل شغل لحد ما يسجّل خروج.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Auth/AccountStatusAccessTest::test_a_session_dies_on_the_next_request_after_deactivation</code>, <code>test_a_deactivated_account_is_sent_to_the_login_page_from_a_web_page</code>, <code>test_the_login_page_explains_a_deactivated_redirect</code>, <code>test_a_bearer_token_stops_working_the_moment_the_account_is_deactivated</code>, <code>test_deactivating_an_account_deletes_its_mobile_tokens</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+    <details open class="group">
+      <summary>ج) حالة &quot;في إجازة&quot; <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-5-account-status#3" data-title="رسالة واضحة في كل الصفحات + أزرار مقفولة من الأول">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">3</span></label>
+        <h3>رسالة واضحة في كل الصفحات + أزرار مقفولة من الأول</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>سياسات الحسابات (&quot;في إجازة: يفقد الحساب أي قدرة على التفاعل — يستعرض الأقسام المسموح له بها فقط&quot;)</dd></div><div class="row"><dt>الدور</dt><dd>مدير النظام + مدخل البيانات</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>بـ<code>admin</code> حوّل <code>dataentry</code> لـ&quot;في إجازة&quot;.</li><li>سجّل دخول بـ<code>dataentry</code> وافتح صفحات مختلفة: Dashboard، قوايم (Users / Vehicles / Companies)، صفحة تفاصيل، وصفحة إنشاء (مثلًا Add Company)، والملف الشخصي.</li><li>في القايمة جرّب أزرار &quot;Add&quot; وأيقونات التعديل، وفي صفحة الإنشاء جرّب تكتب في أي خانة وتدوس Submit.</li><li>جرّب البحث والفلاتر والتصدير والتنقل.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>شريط تحذير أصفر &quot;حسابك في إجازة&quot; ظاهر أعلى <strong>كل</strong> صفحة. أزرار الإضافة وأيقونات التعديل ورابط &quot;Add&quot; في القايمة الجانبية <strong>مقفولة</strong> (رمادي + تلميح)، وأي فورم (إنشاء/تعديل/حالة/ملف شخصي) كله مقفول — الخانات والزرار ومحرر النص. مفيش حاجة بتتملأ وبعدين تترفض. البحث والفلاتر والترقيم والتصدير والتنقل بيشتغلوا عادي. ولو حد بعت طلب كتابة بطريقة تانية بيترفض (403) برسالة واضحة. لما ترجّع الحساب &quot;نشط&quot; كل ده بيختفي.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Auth/AccountStatusAccessTest::test_an_account_on_vacation_sees_the_banner_on_every_page</code>, <code>test_an_active_account_does_not_see_the_banner</code>, <code>Auth/OnVacationReadOnlyTest</code> (كلها)</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+  </section>
+
   <section class="doc" data-doc="week-5-client-accounts">
     <h2 class="doc-title">قبول التنفيذ — المرحلة 2: حسابات العملاء (مدير مشروعات / مراقب مشروعات)<small>آخر مزامنة: FRD V01.14 (2026-09-30)</small></h2>
     
@@ -1516,6 +1563,67 @@
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
       <dl><div class="row"><dt>مرجع الـFRD</dt><dd>عام (ثنائية اللغة)</dd></div><div class="row"><dt>الخطوات</dt><dd>بدّل للعربية وافتح القائمة والإنشاء والتفاصيل والتعديل، وبعدين رجّع للإنجليزية.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>كل النصوص مترجمة (العناوين، الحقول، رسائل الخطأ، الكروت، التلميحات)، الصفحة RTL، وحقول الاختصار ورقم العقد ورابط الموقع بتبدأ من الشمال (اتجاه LTR) حتى في العربي.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd>يدوي فقط</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+  </section>
+
+  <section class="doc" data-doc="week-5-form-clarity">
+    <h2 class="doc-title">قبول التنفيذ — وضوح الفورمات (علامة * وأخطاء واضحة) وصلاحيات المراقب والمركبة الافتراضية<small>آخر مزامنة: FRD V01.14 (2026-10-01)</small></h2>
+    
+    <details open class="group">
+      <summary>أ) علامة * على كل حقل إجباري <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-5-form-clarity#1" data-title="الحقول الإجبارية متعلّمة في كل الفورمات">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">1</span></label>
+        <h3>الحقول الإجبارية متعلّمة في كل الفورمات</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>جداول عناصر الإنشاء (عمود &quot;الالزام: لازم / اختياري&quot;)</dd></div><div class="row"><dt>الدور</dt><dd>مدير النظام</dd></div><div class="row"><dt>الخطوات</dt><dd>افتح كل فورم إنشاء وتعديل (مستخدم، حساب عميل، سائق، مركبة، أصل، تصنيف مركبة، تصنيف سعة، منشأة، شركة، مشروع) وبص على التسميات.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>كل حقل <strong>لازم</strong> عليه **<code>*</code>** حمرا جنب اسمه (بما فيها مجموعات الاختيار زي &quot;حالة الحساب&quot; و&quot;أنواع المركبات المؤهل لقيادتها&quot;)، والحقول الاختيارية من غير علامة، وفي أول الفورم سطر &quot;الخانات اللي عليها * إجبارية&quot;. العلامات بتطابق عمود &quot;الالزام&quot; في الـFRD.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Auth/FormAccessAndMessagesTest::test_the_wording_for_clear_error_messages_is_on_every_page</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+    <details open class="group">
+      <summary>ب) المركبة الافتراضية للسائق اختيارية <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-5-form-clarity#2" data-title="إنشاء وتعديل سائق من غير مركبة افتراضية">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">2</span></label>
+        <h3>إنشاء وتعديل سائق من غير مركبة افتراضية</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>إنشاء مستخدم (سائق) — قسم &quot;المركبة الافتراضية&quot;</dd></div><div class="row"><dt>الدور</dt><dd>مدير النظام</dd></div><div class="row"><dt>الخطوات</dt><dd>أنشئ سائق وسيب &quot;Default Vehicle&quot; فاضية واحفظ. بعدها افتح تعديله، اختار مركبة واحفظ، وبعدين فضّيها واحفظ تاني.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>السائق بيتحفظ في الحالتين من غير خطأ، و&quot;Default Vehicle&quot; ملهاش <code>*</code>. صفحة التفاصيل بتعرض &quot;—&quot; لما مفيش مركبة.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Drivers/DriverCreationTest::test_the_default_vehicle_is_optional</code>, <code>test_a_blank_default_vehicle_from_the_form_is_accepted_and_clears_it_on_edit</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+    <details open class="group">
+      <summary>ج) رسائل الخطأ واضحة <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-5-form-clarity#3" data-title="مفيش &quot;حدث خطأ&quot; عامة">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">3</span></label>
+        <h3>مفيش &quot;حدث خطأ&quot; عامة</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>—</dd></div><div class="row"><dt>الدور</dt><dd>مدير النظام</dd></div><div class="row"><dt>الخطوات</dt><dd>جرّب: حفظ فورم ناقص (أو بيانات مكررة زي بريد موجود)، فصل الإنترنت وحفظ، فتح رابط بتاع عنصر مش موجود (مثلاً <code>/app/vehicle/view/99999</code>)، وبالعربي كمان.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>كل حالة ليها رسالة تقول <strong>إيه المشكلة وإيه المطلوب</strong>: الحقول الناقصة أو الغلط بالاسم (&quot;The email has already been taken&quot;)، &quot;مفيش اتصال بالسيرفر. اتأكد من الإنترنت&quot;، &quot;العنصر ده مش موجود — ممكن يكون اتحذف&quot;، &quot;مش مسموحلك بالإجراء ده&quot;، &quot;انتهت جلستك&quot;، &quot;محاولات كتير&quot;، ولمشاكل السيرفر &quot;السيرفر واجه مشكلة (خطأ 500)...&quot; برقم الخطأ. ورسائل التحقق بالعربي بتتكتب بالعربي وبأسماء الحقول زي ما هي في الفورم.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Auth/FormAccessAndMessagesTest::test_validation_messages_are_in_arabic_and_name_the_field</code>, <code>test_english_messages_use_the_form_label_not_the_column_name</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+    <details open class="group">
+      <summary>د) المراقب (Auditor) عرض فقط <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-5-form-clarity#4" data-title="مفيش فورم إنشاء/تعديل للمراقب">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">4</span></label>
+        <h3>مفيش فورم إنشاء/تعديل للمراقب</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.4 (المراقب: عرض/تصدير فقط)</dd></div><div class="row"><dt>الدور</dt><dd>المراقب</dd></div><div class="row"><dt>الخطوات</dt><dd>سجّل دخول بـ<code>auditor</code>. افتح قوايم المستخدمين والسائقين والمركبات والأصول والشركات والمشروعات والمنشآت وصفحات تفاصيلها. بعدها جرّب تفتح مباشرة <code>/app/vehicle/add</code> و<code>/app/company/edit/1</code> وباقي صفحات الإنشاء/التعديل.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>مفيش زرار Add ولا أيقونة تعديل ولا زرار Edit ولا كارت تغيير الحالة في أي مكان. وفتح أي صفحة إنشاء أو تعديل بالرابط بيرجّع <strong>403</strong> (مش فورم). التصدير والبحث والفلاتر شغالين. نفس الحكم للسائق وحسابات العميل.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Auth/FormAccessAndMessagesTest::test_the_auditor_cannot_open_a_create_or_edit_form</code>, <code>test_the_driver_cannot_open_a_create_or_edit_form</code>, <code>test_the_auditor_gets_the_view_only_marker_and_others_do_not</code>, <code>test_data_entry_still_opens_the_forms_it_may_use</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     </details>

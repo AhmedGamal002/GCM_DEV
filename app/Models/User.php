@@ -118,6 +118,20 @@ class User extends Authenticatable
     };
   }
 
+  /**
+   * Accounts a data_entry user is not allowed to know about: the tenant's
+   * system_admin. Everyone else sees every account of the tenant (the
+   * auditor included — FRD V01.14: view/export on every page).
+   */
+  public function scopeVisibleTo(Builder $query, User $actor): Builder
+  {
+    if ($actor->hasRole('data_entry') && ! $actor->hasRole('system_admin')) {
+      $query->whereDoesntHave('roles', fn ($r) => $r->where('name', 'system_admin'));
+    }
+
+    return $query;
+  }
+
   public function isClient(): bool
   {
     return $this->hasAnyRole(self::CLIENT_ROLES);

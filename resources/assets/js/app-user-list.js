@@ -281,11 +281,16 @@ $(function () {
           currentCompany = $(this).val();
           api.draw();
         });
-      window.gcmFetchAll('/api/v1/companies', { sort_by: 'name' }).then((companies) => {
-        companies.forEach((c) => {
-          companySelect.append($('<option>').val(c.id).text(c.name));
+      // Not needed to show the table, so it loads after the page loader has gone instead of
+      // adding a request the loader waits for.
+      const loadCompanies = () =>
+        window.gcmFetchAll('/api/v1/companies', { sort_by: 'name' }).then((companies) => {
+          companies.forEach((c) => {
+            companySelect.append($('<option>').val(c.id).text(c.name));
+          });
         });
-      });
+      if (window.gcmPageLoader) window.gcmPageLoader.whenReady(loadCompanies);
+      else loadCompanies();
 
       const statusSelect = $(
         '<select class="form-select"><option value="">' + (t.all_statuses || 'All statuses') + '</option></select>'

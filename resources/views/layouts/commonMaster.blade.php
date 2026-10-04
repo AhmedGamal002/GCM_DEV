@@ -35,10 +35,28 @@ $contentLayout = (isset($container) ? (($container === 'container-xxl') ? "layou
   <link id="gcm-custom-css" rel="stylesheet" href="{{ asset('assets/css/gcm_custom.css') }}?v={{ @filemtime(public_path('assets/css/gcm_custom.css')) }}" />
 </head>
 
-<body>
+<body @if(auth()->user() instanceof \App\Models\User && auth()->user()->hasRole('auditor') && ! auth()->user()->hasAnyRole(['system_admin', 'data_entry'])) data-gcm-view-only="1" @endif>
 
   {{-- Page loader: logo + name while the page (and its first data requests) load — hidden by resources/js/page-loader.js --}}
   @include('_partials.page-loader')
+
+  {{-- Wording for resources/js/gcm-errors.js (clear error messages) and resources/js/required-marks.js (the * legend). --}}
+  <script>
+    window.gcmI18n = {
+      network: @json(__('Cannot reach the server. Check your internet connection and try again.')),
+      session_expired: @json(__('Your session has expired. Please sign in again.')),
+      forbidden: @json(__("You don't have permission to do this.")),
+      not_found: @json(__('This item was not found — it may have been deleted, or you may not have access to it.')),
+      too_large: @json(__('The files you are uploading are too large. Choose smaller files and try again.')),
+      csrf: @json(__('This page has been open too long. Reload it and try again.')),
+      invalid: @json(__('Some of the data is not valid. Please review the form and fix the highlighted fields.')),
+      too_many: @json(__('Too many attempts. Wait a minute and try again.')),
+      server: @json(__('The server ran into a problem (error :code). Try again in a moment; if it keeps happening, contact support and mention this code.')),
+      unknown: @json(__('The request could not be completed. Please try again.')),
+      unknown_status: @json(__('The request could not be completed (error :code). Please try again.')),
+      required_hint: @json(__('Fields marked with * are required.'))
+    };
+  </script>
 
   <!-- Layout Content -->
   @yield('layoutContent')

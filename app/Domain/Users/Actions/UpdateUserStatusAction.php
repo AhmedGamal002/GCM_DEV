@@ -28,6 +28,12 @@ class UpdateUserStatusAction
         $user->updated_by = $actor->id;
         $user->save();
 
+        // Mobile (bearer) sessions end now; web sessions end on the account's next
+        // request (EnsureTenant).
+        if ($status === 'deactivated') {
+            $user->tokens()->delete();
+        }
+
         return $user;
     }
 }

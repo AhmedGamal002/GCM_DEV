@@ -75,11 +75,11 @@
         <div class="col-md-6">
           <label class="form-label d-block">{{ __('Job Role') }}</label>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="role" id="role-manager" value="client_project_manager" checked>
+            <input class="form-check-input" type="radio" name="role" id="role-manager" value="client_project_manager" checked required>
             <label class="form-check-label" for="role-manager">{{ __('Project Manager') }}</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="role" id="role-auditor" value="client_project_auditor">
+            <input class="form-check-input" type="radio" name="role" id="role-auditor" value="client_project_auditor" required>
             <label class="form-check-label" for="role-auditor">{{ __('Project Auditor') }}</label>
           </div>
           <div class="text-danger small mt-1 d-none" data-feedback></div>
@@ -88,11 +88,11 @@
         <div class="col-12">
           <label class="form-label d-block">{{ __('Projects') }}</label>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="projects_scope" id="scope-all" value="all" checked>
+            <input class="form-check-input" type="radio" name="projects_scope" id="scope-all" value="all" checked required>
             <label class="form-check-label" for="scope-all">{{ __('All projects') }}</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="projects_scope" id="scope-specific" value="specific">
+            <input class="form-check-input" type="radio" name="projects_scope" id="scope-specific" value="specific" required>
             <label class="form-check-label" for="scope-specific">{{ __('Specific projects') }}</label>
           </div>
           <div class="form-text">{{ __('"All projects" covers every project of the company, current and future.') }}</div>
@@ -109,15 +109,15 @@
         <div class="col-md-6">
           <label class="form-label d-block">{{ __('Account Status') }}</label>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="status" id="status-active" value="active" checked>
+            <input class="form-check-input" type="radio" name="status" id="status-active" value="active" checked required>
             <label class="form-check-label" for="status-active">{{ __('Active') }}</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="status" id="status-vacation" value="on_vacation">
+            <input class="form-check-input" type="radio" name="status" id="status-vacation" value="on_vacation" required>
             <label class="form-check-label" for="status-vacation">{{ __('On Vacation') }}</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="status" id="status-deactivated" value="deactivated">
+            <input class="form-check-input" type="radio" name="status" id="status-deactivated" value="deactivated" required>
             <label class="form-check-label" for="status-deactivated">{{ __('Deactivated') }}</label>
           </div>
           <div class="text-danger small mt-1 d-none" data-feedback></div>

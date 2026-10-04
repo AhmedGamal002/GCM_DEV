@@ -91,26 +91,26 @@
         <div class="col-md-6" id="job-role-wrapper">
           <label class="form-label d-block">{{ __('Job Role') }}</label>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="role" id="role-data-entry" value="data_entry" checked>
+            <input class="form-check-input" type="radio" name="role" id="role-data-entry" value="data_entry" checked required>
             <label class="form-check-label" for="role-data-entry">{{ __('Data Entry') }}</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="role" id="role-auditor" value="auditor">
+            <input class="form-check-input" type="radio" name="role" id="role-auditor" value="auditor" required>
             <label class="form-check-label" for="role-auditor">{{ __('System Auditor') }}</label>
           </div>
         </div>
         <div class="col-md-6">
           <label class="form-label d-block">{{ __('Account Status') }}</label>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="status" id="status-active" value="active" checked>
+            <input class="form-check-input" type="radio" name="status" id="status-active" value="active" checked required>
             <label class="form-check-label" for="status-active">{{ __('Active') }}</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="status" id="status-vacation" value="on_vacation">
+            <input class="form-check-input" type="radio" name="status" id="status-vacation" value="on_vacation" required>
             <label class="form-check-label" for="status-vacation">{{ __('On Vacation') }}</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="status" id="status-deactivated" value="deactivated">
+            <input class="form-check-input" type="radio" name="status" id="status-deactivated" value="deactivated" required>
             <label class="form-check-label" for="status-deactivated">{{ __('Deactivated') }}</label>
           </div>
         </div>

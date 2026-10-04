@@ -161,6 +161,7 @@ class UserController extends Controller
             // caller's own row is never listed here. Editing yourself
             // goes through /api/v1/me (ProfileController) instead.
             ->where('id', '!=', $request->user()->id)
+            ->visibleTo($request->user())
             ->when($request->filled('status'), fn ($q) => $q->where('status', $request->string('status')))
             ->when($request->filled('affiliation'), fn ($q) => $q->where('affiliation', $request->string('affiliation')))
             ->when($request->filled('company_id'), fn ($q) => $q->where('company_id', $request->integer('company_id')))

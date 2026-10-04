@@ -59,7 +59,7 @@ class UpdateDriverRequest extends FormRequest
             'vehicle_category_ids' => ['required', 'array', 'min:1'],
             'vehicle_category_ids.*' => ['integer', 'exists:vehicle_categories,id'],
             'default_vehicle_id' => [
-                'required', 'integer',
+                'nullable', 'integer',
                 Rule::exists('vehicles', 'id')->where('tenant_id', $tenantId),
             ],
 

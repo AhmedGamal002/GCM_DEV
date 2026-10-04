@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const message =
           error.response && error.response.data && error.response.data.errors
             ? Object.values(error.response.data.errors).flat().join(' ')
-            : 'Something went wrong. Please try again.';
+            : window.gcmErrorMessage(error);
 
         errorBox.textContent = message;
         errorBox.classList.remove('d-none');

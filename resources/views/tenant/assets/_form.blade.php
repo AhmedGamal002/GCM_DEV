@@ -50,7 +50,7 @@
 
         <div class="col-md-6">
           <label class="form-label d-block">{{ __('Compatible vehicle categories') }}</label>
-          <div id="compatible-vehicle-categories" class="row row-cols-1 row-cols-sm-2 g-2"></div>
+          <div id="compatible-vehicle-categories" data-required class="row row-cols-1 row-cols-sm-2 g-2"></div>
           <div class="text-danger small mt-1 d-none" data-feedback data-feedback-for="compatible_vehicle_category_ids"></div>
         </div>
 
@@ -58,16 +58,16 @@
           <div class="col-md-6">
             <label class="form-label d-block">{{ __('Operational status') }}</label>
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="operational_status" id="os-active" value="active" checked>
+              <input class="form-check-input" type="radio" name="operational_status" id="os-active" value="active" checked required>
               <label class="form-check-label" for="os-active">{{ __('Active') }}</label>
             </div>
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="operational_status" id="os-maintenance" value="on_maintenance">
+              <input class="form-check-input" type="radio" name="operational_status" id="os-maintenance" value="on_maintenance" required>
               <label class="form-check-label" for="os-maintenance">{{ __('On Maintenance') }}</label>
             </div>
             {{-- FRD V01.14: deactivation is (system_admin / data_entry) now, same as create/edit — was system_admin-only under V01.09. --}}
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="operational_status" id="os-deactivated" value="deactivated">
+              <input class="form-check-input" type="radio" name="operational_status" id="os-deactivated" value="deactivated" required>
               <label class="form-check-label" for="os-deactivated">{{ __('Deactivated') }}</label>
             </div>
             <div class="text-danger small mt-1 d-none" data-feedback></div>
@@ -77,11 +77,11 @@
         <div class="col-md-6">
           <label class="form-label d-block">{{ __('Affiliation') }}</label>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="affiliation" id="aff-gcm" value="gcm" checked>
+            <input class="form-check-input" type="radio" name="affiliation" id="aff-gcm" value="gcm" checked required>
             <label class="form-check-label" for="aff-gcm">{{ __('Belongs to GCM') }}</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="affiliation" id="aff-contractor" value="contractor" disabled>
+            <input class="form-check-input" type="radio" name="affiliation" id="aff-contractor" value="contractor" disabled required>
             <label class="form-check-label text-muted" for="aff-contractor">{{ __('Belongs to a Contractor') }} — {{ __('coming soon') }}</label>
           </div>
         </div>

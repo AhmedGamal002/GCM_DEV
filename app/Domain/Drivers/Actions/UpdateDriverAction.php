@@ -41,7 +41,7 @@ class UpdateDriverAction
             $user->save();
 
             $driver->fill([
-                'default_vehicle_id' => $data['default_vehicle_id'],
+                'default_vehicle_id' => $data['default_vehicle_id'] ?? null,
                 'residence_number' => $data['residence_number'],
                 'residence_valid_to' => $data['residence_valid_to'],
                 'license_number' => $data['license_number'],

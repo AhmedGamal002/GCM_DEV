@@ -60,60 +60,60 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
 Route::middleware(['auth', 'tenant'])->group(function () {
     // Users
     Route::get('/app/user/list', [UserListController::class, 'index'])->name('app-user-list');
-    Route::get('/app/user/add', [UserAddController::class, 'index'])->name('app-user-add');
+    Route::get('/app/user/add', [UserAddController::class, 'index'])->middleware('can:create,App\\Models\\User')->name('app-user-add');
     Route::get('/app/user/view/{user}', [UserAccountController::class, 'view'])->whereNumber('user')->name('app-user-view');
-    Route::get('/app/user/edit/{user}', [UserAccountController::class, 'edit'])->whereNumber('user')->name('app-user-edit');
+    Route::get('/app/user/edit/{user}', [UserAccountController::class, 'edit'])->whereNumber('user')->middleware('can:create,App\\Models\\User')->name('app-user-edit');
 
     // Client accounts (project managers / auditors of a client company) — the details page is app-user-view.
-    Route::get('/app/client-user/add', [ClientUserController::class, 'add'])->name('app-client-user-add');
-    Route::get('/app/client-user/edit/{user}', [ClientUserController::class, 'edit'])->whereNumber('user')->name('app-client-user-edit');
+    Route::get('/app/client-user/add', [ClientUserController::class, 'add'])->middleware('can:create,App\\Models\\User')->name('app-client-user-add');
+    Route::get('/app/client-user/edit/{user}', [ClientUserController::class, 'edit'])->whereNumber('user')->middleware('can:create,App\\Models\\User')->name('app-client-user-edit');
 
     // Drivers
     Route::get('/app/driver/list', [DriverAccountController::class, 'list'])->name('app-driver-list');
-    Route::get('/app/driver/add', [DriverAccountController::class, 'add'])->name('app-driver-add');
+    Route::get('/app/driver/add', [DriverAccountController::class, 'add'])->middleware('can:create,App\\Models\\Driver')->name('app-driver-add');
     Route::get('/app/driver/view/{driver}', [DriverAccountController::class, 'view'])->whereNumber('driver')->name('app-driver-view');
-    Route::get('/app/driver/edit/{driver}', [DriverAccountController::class, 'edit'])->whereNumber('driver')->name('app-driver-edit');
+    Route::get('/app/driver/edit/{driver}', [DriverAccountController::class, 'edit'])->whereNumber('driver')->middleware('can:create,App\\Models\\Driver')->name('app-driver-edit');
 
     // Vehicles — {vehicle} kept as a raw numeric id (see VehicleController's docblock).
     Route::get('/app/vehicle/list', [VehicleListController::class, 'index'])->name('app-vehicle-list');
-    Route::get('/app/vehicle/add', [VehicleAddController::class, 'index'])->name('app-vehicle-add');
+    Route::get('/app/vehicle/add', [VehicleAddController::class, 'index'])->middleware('can:create,App\\Models\\Vehicle')->name('app-vehicle-add');
     Route::get('/app/vehicle/view/{vehicle}', [VehicleAccountController::class, 'view'])->whereNumber('vehicle')->name('app-vehicle-view');
-    Route::get('/app/vehicle/edit/{vehicle}', [VehicleAccountController::class, 'edit'])->whereNumber('vehicle')->name('app-vehicle-edit');
+    Route::get('/app/vehicle/edit/{vehicle}', [VehicleAccountController::class, 'edit'])->whereNumber('vehicle')->middleware('can:create,App\\Models\\Vehicle')->name('app-vehicle-edit');
 
     // Vehicle categories (system_admin only) — {category} is a raw numeric id too.
     Route::get('/app/vehicle-category/list', [VehicleCategoryController::class, 'list'])->name('app-vehicle-category-list');
-    Route::get('/app/vehicle-category/add', [VehicleCategoryController::class, 'add'])->name('app-vehicle-category-add');
-    Route::get('/app/vehicle-category/edit/{category}', [VehicleCategoryController::class, 'edit'])->whereNumber('category')->name('app-vehicle-category-edit');
+    Route::get('/app/vehicle-category/add', [VehicleCategoryController::class, 'add'])->middleware('can:create,App\\Models\\VehicleCategory')->name('app-vehicle-category-add');
+    Route::get('/app/vehicle-category/edit/{category}', [VehicleCategoryController::class, 'edit'])->whereNumber('category')->middleware('can:create,App\\Models\\VehicleCategory')->name('app-vehicle-category-edit');
 
     // Assets & Supply Hub — {asset}/{category} kept as raw numeric ids.
     Route::get('/app/asset/list', [AssetListController::class, 'index'])->name('app-asset-list');
-    Route::get('/app/asset/add', [AssetAddController::class, 'index'])->name('app-asset-add');
-    Route::get('/app/asset/insert-into-project', [AssetProjectController::class, 'create'])->name('app-asset-insert-into-project');
+    Route::get('/app/asset/add', [AssetAddController::class, 'index'])->middleware('can:create,App\\Models\\Asset')->name('app-asset-add');
+    Route::get('/app/asset/insert-into-project', [AssetProjectController::class, 'create'])->middleware('can:create,App\\Models\\Asset')->name('app-asset-insert-into-project');
     Route::get('/app/asset/view/{asset}', [AssetAccountController::class, 'view'])->whereNumber('asset')->name('app-asset-view');
-    Route::get('/app/asset/edit/{asset}', [AssetAccountController::class, 'edit'])->whereNumber('asset')->name('app-asset-edit');
+    Route::get('/app/asset/edit/{asset}', [AssetAccountController::class, 'edit'])->whereNumber('asset')->middleware('can:create,App\\Models\\Asset')->name('app-asset-edit');
 
     Route::get('/app/asset-category/list', [AssetCategoryController::class, 'list'])->name('app-asset-category-list');
-    Route::get('/app/asset-category/add', [AssetCategoryController::class, 'add'])->name('app-asset-category-add');
+    Route::get('/app/asset-category/add', [AssetCategoryController::class, 'add'])->middleware('can:create,App\\Models\\AssetCapacityCategory')->name('app-asset-category-add');
     Route::get('/app/asset-category/view/{category}', [AssetCategoryController::class, 'view'])->whereNumber('category')->name('app-asset-category-view');
-    Route::get('/app/asset-category/edit/{category}', [AssetCategoryController::class, 'edit'])->whereNumber('category')->name('app-asset-category-edit');
+    Route::get('/app/asset-category/edit/{category}', [AssetCategoryController::class, 'edit'])->whereNumber('category')->middleware('can:create,App\\Models\\AssetCapacityCategory')->name('app-asset-category-edit');
 
     // Intermediate waste facilities — {facility} kept as a raw numeric id.
     Route::get('/app/facility/list', [FacilityListController::class, 'index'])->name('app-facility-list');
-    Route::get('/app/facility/add', [FacilityAddController::class, 'index'])->name('app-facility-add');
+    Route::get('/app/facility/add', [FacilityAddController::class, 'index'])->middleware('can:create,App\\Models\\IntermediateFacility')->name('app-facility-add');
     Route::get('/app/facility/view/{facility}', [FacilityAccountController::class, 'view'])->whereNumber('facility')->name('app-facility-view');
-    Route::get('/app/facility/edit/{facility}', [FacilityAccountController::class, 'edit'])->whereNumber('facility')->name('app-facility-edit');
+    Route::get('/app/facility/edit/{facility}', [FacilityAccountController::class, 'edit'])->whereNumber('facility')->middleware('can:create,App\\Models\\IntermediateFacility')->name('app-facility-edit');
 
     // Client companies — {company} kept as a raw numeric id (see CompanyController's docblock).
     Route::get('/app/company/list', [CompanyListController::class, 'index'])->name('app-company-list');
-    Route::get('/app/company/add', [CompanyAddController::class, 'index'])->name('app-company-add');
+    Route::get('/app/company/add', [CompanyAddController::class, 'index'])->middleware('can:create,App\\Models\\Company')->name('app-company-add');
     Route::get('/app/company/view/{company}', [CompanyAccountController::class, 'view'])->whereNumber('company')->name('app-company-view');
-    Route::get('/app/company/edit/{company}', [CompanyAccountController::class, 'edit'])->whereNumber('company')->name('app-company-edit');
+    Route::get('/app/company/edit/{company}', [CompanyAccountController::class, 'edit'])->whereNumber('company')->middleware('can:create,App\\Models\\Company')->name('app-company-edit');
 
     // Client projects — {project} kept as a raw numeric id (see ProjectController's docblock).
     Route::get('/app/project/list', [ProjectListController::class, 'index'])->name('app-project-list');
-    Route::get('/app/project/add', [ProjectAddController::class, 'index'])->name('app-project-add');
+    Route::get('/app/project/add', [ProjectAddController::class, 'index'])->middleware('can:create,App\\Models\\Project')->name('app-project-add');
     Route::get('/app/project/view/{project}', [ProjectAccountController::class, 'view'])->whereNumber('project')->name('app-project-view');
-    Route::get('/app/project/edit/{project}', [ProjectAccountController::class, 'edit'])->whereNumber('project')->name('app-project-edit');
+    Route::get('/app/project/edit/{project}', [ProjectAccountController::class, 'edit'])->whereNumber('project')->middleware('can:create,App\\Models\\Project')->name('app-project-edit');
 
     // Profile (any authenticated tenant user) — one page, two cards
     // (photo + password change). Used to be two tabs/pages; merged per the

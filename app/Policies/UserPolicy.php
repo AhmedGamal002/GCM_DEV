@@ -27,8 +27,17 @@ class UserPolicy
         return $actor->hasAnyRole(['system_admin', 'data_entry', 'auditor']);
     }
 
+    /**
+     * The tenant's system_admin account is not shown to data_entry at all
+     * (not in the list, not by id) — they may manage accounts but the admin
+     * is outside their world (see also User::scopeVisibleTo()).
+     */
     public function view(User $actor, User $target): bool
     {
+        if ($actor->hasRole('data_entry') && ! $actor->hasRole('system_admin') && $target->hasRole('system_admin')) {
+            return false;
+        }
+
         return $actor->hasAnyRole(['system_admin', 'data_entry', 'auditor']);
     }
 

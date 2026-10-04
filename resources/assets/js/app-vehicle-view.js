@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function showError(message) {
     loading.classList.add('d-none');
-    errorBox.textContent = message || t.generic_error;
+    errorBox.textContent = message || (window.gcmI18n && window.gcmI18n.unknown);
     errorBox.classList.remove('d-none');
   }
 
@@ -168,7 +168,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     loading.classList.add('d-none');
     content.classList.remove('d-none');
-    document.getElementById('vehicle-status-card').classList.remove('d-none');
+    if (window.gcmCanManage) document.getElementById('vehicle-status-card').classList.remove('d-none');
   }
 
   window.axios

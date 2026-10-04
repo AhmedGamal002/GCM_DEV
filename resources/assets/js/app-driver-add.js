@@ -59,8 +59,8 @@ document.addEventListener('DOMContentLoaded', function () {
         defaultVehicleSelect.disabled = false;
         window.refreshGcmSelect(defaultVehicleSelect);
       })
-      .catch(function () {
-        defaultVehicleSelect.innerHTML = '<option value="">' + (t.generic_error || 'Something went wrong. Please try again.') + '</option>';
+      .catch(function (error) {
+        defaultVehicleSelect.innerHTML = '<option value="">' + window.gcmErrorMessage(error) + '</option>';
         window.refreshGcmSelect(defaultVehicleSelect);
       });
   }
@@ -78,8 +78,8 @@ document.addEventListener('DOMContentLoaded', function () {
       });
       categoryCheckboxes.querySelectorAll('input').forEach((cb) => cb.addEventListener('change', refreshVehicleOptions));
     })
-    .catch(function () {
-      categoryCheckboxes.textContent = t.generic_error || 'Something went wrong. Please try again.';
+    .catch(function (error) {
+      categoryCheckboxes.textContent = window.gcmErrorMessage(error);
     });
 
   addPermitBtn.addEventListener('click', function () {
@@ -152,7 +152,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const message =
           error.response && error.response.data && error.response.data.errors
             ? Object.values(error.response.data.errors).flat().join(' ')
-            : t.generic_error || 'Something went wrong. Please try again.';
+            : window.gcmErrorMessage(error);
 
         errorBox.textContent = message;
         errorBox.classList.remove('d-none');

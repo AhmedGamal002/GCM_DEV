@@ -21,6 +21,9 @@
     opacity: 1;
     transition: opacity 0.25s ease;
   }
+  /* While the loader is up the page underneath must not scroll or grow a scrollbar: a scrollbar appearing
+     when a table renders narrowed the viewport and shoved the centred loader sideways. */
+  html.gcm-pl-active { overflow: hidden !important; }
   .dark-style #gcm-page-loader { background: #25293c; color: #e6e6f1; }
   #gcm-page-loader.gcm-pl-hide { opacity: 0; pointer-events: none; }
   #gcm-page-loader .gcm-pl-logo {
@@ -65,5 +68,6 @@
   <div class="gcm-pl-name">{{ \App\Support\Brand::name() }}</div>
   <div class="gcm-pl-bar"><span></span></div>
 </div>
+<script>document.documentElement.classList.add('gcm-pl-active');</script>
 {{-- No JS at all? Never leave the page covered. --}}
 <noscript><style>#gcm-page-loader { display: none !important; }</style></noscript>

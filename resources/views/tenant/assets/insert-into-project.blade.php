@@ -68,11 +68,11 @@
         <div class="col-md-6">
           <label class="form-label d-block">{{ __('Asset type') }}</label>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="asset_type" id="at-container" value="container" checked>
+            <input class="form-check-input" type="radio" name="asset_type" id="at-container" value="container" checked required>
             <label class="form-check-label" for="at-container">{{ __('Container') }}</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="asset_type" id="at-tank" value="tank">
+            <input class="form-check-input" type="radio" name="asset_type" id="at-tank" value="tank" required>
             <label class="form-check-label" for="at-tank">{{ __('Tank') }}</label>
           </div>
         </div>

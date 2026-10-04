@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   function showError(message) {
-    errorBox.textContent = message || t.generic_error;
+    errorBox.textContent = message || (window.gcmI18n && window.gcmI18n.unknown);
     errorBox.classList.remove('d-none');
     window.scrollTo(0, 0);
   }

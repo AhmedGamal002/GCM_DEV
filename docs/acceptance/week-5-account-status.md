@@ -1,0 +1,51 @@
+# قبول التنفيذ — حالة الحساب (تعطيل فوري / في إجازة) وإخفاء مدير النظام عن مدخل البيانات
+
+> آخر مزامنة: **FRD V01.14** (2026-10-01) · شغّل `php artisan test` الأول (لازم كله أخضر) ثم `php artisan migrate:fresh --seed`.
+
+الحسابات: `admin@gcm.test` · `dataentry@gcm.test` · `auditor@gcm.test` (كلمة السر `password`). محتاج متصفحين (أو نافذة عادية + نافذة خفية) لبنود التعطيل والإجازة.
+
+---
+
+## أ) مدخل البيانات مايشوفش مدير النظام
+
+### 1. حساب مدير النظام مختفي من قايمة مدخل البيانات
+- **FRD:** §1.4 (مدخل البيانات "كامل صلاحيات مدير النظام" — وحساب مدير النظام نفسه محدّش يلمسه)
+- **الدور:** مدخل البيانات
+- **الخطوات:**
+  - سجّل دخول بـ`dataentry` وافتح Users ← List، وجرّب البحث بـ`admin@gcm.test` وفلتر الدور.
+  - جرّب تفتح `/app/user/view/1` (رقم حساب مدير النظام) مباشرة، وجرّب تصدير Excel.
+  - بعدها سجّل دخول بـ`auditor` وبص على نفس القايمة.
+- **المتوقع:** مدير النظام **مش ظاهر** في القايمة ولا البحث ولا التصدير، وفتح صفحته مباشرة بيرفض (403). المراقب بيشوفه عادي (عرض بس).
+- **يغطيه آليًا:** `Auth/AccountStatusAccessTest::test_data_entry_does_not_see_the_system_admin_in_the_list`, `test_data_entry_cannot_open_the_system_admin_by_id_or_search_or_export_it`, `test_the_export_for_data_entry_leaves_the_system_admin_out`, `test_the_auditor_and_the_admin_still_see_the_system_admin_where_they_may`
+- **النتيجة:** ⬜
+
+---
+
+## ب) التعطيل بيشتغل فورًا
+
+### 2. مستخدم متسجّل دخول واتعطّل
+- **FRD:** سياسات الحسابات ("عند محاولته تسجيل الدخول ستظهر له رسالة حسابك معطل...")
+- **الدور:** مدير النظام + مستخدم تاني
+- **الخطوات:**
+  - في نافذة سجّل دخول بـ`dataentry` وسيب أي صفحة مفتوحة.
+  - في النافذة التانية بـ`admin` عطّل حساب `dataentry` (تفاصيل الحساب ← Account Status ← Deactivated).
+  - في نافذة `dataentry` دوس على أي رابط أو زرار (أو حدّث الصفحة).
+- **المتوقع:** من أول طلب بعد التعطيل بيتحوّل لصفحة تسجيل الدخول برسالة "حسابك معطل من قبل مدير النظام...". مش بيكمّل شغل لحد ما يسجّل خروج.
+- **يغطيه آليًا:** `Auth/AccountStatusAccessTest::test_a_session_dies_on_the_next_request_after_deactivation`, `test_a_deactivated_account_is_sent_to_the_login_page_from_a_web_page`, `test_the_login_page_explains_a_deactivated_redirect`, `test_a_bearer_token_stops_working_the_moment_the_account_is_deactivated`, `test_deactivating_an_account_deletes_its_mobile_tokens`
+- **النتيجة:** ⬜
+
+---
+
+## ج) حالة "في إجازة"
+
+### 3. رسالة واضحة في كل الصفحات + أزرار مقفولة من الأول
+- **FRD:** سياسات الحسابات ("في إجازة: يفقد الحساب أي قدرة على التفاعل — يستعرض الأقسام المسموح له بها فقط")
+- **الدور:** مدير النظام + مدخل البيانات
+- **الخطوات:**
+  - بـ`admin` حوّل `dataentry` لـ"في إجازة".
+  - سجّل دخول بـ`dataentry` وافتح صفحات مختلفة: Dashboard، قوايم (Users / Vehicles / Companies)، صفحة تفاصيل، وصفحة إنشاء (مثلًا Add Company)، والملف الشخصي.
+  - في القايمة جرّب أزرار "Add" وأيقونات التعديل، وفي صفحة الإنشاء جرّب تكتب في أي خانة وتدوس Submit.
+  - جرّب البحث والفلاتر والتصدير والتنقل.
+- **المتوقع:** شريط تحذير أصفر "حسابك في إجازة" ظاهر أعلى **كل** صفحة. أزرار الإضافة وأيقونات التعديل ورابط "Add" في القايمة الجانبية **مقفولة** (رمادي + تلميح)، وأي فورم (إنشاء/تعديل/حالة/ملف شخصي) كله مقفول — الخانات والزرار ومحرر النص. مفيش حاجة بتتملأ وبعدين تترفض. البحث والفلاتر والترقيم والتصدير والتنقل بيشتغلوا عادي. ولو حد بعت طلب كتابة بطريقة تانية بيترفض (403) برسالة واضحة. لما ترجّع الحساب "نشط" كل ده بيختفي.
+- **يغطيه آليًا:** `Auth/AccountStatusAccessTest::test_an_account_on_vacation_sees_the_banner_on_every_page`, `test_an_active_account_does_not_see_the_banner`, `Auth/OnVacationReadOnlyTest` (كلها)
+- **النتيجة:** ⬜

@@ -50,11 +50,11 @@
             <label class="form-check-label" for="es-disposal">{{ __('Safe disposal') }}</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="environmental_service" id="es-sewage" value="sewage_treatment">
+            <input class="form-check-input" type="radio" name="environmental_service" id="es-sewage" value="sewage_treatment" required>
             <label class="form-check-label" for="es-sewage">{{ __('Sewage treatment') }}</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="environmental_service" id="es-recycle" value="recycle">
+            <input class="form-check-input" type="radio" name="environmental_service" id="es-recycle" value="recycle" required>
             <label class="form-check-label" for="es-recycle">{{ __('Recycling') }}</label>
           </div>
           <div class="text-danger small mt-1 d-none" data-feedback></div>
@@ -71,11 +71,11 @@
           <div class="col-md-6">
             <label class="form-label d-block">{{ __('Operational status') }}</label>
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="operational_status" id="os-active" value="active" checked>
+              <input class="form-check-input" type="radio" name="operational_status" id="os-active" value="active" checked required>
               <label class="form-check-label" for="os-active">{{ __('Active') }}</label>
             </div>
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="operational_status" id="os-deactivated" value="deactivated">
+              <input class="form-check-input" type="radio" name="operational_status" id="os-deactivated" value="deactivated" required>
               <label class="form-check-label" for="os-deactivated">{{ __('Deactivated') }}</label>
             </div>
             <div class="text-danger small mt-1 d-none" data-feedback></div>

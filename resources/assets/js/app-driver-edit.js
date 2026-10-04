@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   function showError(message) {
-    errorBox.textContent = message || t.generic_error;
+    errorBox.textContent = message || (window.gcmI18n && window.gcmI18n.unknown);
     errorBox.classList.remove('d-none');
     window.scrollTo(0, 0);
   }
@@ -77,8 +77,8 @@ document.addEventListener('DOMContentLoaded', function () {
         defaultVehicleSelect.disabled = false;
         window.refreshGcmSelect(defaultVehicleSelect);
       })
-      .catch(function () {
-        defaultVehicleSelect.innerHTML = '<option value="">' + (t.generic_error || 'Something went wrong. Please try again.') + '</option>';
+      .catch(function (error) {
+        defaultVehicleSelect.innerHTML = '<option value="">' + window.gcmErrorMessage(error) + '</option>';
         window.refreshGcmSelect(defaultVehicleSelect);
       });
   }

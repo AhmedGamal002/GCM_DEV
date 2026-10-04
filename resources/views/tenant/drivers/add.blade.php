@@ -86,15 +86,15 @@
         <div class="col-12">
           <label class="form-label d-block">{{ __('Account Status') }}</label>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="status" id="status-active" value="active" checked>
+            <input class="form-check-input" type="radio" name="status" id="status-active" value="active" checked required>
             <label class="form-check-label" for="status-active">{{ __('Active') }}</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="status" id="status-vacation" value="on_vacation">
+            <input class="form-check-input" type="radio" name="status" id="status-vacation" value="on_vacation" required>
             <label class="form-check-label" for="status-vacation">{{ __('On Vacation') }}</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="status" id="status-deactivated" value="deactivated">
+            <input class="form-check-input" type="radio" name="status" id="status-deactivated" value="deactivated" required>
             <label class="form-check-label" for="status-deactivated">{{ __('Deactivated') }}</label>
           </div>
         </div>
@@ -108,11 +108,11 @@
       <div class="row g-6">
         <div class="col-12">
           <label class="form-label d-block">{{ __('Vehicle Types Qualified to Drive') }}</label>
-          <div id="vehicle-category-checkboxes" class="d-flex flex-wrap gap-4"></div>
+          <div id="vehicle-category-checkboxes" data-required class="d-flex flex-wrap gap-4"></div>
         </div>
         <div class="col-md-6">
           <label class="form-label" for="default_vehicle_id">{{ __('Default Vehicle') }}</label>
-          <select id="default_vehicle_id" class="form-select select2" required>
+          <select id="default_vehicle_id" class="form-select select2">
             <option value="">{{ __('Select vehicle type(s) first') }}</option>
           </select>
         </div>

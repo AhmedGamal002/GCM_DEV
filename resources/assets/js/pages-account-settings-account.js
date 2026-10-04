@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const message =
           error.response && error.response.data && error.response.data.errors
             ? Object.values(error.response.data.errors).flat().join(' ')
-            : form.dataset.genericError;
+            : window.gcmErrorMessage(error);
 
         errorBox.textContent = message;
         errorBox.classList.remove('d-none');
@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const message =
           error.response && error.response.data && error.response.data.errors
             ? Object.values(error.response.data.errors).flat().join(' ')
-            : form.dataset.genericError;
+            : window.gcmErrorMessage(error);
 
         errorBox.textContent = message;
         errorBox.classList.remove('d-none');
@@ -164,7 +164,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const message =
           error.response && error.response.data && error.response.data.errors
             ? Object.values(error.response.data.errors).flat().join(' ')
-            : form.dataset.genericError || 'Something went wrong. Please try again.';
+            : window.gcmErrorMessage(error);
 
         errorBox.textContent = message;
         errorBox.classList.remove('d-none');
