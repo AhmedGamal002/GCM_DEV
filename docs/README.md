@@ -31,7 +31,8 @@
 | 3 | المركبات + السائقين + مجمع الأصول | ✅ | `acceptance/week-3-vehicles-drivers-assets.md` |
 | 4 (جزء من المرحلة 2) | شركات العملاء | ✅ | `acceptance/week-4-client-companies.md` |
 | 5 (المرحلة 2) | المنشآت الوسيطة | ✅ | `acceptance/week-5-facilities.md` |
-| 5 (المرحلة 2) | الخدمات الأساسية والفرعية (المتعهدين لسه) | ✅ | `acceptance/week-5-services.md` |
+| 5 (المرحلة 2) | الخدمات الأساسية والفرعية | ✅ | `acceptance/week-5-services.md` |
+| 5 (المرحلة 2) | المتعهدون + تبعية السائق / المركبة / الأصل لمتعهد | ✅ | `acceptance/week-5-contractors.md` |
 | 5 (المرحلة 2) | مشروعات العملاء + إدراج أصل في مشروع | ✅ | `acceptance/week-5-projects.md` |
 | 5 (المرحلة 2) | حسابات العملاء (مدير/مراقب مشروعات) + ممثل الشركة والمشروع | ✅ | `acceptance/week-5-client-accounts.md` |
 | 5 (المرحلة 2) | حالة الحساب (تعطيل فوري / في إجازة) + إخفاء مدير النظام عن مدخل البيانات | ✅ | `acceptance/week-5-account-status.md` |

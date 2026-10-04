@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function () {
         {
           targets: 2,
           orderable: false,
-          render: (data, type, full) => (full.affiliation === 'gcm' ? escapeHtml(t.gcm || 'GCM') : escapeHtml(t.contractor || full.affiliation))
+          render: (data, type, full) => (full.affiliation === 'gcm' ? escapeHtml(t.gcm || 'GCM') : escapeHtml(full.entity_name || t.contractor || full.affiliation))
         },
         {
           targets: 3,

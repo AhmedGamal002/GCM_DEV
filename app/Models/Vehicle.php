@@ -50,6 +50,12 @@ class Vehicle extends Model
         return $this->belongsTo(AssetCapacityCategory::class, 'embedded_asset_capacity_category_id');
     }
 
+    /** The contractor that supplies this vehicle (null = GCM's own). */
+    public function contractor(): BelongsTo
+    {
+        return $this->belongsTo(Contractor::class);
+    }
+
     /** FRD: view/edit pages show "Last updated by X — <datetime>". */
     public function updatedBy(): BelongsTo
     {

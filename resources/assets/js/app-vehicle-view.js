@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('vv-embedded').textContent = v.has_embedded_container
       ? `${v.embedded_container_type}${v.embedded_capacity_category ? ' — ' + v.embedded_capacity_category.name : ''}`
       : '—';
-    document.getElementById('vv-affiliation').textContent = v.affiliation === 'gcm' ? t.gcm || 'GCM' : v.affiliation;
+    document.getElementById('vv-affiliation').textContent = v.affiliation === 'gcm' ? t.gcm || 'GCM' : v.entity_name || t.contractor || v.affiliation;
     document.getElementById('vv-entity').textContent = v.entity_name || '';
 
     if (v.updated_by_name && t.last_updated_by) {

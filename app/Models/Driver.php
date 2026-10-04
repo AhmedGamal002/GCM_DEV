@@ -66,6 +66,12 @@ class Driver extends Model
         return $this->belongsTo(Vehicle::class, 'default_vehicle_id');
     }
 
+    /** The contractor that supplies this driver (null = GCM's own). */
+    public function contractor(): BelongsTo
+    {
+        return $this->belongsTo(Contractor::class);
+    }
+
     /** FRD: view/edit pages show "Last updated by X — <datetime>". */
     public function updatedBy(): BelongsTo
     {

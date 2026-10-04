@@ -32,6 +32,9 @@ export function initAssetForm(opts) {
 
   const quill = new Quill(document.getElementById('additional-data-editor'), { theme: 'snow', placeholder: '' });
 
+  // FRD §1.7.3: belongs to GCM or to a contractor (pick one from the list). Locked on edit.
+  const affiliation = window.gcmAffiliation(form);
+
   // ---------------------------------------------------------------- errors
   function feedbackEl(el) {
     const wrapper = el.closest('[class*="col-"]') || el.parentElement;
@@ -261,6 +264,7 @@ export function initAssetForm(opts) {
     // .disabled = true on an already-wired select leaves its widget
     // looking clickable, so re-wire it now that it's disabled.
     window.refreshGcmSelect(capSelect);
+    if (affiliation) affiliation.lock();
   }
 
   function prefill(a) {
@@ -278,8 +282,7 @@ export function initAssetForm(opts) {
       const cb = form.querySelector(`input[name="compatible_vehicle_category_ids[]"][value="${c.id}"]`);
       if (cb) cb.checked = true;
     });
-    const affRadio = form.querySelector(`input[name="affiliation"][value="${a.affiliation}"]`);
-    if (affRadio) affRadio.checked = true;
+    if (affiliation) affiliation.set(a.affiliation, a.contractor);
     if (a.purchase_date) form.querySelector('#purchase_date').value = a.purchase_date;
     quill.root.innerHTML = a.additional_data || '';
 

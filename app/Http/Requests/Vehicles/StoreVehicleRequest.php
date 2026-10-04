@@ -4,19 +4,20 @@ namespace App\Http\Requests\Vehicles;
 
 use App\Domain\Vehicles\Rules\EmbeddedCapacityFitsTypeRule;
 use App\Http\Requests\Concerns\NormalizesRichTextInput;
+use App\Http\Requests\Concerns\ValidatesAffiliation;
 use App\Models\Vehicle;
 use App\Models\VehicleDocument;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 /**
- * FRD §1.5.3 "Create new vehicle" form. Contractor affiliation isn't
- * offered yet (no Contractor entity until Week 5) — `affiliation` is
- * forced to 'gcm' server-side, same as StoreUserRequest does for drivers.
+ * FRD §1.5.3 "Create new vehicle" form. The affiliation radio is GCM or a
+ * contractor; choosing a contractor requires picking one (see
+ * ValidatesAffiliation).
  */
 class StoreVehicleRequest extends FormRequest
 {
-    use NormalizesRichTextInput;
+    use NormalizesRichTextInput, ValidatesAffiliation;
 
     public function authorize(): bool
     {
@@ -49,9 +50,7 @@ class StoreVehicleRequest extends FormRequest
 
             'operational_status' => ['required', Rule::in(['active', 'on_maintenance', 'deactivated'])],
 
-            // Only 'gcm' is a valid choice today; a submitted 'contractor'
-            // is rejected until the Contractor module lands.
-            'affiliation' => ['required', Rule::in(['gcm'])],
+            ...$this->affiliationRules(),
 
             'photo_front' => ['nullable', 'image', 'max:4096'],
             'photo_back' => ['nullable', 'image', 'max:4096'],

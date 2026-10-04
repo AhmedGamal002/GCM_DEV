@@ -163,7 +163,7 @@ System Admin: view, create, edit, deactivate / reactivate, export. Facilities ar
 
 ## 10. Services — `/app/main-service/list` and `/app/sub-service/list`
 
-Sidebar: **Operations ← Services** (Main Services · Add Main Service · Sub Services · Add Sub Service). System Admin: view, create, edit, deactivate / reactivate, export. Services are never deleted.
+Sidebar: **Operations ← Services** (Main Services → List · Add, and Sub Services → List · Add). System Admin: view, create, edit, deactivate / reactivate, export. Services are never deleted.
 
 ### Main services
 - A main service is a **category** that groups sub-services, and the building block of a contract (PO).
@@ -181,7 +181,19 @@ Sidebar: **Operations ← Services** (Main Services · Add Main Service · Sub S
 - **Status:** from the "Service Status" card on the edit page. **A sub-service can't be reactivated while its main service is deactivated.**
 - A vehicle category that a main service supports **can't be deleted**.
 
-## 11. Client company management — `/app/company/list`
+## 11. Contractor management — `/app/contractor/list`
+
+Sidebar: **Operations ← Contractors** (List · Add). System Admin: view, create, edit, deactivate / reactivate, export. A contractor is a company bound to GCM by a contract that supplies **drivers, vehicles and containers / tanks** for its trips. Contractors are never deleted.
+- **List:** four statistic cards (contractors with the active count, the vehicles, the assets — containers and tanks — and the drivers that contractors supply), then a server-side table: ID, contractor (with its trading name under it), drivers, vehicles, containers, tanks, status, view / edit. Search covers the name, trading name, short name and ID; filter by status; Excel / PDF export honouring them.
+- **Create:** name, **short name** (3 unique English letters), trading name, logo, phone, address, map link, **certified services**, contract (number, start / end dates, copy), commercial and tax registration (numbers + copies), status (active by default), additional data. The **contractor ID** is the short name + **C** + a running number — e.g. `DSH-C0001` — so it can never equal a client company's ID.
+- **Certified services:** tick the main services the contractor supports; **ticking none means it supports every service** (the details page then says "All services").
+- **Details:** logo, name, trading name, status, ID, contact data, certified services, contract data with download links for the attachments, and the counters of drivers / vehicles / containers / tanks it supplies.
+- **Edit:** every field except the **short name** (locked — the ID is built from it). A file left empty keeps the stored one. The certified services are replaced by whatever is ticked.
+- **Status:** from the "Contractor Status" card on the edit page (confirm checkbox). **Nothing cascades** — deactivating a contractor does not deactivate its drivers, vehicles or assets; a deactivated contractor just isn't offered when you pick a contractor for a new driver / vehicle / asset.
+- **Affiliation:** the driver, vehicle and asset forms now have **Belongs to GCM / Belongs to a Contractor** — choosing a contractor shows a searchable list of the active contractors to pick one. Lists and details then show the **contractor's name** in the affiliation column, and the Users / Drivers / Vehicles / Assets lists filter by it. A vehicle's or driver's affiliation can be changed on edit; an asset's is locked after creation (only its name is editable).
+- *Not yet:* the contractor's **representative account** and the contractor user accounts (they come with the contractor user role).
+
+## 12. Client company management — `/app/company/list`
 
 Sidebar: heading **Clients & Projects** → **Client Companies** (List + Add).
 
@@ -198,7 +210,7 @@ Sidebar: heading **Clients & Projects** → **Client Companies** (List + Add).
 - Edit page: **every field** is editable except the short name (locked; the ID is shown above the form). A file input left empty keeps the stored file; a new file replaces it.
 - **Deactivate / reactivate** from the "Company Status" card on the edit page (with a confirmation). There is no delete. Deactivating a company does **not** deactivate anything else.
 
-## 12. Client project management — `/app/project/list`
+## 13. Client project management — `/app/project/list`
 
 Sidebar: heading **Clients & Projects** → **Client Projects** (List + Add). A project is a work site of a client company (the place trips leave from).
 
@@ -215,16 +227,17 @@ Sidebar: heading **Clients & Projects** → **Client Projects** (List + Add). A 
 - Edit page: every field except the company (locked; the ID is shown above the form).
 - **Deactivate / reactivate** from the "Project Status" card on the edit page (with a confirmation). There is no delete. Deactivating a project does **not** deactivate the company, and deactivating a company does **not** deactivate its projects; a deactivated project is not offered when inserting an asset.
 
-## 13. Features available now
+## 14. Features available now
 
 | Module | Available | Deferred |
 |---|---|---|
-| Users | Full CRUD + status + export + **client accounts** (company, all/specific projects, signature & stamp) | "Contractor user" option in the Add button (with the Contractors module) |
+| Users | Full CRUD + status + export + **client accounts** (company, all/specific projects, signature & stamp) | "Contractor user" option in the Add button (with the contractor user role) |
 | Vehicles | Full CRUD + status + export + embedded container | "on a trip" column/counter + vehicle trip log (Week 7) |
 | Drivers | Full CRUD + default vehicle + documents + permits | "on a trip" status (Week 7), mobile app |
 | Assets | Full CRUD + capacities + status + export + **insert an asset into a project** + "in a project" availability | Taking an asset out of a project (with trips) |
 | Intermediate facilities | Create / edit / deactivate + prefix + recycling efficiency + contract + export + supported sub-services + service lock once in use | The trip side of the lock (Week 7) |
 | Main & sub-services | Create / edit / deactivate (cascading to sub-services) + categories, capacities and facilities + recycle receipt + skip colour + main-services export | Real statistics and the PO/trip lock (Weeks 6–7) |
+| Contractors | Full CRUD + deactivate/reactivate + certified services + attachments + statistics + export + **driver / vehicle / asset affiliation to a contractor** | Representative account and contractor user accounts (with the contractor user role) |
 | Client companies | Full CRUD + deactivate/reactivate + attachments + export + projects count + company projects table + **representative + users count** | The contracts section (with Contracts) |
 | Client projects | Full CRUD + deactivate/reactivate + ID from the company short name + project assets + export + **representative + users count** | Contracts section and trip statistics |
 | Dashboard | Shell screen | Real stats (Week 8) |

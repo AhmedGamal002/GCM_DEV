@@ -39,6 +39,7 @@ class DatabaseSeeder extends Seeder
             AssetSeeder::class,
             IntermediateFacilitySeeder::class,
             ServiceSeeder::class,
+            ContractorSeeder::class,
             CompanySeeder::class,
             ProjectSeeder::class,
         ]);

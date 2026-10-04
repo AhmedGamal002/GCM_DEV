@@ -147,7 +147,7 @@ class DriverController extends Controller
 
     public function show(int $driver)
     {
-        $driver = Driver::with(['user.tenant', 'user.roles', 'entryPermits', 'defaultVehicle.category', 'qualifiedVehicleCategories', 'updatedBy'])->findOrFail($driver);
+        $driver = Driver::with(['user.tenant', 'user.roles', 'user.contractor', 'entryPermits', 'defaultVehicle.category', 'qualifiedVehicleCategories', 'updatedBy'])->findOrFail($driver);
 
         Gate::authorize('view', $driver);
 
@@ -218,7 +218,7 @@ class DriverController extends Controller
     private function filteredQuery(Request $request): Builder
     {
         return Driver::query()
-            ->with(['user' => fn ($q) => $q->with(['tenant', 'roles'])])
+            ->with(['user' => fn ($q) => $q->with(['tenant', 'roles', 'contractor'])])
             ->when($request->filled('status'), fn ($q) => $q->whereHas(
                 'user',
                 fn ($q2) => $q2->where('status', $request->string('status'))
@@ -230,6 +230,7 @@ class DriverController extends Controller
                 'user',
                 fn ($q2) => $q2->where('affiliation', $request->string('affiliation'))
             ))
+            ->when($request->filled('contractor_id'), fn ($q) => $q->where('drivers.contractor_id', $request->integer('contractor_id')))
             ->when($request->filled('search'), function ($q) use ($request) {
                 // Same reasoning as UserController's search fix — `code`
                 // (on `users`, same as name/email here) is the list's own

@@ -28,7 +28,7 @@ use Maatwebsite\Excel\Facades\Excel;
  */
 class AssetController extends Controller
 {
-    private const LIST_WITH = ['tenant', 'capacityCategory', 'compatibleVehicleCategories', 'project'];
+    private const LIST_WITH = ['tenant', 'capacityCategory', 'compatibleVehicleCategories', 'project', 'contractor'];
 
     /**
      * Explicit allowlist for `sort_by` — never the raw request value.
@@ -171,6 +171,7 @@ class AssetController extends Controller
             ->when($request->filled('project_id'), fn ($q) => $q->where('project_id', $request->integer('project_id')))
             ->when($request->filled('operational_status'), fn ($q) => $this->applyStatusFilter($q, $request->string('operational_status')->toString()))
             ->when($request->filled('affiliation'), fn ($q) => $q->where('affiliation', $request->string('affiliation')))
+            ->when($request->filled('contractor_id'), fn ($q) => $q->where('contractor_id', $request->integer('contractor_id')))
             ->when($request->filled('search'), function ($q) use ($request) {
                 $search = $request->string('search')->toString();
                 $q->where('name', 'like', "%{$search}%");

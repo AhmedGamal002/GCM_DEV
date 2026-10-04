@@ -90,6 +90,7 @@
               </div>
             </div>
           </div>
+          @include('_partials.affiliation-field')
         </div>
       </div>
     </div>

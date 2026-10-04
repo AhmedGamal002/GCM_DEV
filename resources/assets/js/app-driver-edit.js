@@ -13,6 +13,9 @@ document.addEventListener('DOMContentLoaded', function () {
   const defaultVehicleSelect = document.getElementById('default_vehicle_id');
   window.initGcmSelects(form);
 
+  // FRD §1.3: belongs to GCM or to a contractor (pick one from the list).
+  const affiliation = window.gcmAffiliation(form);
+
   cancelLink.href = t.view_url_base + '/' + id;
 
   const quill = new Quill(document.getElementById('additional-data-editor'), {
@@ -114,6 +117,8 @@ document.addEventListener('DOMContentLoaded', function () {
       document.getElementById('email').value = d.email;
       document.getElementById('phone').value = d.phone;
       quill.root.innerHTML = d.additional_data || '';
+      // Without this the edit would post the default "GCM" and move a contractor's driver.
+      affiliation.set(d.affiliation, d.contractor);
 
       if (d.updated_by_name && t.last_updated_by) {
         const at = d.updated_at ? new Date(d.updated_at).toLocaleString() : '';
@@ -162,6 +167,9 @@ document.addEventListener('DOMContentLoaded', function () {
     data.append('email', document.getElementById('email').value);
     data.append('phone', document.getElementById('phone').value);
     data.append('additional_data', quill.root.innerHTML);
+    const aff = affiliation.get();
+    data.append('affiliation', aff.affiliation);
+    if (aff.contractor_id) data.append('contractor_id', aff.contractor_id);
     data.append('_method', 'PATCH');
 
     const newPassword = document.getElementById('password').value;

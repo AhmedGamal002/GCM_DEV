@@ -110,7 +110,7 @@ $(function () {
       {
         targets: 4,
         orderable: false,
-        render: (data, type, full) => (full.affiliation === 'gcm' ? 'GCM' : full.affiliation)
+        render: (data, type, full) => (full.affiliation === 'gcm' ? 'GCM' : escapeHtml(full.entity_name || full.affiliation))
       },
       {
         targets: 5,

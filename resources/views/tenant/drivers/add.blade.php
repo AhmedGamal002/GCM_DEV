@@ -98,6 +98,7 @@
             <label class="form-check-label" for="status-deactivated">{{ __('Deactivated') }}</label>
           </div>
         </div>
+        @include('_partials.affiliation-field')
       </div>
     </div>
   </div>

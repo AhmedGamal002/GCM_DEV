@@ -3,19 +3,21 @@
 namespace App\Http\Requests\Assets;
 
 use App\Http\Requests\Concerns\NormalizesRichTextInput;
+use App\Http\Requests\Concerns\ValidatesAffiliation;
 use App\Models\Asset;
 use App\Models\AssetCapacityCategory;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 /**
- * FRD §1.7.3 "Create new asset" form. Contractor affiliation isn't
- * offered yet (no Contractor entity until Week 5) — `affiliation` is
- * forced to 'gcm' server-side, same as StoreVehicleRequest.
+ * FRD §1.7.3 "Create new asset" form. The affiliation radio is GCM or a
+ * contractor; choosing a contractor requires picking one (see
+ * ValidatesAffiliation). It is locked after creation — only the name is
+ * editable (FRD §1.7.4).
  */
 class StoreAssetRequest extends FormRequest
 {
-    use NormalizesRichTextInput;
+    use NormalizesRichTextInput, ValidatesAffiliation;
 
     protected function prepareForValidation(): void
     {
@@ -47,9 +49,7 @@ class StoreAssetRequest extends FormRequest
 
             'operational_status' => ['required', Rule::in(['active', 'on_maintenance', 'deactivated'])],
 
-            // Only 'gcm' is a valid choice today; a submitted 'contractor'
-            // is rejected until the Contractor module lands.
-            'affiliation' => ['required', Rule::in(['gcm'])],
+            ...$this->affiliationRules(),
 
             'purchase_date' => ['nullable', 'date'],
             'additional_data' => ['nullable', 'string'],

@@ -36,10 +36,18 @@ class VehicleResource extends JsonResource
 
             'operational_status' => $this->operational_status,
             'affiliation' => $this->affiliation,
-            // Same pattern as UserResource — Contractor affiliations are
-            // Week 5, so an affiliated vehicle's entity is always the
-            // tenant's own name for now.
-            'entity_name' => $this->affiliation === 'gcm' ? $this->tenant->name : null,
+            // The FRD's "affiliation": GCM's own name, or the contractor's.
+            'entity_name' => match ($this->affiliation) {
+                'gcm' => $this->tenant->name,
+                'contractor' => $this->contractor?->name,
+                default => null,
+            },
+            'contractor_id' => $this->contractor_id,
+            'contractor' => $this->whenLoaded('contractor', fn () => $this->contractor ? [
+                'id' => $this->contractor->id,
+                'code' => $this->contractor->code,
+                'name' => $this->contractor->name,
+            ] : null),
 
             'additional_data' => $this->additional_data,
             'photo_front_url' => $this->photo_front ? Storage::disk('public')->url($this->photo_front) : null,

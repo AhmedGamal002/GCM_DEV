@@ -113,9 +113,17 @@ class ClientUserAccessTest extends TestCase
     {
         $client = User::factory()->client($this->company)->create();
 
-        foreach (['/api/v1/companies', '/api/v1/projects', '/api/v1/vehicles', '/api/v1/assets', '/api/v1/drivers', '/api/v1/facilities'] as $url) {
+        foreach ([
+            '/api/v1/companies', '/api/v1/projects', '/api/v1/vehicles', '/api/v1/assets', '/api/v1/drivers', '/api/v1/facilities',
+            '/api/v1/main-services', '/api/v1/sub-services', '/api/v1/contractors',
+        ] as $url) {
             $this->actingAs($client, 'web')->getJson($url)->assertForbidden();
         }
+
+        // Writes are refused too, not only reads.
+        $this->actingAs($client, 'web')->postJson('/api/v1/main-services', [])->assertForbidden();
+        $this->actingAs($client, 'web')->postJson('/api/v1/sub-services', [])->assertForbidden();
+        $this->actingAs($client, 'web')->postJson('/api/v1/contractors', [])->assertForbidden();
     }
 
     public function test_a_client_account_cannot_change_its_own_company_or_role(): void
@@ -243,7 +251,7 @@ class ClientUserAccessTest extends TestCase
 
         $html = $this->actingAs(User::factory()->client($this->company)->create(), 'web')->get('/dashboard')->assertOk()->getContent();
 
-        foreach (['app/user/list', 'app/company/list', 'app/project/list', 'app/vehicle/list', 'app/asset/list'] as $path) {
+        foreach (['app/user/list', 'app/company/list', 'app/project/list', 'app/vehicle/list', 'app/asset/list', 'app/facility/list', 'app/main-service/list', 'app/sub-service/list', 'app/contractor/list'] as $path) {
             $this->assertStringNotContainsString($path, $html);
         }
     }
@@ -255,7 +263,7 @@ class ClientUserAccessTest extends TestCase
 
         $html = $this->actingAs($this->actor('system_admin'), 'web')->get('/dashboard')->assertOk()->getContent();
 
-        foreach (['app/user/list', 'app/company/list', 'app/project/list'] as $path) {
+        foreach (['app/user/list', 'app/company/list', 'app/project/list', 'app/facility/list', 'app/main-service/list', 'app/sub-service/list', 'app/contractor/list'] as $path) {
             $this->assertStringContainsString($path, $html);
         }
     }

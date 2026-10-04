@@ -130,7 +130,7 @@ $(function () {
       {
         targets: 5,
         orderable: false,
-        render: (data, type, full) => (full.affiliation === 'gcm' ? t.gcm || 'GCM' : t.contractor || full.affiliation)
+        render: (data, type, full) => (full.affiliation === 'gcm' ? t.gcm || 'GCM' : escapeHtml(full.entity_name || t.contractor || full.affiliation))
       },
       {
         targets: 6,

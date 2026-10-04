@@ -387,6 +387,7 @@ const CLIENT_GROUPS = [
   { title: 'سعات الأصول', ids: ['week-3-vehicles-drivers-assets#20'] },
   { title: 'المنشآت الوسيطة', ids: ['week-5-facilities#2', 'week-5-facilities#4', 'week-5-facilities#5', 'week-5-facilities#6', 'week-5-facilities#7', 'week-5-facilities#8', 'week-5-facilities#9', 'week-5-facilities#11', 'week-5-facilities#12'] },
   { title: 'الخدمات', ids: ['week-5-services#2', 'week-5-services#4', 'week-5-services#5', 'week-5-services#6', 'week-5-services#7', 'week-5-services#8', 'week-5-services#9', 'week-5-services#10', 'week-5-services#11', 'week-5-services#12', 'week-5-services#13', 'week-5-services#14', 'week-5-services#15', 'week-5-services#16'] },
+  { title: 'المتعهدين', ids: ['week-5-contractors#2', 'week-5-contractors#4', 'week-5-contractors#5', 'week-5-contractors#6', 'week-5-contractors#7', 'week-5-contractors#8', 'week-5-contractors#9', 'week-5-contractors#10', 'week-5-contractors#11', 'week-5-contractors#12', 'week-5-contractors#13', 'week-5-contractors#14'] },
   { title: 'شركات العملاء', ids: ['week-4-client-companies#1', 'week-4-client-companies#2', 'week-4-client-companies#3', 'week-4-client-companies#4', 'week-4-client-companies#5', 'week-4-client-companies#6', 'week-4-client-companies#7', 'week-4-client-companies#8', 'week-4-client-companies#9'] },
   { title: 'المشروعات', ids: ['week-5-projects#2', 'week-5-projects#3', 'week-5-projects#4', 'week-5-projects#5', 'week-5-projects#6', 'week-5-projects#7', 'week-5-projects#9', 'week-5-projects#10', 'week-5-projects#11', 'week-5-projects#12', 'week-5-projects#13', 'week-5-projects#15', 'week-5-projects#16', 'week-5-projects#17'] },
   { title: 'الملف الشخصي', ids: ['week-1-2-auth-users-roles#2', 'week-3-frd-gap-review#4'] },
@@ -396,6 +397,14 @@ const CLIENT_GROUPS = [
 ];
 
 const CLIENT_OVERRIDES = {
+  'week-5-contractors#4': {
+    expected:
+      'عنوان الصفحة "إنشاء شركة متعهد جديدة" والفورم كروت: البيانات الأساسية (الاسم*، الاسم المختصر*، الاسم التجاري، الشعار، الهاتف، العنوان، رابط الخريطة، الحالة التشغيلية* وافتراضيها "نشط") ثم الخدمات المعتمدة ثم العقد ثم السجل التجاري والضريبي ثم البيانات الإضافية. الفورم الفاضي بيطلّع "This field is required" تحت الاسم والاسم المختصر. بعد الحفظ بترجع للقايمة برسالة نجاح، والمتعهد الجديد رقمه التعريفي `TST-C0004` (الحروف بتتحوّل لكبيرة تلقائي).',
+  },
+  'week-5-contractors#2': {
+    expected:
+      'أربع كروت: المتعهدين (الإجمالي + عدد النشطين)، المركبات، الأصول (حاويات وصهاريج)، السائقين — والثلاثة الأخيرة بتعدّ اللي بيوفّره المتعهدون بس. الجدول: الرقم التعريفي / المتعهد (والاسم التجاري تحته) / السائقين / المركبات / الحاويات / الصهاريج / الحالة / عين + قلم. البحث بيشمل الاسم والاسم التجاري والاسم المختصر والرقم التعريفي. الفلتر والترقيم والترتيب شغالين.',
+  },
   'week-5-projects#13': {
     title: 'قواعد إدراج أصل في مشروع',
     stepsList: [
@@ -416,7 +425,7 @@ const CLIENT_OVERRIDES = {
   },
   'week-5-services#4': {
     stepsList: [
-      'من القائمة الجانبية افتح Services ← Add Main Service.',
+      'من القائمة الجانبية افتح Services ← Main Services ← Add.',
       'دوس Submit والفورم فاضي.',
       'اكتب اسم، اختار "نفايات خطرة"، وعلّم تصنيفين مركبات.',
       'دوس Submit.',

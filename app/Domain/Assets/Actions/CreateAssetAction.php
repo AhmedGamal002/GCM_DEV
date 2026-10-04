@@ -2,6 +2,7 @@
 
 namespace App\Domain\Assets\Actions;
 
+use App\Domain\Contractors\Affiliation;
 use App\Models\Asset;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -19,9 +20,7 @@ class CreateAssetAction
                 'name' => $data['name'],
                 'asset_type' => $data['asset_type'],
                 'asset_capacity_category_id' => $data['asset_capacity_category_id'],
-                // Contractor affiliation isn't selectable yet (no Contractor
-                // entity until Week 5) — always 'gcm' for now.
-                'affiliation' => 'gcm',
+                ...Affiliation::attributes($data),
                 'purchase_date' => $data['purchase_date'] ?? null,
                 'additional_data' => $data['additional_data'] ?? null,
             ]);

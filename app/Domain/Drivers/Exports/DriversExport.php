@@ -36,7 +36,7 @@ class DriversExport implements FromCollection, WithHeadings, WithMapping
         return [
             $user->code,
             $user->name,
-            $user->affiliation === 'gcm' ? 'GCM' : $user->affiliation,
+            $user->affiliation === 'gcm' ? 'GCM' : ($user->contractor?->name ?? $user->affiliation),
             $user->status,
         ];
     }

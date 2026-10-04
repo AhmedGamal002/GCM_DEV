@@ -29,6 +29,9 @@ export function initVehicleForm(opts) {
 
   const quill = new Quill(document.getElementById('additional-data-editor'), { theme: 'snow', placeholder: '' });
 
+  // FRD §1.5: belongs to GCM or to a contractor (pick one from the list).
+  const affiliation = window.gcmAffiliation(form);
+
   // ---------------------------------------------------------------- errors
   function feedbackEl(el) {
     const wrapper = el.closest('[class*="col-"]') || el.parentElement;
@@ -373,6 +376,9 @@ export function initVehicleForm(opts) {
     }
 
     quill.root.innerHTML = v.additional_data || '';
+
+    // Without this the edit would post the default "GCM" and move a contractor's vehicle.
+    if (affiliation) affiliation.set(v.affiliation, v.contractor);
 
     if (v.updated_by_name && t.last_updated_by) {
       const at = v.updated_at ? new Date(v.updated_at).toLocaleString() : '';

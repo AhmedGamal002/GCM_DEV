@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\V1\Auth\NewPasswordController;
 use App\Http\Controllers\Api\V1\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Api\V1\ClientUserController;
 use App\Http\Controllers\Api\V1\CompanyController;
+use App\Http\Controllers\Api\V1\ContractorController;
 use App\Http\Controllers\Api\V1\DriverController;
 use App\Http\Controllers\Api\V1\FacilityController;
 use App\Http\Controllers\Api\V1\MainServiceController;
@@ -139,6 +140,19 @@ Route::prefix('v1')->group(function () {
         Route::get('/companies/{company}/documents/{type}', [CompanyController::class, 'downloadDocument'])
             ->whereNumber('company')
             ->name('api.companies.documents.download');
+
+        // Contractors (Part 3 of Phase 2, FRD V01.14 §1.10). /contractors/export and
+        // /contractors/stats MUST come before /contractors/{contractor}.
+        Route::get('/contractors/export', [ContractorController::class, 'export']);
+        Route::get('/contractors/stats', [ContractorController::class, 'stats']);
+        Route::get('/contractors', [ContractorController::class, 'index']);
+        Route::post('/contractors', [ContractorController::class, 'store']);
+        Route::get('/contractors/{contractor}', [ContractorController::class, 'show'])->whereNumber('contractor');
+        Route::patch('/contractors/{contractor}', [ContractorController::class, 'update'])->whereNumber('contractor');
+        Route::patch('/contractors/{contractor}/status', [ContractorController::class, 'status'])->whereNumber('contractor');
+        Route::get('/contractors/{contractor}/documents/{type}', [ContractorController::class, 'downloadDocument'])
+            ->whereNumber('contractor')
+            ->name('api.contractors.documents.download');
 
         // Client projects (Part 5 of Phase 2, FRD V01.14 §1.12). /projects/export MUST come
         // before /projects/{project}. A project's assets are GET /assets?project_id=…;

@@ -25,6 +25,7 @@
     role_client_project_manager: @json(__('Project Manager')),
     role_client_project_auditor: @json(__('Project Auditor')),
     affiliation_client: @json(__('Client')),
+    affiliation_contractor: @json(__('Contractor')),
     company_url_base: @json(url('/app/company/view')),
     project_url_base: @json(url('/app/project/view')),
     last_updated_by: @json(__('Last updated by :name — :at'))

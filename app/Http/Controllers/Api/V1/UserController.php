@@ -156,7 +156,7 @@ class UserController extends Controller
             // calls loadMissing('roles')), an N+1 query per user on both
             // the paginated list and the (unpaginated) export. Same
             // reasoning for 'driver' — UserResource::driver_id touches it.
-            ->with(['tenant', 'roles', 'driver', 'company'])
+            ->with(['tenant', 'roles', 'driver', 'company', 'contractor'])
             // The caller's own row is not listed for staff (their own photo and
             // password are on the profile page) — but the system admin is the one
             // person who manages account data, own account included, so it sees it.
@@ -164,6 +164,7 @@ class UserController extends Controller
             ->visibleTo($request->user())
             ->when($request->filled('status'), fn ($q) => $q->where('status', $request->string('status')))
             ->when($request->filled('affiliation'), fn ($q) => $q->where('affiliation', $request->string('affiliation')))
+            ->when($request->filled('contractor_id'), fn ($q) => $q->where('contractor_id', $request->integer('contractor_id')))
             ->when($request->filled('company_id'), fn ($q) => $q->where('company_id', $request->integer('company_id')))
             // The accounts that can see one project (FRD §1.4): its company's
             // accounts that hold "all projects" plus the ones assigned to it —

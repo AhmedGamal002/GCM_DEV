@@ -6,7 +6,7 @@
     $v->id,
     $v->plate(),
     $v->category?->name(),
-    PdfLabels::of($v->affiliation),
+    $v->affiliation === 'contractor' && $v->contractor ? $v->contractor->name : PdfLabels::of($v->affiliation),
     PdfLabels::of($v->operational_status),
     $v->created_at,
   ]),

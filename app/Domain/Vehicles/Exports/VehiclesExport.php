@@ -27,7 +27,7 @@ class VehiclesExport implements FromCollection, WithHeadings, WithMapping
             $vehicle->id,
             $vehicle->plate(),
             $vehicle->category?->name(),
-            $vehicle->affiliation === 'gcm' ? 'GCM' : $vehicle->affiliation,
+            $vehicle->affiliation === 'gcm' ? 'GCM' : ($vehicle->contractor?->name ?? $vehicle->affiliation),
             $vehicle->operational_status,
             $vehicle->created_at,
         ];

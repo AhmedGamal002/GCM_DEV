@@ -7,7 +7,7 @@
     $a->name,
     PdfLabels::of($a->asset_type),
     $a->capacityCategory?->name,
-    PdfLabels::of($a->affiliation),
+    $a->affiliation === 'contractor' && $a->contractor ? $a->contractor->name : PdfLabels::of($a->affiliation),
     PdfLabels::of($a->operational_status),
     $a->project?->name,
     $a->created_at,

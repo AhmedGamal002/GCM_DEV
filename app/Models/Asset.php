@@ -60,6 +60,12 @@ class Asset extends Model
         return $this->belongsTo(Project::class);
     }
 
+    /** The contractor that supplies this asset (null = GCM's own). */
+    public function contractor(): BelongsTo
+    {
+        return $this->belongsTo(Contractor::class);
+    }
+
     public function updatedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'updated_by');

@@ -115,7 +115,7 @@ $(function () {
         targets: 4,
         orderable: false,
         render: (data, type, full) =>
-          escapeHtml(full.affiliation === 'gcm' ? 'GCM' : full.affiliation === 'client' ? t.affiliation_client || 'Client' : full.affiliation)
+          escapeHtml(full.affiliation === 'gcm' ? 'GCM' : full.affiliation === 'client' ? t.affiliation_client || 'Client' : full.affiliation === 'contractor' ? t.affiliation_contractor || 'Contractor' : full.affiliation)
       },
       {
         targets: 5,
@@ -270,6 +270,7 @@ $(function () {
         });
       affiliationSelect.append('<option value="gcm">' + (t.affiliation_gcm || 'GCM') + '</option>');
       affiliationSelect.append('<option value="client">' + (t.affiliation_client || 'Client') + '</option>');
+      affiliationSelect.append('<option value="contractor">' + (t.affiliation_contractor || 'Contractor') + '</option>');
 
       // Client companies — reference data for the "entity" filter, so every
       // company is fetched (not a fixed per_page that would drop rows).

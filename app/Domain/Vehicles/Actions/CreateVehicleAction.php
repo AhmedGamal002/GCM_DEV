@@ -2,6 +2,7 @@
 
 namespace App\Domain\Vehicles\Actions;
 
+use App\Domain\Contractors\Affiliation;
 use App\Models\Vehicle;
 use App\Models\VehicleDocument;
 use Illuminate\Http\UploadedFile;
@@ -29,9 +30,7 @@ class CreateVehicleAction
                 'has_embedded_container' => $data['has_embedded_container'],
                 'embedded_container_type' => $data['has_embedded_container'] ? $data['embedded_container_type'] : null,
                 'embedded_asset_capacity_category_id' => $data['has_embedded_container'] ? $data['embedded_asset_capacity_category_id'] : null,
-                // Contractor affiliation isn't selectable yet (no Contractor
-                // entity until Week 5) — always 'gcm' for now.
-                'affiliation' => 'gcm',
+                ...Affiliation::attributes($data),
                 'additional_data' => $data['additional_data'] ?? null,
             ]);
 

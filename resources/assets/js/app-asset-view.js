@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('av-capacity').textContent = a.capacity_category
       ? `${a.capacity_category.name} (${a.capacity_category.capacity_cbm} CBM / ${a.capacity_category.capacity_ton} TON)`
       : '—';
-    document.getElementById('av-affiliation').textContent = a.affiliation === 'gcm' ? t.gcm || 'GCM' : a.affiliation;
+    document.getElementById('av-affiliation').textContent = a.affiliation === 'gcm' ? t.gcm || 'GCM' : a.entity_name || t.contractor || a.affiliation;
     document.getElementById('av-entity').textContent = a.entity_name || '—';
     document.getElementById('av-purchase-date').textContent = a.purchase_date || '—';
 

@@ -11,7 +11,7 @@
 ### 1. القائمة الجانبية
 - **FRD:** §1.9 (إدارة الخدمات)
 - **الخطوات:** سجّل دخول بـ`admin` ثم `dataentry` ثم `auditor` ثم `driver` وبص على القائمة الجانبية تحت عنوان **Operations**.
-- **المتوقع:** بند **Services** وتحته: Main Services / Add Main Service / Sub Services / Add Sub Service. المراقب بيشوف القائمتين بس (من غير "Add"). السائق مايشوفش البند خالص، و`/api/v1/main-services` و`/api/v1/sub-services` يرجّعوا له 403.
+- **المتوقع:** بند **Services** وتحته مجموعتين: **Main Services** (List / Add) و**Sub Services** (List / Add). المراقب بيشوف List بس في كل مجموعة (من غير "Add"). السائق مايشوفش البند خالص، و`/api/v1/main-services` و`/api/v1/sub-services` يرجّعوا له 403.
 - **يغطيه آليًا:** `MenuVisibilityTest::test_services_menu_visibility_per_role`, `Services/ServicePolicyTest`
 - **النتيجة:** ⬜
 
@@ -35,7 +35,7 @@
 
 ### 4. إنشاء خدمة أساسية جديدة
 - **FRD:** §1.9.1 (انشاء خدمة أساسية جديدة)
-- **الخطوات:** بـ`dataentry` افتح "Add Main Service". جرّب "Submit" والفورم فاضي. بعدين اكتب اسم، اختار "نفايات خطرة"، علّم تصنيفين مركبات، واحفظ.
+- **الخطوات:** بـ`dataentry` افتح Services ← Main Services ← Add. جرّب "Submit" والفورم فاضي. بعدين اكتب اسم، اختار "نفايات خطرة"، علّم تصنيفين مركبات، واحفظ.
 - **المتوقع:** عنوان الصفحة "إنشاء خدمة أساسية جديدة". الفورم كروت: البيانات الأساسية (الاسم، نوعية الخدمة radio: غير خطرة/خطرة/توريد، حالة الخدمة وافتراضيها "نشط") ثم **تصنيف المركبات الداعم** (checkboxes بتصنيفات الشركة الحالية — الستة الافتراضيين + أي تصنيف متضاف) ثم البيانات الإضافية. الفورم الفاضي بيطلّع "This field is required" تحت الاسم والنوعية و"اختر تصنيف مركبات واحدًا على الأقل". بعد الحفظ بتروح لصفحة التفاصيل برسالة نجاح. تكرار نفس الاسم يترفض.
 - **يغطيه آليًا:** `Services/MainServiceManagementTest` (`test_it_creates_*`, `test_required_fields`, `test_at_least_one_vehicle_category_is_required`, `test_the_name_is_unique_per_tenant`)
 - **النتيجة:** ⬜
@@ -81,7 +81,7 @@
 
 ### 10. إنشاء خدمة فرعية جديدة
 - **FRD:** §1.9.2 (انشاء خدمة فرعية جديدة)
-- **الخطوات:** افتح "Add Sub Service". اختار الخدمة الأساسية "Hazardous Waste Transport" من القائمة (بحث حي). اختار النوع "حاوية" ثم "صهريج" وبص على السعات. علّم سعة ومنشأة، فعّل "هل تتطلب إيصال تدوير"، اختار كود لوني، واحفظ.
+- **الخطوات:** افتح Services ← Sub Services ← Add. اختار الخدمة الأساسية "Hazardous Waste Transport" من القائمة (بحث حي). اختار النوع "حاوية" ثم "صهريج" وبص على السعات. علّم سعة ومنشأة، فعّل "هل تتطلب إيصال تدوير"، اختار كود لوني، واحفظ.
 - **المتوقع:** عنوان الصفحة "إنشاء خدمة فرعية جديدة". الخدمة الأساسية select2 بالبحث (النشطة بس). أول ما تختارها **التصنيفات الداعمة بتظهر تلقائيًا** (للعرض). السعات بتتغيّر حسب النوع (حاوية ← سعات الحاويات، صهريج ← سعات الصهاريج، والسعة "الاتنين" بتظهر مع الاتنين). لو فيه مركبات بحاوية مدمجة في التصنيفات الداعمة، بتظهر **كمعلومة فقط** تحت السعات. المنشآت الوسيطة = النشطة بس. "إيصال التدوير" افتراضيه off. الكود اللوني اختياري (11 لون + "لا يوجد"). بعد الحفظ بتروح للتفاصيل برسالة نجاح.
 - **يغطيه آليًا:** `Services/SubServiceManagementTest` (`test_it_creates_*`, `test_capacities_must_fit_the_asset_type`, `test_a_tank_sub_service_*`, `test_the_recycle_receipt_is_off_*`, `test_a_deactivated_facility_cannot_be_chosen`), `Services/MainServiceManagementTest::test_the_details_carry_zero_stats_and_the_embedded_containers_*`
 - **النتيجة:** ⬜

@@ -33,10 +33,18 @@ class AssetResource extends JsonResource
                 ? 'in_project'
                 : $this->operational_status,
             'affiliation' => $this->affiliation,
-            // Same pattern as VehicleResource — Contractor affiliations are
-            // Week 5, so an affiliated asset's entity is always the
-            // tenant's own name for now.
-            'entity_name' => $this->affiliation === 'gcm' ? $this->tenant->name : null,
+            // Same pattern as VehicleResource: GCM's own name, or the contractor's.
+            'entity_name' => match ($this->affiliation) {
+                'gcm' => $this->tenant->name,
+                'contractor' => $this->contractor?->name,
+                default => null,
+            },
+            'contractor_id' => $this->contractor_id,
+            'contractor' => $this->whenLoaded('contractor', fn () => $this->contractor ? [
+                'id' => $this->contractor->id,
+                'code' => $this->contractor->code,
+                'name' => $this->contractor->name,
+            ] : null),
 
             // The project the asset was inserted into (null = in the pool).
             'project' => $this->whenLoaded('project', fn () => $this->project ? [

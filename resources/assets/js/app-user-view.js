@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('uv-email').textContent = u.email;
     document.getElementById('uv-phone').textContent = u.phone;
     document.getElementById('uv-affiliation').textContent =
-      u.affiliation === 'gcm' ? 'GCM' : u.affiliation === 'client' ? t.affiliation_client || 'Client' : u.affiliation;
+      u.affiliation === 'gcm' ? 'GCM' : u.affiliation === 'client' ? t.affiliation_client || 'Client' : u.affiliation === 'contractor' ? t.affiliation_contractor || 'Contractor' : u.affiliation;
     document.getElementById('uv-role').textContent = u.roles.map((r) => t['role_' + r] || r).join(', ');
 
     // Client accounts (FRD §1.4): the entity is the company (linked) and the

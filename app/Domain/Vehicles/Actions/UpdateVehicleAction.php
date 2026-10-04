@@ -2,6 +2,7 @@
 
 namespace App\Domain\Vehicles\Actions;
 
+use App\Domain\Contractors\Affiliation;
 use App\Models\Vehicle;
 use App\Models\VehicleDocument;
 use Illuminate\Http\UploadedFile;
@@ -34,6 +35,11 @@ class UpdateVehicleAction
                 'embedded_asset_capacity_category_id' => $data['has_embedded_container'] ? $data['embedded_asset_capacity_category_id'] : null,
                 'additional_data' => $data['additional_data'] ?? null,
             ]);
+
+            // FRD §1.5: every field is editable, the affiliation included.
+            if (array_key_exists('affiliation', $data)) {
+                $vehicle->fill(Affiliation::attributes($data));
+            }
 
             if (! empty($files['photo_front'])) {
                 $vehicle->photo_front = $files['photo_front']->store('vehicle-photos', 'public');

@@ -249,6 +249,22 @@ class MenuVisibilityTest extends TestCase
         }
     }
 
+    /**
+     * The sidebar is three levels deep: Services > Main Services > List, Add and
+     * Services > Sub Services > List, Add — in that order, each group before its own items.
+     */
+    public function test_the_services_menu_is_grouped_into_main_and_sub_services(): void
+    {
+        $user = User::factory()->create();
+        $user->assignRole('system_admin');
+
+        $this->actingAs($user, 'web')->get('/dashboard')->assertOk()->assertSeeInOrder([
+            '>Services<',
+            '>Main Services<', 'app/main-service/list', 'app/main-service/add',
+            '>Sub Services<', 'app/sub-service/list', 'app/sub-service/add',
+        ], false);
+    }
+
     public static function servicesMenuProvider(): array
     {
         return [
@@ -305,6 +321,33 @@ class MenuVisibilityTest extends TestCase
         $this->actingAs($driver, 'web')->get('/dashboard')->assertOk()
             ->assertDontSee('>Client Companies<', false)
             ->assertDontSee('app/company/list', false);
+    }
+
+    /** Contractors (FRD V01.14 §1.10) under Operations: admin/data_entry manage, auditor views, driver never sees it. */
+    public function test_contractors_menu_visibility_per_role(): void
+    {
+        $dataEntry = User::factory()->create();
+        $dataEntry->assignRole('data_entry');
+        $auditor = User::factory()->create();
+        $auditor->assignRole('auditor');
+        $driver = User::factory()->create();
+        $driver->assignRole('driver');
+
+        foreach ([$this->tenantAdmin, $dataEntry] as $manager) {
+            $this->actingAs($manager, 'web')->get('/dashboard')->assertOk()
+                ->assertSee('>Contractors<', false)
+                ->assertSee('app/contractor/list', false)
+                ->assertSee('app/contractor/add', false);
+        }
+
+        // the auditor sees the list but not the "Add" link
+        $this->actingAs($auditor, 'web')->get('/dashboard')->assertOk()
+            ->assertSee('app/contractor/list', false)
+            ->assertDontSee('app/contractor/add', false);
+
+        $this->actingAs($driver, 'web')->get('/dashboard')->assertOk()
+            ->assertDontSee('>Contractors<', false)
+            ->assertDontSee('app/contractor/list', false);
     }
 
     /** Client Projects (FRD V01.14 §1.12): same visibility as Client Companies — admin/data_entry manage, auditor views, driver never sees it. */

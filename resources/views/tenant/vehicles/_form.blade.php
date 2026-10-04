@@ -85,17 +85,7 @@
           </div>
         @endif
 
-        <div class="col-md-6">
-          <label class="form-label d-block">{{ __('Affiliation') }}</label>
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="affiliation" id="aff-gcm" value="gcm" checked required>
-            <label class="form-check-label" for="aff-gcm">{{ __('Belongs to GCM') }}</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="affiliation" id="aff-contractor" value="contractor" disabled required>
-            <label class="form-check-label text-muted" for="aff-contractor">{{ __('Belongs to a Contractor') }} — {{ __('coming soon') }}</label>
-          </div>
-        </div>
+        @include('_partials.affiliation-field')
       </div>
     </div>
   </div>

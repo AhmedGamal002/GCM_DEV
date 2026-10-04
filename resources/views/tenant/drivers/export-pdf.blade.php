@@ -5,7 +5,7 @@
   'rows' => $drivers->map(fn ($d) => [
     $d->user->code,
     $d->user->name,
-    PdfLabels::of($d->user->affiliation),
+    $d->user->affiliation === 'contractor' && $d->user->contractor ? $d->user->contractor->name : PdfLabels::of($d->user->affiliation),
     PdfLabels::of($d->user->status),
   ]),
 ])

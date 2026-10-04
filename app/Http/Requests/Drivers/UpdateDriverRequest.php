@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Drivers;
 
 use App\Http\Requests\Concerns\NormalizesRichTextInput;
+use App\Http\Requests\Concerns\ValidatesAffiliation;
 use App\Models\Driver;
 use App\Models\Vehicle;
 use Illuminate\Foundation\Http\FormRequest;
@@ -11,7 +12,7 @@ use Illuminate\Validation\Rules\Password;
 
 class UpdateDriverRequest extends FormRequest
 {
-    use NormalizesRichTextInput;
+    use NormalizesRichTextInput, ValidatesAffiliation;
 
     private ?Driver $targetDriver = null;
 
@@ -43,6 +44,7 @@ class UpdateDriverRequest extends FormRequest
         $tenantId = app('tenant')->id;
 
         return [
+            ...$this->affiliationRules($this->targetDriver()->contractor_id, optional: true),
             'name' => ['required', 'string', 'max:255'],
             'email' => ['sometimes', 'required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($this->targetDriver()->user_id)],
             'phone' => [

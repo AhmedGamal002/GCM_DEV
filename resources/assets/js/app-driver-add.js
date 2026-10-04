@@ -13,6 +13,9 @@ document.addEventListener('DOMContentLoaded', function () {
   const defaultVehicleSelect = document.getElementById('default_vehicle_id');
   window.initGcmSelects(form);
 
+  // FRD §1.3: belongs to GCM or to a contractor (pick one from the list).
+  const affiliation = window.gcmAffiliation(form);
+
   const editorEl = document.getElementById('additional-data-editor');
   const quill = new Quill(editorEl, { theme: 'snow', placeholder: '' });
 
@@ -113,6 +116,9 @@ document.addEventListener('DOMContentLoaded', function () {
     data.append('password_confirmation', document.getElementById('password_confirmation').value);
     data.append('status', form.querySelector('input[name="status"]:checked').value);
     data.append('additional_data', quill.root.innerHTML);
+    const aff = affiliation.get();
+    data.append('affiliation', aff.affiliation);
+    if (aff.contractor_id) data.append('contractor_id', aff.contractor_id);
 
     categoryCheckboxes.querySelectorAll('input:checked').forEach(function (cb, i) {
       data.append(`vehicle_category_ids[${i}]`, cb.dataset.categoryId);

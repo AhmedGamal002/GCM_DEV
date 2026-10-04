@@ -20,7 +20,13 @@ class DriverResource extends JsonResource
             'status' => $this->user->status,
             'roles' => $this->user->getRoleNames(),
             'affiliation' => $this->user->affiliation,
-            'entity_name' => $this->user->affiliation === 'gcm' ? $this->user->tenant->name : null,
+            'entity_name' => $this->user->entityName(),
+            'contractor_id' => $this->user->contractor_id,
+            'contractor' => $this->user->relationLoaded('contractor') && $this->user->contractor ? [
+                'id' => $this->user->contractor->id,
+                'code' => $this->user->contractor->code,
+                'name' => $this->user->contractor->name,
+            ] : null,
             'additional_data' => $this->user->additional_data,
 
             'qualified_vehicle_category_ids' => $this->whenLoaded(

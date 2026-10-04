@@ -130,6 +130,11 @@
       "key": "last_sub_service_id",
       "value": "",
       "type": "string"
+    },
+    {
+      "key": "last_contractor_id",
+      "value": "",
+      "type": "string"
     }
   ],
   "item": [
@@ -1312,7 +1317,7 @@
                 "drivers"
               ]
             },
-            "description": "Creates the User (role=driver) + Driver profile + any entry permits in one transaction. entry_permits[*] rows are disabled by default — enable them to test that part. vehicle_category_ids/default_vehicle_id need real ids from your DB — check GET /vehicle-categories and GET /vehicles first."
+            "description": "Creates the User (role=driver) + Driver profile + any entry permits in one transaction. entry_permits[*] rows are disabled by default — enable them to test that part. vehicle_category_ids/default_vehicle_id need real ids from your DB — check GET /vehicle-categories and GET /vehicles first. Affiliation is editable on update (FRD §1.3: every field). The account and the driver profile are kept in step. affiliation: gcm | contractor (required on create). contractor_id is required when affiliation=contractor and must be one of the tenant's ACTIVE contractors; it is ignored (stored as null) for gcm."
           },
           "event": [
             {
@@ -1476,7 +1481,8 @@
                 "drivers",
                 "{{last_driver_id}}"
               ]
-            }
+            },
+            "description": "Affiliation is editable on update (FRD §1.3: every field). The account and the driver profile are kept in step. affiliation: gcm | contractor (required on create). contractor_id is required when affiliation=contractor and must be one of the tenant's ACTIVE contractors; it is ignored (stored as null) for gcm."
           }
         },
         {
@@ -2029,7 +2035,14 @@
                   "key": "affiliation",
                   "value": "gcm",
                   "type": "text",
-                  "description": "gcm | contractor (contractor deferred to Week 5)"
+                  "description": "affiliation: gcm | contractor (required on create). contractor_id is required when affiliation=contractor and must be one of the tenant's ACTIVE contractors; it is ignored (stored as null) for gcm."
+                },
+                {
+                  "key": "contractor_id",
+                  "value": "{{last_contractor_id}}",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "required when affiliation=contractor"
                 },
                 {
                   "key": "additional_data",
@@ -2147,7 +2160,7 @@
                 "vehicles"
               ]
             },
-            "description": "Creates the vehicle + its 4 single documents + any entry permits in one transaction. All *_number fields are digits-only. File fields are disabled by default — enable and pick a file to test uploads."
+            "description": "Creates the vehicle + its 4 single documents + any entry permits in one transaction. All *_number fields are digits-only. File fields are disabled by default — enable and pick a file to test uploads. Affiliation is editable on update (FRD §1.5: every field). affiliation: gcm | contractor (required on create). contractor_id is required when affiliation=contractor and must be one of the tenant's ACTIVE contractors; it is ignored (stored as null) for gcm."
           },
           "event": [
             {
@@ -2231,7 +2244,15 @@
                 {
                   "key": "affiliation",
                   "value": "gcm",
-                  "type": "text"
+                  "type": "text",
+                  "description": "affiliation: gcm | contractor (required on create). contractor_id is required when affiliation=contractor and must be one of the tenant's ACTIVE contractors; it is ignored (stored as null) for gcm."
+                },
+                {
+                  "key": "contractor_id",
+                  "value": "{{last_contractor_id}}",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "required when affiliation=contractor"
                 },
                 {
                   "key": "additional_data",
@@ -2330,7 +2351,7 @@
                 "{{last_vehicle_id}}"
               ]
             },
-            "description": "Postman sends real multipart PATCH natively — no _method spoofing needed. Everything except operational_status is editable here; status changes go through Change Operational Status."
+            "description": "Postman sends real multipart PATCH natively — no _method spoofing needed. Everything except operational_status is editable here; status changes go through Change Operational Status. Affiliation is editable on update (FRD §1.5: every field). affiliation: gcm | contractor (required on create). contractor_id is required when affiliation=contractor and must be one of the tenant's ACTIVE contractors; it is ignored (stored as null) for gcm."
           }
         },
         {
@@ -2811,7 +2832,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Container A-{{$timestamp}}\",\n  \"asset_type\": \"container\",\n  \"asset_capacity_category_id\": 1,\n  \"compatible_vehicle_category_ids\": [1],\n  \"operational_status\": \"active\",\n  \"affiliation\": \"gcm\",\n  \"purchase_date\": \"2024-01-01\",\n  \"additional_data\": \"<p>notes</p>\"\n}",
+              "raw": "{\n  \"name\": \"Container A-{{$timestamp}}\",\n  \"asset_type\": \"container\",\n  \"asset_capacity_category_id\": 1,\n  \"compatible_vehicle_category_ids\": [\n    1\n  ],\n  \"operational_status\": \"active\",\n  \"affiliation\": \"gcm\",\n  \"purchase_date\": \"2024-01-01\",\n  \"additional_data\": \"<p>notes</p>\",\n  \"contractor_id\": null\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2827,7 +2848,7 @@
                 "assets"
               ]
             },
-            "description": "asset_capacity_category_id must fit asset_type (its applies_to is that type or 'both'). compatible_vehicle_category_ids: vehicle_categories.id — at least one required (see Reference — Vehicle Categories in the Vehicles folder). deactivated status is System Admin only. contractor affiliation is rejected until Week 5."
+            "description": "asset_capacity_category_id must fit asset_type (its applies_to is that type or 'both'). compatible_vehicle_category_ids: vehicle_categories.id — at least one required (see Reference — Vehicle Categories in the Vehicles folder). deactivated status is System Admin only. contractor affiliation is rejected until Week 5. The affiliation is locked after creation (only the name is editable, FRD §1.7.4). affiliation: gcm | contractor (required on create). contractor_id is required when affiliation=contractor and must be one of the tenant's ACTIVE contractors; it is ignored (stored as null) for gcm."
           },
           "event": [
             {
@@ -3864,7 +3885,551 @@
       ]
     },
     {
-      "name": "10. Client Companies",
+      "name": "10. Contractors",
+      "description": "Phase 2 · Part 3 — FRD V01.14 §1.10. system_admin / data_entry create, edit and (de)activate; auditor views and exports; driver has no access. No hard delete. The contractor ID is the short name + \"C\" + a running number (e.g. ALN-C0001), so it never clashes with a client company ID. Deactivating a contractor does not touch its drivers / vehicles / assets. A driver, vehicle or asset belongs to a contractor through affiliation=contractor + contractor_id (see those folders).",
+      "item": [
+        {
+          "name": "List Contractors",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/contractors?per_page=15",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "contractors"
+              ],
+              "query": [
+                {
+                  "key": "per_page",
+                  "value": "15"
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "disabled": true,
+                  "description": "active | deactivated"
+                },
+                {
+                  "key": "search",
+                  "value": "Noor",
+                  "disabled": true,
+                  "description": "matches the name, trading name, short name (prefix) or the ID (code)"
+                },
+                {
+                  "key": "sort_by",
+                  "value": "name",
+                  "disabled": true,
+                  "description": "code | name | operational_status | created_at"
+                },
+                {
+                  "key": "sort_dir",
+                  "value": "asc",
+                  "disabled": true,
+                  "description": "asc | desc"
+                }
+              ]
+            },
+            "description": "system_admin / data_entry / auditor (ContractorPolicy::viewAny). Genuinely paginated server-side. Each row carries drivers_count / vehicles_count / containers_count / tanks_count and the certified_services."
+          }
+        },
+        {
+          "name": "Contractor Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/contractors/stats",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "contractors",
+                "stats"
+              ]
+            },
+            "description": "The four cards on top of the list: contractors {total, active, deactivated}, vehicles, assets {container, tank} and drivers — the last three count only what contractors supply (contractor_id set). system_admin / data_entry / auditor."
+          }
+        },
+        {
+          "name": "Create Contractor",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Contractor Co {{$timestamp}}",
+                  "type": "text"
+                },
+                {
+                  "key": "prefix",
+                  "value": "CXC",
+                  "type": "text",
+                  "description": "3 English letters, unique per tenant, stored upper-case. The contractor ID is built from it (e.g. ALN-0001), so it cannot be changed after creation."
+                },
+                {
+                  "key": "trading_name",
+                  "value": "Desert Trucks",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "الاسم التجاري (الشهرة) — optional"
+                },
+                {
+                  "key": "logo",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true,
+                  "description": "image, max 2MB"
+                },
+                {
+                  "key": "phone",
+                  "value": "+966500000000",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "main_service_ids[]",
+                  "value": "{{last_main_service_id}}",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "Certified services — one entry per main service the contractor supports. Leave out (or send an empty main_service_ids) = supports every service. On update the list is REPLACED by whatever is sent."
+                },
+                {
+                  "key": "address",
+                  "value": "Riyadh",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "location_url",
+                  "value": "https://maps.google.com/?q=riyadh",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "http/https only"
+                },
+                {
+                  "key": "contract_number",
+                  "value": "1001",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "digits only"
+                },
+                {
+                  "key": "contract_start_date",
+                  "value": "2026-01-01",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "contract_end_date",
+                  "value": "2026-12-31",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "on/after contract_start_date"
+                },
+                {
+                  "key": "contract_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true,
+                  "description": "pdf/jpg/png, max 4MB — private, downloadable only through the download endpoint"
+                },
+                {
+                  "key": "cr_number",
+                  "value": "2002",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "digits only"
+                },
+                {
+                  "key": "cr_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "tax_number",
+                  "value": "3003",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "digits only"
+                },
+                {
+                  "key": "tax_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "additional_data",
+                  "value": "<p>notes</p>",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "type": "text",
+                  "description": "active | deactivated"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{api_base}}/contractors",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "contractors"
+              ]
+            },
+            "description": "name, prefix and operational_status are required. multipart/form-data. The prefix must be exactly 3 English letters and unique among the tenant's contractors — change it if you re-send this request. The response returns the generated contractor ID (prefix + \"C\" + running number, e.g. DSH-C0001). main_service_ids[] = the certified services (none = all)."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    if (body.data && body.data.id) {",
+                  "        pm.collectionVariables.set('last_contractor_id', body.data.id);",
+                  "        console.log('last_contractor_id saved:', body.data.id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Show Contractor",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/contractors/{{last_contractor_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "contractors",
+                "{{last_contractor_id}}"
+              ]
+            },
+            "description": "Returns the contractor with its certified_services (+ supports_all_services), its contract / commercial-registration / tax-registration blocks (each with a download_url when a file was uploaded) and the drivers / vehicles / containers / tanks it supplies."
+          }
+        },
+        {
+          "name": "Update Contractor",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "_method",
+                  "value": "PATCH",
+                  "type": "text",
+                  "description": "method spoofing — multipart PATCH is not parsed by PHP"
+                },
+                {
+                  "key": "name",
+                  "value": "Contractor Co {{$timestamp}}",
+                  "type": "text"
+                },
+                {
+                  "key": "prefix",
+                  "value": "TCX",
+                  "type": "text",
+                  "description": "LOCKED after creation — any value sent here is ignored (the contractor ID ALN-0001 is built from it)."
+                },
+                {
+                  "key": "trading_name",
+                  "value": "Desert Trucks",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "الاسم التجاري (الشهرة) — optional"
+                },
+                {
+                  "key": "logo",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true,
+                  "description": "image, max 2MB"
+                },
+                {
+                  "key": "phone",
+                  "value": "+966500000000",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "main_service_ids[]",
+                  "value": "{{last_main_service_id}}",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "Certified services — one entry per main service the contractor supports. Leave out (or send an empty main_service_ids) = supports every service. On update the list is REPLACED by whatever is sent."
+                },
+                {
+                  "key": "address",
+                  "value": "Riyadh",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "location_url",
+                  "value": "https://maps.google.com/?q=riyadh",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "http/https only"
+                },
+                {
+                  "key": "contract_number",
+                  "value": "1001",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "digits only"
+                },
+                {
+                  "key": "contract_start_date",
+                  "value": "2026-01-01",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "contract_end_date",
+                  "value": "2026-12-31",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "on/after contract_start_date"
+                },
+                {
+                  "key": "contract_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true,
+                  "description": "pdf/jpg/png, max 4MB — private, downloadable only through the download endpoint"
+                },
+                {
+                  "key": "cr_number",
+                  "value": "2002",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "digits only"
+                },
+                {
+                  "key": "cr_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "tax_number",
+                  "value": "3003",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "digits only"
+                },
+                {
+                  "key": "tax_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "additional_data",
+                  "value": "<p>notes</p>",
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{api_base}}/contractors/{{last_contractor_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "contractors",
+                "{{last_contractor_id}}"
+              ]
+            },
+            "description": "Every field is editable (FRD §1.10.4) except the status, which has its own endpoint. Re-send the full form; a file field left out keeps the stored file, a new file replaces it. The short name (prefix) is locked after creation: it is ignored on update and the contractor ID never changes. main_service_ids[] REPLACES the certified services; send main_service_ids= (empty) to go back to \"supports everything\"."
+          }
+        },
+        {
+          "name": "Change Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"deactivated\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/contractors/{{last_contractor_id}}/status",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "contractors",
+                "{{last_contractor_id}}",
+                "status"
+              ]
+            },
+            "description": "status: active | deactivated. system_admin / data_entry. Nothing cascades — the FRD does not say a contractor status affects its drivers, vehicles or assets."
+          }
+        },
+        {
+          "name": "Download Document",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/contractors/{{last_contractor_id}}/documents/contract",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "contractors",
+                "{{last_contractor_id}}",
+                "documents",
+                "contract"
+              ]
+            },
+            "description": "Change the last path segment: contract | cr | tax. Private file — 404 when nothing was uploaded for that type, 403 without view access."
+          }
+        },
+        {
+          "name": "Export Contractors (Excel)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/contractors/export?format=xlsx",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "contractors",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "xlsx"
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "Noor",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Same filters and search as the list — the file holds exactly the rows the list shows."
+          }
+        },
+        {
+          "name": "Export Contractors (PDF)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/contractors/export?format=pdf",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "contractors",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "pdf"
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "Noor",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Arabic output follows the session locale, like the other exports."
+          }
+        }
+      ]
+    },
+    {
+      "name": "11. Client Companies",
       "description": "Phase 2 · Part 4 — FRD V01.14 §1.11. system_admin / data_entry create, edit and (de)activate; auditor views and exports; driver has no access. No hard delete. The projects count is real (Part 5); users and contracts counts are 0 until those modules exist.",
       "item": [
         {
@@ -4388,7 +4953,7 @@
       ]
     },
     {
-      "name": "11. Client Projects",
+      "name": "12. Client Projects",
       "description": "FRD V01.14 §1.12 — client projects, plus inserting an asset into a project (§1.7.3). system_admin / data_entry manage; auditor views and exports; driver has no access.",
       "item": [
         {
@@ -4747,7 +5312,7 @@
       ]
     },
     {
-      "name": "12. Platform Auth (Super Admin)",
+      "name": "13. Platform Auth (Super Admin)",
       "item": [
         {
           "name": "Get Login Page (capture CSRF)",
@@ -4874,7 +5439,7 @@
       ]
     },
     {
-      "name": "13. Platform - Tenants",
+      "name": "14. Platform - Tenants",
       "auth": {
         "type": "noauth"
       },
@@ -5114,7 +5679,7 @@
       ]
     },
     {
-      "name": "14. Platform - Roles",
+      "name": "15. Platform - Roles",
       "auth": {
         "type": "noauth"
       },
@@ -5323,7 +5888,7 @@
       ]
     },
     {
-      "name": "15. Platform - Permissions",
+      "name": "16. Platform - Permissions",
       "auth": {
         "type": "noauth"
       },

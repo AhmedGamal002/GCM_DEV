@@ -6,6 +6,7 @@ use App\Domain\Drivers\Actions\CreateDriverAction;
 use App\Models\Asset;
 use App\Models\AssetCapacityCategory;
 use App\Models\Company;
+use App\Models\Contractor;
 use App\Models\IntermediateFacility;
 use App\Models\MainService;
 use App\Models\Project;
@@ -243,6 +244,30 @@ class ExportFiltersTest extends TestCase
         MainService::factory()->create(['name' => 'نقل المخلفات الصلبة']);
 
         $this->actingAs($this->admin, 'web')->get('/api/v1/main-services/export?format=pdf&search=المخلفات')->assertOk();
+    }
+
+    public function test_contractor_export_honours_search_and_filter(): void
+    {
+        $alpha = Contractor::factory()->create(['name' => 'Alpha Haul', 'prefix' => 'ALP', 'trading_name' => 'Alpha Brand']);
+        Contractor::factory()->deactivated()->create(['name' => 'Beta Gulf', 'prefix' => 'BET']);
+
+        $names = fn (string $qs) => $this->exported('/api/v1/contractors/export?format=xlsx'.$qs, 'contractors.xlsx')->pluck('name')->all();
+
+        $this->assertCount(2, $this->exported('/api/v1/contractors/export?format=xlsx', 'contractors.xlsx'));
+        $this->assertSame(['Beta Gulf'], $names('&operational_status=deactivated'));
+        $this->assertSame(['Alpha Haul'], $names('&search=Alpha'));
+        // the short name, the trading name and the ID are searchable too — all are on screen
+        $this->assertSame(['Beta Gulf'], $names('&search=BET'));
+        $this->assertSame(['Alpha Haul'], $names('&search=Alpha Brand'));
+        $this->assertSame(['Alpha Haul'], $names('&search='.$alpha->code));
+        $this->assertSame([], $names('&operational_status=deactivated&search=Alpha'));
+    }
+
+    public function test_contractor_export_pdf_works(): void
+    {
+        Contractor::factory()->create(['name' => 'متعهد النقل', 'prefix' => 'MTN', 'trading_name' => 'الصحراء']);
+
+        $this->actingAs($this->admin, 'web')->get('/api/v1/contractors/export?format=pdf&search=المتعهد')->assertOk();
     }
 
     public function test_driver_export_honours_search_and_filters(): void

@@ -26,6 +26,7 @@
     all_companies: @json(__('All companies')),
     affiliation_gcm: @json(__('GCM')),
     affiliation_client: @json(__('Client')),
+    affiliation_contractor: @json(__('Contractor')),
     all_statuses: @json(__('All statuses')),
     active: @json(__('Active')),
     on_vacation: @json(__('On Vacation')),

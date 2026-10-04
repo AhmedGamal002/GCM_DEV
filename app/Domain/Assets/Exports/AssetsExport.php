@@ -28,7 +28,7 @@ class AssetsExport implements FromCollection, WithHeadings, WithMapping
             $asset->name,
             $asset->asset_type,
             $asset->capacityCategory?->name,
-            $asset->affiliation === 'gcm' ? 'GCM' : $asset->affiliation,
+            $asset->affiliation === 'gcm' ? 'GCM' : ($asset->contractor?->name ?? $asset->affiliation),
             $asset->operational_status,
             $asset->project?->name,
             $asset->created_at,

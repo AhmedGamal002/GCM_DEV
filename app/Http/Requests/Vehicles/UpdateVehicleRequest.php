@@ -4,6 +4,7 @@ namespace App\Http\Requests\Vehicles;
 
 use App\Domain\Vehicles\Rules\EmbeddedCapacityFitsTypeRule;
 use App\Http\Requests\Concerns\NormalizesRichTextInput;
+use App\Http\Requests\Concerns\ValidatesAffiliation;
 use App\Models\Vehicle;
 use App\Models\VehicleDocument;
 use Illuminate\Foundation\Http\FormRequest;
@@ -16,7 +17,7 @@ use Illuminate\Validation\Rule;
  */
 class UpdateVehicleRequest extends FormRequest
 {
-    use NormalizesRichTextInput;
+    use NormalizesRichTextInput, ValidatesAffiliation;
 
     private ?Vehicle $targetVehicle = null;
 
@@ -54,6 +55,8 @@ class UpdateVehicleRequest extends FormRequest
                     $this->boolean('has_embedded_container') ? $this->input('embedded_container_type') : null,
                 ),
             ],
+
+            ...$this->affiliationRules($this->targetVehicle()->contractor_id, optional: true),
 
             'photo_front' => ['nullable', 'image', 'max:4096'],
             'photo_back' => ['nullable', 'image', 'max:4096'],

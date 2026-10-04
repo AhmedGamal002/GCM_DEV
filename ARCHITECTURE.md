@@ -277,10 +277,10 @@ gcm-wms/
 │   │   │
 │   │   ├── Contractors/
 │   │   │   ├── Actions/
-│   │   │   │   ├── CreateContractorAction.php
-│   │   │   │   └── DisableContractorAction.php      # cascade لـ drivers/vehicles/assets
-│   │   │   └── Scopes/
-│   │   │       └── ContractorVisibilityScope.php
+│   │   │   │   ├── CreateContractorAction.php / UpdateContractorAction.php / StoreContractorFiles.php
+│   │   │   │   └── UpdateContractorStatusAction.php  # ✅ الحالة بس — مفيش cascade لـ drivers/vehicles/assets (الـFRD سكت؛ قرار الجزء 3)
+│   │   │   ├── Exports/ContractorsExport.php
+│   │   │   └── Affiliation.php                   # affiliation + contractor_id → أعمدة (gcm بيصفّر contractor_id)
 │   │   │
 │   │   ├── Vehicles/                              # موديول مستقل (زي Users) — مش تحت "Fleet"
 │   │   │   ├── Actions/

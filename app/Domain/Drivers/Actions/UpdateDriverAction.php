@@ -2,6 +2,7 @@
 
 namespace App\Domain\Drivers\Actions;
 
+use App\Domain\Contractors\Affiliation;
 use App\Models\Driver;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
@@ -31,6 +32,14 @@ class UpdateDriverAction
             }
             $user->phone = $data['phone'];
             $user->additional_data = $data['additional_data'] ?? null;
+
+            // FRD §1.3: every field is editable, the affiliation included. It lives on
+            // the account (users) and on the driver profile (drivers) — kept in step.
+            $affiliation = array_key_exists('affiliation', $data) ? Affiliation::attributes($data) : null;
+            if ($affiliation) {
+                $user->affiliation = $affiliation['affiliation'];
+                $user->contractor_id = $affiliation['contractor_id'];
+            }
 
             if (! empty($data['password'])) {
                 $user->password = Hash::make($data['password']);
@@ -66,6 +75,10 @@ class UpdateDriverAction
             }
             if ($documents['insurance'] ?? null) {
                 $driver->insurance_attachment = $documents['insurance']->store('driver-documents', 'local');
+            }
+
+            if ($affiliation) {
+                $driver->contractor_id = $affiliation['contractor_id'];
             }
 
             $driver->updated_by = auth()->id();

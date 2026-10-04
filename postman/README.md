@@ -17,7 +17,7 @@
 
 ### 1. تينانت (`/api/v1/*`) — Bearer Token
 
-المجلدات 1-11 (Auth/Me/Roles/Users/Drivers/Vehicles/Assets/Intermediate Facilities/Services/Client Companies/Client Projects). الـ collection معمول عليها auth من نوع Bearer على مستوى الـ root بقيمة `{{tenant_token}}`.
+المجلدات 1-12 (Auth/Me/Roles/Users/Drivers/Vehicles/Assets/Intermediate Facilities/Services/Contractors/Client Companies/Client Projects). الـ collection معمول عليها auth من نوع Bearer على مستوى الـ root بقيمة `{{tenant_token}}`.
 
 - شغّل **"1. Auth (Tenant) → Login"** الأول. Postman مش هيبقى أبدًا من ضمن `SANCTUM_STATEFUL_DOMAINS`، فالسيرفر هيرجّعله `token` (نفس المسار اللي هيتستخدم لموبايل السائق مستقبلًا) بدل session cookie. الـ test script بتاع الريكوست بيحفظ التوكن تلقائي في `tenant_token`.
 - من بعدها أي ريكوست في المجلدات 2-11 هيبعت الـ Authorization header تلقائي.
@@ -27,7 +27,7 @@
 
 المجلدات 12-15. **مش** Bearer — دي كنترولرز Blade كلاسيكية (guard `platform` منفصل تمامًا)، فمفيش JSON API هنا أصلًا.
 
-- شغّل **"12. Platform Auth → Get Login Page (capture CSRF)"** الأول — بيسحب الـ `_token` من صفحة اللوجن ويحفظه في `platform_csrf`.
+- شغّل **"13. Platform Auth → Get Login Page (capture CSRF)"** الأول — بيسحب الـ `_token` من صفحة اللوجن ويحفظه في `platform_csrf`.
 - بعدين **"Login"** — بيرجّع 302 + session cookie، وPostman بيحتفظ بالكوكي تلقائي (cookie jar بتاعه) لباقي الريكوستات.
 - أي ريكوست POST/PUT/PATCH/DELETE في المجلدات 13-15 معاه **pre-request script** بيسحب توكن CSRF جديد تلقائيًا قبل ما يبعت (من صفحة `/platform/tenants` — أي صفحة مسجّل دخولها كفاية لإن الـ token واحد للـ session كله مش لكل صفحة). مش محتاج تعمل حاجة يدوي.
 - بعض الريكوستات (زي "Get Edit Tenant Form"، "Delete Permission") محتاجة id يدوي (`last_tenant_id`, `last_role_id`, `last_permission_id`) — مفيش auto-capture ليهم لإن صفحات الإنشاء بترجّع redirect للقائمة مش JSON فيه الـ id. جيب الـ id من ريسبونس "List..." وحطه في الـ variable يدوي. (نفس الكلام على `last_vehicle_document_id`.)
@@ -36,9 +36,9 @@
 
 نفس اللحظة اللي بتضيف فيها route جديد في `routes/api.php` أو `routes/platform.php`:
 
-1. حدد المجلد المناسب (أو أنشئ مجلد رقم جديد لو موديول جديد بالكامل — الموديولات التينانتية تتضاف قبل مجلدات الـ Platform مع إعادة ترقيمها، زي ما اتعمل مع "6. Vehicles" و"7. Assets" و"8. Intermediate Facilities" و"9. Services" و"10. Client Companies" و"11. Client Projects").
+1. حدد المجلد المناسب (أو أنشئ مجلد رقم جديد لو موديول جديد بالكامل — الموديولات التينانتية تتضاف قبل مجلدات الـ Platform مع إعادة ترقيمها، زي ما اتعمل مع "6. Vehicles" و"7. Assets" و"8. Intermediate Facilities" و"9. Services" و"10. Contractors" و"11. Client Companies" و"12. Client Projects").
 2. الـ API tenant requests: من غير auth إضافي (بيورث الـ Bearer من الـ collection root تلقائي) إلا لو الـ endpoint استثنائي (زي login).
-3. الـ Platform requests: لازم `"auth": {"type": "noauth"}` على مستوى المجلد (موجود بالفعل)، وأي POST/PUT/PATCH/DELETE لازم يحمل نفس الـ pre-request script بتاع تجديد CSRF (انسخه من أي ريكوست مشابه في المجلدات 12-14).
+3. الـ Platform requests: لازم `"auth": {"type": "noauth"}` على مستوى المجلد (موجود بالفعل)، وأي POST/PUT/PATCH/DELETE لازم يحمل نفس الـ pre-request script بتاع تجديد CSRF (انسخه من أي ريكوست مشابه في المجلدات 14-16).
 4. لو الـ endpoint بيرجّع id جديد مفيد لريكوستات تانية (زي Create)، ضيف test script بسيط يحفظه في collection variable جديد بنفس نمط `last_user_id`/`last_driver_id`.
 5. بعد أي تعديل، افتح الملف في Postman وجرّب الـ flow كامل مرة، وبعدين اعمل Export تاني فوق نفس الملف ده (مش ملف جديد) عشان الـ git diff يفضل نضيف.
 

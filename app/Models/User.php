@@ -98,6 +98,12 @@ class User extends Authenticatable
     return $this->belongsTo(Company::class);
   }
 
+  /** The contractor a contractor-supplied driver belongs to (null for everyone else). */
+  public function contractor(): BelongsTo
+  {
+    return $this->belongsTo(Contractor::class);
+  }
+
   /** The projects a client account was assigned to (only used when all_projects is false). */
   public function projects(): BelongsToMany
   {
@@ -106,14 +112,15 @@ class User extends Authenticatable
 
   /**
    * The FRD list's "اسم الجهة التابع لها": the operating company (the
-   * tenant) for GCM staff and drivers, the client company for a client
-   * account. Contractor accounts land with the Contractor module.
+   * tenant) for GCM staff and GCM's own drivers, the client company for a
+   * client account, the contractor for a contractor-supplied driver.
    */
   public function entityName(): ?string
   {
     return match ($this->affiliation) {
       'gcm' => $this->tenant?->name,
       'client' => $this->company?->name,
+      'contractor' => $this->contractor?->name,
       default => null,
     };
   }

@@ -2,6 +2,7 @@
 
 namespace App\Domain\Drivers\Actions;
 
+use App\Domain\Contractors\Affiliation;
 use App\Models\Driver;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
@@ -30,6 +31,8 @@ class CreateDriverAction
     public function execute(array $data, ?UploadedFile $photo, array $documents, array $entryPermits): Driver
     {
         return DB::transaction(function () use ($data, $photo, $documents, $entryPermits) {
+            $affiliation = Affiliation::attributes($data);
+
             $user = User::create([
                 'name' => $data['name'],
                 'email' => $data['email'],
@@ -38,9 +41,8 @@ class CreateDriverAction
                 'status' => $data['status'],
                 'additional_data' => $data['additional_data'] ?? null,
                 'photo' => $photo ? $photo->store('avatars', 'public') : null,
-                // Drivers can belong to a Contractor per the FRD, but
-                // Contractor doesn't exist until Week 5 — always 'gcm'.
-                'affiliation' => 'gcm',
+                // GCM's own driver, or one a contractor supplies (FRD §1.3).
+                ...$affiliation,
             ]);
             $user->assignRole('driver');
             $user->updated_by = auth()->id();
@@ -48,6 +50,7 @@ class CreateDriverAction
 
             $driver = new Driver([
                 'user_id' => $user->id,
+                'contractor_id' => $affiliation['contractor_id'],
                 'default_vehicle_id' => $data['default_vehicle_id'] ?? null,
                 'residence_number' => $data['residence_number'],
                 'residence_valid_to' => $data['residence_valid_to'],

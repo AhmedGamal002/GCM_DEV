@@ -32,7 +32,7 @@ use Maatwebsite\Excel\Facades\Excel;
  */
 class VehicleController extends Controller
 {
-    private const LIST_WITH = ['tenant', 'category', 'embeddedCapacityCategory'];
+    private const LIST_WITH = ['tenant', 'category', 'embeddedCapacityCategory', 'contractor'];
 
     /**
      * Explicit allowlist for `sort_by` — never the raw request value
@@ -235,6 +235,7 @@ class VehicleController extends Controller
             ->when($request->filled('category'), fn ($q) => $q->whereHas('category', fn ($c) => $c->where('slug', $request->string('category'))))
             ->when($request->filled('operational_status'), fn ($q) => $q->where('operational_status', $request->string('operational_status')))
             ->when($request->filled('affiliation'), fn ($q) => $q->where('affiliation', $request->string('affiliation')))
+            ->when($request->filled('contractor_id'), fn ($q) => $q->where('contractor_id', $request->integer('contractor_id')))
             ->when($request->filled('search'), function ($q) use ($request) {
                 // The UI shows/exposes the plate as "AAA 1234" (Vehicle::plate(),
                 // letters + space + numbers), but it's stored as two separate

@@ -53,6 +53,7 @@ class DriverCreationTest extends TestCase
             'password' => 'a-secure-password',
             'password_confirmation' => 'a-secure-password',
             'status' => 'active',
+            'affiliation' => 'gcm',
             'vehicle_category_ids' => [$this->vehicleCategory->id],
             'default_vehicle_id' => $this->vehicle->id,
             'residence_number' => 'RES-001',

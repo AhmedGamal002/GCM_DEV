@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Drivers;
 
 use App\Http\Requests\Concerns\NormalizesRichTextInput;
+use App\Http\Requests\Concerns\ValidatesAffiliation;
 use App\Models\Driver;
 use App\Models\Vehicle;
 use Illuminate\Foundation\Http\FormRequest;
@@ -20,7 +21,7 @@ use Illuminate\Validation\Rules\Password;
  */
 class StoreDriverRequest extends FormRequest
 {
-    use NormalizesRichTextInput;
+    use NormalizesRichTextInput, ValidatesAffiliation;
 
     protected function prepareForValidation(): void
     {
@@ -48,6 +49,7 @@ class StoreDriverRequest extends FormRequest
             'photo' => ['nullable', 'image', 'max:2048'],
             'password' => ['required', 'string', 'confirmed', Password::defaults()],
             'status' => ['required', 'in:active,on_vacation,deactivated'],
+            ...$this->affiliationRules(),
             'additional_data' => ['nullable', 'string'],
 
             'vehicle_category_ids' => ['required', 'array', 'min:1'],

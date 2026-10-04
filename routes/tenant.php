@@ -9,6 +9,9 @@ use App\Http\Controllers\Web\Assets\AssetProjectController;
 use App\Http\Controllers\Web\Companies\CompanyAccountController;
 use App\Http\Controllers\Web\Companies\CompanyAddController;
 use App\Http\Controllers\Web\Companies\CompanyListController;
+use App\Http\Controllers\Web\Contractors\ContractorAccountController;
+use App\Http\Controllers\Web\Contractors\ContractorAddController;
+use App\Http\Controllers\Web\Contractors\ContractorListController;
 use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\Drivers\DriverAccountController;
 use App\Http\Controllers\Web\Facilities\FacilityAccountController;
@@ -120,6 +123,12 @@ Route::middleware(['auth', 'tenant'])->group(function () {
     Route::get('/app/company/add', [CompanyAddController::class, 'index'])->middleware('can:create,App\\Models\\Company')->name('app-company-add');
     Route::get('/app/company/view/{company}', [CompanyAccountController::class, 'view'])->whereNumber('company')->name('app-company-view');
     Route::get('/app/company/edit/{company}', [CompanyAccountController::class, 'edit'])->whereNumber('company')->middleware('can:create,App\\Models\\Company')->name('app-company-edit');
+
+    // Contractors — {contractor} kept as a raw numeric id (see ContractorController's docblock).
+    Route::get('/app/contractor/list', [ContractorListController::class, 'index'])->name('app-contractor-list');
+    Route::get('/app/contractor/add', [ContractorAddController::class, 'index'])->middleware('can:create,App\Models\Contractor')->name('app-contractor-add');
+    Route::get('/app/contractor/view/{contractor}', [ContractorAccountController::class, 'view'])->whereNumber('contractor')->name('app-contractor-view');
+    Route::get('/app/contractor/edit/{contractor}', [ContractorAccountController::class, 'edit'])->whereNumber('contractor')->middleware('can:create,App\Models\Contractor')->name('app-contractor-edit');
 
     // Client projects — {project} kept as a raw numeric id (see ProjectController's docblock).
     Route::get('/app/project/list', [ProjectListController::class, 'index'])->name('app-project-list');
