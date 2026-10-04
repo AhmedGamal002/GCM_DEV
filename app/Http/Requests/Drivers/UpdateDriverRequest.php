@@ -44,6 +44,7 @@ class UpdateDriverRequest extends FormRequest
 
         return [
             'name' => ['required', 'string', 'max:255'],
+            'email' => ['sometimes', 'required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($this->targetDriver()->user_id)],
             'phone' => [
                 'required', 'string', 'max:32',
                 Rule::unique('users', 'phone')

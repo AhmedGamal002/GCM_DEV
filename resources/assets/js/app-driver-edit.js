@@ -159,6 +159,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const data = new FormData();
     data.append('name', document.getElementById('name').value);
+    data.append('email', document.getElementById('email').value);
     data.append('phone', document.getElementById('phone').value);
     data.append('additional_data', quill.root.innerHTML);
     data.append('_method', 'PATCH');

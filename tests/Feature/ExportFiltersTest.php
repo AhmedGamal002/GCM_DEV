@@ -99,8 +99,8 @@ class ExportFiltersTest extends TestCase
         $beta = User::factory()->create(['name' => 'Beta Other', 'status' => 'on_vacation']);
         $beta->assignRole('auditor');
 
-        // the admin's own row is never listed (same as the list)
-        $this->assertCount(2, $this->exported('/api/v1/users/export?format=xlsx', 'users.xlsx'));
+        // the system admin sees its own row too (same as the list): admin + the two above
+        $this->assertCount(3, $this->exported('/api/v1/users/export?format=xlsx', 'users.xlsx'));
 
         $this->assertSame(['Alpha Tester'], $this->exported('/api/v1/users/export?format=xlsx&search=Alpha', 'users.xlsx')->pluck('name')->all());
         $this->assertSame(['Beta Other'], $this->exported('/api/v1/users/export?format=xlsx&status=on_vacation', 'users.xlsx')->pluck('name')->all());

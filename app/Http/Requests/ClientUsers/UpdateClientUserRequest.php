@@ -8,8 +8,8 @@ use Illuminate\Validation\Rules\Password;
 
 /**
  * FRD V01.14 §1.4: every field of a client account is editable by (System
- * Admin / Data Entry) — the email being the one exception (login lookup is
- * by email, see LoginController), same as the other account forms. A blank
+ * Admin / Data Entry), the email included (it stays unique across tenants — login
+ * looks accounts up by it, see LoginController). A blank
  * password keeps the current one; status has its own endpoint
  * (PATCH /users/{id}/status), like every other account.
  *
@@ -38,6 +38,7 @@ class UpdateClientUserRequest extends StoreClientUserRequest
     public function rules(): array
     {
         return $this->baseRules() + [
+            'email' => ['sometimes', 'required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($this->targetUser()->id)],
             'password' => ['nullable', 'string', 'confirmed', Password::defaults()],
             // The account's current company stays valid even if it has since
             // been deactivated; a different one must be active.

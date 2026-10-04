@@ -12,7 +12,7 @@ The System Admin has full control **within a single company** (Tenant). They can
 
 - URL: `/login`
 - Email + password.
-- There is no password change from the Profile for GCM staff and drivers (per the FRD) — if you forget yours use **Forgot Password** on the login page. The email is **immutable** after creation.
+- There is no password change from the Profile for GCM staff and drivers (per the FRD) — if you forget yours use **Forgot Password** on the login page. Only the System Admin / Data Entry change an account's email (from its edit page).
 
 ## 2. Dashboard
 
@@ -46,6 +46,7 @@ The only screen exclusive to the System Admin among tenant roles.
 - **You cannot create a second System Admin** — the option isn't offered, and a direct request is rejected.
 
 ### View / edit user
+- **The System Admin can change every field of every account — the email included, and its own account too** (it shows in the Users list for the admin only). The admin's role is fixed and the admin account can never be deactivated. The email must be unique across the whole system.
 - Separate details and edit pages.
 - **New password (optional):** on the edit page you can set a new password + confirmation for any user or driver — leave it blank to keep the current one. This is how you set someone else's password (every user can also change their own from the profile page).
 - If the user is a driver, the edit page shows a notice pointing you to the driver-edit page (residence/license/insurance details are edited there).

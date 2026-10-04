@@ -13,7 +13,7 @@
  * no longer offered for new work") and only active projects are offered. On
  * edit the account's current company and already-assigned projects stay
  * selectable even if they were deactivated since — otherwise saving would
- * silently drop them. The email is immutable; status goes through its own
+ * silently drop them. Every field, the email included, is editable; status goes through its own
  * endpoint after the save, like the other account forms.
  *
  * Lives in a subdirectory so the `resources/assets/js/*.js` Vite glob

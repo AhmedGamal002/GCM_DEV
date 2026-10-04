@@ -58,6 +58,9 @@ class UpdateUserRequest extends FormRequest
 
         return [
             'name' => ['required', 'string', 'max:255'],
+            // The admin may change anyone's email. Login looks accounts up by email across all
+            // tenants, so it stays unique globally.
+            'email' => ['sometimes', 'required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($this->targetUser()->id)],
             'phone' => [
                 'required', 'string', 'max:32',
                 Rule::unique('users', 'phone')
@@ -69,7 +72,10 @@ class UpdateUserRequest extends FormRequest
             // (system_admin / data_entry) sets it here. Blank = unchanged.
             'password' => ['nullable', 'string', 'confirmed', Password::defaults()],
             'additional_data' => ['nullable', 'string'],
-            'roles' => ['required', 'array', 'min:1', new OnlyOneSystemAdminPerTenantRule($this->targetUser()->id)],
+            // The system admin's own account has no role to pick (it stays system_admin).
+            'roles' => $this->targetUser()->hasRole('system_admin')
+                ? ['sometimes', 'array']
+                : ['required', 'array', 'min:1', new OnlyOneSystemAdminPerTenantRule($this->targetUser()->id)],
             'roles.*' => ['string', Rule::in(['data_entry', 'auditor'])],
         ];
     }

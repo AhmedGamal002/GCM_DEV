@@ -220,7 +220,7 @@ class ClientUserManagementTest extends TestCase
             ->assertJsonValidationErrors(['signature', 'stamp']);
     }
 
-    public function test_update_changes_every_field_except_the_email(): void
+    public function test_update_changes_every_field_the_email_included(): void
     {
         $user = $this->createClient();
         $other = Company::factory()->create(['name' => 'Gulf', 'prefix' => 'GPC']);
@@ -245,7 +245,7 @@ class ClientUserManagementTest extends TestCase
             ->assertJsonPath('data.projects_scope', 'specific');
 
         $user->refresh();
-        $this->assertSame('sara@alnoor.test', $user->email);
+        $this->assertSame('hacker@evil.test', $user->email);
         $this->assertSame('+966500000077', $user->phone);
         $this->assertTrue(Hash::check('Str0ng!Pass#1', $user->password), 'a blank password keeps the current one');
         $this->assertSame([$otherProject->id], $user->projects()->pluck('projects.id')->all());

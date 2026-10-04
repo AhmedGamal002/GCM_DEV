@@ -26,6 +26,9 @@ class UpdateDriverAction
         return DB::transaction(function () use ($driver, $data, $photo, $documents) {
             $user = $driver->user;
             $user->name = $data['name'];
+            if (isset($data['email'])) {
+                $user->email = $data['email'];
+            }
             $user->phone = $data['phone'];
             $user->additional_data = $data['additional_data'] ?? null;
 

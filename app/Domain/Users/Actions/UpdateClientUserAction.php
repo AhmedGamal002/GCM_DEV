@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Hash;
 
 /**
  * FRD V01.14 §1.4: every field of a client account is editable by (System
- * Admin / Data Entry). Email stays immutable and status goes through
+ * Admin / Data Entry). Every field is editable (email included) and status goes through
  * UpdateUserStatusAction, like every other account.
  */
 class UpdateClientUserAction
@@ -22,6 +22,9 @@ class UpdateClientUserAction
     {
         return DB::transaction(function () use ($user, $data, $files, $actor) {
             $user->name = $data['name'];
+            if (isset($data['email'])) {
+                $user->email = $data['email'];
+            }
             $user->phone = $data['phone'];
             $user->additional_data = $data['additional_data'] ?? null;
 

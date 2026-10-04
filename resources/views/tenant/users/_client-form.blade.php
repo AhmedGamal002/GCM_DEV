@@ -21,7 +21,7 @@
         </div>
         <div class="col-md-6">
           <label class="form-label" for="email">{{ __('Email') }}</label>
-          <input type="email" id="email" name="email" class="form-control" maxlength="255" dir="ltr" {{ $isCreate ? 'required' : 'disabled' }} />
+          <input type="email" id="email" name="email" class="form-control" maxlength="255" dir="ltr" required />
           <div class="text-danger small mt-1 d-none" data-feedback></div>
         </div>
         <div class="col-md-6">

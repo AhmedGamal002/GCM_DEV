@@ -67,9 +67,18 @@ document.addEventListener('DOMContentLoaded', function () {
       }
 
       const role = u.roles[0];
-      const roleInput = form.querySelector(`input[name="role"][value="${role}"]`);
-      if (roleInput) {
-        roleInput.checked = true;
+      if (role === 'system_admin') {
+        // Fixed role — nothing to choose (and the admin account can't be deactivated).
+        document.getElementById('job-role-wrapper').classList.add('d-none');
+        form.querySelectorAll('input[name="role"]').forEach((r) => {
+          r.checked = false;
+          r.required = false;
+        });
+      } else {
+        const roleInput = form.querySelector(`input[name="role"][value="${role}"]`);
+        if (roleInput) {
+          roleInput.checked = true;
+        }
       }
 
       form.querySelector(`input[name="status"][value="${u.status}"]`).checked = true;
@@ -88,14 +97,16 @@ document.addEventListener('DOMContentLoaded', function () {
     statusBox.classList.add('d-none');
     errorBox.classList.add('d-none');
 
-    const role = form.querySelector('input[name="role"]:checked').value;
+    // The system admin's own account has no role to pick — the role block is hidden for it.
+    const roleInput = form.querySelector('input[name="role"]:checked');
     const status = form.querySelector('input[name="status"]:checked').value;
 
     const data = new FormData();
     data.append('name', document.getElementById('name').value);
+    data.append('email', document.getElementById('email').value);
     data.append('phone', document.getElementById('phone').value);
     data.append('additional_data', quill.root.innerHTML);
-    data.append('roles[0]', role);
+    if (roleInput) data.append('roles[0]', roleInput.value);
     data.append('_method', 'PATCH');
 
     const newPassword = document.getElementById('password').value;

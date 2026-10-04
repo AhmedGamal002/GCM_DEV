@@ -157,10 +157,10 @@ class UserController extends Controller
             // the paginated list and the (unpaginated) export. Same
             // reasoning for 'driver' — UserResource::driver_id touches it.
             ->with(['tenant', 'roles', 'driver', 'company'])
-            // This is "manage other users", not self-service — the
-            // caller's own row is never listed here. Editing yourself
-            // goes through /api/v1/me (ProfileController) instead.
-            ->where('id', '!=', $request->user()->id)
+            // The caller's own row is not listed for staff (their own photo and
+            // password are on the profile page) — but the system admin is the one
+            // person who manages account data, own account included, so it sees it.
+            ->when(! $request->user()->hasRole('system_admin'), fn ($q) => $q->where('id', '!=', $request->user()->id))
             ->visibleTo($request->user())
             ->when($request->filled('status'), fn ($q) => $q->where('status', $request->string('status')))
             ->when($request->filled('affiliation'), fn ($q) => $q->where('affiliation', $request->string('affiliation')))
