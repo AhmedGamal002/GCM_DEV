@@ -85,12 +85,22 @@ class SystemAdminUniquenessTest extends TestCase
 
     public function test_deactivating_the_system_admin_is_rejected_regardless_of_caller(): void
     {
-        $response = $this->actingAs($this->systemAdmin, 'web')
-            ->patchJson("/api/v1/users/{$this->systemAdmin->id}/status", [
-                'status' => 'deactivated',
-            ]);
+        // Another system_admin (cannot be created through the API, but the rule must hold anyway)
+        // trying to deactivate this one: refused by the action itself.
+        $otherAdmin = User::factory()->create();
+        $otherAdmin->assignRole('system_admin');
 
-        $response->assertUnprocessable();
+        $this->actingAs($otherAdmin, 'web')
+            ->patchJson("/api/v1/users/{$this->systemAdmin->id}/status", ['status' => 'deactivated'])
+            ->assertUnprocessable();
         $this->assertSame('active', $this->systemAdmin->fresh()->status);
+    }
+
+    // Separate method on purpose: two different actors in one test method share a cached guard user.
+    public function test_the_system_admin_cannot_change_their_own_status_at_all(): void
+    {
+        $this->actingAs($this->systemAdmin, 'web')
+            ->patchJson("/api/v1/users/{$this->systemAdmin->id}/status", ['status' => 'deactivated'])
+            ->assertForbidden();
     }
 }

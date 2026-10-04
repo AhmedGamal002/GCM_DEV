@@ -4,6 +4,7 @@ namespace App\Domain\Users\Actions;
 
 use App\Domain\Users\Exceptions\CannotDeactivateSystemAdminException;
 use App\Models\User;
+use Illuminate\Auth\Access\AuthorizationException;
 
 /**
  * FRD V01.14 (changed from V01.09): "(انشاء / تعديل / تعطيل) الحسابات
@@ -20,6 +21,11 @@ class UpdateUserStatusAction
 {
     public function execute(User $user, string $status, User $actor): User
     {
+        // Second line of defence behind UserPolicy::updateStatus — holds for any caller.
+        if ($actor->is($user)) {
+            throw new AuthorizationException(__('You cannot change the status of your own account — ask the System Admin or Data Entry.'));
+        }
+
         if ($status === 'deactivated' && $user->hasRole('system_admin')) {
             throw new CannotDeactivateSystemAdminException;
         }

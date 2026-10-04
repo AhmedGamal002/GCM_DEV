@@ -102,7 +102,7 @@
       <span>تم: <b id="s-pass">0</b></span>
       <span>فشل: <b id="s-fail" style="color:var(--bad)">0</b></span>
       <span>متبقي: <b id="s-left">0</b></span>
-      <span>من <b>170</b> بند</span>
+      <span>من <b>171</b> بند</span>
     </div>
     <div class="prog"><i class="p" id="b-pass"></i><i class="f" id="b-fail"></i></div>
     <div class="tools">
@@ -1177,12 +1177,26 @@
     </article>
     </details>
     <details open class="group">
-      <summary>ب) التعطيل بيشتغل فورًا <span class="count"></span></summary>
+      <summary>ب) محدش يغيّر حالة حسابه بنفسه <span class="count"></span></summary>
       
-    <article class="item" data-id="week-5-account-status#2" data-title="مستخدم متسجّل دخول واتعطّل">
+    <article class="item" data-id="week-5-account-status#2" data-title="مفيش تغيير حالة للحساب الشخصي">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
           <span class="num">2</span></label>
+        <h3>مفيش تغيير حالة للحساب الشخصي</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>سياسات الحسابات (تعطيل / في إجازة قرار بيتاخد على الحساب من حد مسؤول)</dd></div><div class="row"><dt>الدور</dt><dd>مدير النظام / مدخل البيانات</dd></div><div class="row"><dt>الخطوات</dt><dd>بـ<code>admin</code> افتح Users ← حسابك ← تفاصيل ثم تعديل. وافعل نفس الشيء بـ<code>dataentry</code> على <code>/app/user/view/{id حسابه}</code> و<code>/app/user/edit/{id حسابه}</code> مباشرة.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>كارت تغيير الحالة مش ظاهر في صفحة تفاصيل حسابك، وخيارات &quot;Account Status&quot; مخفية في صفحة تعديل حسابك، والحفظ بيشتغل من غيرها. لو اتبعت طلب تغيير حالة لحسابك بأي طريقة بيترفض (403) برسالة &quot;مينفعش تغيّر حالة حسابك بنفسك&quot;. وحساب تاني يقدر يغيّر حالتك عادي.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Users/NobodyChangesTheirOwnStatusTest</code> (كلها)</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+    <details open class="group">
+      <summary>ج) التعطيل بيشتغل فورًا <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-5-account-status#3" data-title="مستخدم متسجّل دخول واتعطّل">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">3</span></label>
         <h3>مستخدم متسجّل دخول واتعطّل</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1191,12 +1205,12 @@
     </article>
     </details>
     <details open class="group">
-      <summary>ج) حالة &quot;في إجازة&quot; <span class="count"></span></summary>
+      <summary>د) حالة &quot;في إجازة&quot; <span class="count"></span></summary>
       
-    <article class="item" data-id="week-5-account-status#3" data-title="رسالة واضحة في كل الصفحات + أزرار مقفولة من الأول">
+    <article class="item" data-id="week-5-account-status#4" data-title="رسالة واضحة في كل الصفحات + أزرار مقفولة من الأول">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">3</span></label>
+          <span class="num">4</span></label>
         <h3>رسالة واضحة في كل الصفحات + أزرار مقفولة من الأول</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>

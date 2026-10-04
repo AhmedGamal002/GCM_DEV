@@ -9,7 +9,7 @@
 @section('page-script')
 <script>
   // Status changes are for whoever may manage this kind of record (the auditor only views).
-  window.gcmCanManage = @json(auth()->user()->can('create', \App\Models\User::class));
+  window.gcmCanManage = @json(auth()->user()->can('create', \App\Models\User::class) && auth()->id() !== $userId);
   
   window.userViewTranslations = {
     active: @json(__('Active')),
