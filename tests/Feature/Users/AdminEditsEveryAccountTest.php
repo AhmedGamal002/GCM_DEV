@@ -124,13 +124,14 @@ class AdminEditsEveryAccountTest extends TestCase
         $this->assertContains('The Admin', $names);
     }
 
-    public function test_data_entry_does_not_see_their_own_row(): void
+    public function test_data_entry_does_not_see_their_own_row_or_the_admin(): void
     {
         $dataEntry = $this->staff('data_entry', ['name' => 'Entry Clerk']);
 
         $names = collect($this->actingAs($dataEntry, 'web')->getJson('/api/v1/users')->assertOk()->json('data'))->pluck('name');
 
         $this->assertNotContains('Entry Clerk', $names);
+        $this->assertNotContains('The Admin', $names);
     }
 
     public function test_data_entry_can_change_a_staff_email_but_never_the_admins(): void

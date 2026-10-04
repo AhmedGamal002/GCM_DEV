@@ -17,6 +17,7 @@ Dashboard, then an **Accounts** section (Users · Drivers) and a **Fleet & Asset
 
 ## 2. Users — `/app/user/list`
 
+- **You do not see the System Admin account** — not in the list, search, export, or by direct link (403).
 - **View** the list of GCM staff accounts (not drivers — they have their own page) + **export** (Excel / PDF).
 - **Create** a new account (data_entry or auditor — there is no "system_admin" option here at all).
 - **Edit** any account (except drivers) — and set a **new password** (optional) from the edit page. **You cannot edit the System Admin's account** or change its status (returns 403).

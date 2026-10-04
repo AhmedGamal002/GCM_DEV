@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Concerns\BelongsToTenant;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -79,6 +80,20 @@ class User extends Authenticatable
         $user->code = $candidate;
       }
     });
+  }
+
+  /**
+   * Accounts a data_entry user is not allowed to know about: the tenant's
+   * system_admin. Everyone else sees every account of the tenant (the
+   * auditor included — FRD V01.14: view/export on every page).
+   */
+  public function scopeVisibleTo(Builder $query, User $actor): Builder
+  {
+    if ($actor->hasRole('data_entry') && ! $actor->hasRole('system_admin')) {
+      $query->whereDoesntHave('roles', fn ($r) => $r->where('name', 'system_admin'));
+    }
+
+    return $query;
   }
 
   public function driver(): HasOne
