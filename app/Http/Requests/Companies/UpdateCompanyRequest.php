@@ -3,6 +3,8 @@
 namespace App\Http\Requests\Companies;
 
 use App\Models\Company;
+use App\Models\User;
+use Closure;
 
 /**
  * FRD V01.14 §1.11.4: every company field is editable by (System Admin /
@@ -34,6 +36,25 @@ class UpdateCompanyRequest extends StoreCompanyRequest
     {
         $rules = $this->baseRules(null);
         unset($rules['prefix']);
+
+        // FRD §1.11: "حساب ممثل العميل" — optional; one of THIS company's
+        // project managers (client accounts of another company, auditors and
+        // GCM staff are refused). An unchanged value is always accepted so
+        // saving other fields still works after the rep was later put on
+        // vacation / deactivated.
+        $rules['representative_id'] = ['nullable', 'integer', function (string $attribute, mixed $value, Closure $fail) {
+            $company = $this->targetCompany();
+
+            if ((int) $value === $company->representative_id) {
+                return;
+            }
+
+            $user = User::find($value);
+
+            if (! $user || $user->company_id !== $company->id || ! $user->hasRole('client_project_manager') || $user->status !== 'active') {
+                $fail(__('Choose an active project manager of this company.'));
+            }
+        }];
 
         return $rules;
     }

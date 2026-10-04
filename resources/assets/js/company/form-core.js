@@ -256,6 +256,45 @@ export function initCompanyForm(opts) {
     }
   }
 
+  // FRD §1.11 "حساب ممثل العميل": one of this company's active project
+  // managers. The saved representative stays selectable even if it is no
+  // longer listed (e.g. put on vacation since) so saving doesn't drop it.
+  function loadRepresentatives(company) {
+    const select = form.querySelector('#representative_id');
+    if (!select) return;
+
+    window.$(select).on('change', () => clearFieldError(select));
+
+    const fill = (users) => {
+      select.innerHTML = '<option value=""></option>';
+      const seen = new Set();
+      const add = (u) => {
+        if (seen.has(u.id)) return;
+        seen.add(u.id);
+        const opt = document.createElement('option');
+        opt.value = u.id;
+        opt.textContent = `${u.name} (${u.email})`;
+        select.appendChild(opt);
+      };
+      users.forEach(add);
+      if (company.representative) add(company.representative);
+      select.value = company.representative ? String(company.representative.id) : '';
+      window.initGcmSelects(form);
+      window.refreshGcmSelect(select);
+    };
+
+    window
+      .gcmFetchAll('/api/v1/users', { company_id: company.id, role: 'client_project_manager', status: 'active', sort_by: 'name' })
+      .then(fill)
+      .catch(() => fill([]));
+  }
+
+  // Create: the representative picker is shown locked (a new company has no
+  // accounts yet) — still a Select2 like every other select.
+  if (mode === 'create') {
+    window.initGcmSelects(form);
+  }
+
   if (mode === 'edit') {
     const cancel = document.getElementById('company-form-cancel');
     if (cancel) {
@@ -268,6 +307,7 @@ export function initCompanyForm(opts) {
       .then((res) => {
         const company = res.data.data;
         prefill(company);
+        loadRepresentatives(company);
         loading.classList.add('d-none');
         form.classList.remove('d-none');
         onLoaded(company);

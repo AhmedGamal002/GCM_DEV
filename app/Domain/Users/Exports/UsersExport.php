@@ -2,6 +2,7 @@
 
 namespace App\Domain\Users\Exports;
 
+use App\Support\PdfLabels;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -34,8 +35,8 @@ class UsersExport implements FromCollection, WithHeadings, WithMapping
         return [
             $user->code,
             $user->name,
-            $user->affiliation === 'gcm' ? 'GCM' : $user->affiliation,
-            $user->affiliation === 'gcm' ? $user->tenant->name : null,
+            PdfLabels::of($user->affiliation),
+            $user->entityName(),
             $user->getRoleNames()->implode(', '),
             $user->status,
         ];

@@ -4,6 +4,8 @@ namespace App\Http\Requests\Projects;
 
 use App\Http\Requests\Concerns\NormalizesRichTextInput;
 use App\Models\Project;
+use App\Models\User;
+use Closure;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -11,10 +13,13 @@ use Illuminate\Validation\Rule;
  * FRD V01.14 §1.12.2 "Create new project" form.
  *
  * The owning company must be one of the tenant's ACTIVE companies — a
- * deactivated company "is no longer offered for new work". The "project
- * representative account" field is not offered yet: it picks one of the
- * project's own user accounts, and client accounts don't exist until
- * FRD §1.4 is built.
+ * deactivated company "is no longer offered for new work".
+ *
+ * The optional "project representative account" (FRD §1.12) picks one of
+ * the project's own client accounts. A project that is only being created
+ * has no explicitly assigned accounts yet, so only the chosen company's
+ * "all projects" accounts qualify here; on edit (UpdateProjectRequest) it is
+ * any account that can see the project.
  */
 class StoreProjectRequest extends FormRequest
 {
@@ -43,7 +48,30 @@ class StoreProjectRequest extends FormRequest
                     ->where('operational_status', 'active'),
             ],
             'operational_status' => ['required', Rule::in(['active', 'deactivated'])],
+            'representative_id' => ['nullable', 'integer', $this->representativeRule()],
         ];
+    }
+
+    /**
+     * An account qualifies when it is an active client account (manager or
+     * auditor — FRD: "من ضمن مديري ومشرفي المشروع") that can see the
+     * project. Overridden on edit, where the project already exists.
+     */
+    protected function representativeRule(): Closure
+    {
+        return function (string $attribute, mixed $value, Closure $fail) {
+            $user = User::find($value);
+
+            $valid = $user
+                && $user->isClient()
+                && $user->status === 'active'
+                && $user->all_projects
+                && $user->company_id === (int) $this->input('company_id');
+
+            if (! $valid) {
+                $fail(__('Choose an active client account that has access to this project.'));
+            }
+        };
     }
 
     /**

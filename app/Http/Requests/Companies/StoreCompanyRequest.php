@@ -14,9 +14,11 @@ use Illuminate\Validation\Rule;
  * tenant's companies — normalised to upper case before validating so
  * "abc" and "ABC" can't coexist.
  *
- * The "client representative account" field is not offered yet: it picks
- * one of the company's own user accounts, and client accounts don't exist
- * until FRD §1.4 is built.
+ * The optional "client representative account" (FRD §1.11) is only offered
+ * on edit (UpdateCompanyRequest): it picks one of the company's own project
+ * managers, and a company that is just being created has none yet — the FRD
+ * itself says it "can be updated later, after the project managers' accounts
+ * are created".
  */
 class StoreCompanyRequest extends FormRequest
 {

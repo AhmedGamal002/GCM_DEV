@@ -36,9 +36,47 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('uv-code').textContent = u.code;
     document.getElementById('uv-email').textContent = u.email;
     document.getElementById('uv-phone').textContent = u.phone;
-    document.getElementById('uv-affiliation').textContent = u.affiliation === 'gcm' ? 'GCM' : u.affiliation;
-    document.getElementById('uv-entity').textContent = u.entity_name || '';
-    document.getElementById('uv-role').textContent = u.roles.join(', ');
+    document.getElementById('uv-affiliation').textContent =
+      u.affiliation === 'gcm' ? 'GCM' : u.affiliation === 'client' ? t.affiliation_client || 'Client' : u.affiliation;
+    document.getElementById('uv-role').textContent = u.roles.map((r) => t['role_' + r] || r).join(', ');
+
+    // Client accounts (FRD §1.4): the entity is the company (linked) and the
+    // projects they may see. All names are user input — DOM text, no innerHTML.
+    const isClient = u.affiliation === 'client';
+    const entity = document.getElementById('uv-entity');
+    entity.textContent = '';
+    if (isClient && u.company) {
+      const a = document.createElement('a');
+      a.href = `${t.company_url_base}/${u.company.id}`;
+      a.textContent = u.company.name;
+      entity.appendChild(a);
+    } else {
+      entity.textContent = u.entity_name || '';
+    }
+
+    if (isClient) {
+      const projects = document.getElementById('uv-projects');
+      projects.textContent = '';
+      if (u.projects_scope === 'all') {
+        projects.textContent = t.all_projects || 'All projects';
+      } else {
+        (u.projects || []).forEach((p, i) => {
+          if (i) projects.appendChild(document.createTextNode(', '));
+          const a = document.createElement('a');
+          a.href = `${t.project_url_base}/${p.id}`;
+          a.textContent = p.name;
+          projects.appendChild(a);
+        });
+      }
+      document.getElementById('uv-projects-row').classList.remove('d-none');
+
+      [['signature', u.signature_url], ['stamp', u.stamp_url]].forEach(([key, url]) => {
+        if (!url) return;
+        document.getElementById(`uv-${key}`).src = url;
+        document.getElementById(`uv-${key}-wrap`).classList.remove('d-none');
+        document.getElementById('uv-images').classList.remove('d-none');
+      });
+    }
 
     if (u.updated_by_name && t.last_updated_by) {
       const at = u.updated_at ? new Date(u.updated_at).toLocaleString() : '';
@@ -69,7 +107,8 @@ document.addEventListener('DOMContentLoaded', function () {
     statusBadge.textContent = s.title;
     statusBadge.className = 'badge ' + s.class;
 
-    document.getElementById('uv-edit-link').href = t.edit_url_base + '/' + u.id;
+    // A client account is edited on its own form (company, project access, signature/stamp).
+    document.getElementById('uv-edit-link').href = (isClient ? t.client_edit_url_base : t.edit_url_base) + '/' + u.id;
 
     document.querySelector(`#userStatusForm input[name="new_status"][value="${u.status}"]`).checked = true;
 

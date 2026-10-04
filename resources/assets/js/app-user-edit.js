@@ -7,6 +7,8 @@ document.addEventListener('DOMContentLoaded', function () {
   const loading = document.getElementById('user-edit-loading');
   const driverRedirect = document.getElementById('user-edit-driver-redirect');
   const driverLink = document.getElementById('user-edit-driver-link');
+  const clientRedirect = document.getElementById('user-edit-client-redirect');
+  const clientLink = document.getElementById('user-edit-client-link');
   const formWrapper = document.getElementById('user-edit-form-wrapper');
   const statusBox = document.getElementById('user-edit-status');
   const errorBox = document.getElementById('user-edit-error');
@@ -39,6 +41,16 @@ document.addEventListener('DOMContentLoaded', function () {
         driverLink.href = t.driver_edit_url_base + '/' + u.driver_id;
         loading.classList.add('d-none');
         driverRedirect.classList.remove('d-none');
+        return;
+      }
+
+      // Same for a client account — its company, project access and
+      // signature/stamp live on the client account form, and this form would
+      // re-role it to a GCM role.
+      if (u.affiliation === 'client') {
+        clientLink.href = t.client_edit_url_base + '/' + u.id;
+        loading.classList.add('d-none');
+        clientRedirect.classList.remove('d-none');
         return;
       }
 

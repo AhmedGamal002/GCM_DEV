@@ -47,12 +47,16 @@ $(function () {
   // trigger a fresh server request instead of a client-side re-filter.
   let currentRole = '';
   let currentStatus = '';
+  let currentAffiliation = '';
+  let currentCompany = '';
 
   // Filters currently applied to the list — the table's own requests AND the
   // Excel/PDF export read this, so an export always matches what is on screen.
   const listParams = () => ({
     role: currentRole || undefined,
-    status: currentStatus || undefined
+    status: currentStatus || undefined,
+    affiliation: currentAffiliation || undefined,
+    company_id: currentCompany || undefined
   });
 
   dtUserTable.DataTable({
@@ -110,12 +114,13 @@ $(function () {
       {
         targets: 4,
         orderable: false,
-        render: (data, type, full) => (full.affiliation === 'gcm' ? 'GCM' : full.affiliation)
+        render: (data, type, full) =>
+          escapeHtml(full.affiliation === 'gcm' ? 'GCM' : full.affiliation === 'client' ? t.affiliation_client || 'Client' : full.affiliation)
       },
       {
         targets: 5,
         orderable: false,
-        render: (data, type, full) => full.entity_name || ''
+        render: (data, type, full) => escapeHtml(full.entity_name || '')
       },
       {
         targets: 6,
@@ -193,9 +198,9 @@ $(function () {
       {
         // Per the FRD: "Add User" opens a menu of the main user
         // categories, each with its own dedicated form — not a single
-        // shared form with a role picker. Only 2 categories exist so far
-        // (GCM staff, driver); Client/Contractor slot into this same
-        // menu once those entities land (Week 4-5), no restructuring.
+        // shared form with a role picker. GCM staff, client accounts and
+        // drivers so far; contractor users slot into this same menu once
+        // the Contractor module lands.
         extend: 'collection',
         className: 'add-new btn btn-primary dropdown-toggle waves-effect waves-light',
         text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">' + (t.add_user || 'Add User') + '</span>',
@@ -204,6 +209,11 @@ $(function () {
             text: '<i class="ti ti-users me-2"></i>' + (t.add_gcm_staff || 'GCM Staff'),
             className: 'dropdown-item',
             action: () => window.location.assign(t.add_user_url || '/app/user/add')
+          },
+          {
+            text: '<i class="ti ti-building-community me-2"></i>' + (t.add_client || 'Client Account'),
+            className: 'dropdown-item',
+            action: () => window.location.assign(t.add_client_url || '/app/client-user/add')
           },
           {
             text: '<i class="ti ti-steering-wheel me-2"></i>' + (t.add_driver || 'Driver'),
@@ -246,8 +256,35 @@ $(function () {
           currentRole = $(this).val();
           api.draw();
         });
-      ['data_entry', 'auditor', 'driver'].forEach((role) => {
+      ['data_entry', 'auditor', 'client_project_manager', 'client_project_auditor', 'driver'].forEach((role) => {
         roleSelect.append('<option value="' + role + '">' + role + '</option>');
+      });
+
+      const affiliationSelect = $(
+        '<select class="form-select"><option value="">' + (t.all_affiliations || 'All affiliations') + '</option></select>'
+      )
+        .appendTo('.user_affiliation')
+        .on('change', function () {
+          currentAffiliation = $(this).val();
+          api.draw();
+        });
+      affiliationSelect.append('<option value="gcm">' + (t.affiliation_gcm || 'GCM') + '</option>');
+      affiliationSelect.append('<option value="client">' + (t.affiliation_client || 'Client') + '</option>');
+
+      // Client companies — reference data for the "entity" filter, so every
+      // company is fetched (not a fixed per_page that would drop rows).
+      const companySelect = $(
+        '<select class="form-select"><option value="">' + (t.all_companies || 'All companies') + '</option></select>'
+      )
+        .appendTo('.user_company')
+        .on('change', function () {
+          currentCompany = $(this).val();
+          api.draw();
+        });
+      window.gcmFetchAll('/api/v1/companies', { sort_by: 'name' }).then((companies) => {
+        companies.forEach((c) => {
+          companySelect.append($('<option>').val(c.id).text(c.name));
+        });
       });
 
       const statusSelect = $(

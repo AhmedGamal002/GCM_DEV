@@ -18,7 +18,7 @@ Dashboard, then an **Accounts** section (Users · Drivers), a **Fleet & Assets**
 ## 2. Users — `/app/user/list`
 
 - **View** the list of GCM staff accounts + **export** (Excel / PDF).
-- **View details** of any account.
+- **View details** of any account — client accounts included (company, projects, signature/stamp images).
 - **Not allowed:** the "Add User" button won't open a working form, and there are no edit or status-change controls.
 
 ## 3. Drivers — `/app/driver/list`

@@ -68,6 +68,67 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
+// Signature & Stamp — only rendered for client accounts (FRD §1.4), so the
+// form may not exist. Both images are optional individually, but at least one
+// has to be chosen; the server keeps whichever one is left out.
+document.addEventListener('DOMContentLoaded', function () {
+  const form = document.getElementById('formSignatureStamp');
+  if (!form) return;
+
+  const statusBox = document.getElementById('signature-status');
+  const errorBox = document.getElementById('signature-error');
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    statusBox.classList.add('d-none');
+    errorBox.classList.add('d-none');
+
+    const signature = document.getElementById('signature').files[0];
+    const stamp = document.getElementById('stamp').files[0];
+
+    if (!signature && !stamp) {
+      errorBox.textContent = form.dataset.nothingMessage;
+      errorBox.classList.remove('d-none');
+      return;
+    }
+
+    // Server limit: 2 MB per image — fail now, not after the upload.
+    const tooLarge = window.gcmFileGuard(form, { default: 2048 });
+    if (tooLarge) {
+      errorBox.textContent = tooLarge;
+      errorBox.classList.remove('d-none');
+      return;
+    }
+
+    const data = new FormData();
+    data.append('_method', 'PATCH');
+    if (signature) data.append('signature', signature);
+    if (stamp) data.append('stamp', stamp);
+
+    window.gcmBusy.start({ progress: true });
+
+    window.axios
+      .post('/api/v1/me', data, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+        onUploadProgress: window.gcmBusy.onUploadProgress
+      })
+      .then(function () {
+        window.location.reload();
+      })
+      .catch(function (error) {
+        window.gcmBusy.stop();
+        const message =
+          error.response && error.response.data && error.response.data.errors
+            ? Object.values(error.response.data.errors).flat().join(' ')
+            : form.dataset.genericError;
+
+        errorBox.textContent = message;
+        errorBox.classList.remove('d-none');
+      });
+  });
+});
+
 // Change Password — second card on the same profile page (was its own
 // tab/page before; merged in per the client's request). Only rendered for
 // roles User::canChangeOwnPassword() allows, so the form may not exist.

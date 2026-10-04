@@ -53,16 +53,16 @@ class ProjectController extends Controller
     {
         $project = $action->execute($request->validated(), $request->user());
 
-        return ProjectResource::make($project)->response()->setStatusCode(201);
+        return $this->present($project->id)->response()->setStatusCode(201);
     }
 
     public function show(int $project)
     {
-        $project = Project::with(['company', 'updatedBy'])->findOrFail($project);
+        $resource = $this->present($project);
 
-        Gate::authorize('view', $project);
+        Gate::authorize('view', $resource->resource);
 
-        return ProjectResource::make($project);
+        return $resource;
     }
 
     public function update(UpdateProjectRequest $request, int $project, UpdateProjectAction $action)
@@ -71,7 +71,7 @@ class ProjectController extends Controller
 
         $project = $action->execute($project, $request->validated(), $request->user());
 
-        return ProjectResource::make($project);
+        return $this->present($project->id);
     }
 
     public function status(UpdateProjectStatusRequest $request, int $project, UpdateProjectStatusAction $action)
@@ -79,7 +79,15 @@ class ProjectController extends Controller
         $project = Project::findOrFail($project);
         $project = $action->execute($project, $request->validated('status'), $request->user());
 
-        return ProjectResource::make($project);
+        return $this->present($project->id);
+    }
+
+    /** The project with everything the resource shows (representative, user count) loaded. */
+    private function present(int $id): ProjectResource
+    {
+        return ProjectResource::make(
+            Project::withUsersCount()->with(['company', 'representative', 'updatedBy'])->findOrFail($id)
+        );
     }
 
     public function export(Request $request)
@@ -113,7 +121,8 @@ class ProjectController extends Controller
     private function filteredQuery(Request $request): Builder
     {
         return Project::query()
-            ->with('company')
+            ->withUsersCount()
+            ->with(['company', 'representative'])
             ->when($request->filled('company_id'), fn ($q) => $q->where('company_id', $request->integer('company_id')))
             ->when($request->filled('operational_status'), fn ($q) => $q->where('operational_status', $request->string('operational_status')))
             ->when($request->filled('search'), function ($q) use ($request) {

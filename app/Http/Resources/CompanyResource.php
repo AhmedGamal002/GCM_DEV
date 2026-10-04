@@ -22,9 +22,12 @@ class CompanyResource extends JsonResource
             'business_sector' => $this->business_sector,
             'logo_url' => $this->logo ? Storage::disk('public')->url($this->logo) : null,
 
-            // The client representative account needs client user accounts
-            // (FRD §1.4) — null until those exist.
-            'representative' => null,
+            // FRD §1.11 "حساب ممثل العميل" — one of the company's project managers.
+            'representative' => $this->representative ? [
+                'id' => $this->representative->id,
+                'name' => $this->representative->name,
+                'email' => $this->representative->email,
+            ] : null,
 
             'phone' => $this->phone,
             'email' => $this->email,
@@ -49,11 +52,11 @@ class CompanyResource extends JsonResource
             'operational_status' => $this->operational_status,
             'additional_data' => $this->additional_data,
 
-            // Client users (§1.4), contracts and trips don't exist yet, so
-            // those counts are 0 until those modules land. The project count
-            // comes from withCount('projects') in the controller.
+            // Contracts and trips don't exist yet, so those figures are 0
+            // until those modules land. The project and user counts come
+            // from withCount() in the controller.
             'projects_count' => (int) ($this->projects_count ?? 0),
-            'users_count' => 0,
+            'users_count' => (int) ($this->users_count ?? 0),
             'stats' => [
                 'projects' => (int) ($this->projects_count ?? 0),
                 'contracts' => 0,

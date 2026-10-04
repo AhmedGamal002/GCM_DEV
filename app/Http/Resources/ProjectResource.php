@@ -27,9 +27,12 @@ class ProjectResource extends JsonResource
 
             'operational_region' => $this->operational_region,
 
-            // The project representative account needs client user
-            // accounts (FRD §1.4) — null until those exist.
-            'representative' => null,
+            // FRD §1.12 "حساب ممثل المشروع" — one of the project's client accounts.
+            'representative' => $this->representative ? [
+                'id' => $this->representative->id,
+                'name' => $this->representative->name,
+                'email' => $this->representative->email,
+            ] : null,
 
             'phone' => $this->phone,
             'email' => $this->email,
@@ -39,10 +42,11 @@ class ProjectResource extends JsonResource
             'operational_status' => $this->operational_status,
             'additional_data' => $this->additional_data,
 
-            // Contracts (FRD §1.13), client users (§1.4) and trips don't
-            // exist yet, so every figure below is 0 until those modules land.
+            // Contracts (FRD §1.13) and trips don't exist yet, so those
+            // figures are 0 until those modules land. The user count (client
+            // accounts that can see the project) comes from withUsersCount().
             'contracts_count' => 0,
-            'users_count' => 0,
+            'users_count' => (int) ($this->users_count ?? 0),
             'stats' => [
                 'contracts' => 0,
                 'trips' => 0,

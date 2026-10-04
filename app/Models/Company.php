@@ -18,6 +18,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *  - operational_status — only ever set through UpdateCompanyStatusAction
  *  - updated_by         — set explicitly by the create/update actions
  *  - the *_path columns — set by the actions after storing the uploads
+ *  - representative_id  — the optional representative account (FRD §1.11),
+ *                         set by the update action after validation
  */
 class Company extends Model
 {
@@ -87,7 +89,19 @@ class Company extends Model
         return $this->hasMany(Project::class);
     }
 
-    public function updatedBy(): BelongsTo
+    /** Every client account of this company (FRD §1.4), whatever its status. */
+  public function users(): HasMany
+  {
+    return $this->hasMany(User::class);
+  }
+
+  /** FRD §1.11 "حساب ممثل العميل" — optional; one of the company's project managers. */
+  public function representative(): BelongsTo
+  {
+    return $this->belongsTo(User::class, 'representative_id');
+  }
+
+  public function updatedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'updated_by');
     }

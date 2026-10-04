@@ -22,6 +22,7 @@ use App\Http\Controllers\Web\Projects\ProjectAddController;
 use App\Http\Controllers\Web\Projects\ProjectListController;
 use App\Http\Controllers\Web\Services\MainServicePageController;
 use App\Http\Controllers\Web\Services\SubServicePageController;
+use App\Http\Controllers\Web\Users\ClientUserController;
 use App\Http\Controllers\Web\Users\UserAccountController;
 use App\Http\Controllers\Web\Users\UserAddController;
 use App\Http\Controllers\Web\Users\UserListController;
@@ -64,6 +65,10 @@ Route::middleware(['auth', 'tenant'])->group(function () {
     Route::get('/app/user/add', [UserAddController::class, 'index'])->name('app-user-add');
     Route::get('/app/user/view/{user}', [UserAccountController::class, 'view'])->whereNumber('user')->name('app-user-view');
     Route::get('/app/user/edit/{user}', [UserAccountController::class, 'edit'])->whereNumber('user')->name('app-user-edit');
+
+    // Client accounts (project managers / auditors of a client company) — the details page is app-user-view.
+    Route::get('/app/client-user/add', [ClientUserController::class, 'add'])->name('app-client-user-add');
+    Route::get('/app/client-user/edit/{user}', [ClientUserController::class, 'edit'])->whereNumber('user')->name('app-client-user-edit');
 
     // Drivers
     Route::get('/app/driver/list', [DriverAccountController::class, 'list'])->name('app-driver-list');
