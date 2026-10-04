@@ -26,6 +26,11 @@ class UpdateContractorAction
             $contractor->fill($data);
             $contractor->updated_by = $actor->id;
 
+            // Outside $fillable on purpose; absent from the payload = unchanged.
+            if (array_key_exists('representative_id', $data)) {
+                $contractor->representative_id = $data['representative_id'];
+            }
+
             StoreContractorFiles::into($contractor, $files);
 
             $contractor->save();
@@ -34,7 +39,7 @@ class UpdateContractorAction
                 $contractor->certifiedServices()->sync($data['main_service_ids'] ?? []);
             }
 
-            return $contractor->load(['updatedBy', 'certifiedServices']);
+            return $contractor->load(['updatedBy', 'certifiedServices', 'representative']);
         });
     }
 }

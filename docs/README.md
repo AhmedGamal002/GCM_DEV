@@ -33,6 +33,7 @@
 | 5 (المرحلة 2) | المنشآت الوسيطة | ✅ | `acceptance/week-5-facilities.md` |
 | 5 (المرحلة 2) | الخدمات الأساسية والفرعية | ✅ | `acceptance/week-5-services.md` |
 | 5 (المرحلة 2) | المتعهدون + تبعية السائق / المركبة / الأصل لمتعهد | ✅ | `acceptance/week-5-contractors.md` |
+| 5 (المرحلة 2) | حسابات مستخدمي المتعهد + ممثل المتعهد | ✅ | `acceptance/week-5-contractor-users.md` |
 | 5 (المرحلة 2) | مشروعات العملاء + إدراج أصل في مشروع | ✅ | `acceptance/week-5-projects.md` |
 | 5 (المرحلة 2) | حسابات العملاء (مدير/مراقب مشروعات) + ممثل الشركة والمشروع | ✅ | `acceptance/week-5-client-accounts.md` |
 | 5 (المرحلة 2) | حالة الحساب (تعطيل فوري / في إجازة) + إخفاء مدير النظام عن مدخل البيانات | ✅ | `acceptance/week-5-account-status.md` |

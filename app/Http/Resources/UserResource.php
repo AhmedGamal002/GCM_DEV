@@ -36,6 +36,14 @@ class UserResource extends JsonResource
                 'code' => $this->company->code,
                 'name' => $this->company->name,
             ] : null),
+            // Contractor users only (FRD §1.4) — the contractor company they belong to.
+            // (A contractor-supplied driver carries it too, but through its driver record.)
+            'contractor_id' => $this->contractor_id,
+            'contractor' => $this->whenLoaded('contractor', fn () => $this->contractor ? [
+                'id' => $this->contractor->id,
+                'code' => $this->contractor->code,
+                'name' => $this->contractor->name,
+            ] : null),
             'projects_scope' => $this->company_id === null ? null : ($this->all_projects ? 'all' : 'specific'),
             'projects' => $this->whenLoaded('projects', fn () => $this->projects->map(fn ($p) => [
                 'id' => $p->id,

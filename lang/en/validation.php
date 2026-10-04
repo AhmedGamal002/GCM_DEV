@@ -188,6 +188,7 @@ return [
         'company_id' => 'company',
         'project_ids' => 'projects',
         'projects_scope' => 'projects',
+        'contractor_id' => 'contractor',
         'representative_id' => 'representative account',
         'additional_data' => 'additional data',
         'operational_status' => 'operational status',

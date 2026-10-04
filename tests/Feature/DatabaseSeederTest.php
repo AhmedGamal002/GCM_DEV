@@ -45,4 +45,20 @@ class DatabaseSeederTest extends TestCase
         $this->assertSame(['Al Noor Tower'], $auditor->projects()->pluck('name')->all());
         $this->assertSame($auditor->id, $auditor->projects()->first()->representative_id);
     }
+
+    public function test_seeded_contractor_users_belong_to_a_contractor_and_one_is_its_representative(): void
+    {
+        $this->seed(DatabaseSeeder::class);
+
+        $desert = User::where('email', 'contractor.desert@gcm.test')->firstOrFail();
+        $gulf = User::where('email', 'contractor.gulf@gcm.test')->firstOrFail();
+
+        $this->assertTrue($desert->isContractorUser());
+        $this->assertSame('contractor', $desert->affiliation);
+        $this->assertSame('DSH', $desert->contractor->prefix);
+        $this->assertSame($desert->id, $desert->contractor->representative_id);
+
+        $this->assertSame('GLG', $gulf->contractor->prefix);
+        $this->assertNull($gulf->contractor->representative_id);
+    }
 }

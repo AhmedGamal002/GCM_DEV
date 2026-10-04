@@ -57,6 +57,7 @@
         <ul class="list-unstyled mb-6">
           <li class="mb-2"><span class="h6">{{ __('ID') }}:</span> <span id="cv-code" dir="ltr"></span></li>
           <li class="mb-2"><span class="h6">{{ __('Short name') }}:</span> <span id="cv-prefix" dir="ltr"></span></li>
+          <li class="mb-2"><span class="h6">{{ __('Contractor representative') }}:</span> <span id="cv-representative">—</span></li>
           <li class="mb-2"><span class="h6">{{ __('Phone') }}:</span> <span id="cv-phone" dir="ltr"></span></li>
           <li class="mb-2"><span class="h6">{{ __('Address') }}:</span> <span id="cv-address"></span></li>
           <li class="mb-2"><span class="h6">{{ __('Location (map link)') }}:</span> <span id="cv-location">—</span></li>

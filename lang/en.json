@@ -750,5 +750,19 @@
   "No main services are available yet.": "No main services are available yet.",
   "Select contractor": "Select contractor",
   "Choose one of the contractors in the list.": "Choose one of the contractors in the list.",
-  "This contractor is deactivated — choose an active contractor.": "This contractor is deactivated — choose an active contractor."
+  "This contractor is deactivated — choose an active contractor.": "This contractor is deactivated — choose an active contractor.",
+  "Create Contractor User": "Create Contractor User",
+  "Edit Contractor User": "Edit Contractor User",
+  "Add Contractor User": "Add Contractor User",
+  "Contractor User": "Contractor User",
+  "Choose one of the active contractors.": "Choose one of the active contractors.",
+  "Choose an active user of this contractor.": "Choose an active user of this contractor.",
+  "contractor user form": "contractor user form",
+  "This account belongs to a contractor company — edit it from the": "This account belongs to a contractor company — edit it from the",
+  "instead, where its contractor is also editable.": "instead, where its contractor is also editable.",
+  "This account is not a contractor user — edit it from the Users page instead.": "This account is not a contractor user — edit it from the Users page instead.",
+  "Contractor representative account": "Contractor representative account",
+  "Contractor representative": "Contractor representative",
+  "Available after you create the contractor and add its users — choose it from the edit page.": "Available after you create the contractor and add its users — choose it from the edit page.",
+  "Optional. Lists the active users of this contractor.": "Optional. Lists the active users of this contractor."
 }

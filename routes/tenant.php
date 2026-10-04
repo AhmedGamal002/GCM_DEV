@@ -26,6 +26,7 @@ use App\Http\Controllers\Web\Projects\ProjectListController;
 use App\Http\Controllers\Web\Services\MainServicePageController;
 use App\Http\Controllers\Web\Services\SubServicePageController;
 use App\Http\Controllers\Web\Users\ClientUserController;
+use App\Http\Controllers\Web\Users\ContractorUserController;
 use App\Http\Controllers\Web\Users\UserAccountController;
 use App\Http\Controllers\Web\Users\UserAddController;
 use App\Http\Controllers\Web\Users\UserListController;
@@ -72,6 +73,9 @@ Route::middleware(['auth', 'tenant'])->group(function () {
     // Client accounts (project managers / auditors of a client company) — the details page is app-user-view.
     Route::get('/app/client-user/add', [ClientUserController::class, 'add'])->middleware('can:create,App\\Models\\User')->name('app-client-user-add');
     Route::get('/app/client-user/edit/{user}', [ClientUserController::class, 'edit'])->whereNumber('user')->middleware('can:create,App\\Models\\User')->name('app-client-user-edit');
+    // Contractor users (the users of a contractor company) — the details page is app-user-view.
+    Route::get('/app/contractor-user/add', [ContractorUserController::class, 'add'])->middleware('can:create,App\\Models\\User')->name('app-contractor-user-add');
+    Route::get('/app/contractor-user/edit/{user}', [ContractorUserController::class, 'edit'])->whereNumber('user')->middleware('can:create,App\\Models\\User')->name('app-contractor-user-edit');
 
     // Drivers
     Route::get('/app/driver/list', [DriverAccountController::class, 'list'])->name('app-driver-list');

@@ -153,7 +153,7 @@ php artisan migrate --force
 - غيّر الباسوردات فورًا بعد الزرع، أو
 - احمي البيئة كلها بـ HTTP Basic Auth من hPanel (Advanced → Password Protect Directories) لحد ما يبقى فيها بيانات حقيقية.
 
-**⚠️ أدوار العميل (`client_project_manager` / `client_project_auditor`) بتتزرع من `RoleSeeder` مش من migration** — على بيئة موجودة أصلًا (`staging`/`production`) شغّل بعد `migrate` مرة واحدة:
+**⚠️ أدوار العميل (`client_project_manager` / `client_project_auditor`) ودور مستخدم المتعهد (`contractor_user`) بتتزرع من `RoleSeeder` مش من migration** — على بيئة موجودة أصلًا (`staging`/`production`) شغّل بعد `migrate` مرة واحدة:
 
 ```bash
 php artisan db:seed --class=RoleSeeder --force

@@ -72,7 +72,7 @@ class UserController extends Controller
         // driver_id (see UserResource) to detect a driver-role user and
         // redirect to the dedicated Drivers edit page instead of showing
         // the (policy-blocked, see UserPolicy::update()) generic form.
-        $user = User::with(['driver', 'updatedBy', 'company', 'projects'])->findOrFail($user);
+        $user = User::with(['driver', 'updatedBy', 'company', 'projects', 'contractor'])->findOrFail($user);
 
         Gate::authorize('view', $user);
 

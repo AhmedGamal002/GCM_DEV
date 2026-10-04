@@ -388,6 +388,7 @@ const CLIENT_GROUPS = [
   { title: 'المنشآت الوسيطة', ids: ['week-5-facilities#2', 'week-5-facilities#4', 'week-5-facilities#5', 'week-5-facilities#6', 'week-5-facilities#7', 'week-5-facilities#8', 'week-5-facilities#9', 'week-5-facilities#11', 'week-5-facilities#12'] },
   { title: 'الخدمات', ids: ['week-5-services#2', 'week-5-services#4', 'week-5-services#5', 'week-5-services#6', 'week-5-services#7', 'week-5-services#8', 'week-5-services#9', 'week-5-services#10', 'week-5-services#11', 'week-5-services#12', 'week-5-services#13', 'week-5-services#14', 'week-5-services#15', 'week-5-services#16'] },
   { title: 'المتعهدين', ids: ['week-5-contractors#2', 'week-5-contractors#4', 'week-5-contractors#5', 'week-5-contractors#6', 'week-5-contractors#7', 'week-5-contractors#8', 'week-5-contractors#9', 'week-5-contractors#10', 'week-5-contractors#11', 'week-5-contractors#12', 'week-5-contractors#13', 'week-5-contractors#14'] },
+  { title: 'مستخدمو المتعهدين', ids: ['week-5-contractor-users#1', 'week-5-contractor-users#2', 'week-5-contractor-users#3', 'week-5-contractor-users#4', 'week-5-contractor-users#5', 'week-5-contractor-users#6', 'week-5-contractor-users#7', 'week-5-contractor-users#8', 'week-5-contractor-users#9'] },
   { title: 'شركات العملاء', ids: ['week-4-client-companies#1', 'week-4-client-companies#2', 'week-4-client-companies#3', 'week-4-client-companies#4', 'week-4-client-companies#5', 'week-4-client-companies#6', 'week-4-client-companies#7', 'week-4-client-companies#8', 'week-4-client-companies#9'] },
   { title: 'المشروعات', ids: ['week-5-projects#2', 'week-5-projects#3', 'week-5-projects#4', 'week-5-projects#5', 'week-5-projects#6', 'week-5-projects#7', 'week-5-projects#9', 'week-5-projects#10', 'week-5-projects#11', 'week-5-projects#12', 'week-5-projects#13', 'week-5-projects#15', 'week-5-projects#16', 'week-5-projects#17'] },
   { title: 'الملف الشخصي', ids: ['week-1-2-auth-users-roles#2', 'week-3-frd-gap-review#4'] },
@@ -397,6 +398,14 @@ const CLIENT_GROUPS = [
 ];
 
 const CLIENT_OVERRIDES = {
+  'week-5-contractor-users#3': {
+    stepsList: ['حاول تنشئ مستخدم متعهد ببريد مستخدم بالفعل (مثلًا `admin@gcm.test`).'],
+    expected: 'البريد المكرر بيترفض برسالة واضحة تحت الحقل ومفيش حساب بيتنشأ.',
+  },
+  'week-5-contractor-users#7': {
+    stepsList: ['من صفحة تفاصيل المستخدم غيّر حالته لـ"On Vacation" ثم "Deactivated" بزر "Update Status".'],
+    expected: 'الحالة بتتغيّر في الصفحة وفي القايمة، وبتتطلب تأكيد قبل زر "Update Status".',
+  },
   'week-5-contractors#4': {
     expected:
       'عنوان الصفحة "إنشاء شركة متعهد جديدة" والفورم كروت: البيانات الأساسية (الاسم*، الاسم المختصر*، الاسم التجاري، الشعار، الهاتف، العنوان، رابط الخريطة، الحالة التشغيلية* وافتراضيها "نشط") ثم الخدمات المعتمدة ثم العقد ثم السجل التجاري والضريبي ثم البيانات الإضافية. الفورم الفاضي بيطلّع "This field is required" تحت الاسم والاسم المختصر. بعد الحفظ بترجع للقايمة برسالة نجاح، والمتعهد الجديد رقمه التعريفي `TST-C0004` (الحروف بتتحوّل لكبيرة تلقائي).',

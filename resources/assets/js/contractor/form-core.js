@@ -309,7 +309,44 @@ export function initContractorForm(opts) {
       });
   }
 
+  // FRD §1.10.2 "حساب ممثل المتعهد": one of this contractor's active users. The
+  // saved representative stays selectable even if it is no longer listed (e.g. put
+  // on vacation since) so saving doesn't drop it.
+  function loadRepresentatives(contractor) {
+    const select = form.querySelector('#representative_id');
+    if (!select) return;
+
+    window.$(select).on('change', () => clearFieldError(select));
+
+    const fill = (users) => {
+      select.innerHTML = '<option value=""></option>';
+      const seen = new Set();
+      const add = (u) => {
+        if (seen.has(u.id)) return;
+        seen.add(u.id);
+        const opt = document.createElement('option');
+        opt.value = u.id;
+        // Names are user input — textContent, never innerHTML.
+        opt.textContent = `${u.name} (${u.email})`;
+        select.appendChild(opt);
+      };
+      users.forEach(add);
+      if (contractor.representative) add(contractor.representative);
+      select.value = contractor.representative ? String(contractor.representative.id) : '';
+      window.initGcmSelects(form);
+      window.refreshGcmSelect(select);
+    };
+
+    window
+      .gcmFetchAll('/api/v1/users', { contractor_id: contractor.id, role: 'contractor_user', status: 'active', sort_by: 'name' })
+      .then(fill)
+      .catch(() => fill([]));
+  }
+
+  // Create: the representative picker is shown locked (a new contractor has no
+  // accounts yet) — still a Select2 like every other select.
   if (mode === 'create') {
+    window.initGcmSelects(form);
     loadServices([]);
   }
 
@@ -326,6 +363,7 @@ export function initContractorForm(opts) {
         const contractor = res.data.data;
         prefill(contractor);
         loadServices(contractor.certified_services);
+        loadRepresentatives(contractor);
         loading.classList.add('d-none');
         form.classList.remove('d-none');
         onLoaded(contractor);

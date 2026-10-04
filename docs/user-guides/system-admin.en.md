@@ -39,7 +39,7 @@ The only screen exclusive to the System Admin among tenant roles.
 - **GCM Staff** → standard user-creation form (Data Entry / Auditor roles).
 - **Client Account (Project Manager / Auditor)** → the dedicated client-account form (`/app/client-user/add`) — see "Client accounts" below.
 - **Driver** → sends you to the dedicated driver-creation page (`/app/driver/add`) — a different form.
-- *(The Contractor-user option arrives with the Contractors module.)*
+- **Contractor User** → the dedicated contractor-user form (`/app/contractor-user/add`) — see "Contractor users" below.
 
 ### Create GCM user
 - Fields: name, email, phone, photo (optional), password, status, role (data_entry or auditor only — not system_admin or driver), additional data (optional).
@@ -60,6 +60,15 @@ A client account is a **Project Manager** or **Project Auditor** of one client c
 - The generic "Edit" form for GCM staff refuses a client account (it shows a link to the client form instead) — it would otherwise re-role the account.
 - **Representatives:** an account can be picked as the **company representative** (Client Companies → Edit; project managers of that company only) or the **project representative** (Projects → Add/Edit; accounts that can see the project). If you later demote it, move it to another company, or remove the project from it, the representative field is cleared automatically.
 - Client accounts currently sign in and reach **My Profile only** (photo, password, signature/stamp) — their trips/contracts/reports pages come with those modules.
+
+### Contractor users — `/app/contractor-user/add` and `/app/contractor-user/edit/{id}`
+A contractor user is an account of one contractor company (the role "Contractor User" is fixed — there is no role picker).
+- **Create:** name, email, mobile, password (+ confirm), photo (optional), **contractor** (live-search list — **active** contractors only), account status, additional data.
+- **Details** (`/app/user/view/{id}`): the role "Contractor User", the affiliation "Contractor" and the contractor's name as a link to its page.
+- **Edit:** every field (the email and the contractor too). A blank password keeps the current one; a photo input left empty keeps the stored one. The current contractor stays shown even if it is deactivated later, but you cannot move the user to a deactivated contractor. Status is changed from the edit form or the details page like any other account.
+- The generic "Edit" form for GCM staff refuses a contractor user (it shows a link to its own form) — it would otherwise re-role the account.
+- **Contractor representative:** on **Contractors → Edit** pick the "Contractor representative account" (optional; **active** users of that same contractor only). On create the field is shown locked because a new contractor has no users yet. If you move the user to another contractor, the representative field of the old contractor is cleared automatically.
+- Contractor users currently sign in and reach **My Profile only** (photo, password) — the pages listing their contractor's drivers, vehicles, containers and trips (view/export) come with the Trips module.
 
 ### Change user status
 - **Nobody changes their own status** — not the admin, not Data Entry, not anyone: no "on vacation", no deactivate, no reactivate. The status controls are hidden on your own account's pages and the server refuses the request (403). Ask another account holder who may manage accounts.
@@ -191,7 +200,7 @@ Sidebar: **Operations ← Contractors** (List · Add). System Admin: view, creat
 - **Edit:** every field except the **short name** (locked — the ID is built from it). A file left empty keeps the stored one. The certified services are replaced by whatever is ticked.
 - **Status:** from the "Contractor Status" card on the edit page (confirm checkbox). **Nothing cascades** — deactivating a contractor does not deactivate its drivers, vehicles or assets; a deactivated contractor just isn't offered when you pick a contractor for a new driver / vehicle / asset.
 - **Affiliation:** the driver, vehicle and asset forms now have **Belongs to GCM / Belongs to a Contractor** — choosing a contractor shows a searchable list of the active contractors to pick one. Lists and details then show the **contractor's name** in the affiliation column, and the Users / Drivers / Vehicles / Assets lists filter by it. A vehicle's or driver's affiliation can be changed on edit; an asset's is locked after creation (only its name is editable).
-- *Not yet:* the contractor's **representative account** and the contractor user accounts (they come with the contractor user role).
+- **Representative and contractor users:** the "Contractor representative account" field is on the contractor's edit page, and the user accounts come from Users → Add User → Contractor User — see "Contractor users" in the Users section.
 
 ## 12. Client company management — `/app/company/list`
 
@@ -231,13 +240,13 @@ Sidebar: heading **Clients & Projects** → **Client Projects** (List + Add). A 
 
 | Module | Available | Deferred |
 |---|---|---|
-| Users | Full CRUD + status + export + **client accounts** (company, all/specific projects, signature & stamp) | "Contractor user" option in the Add button (with the contractor user role) |
+| Users | Full CRUD + status + export + **client accounts** (company, all/specific projects, signature & stamp) + **contractor users** | View/export pages of a contractor user for its contractor's resources (with Trips) |
 | Vehicles | Full CRUD + status + export + embedded container | "on a trip" column/counter + vehicle trip log (Week 7) |
 | Drivers | Full CRUD + default vehicle + documents + permits | "on a trip" status (Week 7), mobile app |
 | Assets | Full CRUD + capacities + status + export + **insert an asset into a project** + "in a project" availability | Taking an asset out of a project (with trips) |
 | Intermediate facilities | Create / edit / deactivate + prefix + recycling efficiency + contract + export + supported sub-services + service lock once in use | The trip side of the lock (Week 7) |
 | Main & sub-services | Create / edit / deactivate (cascading to sub-services) + categories, capacities and facilities + recycle receipt + skip colour + main-services export | Real statistics and the PO/trip lock (Weeks 6–7) |
-| Contractors | Full CRUD + deactivate/reactivate + certified services + attachments + statistics + export + **driver / vehicle / asset affiliation to a contractor** | Representative account and contractor user accounts (with the contractor user role) |
+| Contractors | Full CRUD + deactivate/reactivate + certified services + attachments + statistics + export + **driver / vehicle / asset affiliation to a contractor** + **contractor representative account** | — |
 | Client companies | Full CRUD + deactivate/reactivate + attachments + export + projects count + company projects table + **representative + users count** | The contracts section (with Contracts) |
 | Client projects | Full CRUD + deactivate/reactivate + ID from the company short name + project assets + export + **representative + users count** | Contracts section and trip statistics |
 | Dashboard | Shell screen | Real stats (Week 8) |

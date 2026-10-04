@@ -98,7 +98,7 @@ class ContractorController extends Controller
 
     public function show(int $contractor)
     {
-        $contractor = $this->withCounts(Contractor::with(['updatedBy', 'certifiedServices'])->findOrFail($contractor));
+        $contractor = $this->withCounts(Contractor::with(['updatedBy', 'certifiedServices', 'representative'])->findOrFail($contractor));
 
         Gate::authorize('view', $contractor);
 
@@ -119,7 +119,7 @@ class ContractorController extends Controller
         $contractor = Contractor::findOrFail($contractor);
         $contractor = $action->execute($contractor, $request->validated('status'), $request->user());
 
-        return ContractorResource::make($this->withCounts($contractor->load(['updatedBy', 'certifiedServices'])));
+        return ContractorResource::make($this->withCounts($contractor->load(['updatedBy', 'certifiedServices', 'representative'])));
     }
 
     /**

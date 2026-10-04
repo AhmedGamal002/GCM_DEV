@@ -750,5 +750,19 @@
   "No main services are available yet.": "لا توجد خدمات أساسية بعد.",
   "Select contractor": "اختر المتعهد",
   "Choose one of the contractors in the list.": "اختر أحد المتعهدين من القائمة.",
-  "This contractor is deactivated — choose an active contractor.": "هذا المتعهد معطّل — اختر متعهدًا نشطًا."
+  "This contractor is deactivated — choose an active contractor.": "هذا المتعهد معطّل — اختر متعهدًا نشطًا.",
+  "Create Contractor User": "إنشاء مستخدم متعهد",
+  "Edit Contractor User": "تعديل مستخدم متعهد",
+  "Add Contractor User": "إضافة مستخدم متعهد",
+  "Contractor User": "مستخدم متعهد",
+  "Choose one of the active contractors.": "اختر أحد المتعهدين النشطين.",
+  "Choose an active user of this contractor.": "اختر مستخدمًا نشطًا من مستخدمي هذا المتعهد.",
+  "contractor user form": "نموذج مستخدم المتعهد",
+  "This account belongs to a contractor company — edit it from the": "هذا الحساب تابع لشركة متعهد — عدّله من",
+  "instead, where its contractor is also editable.": "بدلًا من ذلك، حيث يمكن تعديل المتعهد التابع له أيضًا.",
+  "This account is not a contractor user — edit it from the Users page instead.": "هذا الحساب ليس مستخدم متعهد — عدّله من صفحة المستخدمين.",
+  "Contractor representative account": "حساب ممثل المتعهد",
+  "Contractor representative": "ممثل المتعهد",
+  "Available after you create the contractor and add its users — choose it from the edit page.": "يتاح بعد إنشاء المتعهد وإضافة مستخدميه — اخترْه من صفحة التعديل.",
+  "Optional. Lists the active users of this contractor.": "اختياري. يعرض المستخدمين النشطين لهذا المتعهد."
 }

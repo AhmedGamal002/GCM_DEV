@@ -16,8 +16,8 @@ use Illuminate\Validation\Rule;
  * the contractor's ID carries a "C" (ALN-C0001), so the two can never clash.
  *
  * The optional "contractor representative account" (FRD §1.10.2) isn't here:
- * it picks one of the contractor's own user accounts, which don't exist until
- * the contractor user role is built.
+ * it picks one of the contractor's own user accounts, which a new contractor
+ * doesn't have yet — it is chosen on the edit page (UpdateContractorRequest).
  *
  * `main_service_ids` = the "Certified services" checkboxes; none ticked
  * means the contractor supports every service.

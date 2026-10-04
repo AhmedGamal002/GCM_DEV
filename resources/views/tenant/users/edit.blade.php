@@ -28,6 +28,7 @@
     view_url_base: @json(url('/app/user/view')),
     driver_edit_url_base: @json(url('/app/driver/edit')),
     client_edit_url_base: @json(url('/app/client-user/edit')),
+    contractor_user_edit_url_base: @json(url('/app/contractor-user/edit')),
     last_updated_by: @json(__('Last updated by :name — :at'))
   };
   window.userEditId = {{ $userId }};
@@ -74,6 +75,19 @@
         {{ __('This account belongs to a client company — edit it from the') }}
         <a href="#" id="user-edit-client-link">{{ __('client account form') }}</a>
         {{ __('instead, where its company and project access are also editable.') }}
+      </span>
+    </div>
+  </div>
+</div>
+
+<div class="card mb-6 d-none" id="user-edit-contractor-redirect">
+  <div class="card-body">
+    <div class="alert alert-info d-flex align-items-center mb-0" role="alert">
+      <i class="ti ti-info-circle me-2"></i>
+      <span>
+        {{ __('This account belongs to a contractor company — edit it from the') }}
+        <a href="#" id="user-edit-contractor-link">{{ __('contractor user form') }}</a>
+        {{ __('instead, where its contractor is also editable.') }}
       </span>
     </div>
   </div>

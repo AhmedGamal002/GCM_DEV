@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Company;
+use App\Models\Contractor;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
@@ -46,6 +47,18 @@ class UserFactory extends Factory
             'company_id' => $company?->id ?? Company::factory(),
             'all_projects' => $allProjects,
         ])->afterCreating(fn (User $user) => $user->assignRole($role));
+    }
+
+    /**
+     * A contractor company's user (FRD §1.4): role contractor_user, affiliated
+     * to the given contractor (a new one when none is passed).
+     */
+    public function contractorUser(?Contractor $contractor = null): static
+    {
+        return $this->state(fn () => [
+            'affiliation' => 'contractor',
+            'contractor_id' => $contractor?->id ?? Contractor::factory(),
+        ])->afterCreating(fn (User $user) => $user->assignRole(User::CONTRACTOR_ROLE));
     }
 
     /**

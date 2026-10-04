@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\V1\Auth\MeController;
 use App\Http\Controllers\Api\V1\Auth\NewPasswordController;
 use App\Http\Controllers\Api\V1\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Api\V1\ClientUserController;
+use App\Http\Controllers\Api\V1\ContractorUserController;
 use App\Http\Controllers\Api\V1\CompanyController;
 use App\Http\Controllers\Api\V1\ContractorController;
 use App\Http\Controllers\Api\V1\DriverController;
@@ -60,6 +61,9 @@ Route::prefix('v1')->group(function () {
         // never through the generic /users form (see StoreClientUserRequest).
         Route::post('/client-users', [ClientUserController::class, 'store']);
         Route::patch('/client-users/{user}', [ClientUserController::class, 'update'])->whereNumber('user');
+        // Contractor users (FRD V01.14 §1.4) — same split, see StoreContractorUserRequest.
+        Route::post('/contractor-users', [ContractorUserController::class, 'store']);
+        Route::patch('/contractor-users/{user}', [ContractorUserController::class, 'update'])->whereNumber('user');
 
         // Fleet — Vehicles (Week 3). Read-only reference lists first, then
         // the resource. /vehicles/export and /vehicles/stats MUST come

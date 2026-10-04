@@ -40,6 +40,8 @@ final class PdfLabels
         // client-company roles
         'client_project_manager' => 'Project Manager',
         'client_project_auditor' => 'Project Auditor',
+        // contractor company
+        'contractor_user' => 'Contractor User',
     ];
 
     public static function of(?string $value): string

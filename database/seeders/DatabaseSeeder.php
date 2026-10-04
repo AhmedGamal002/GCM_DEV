@@ -56,6 +56,9 @@ class DatabaseSeeder extends Seeder
         // Client-company accounts (FRD §1.4) — need the companies/projects seeded above.
         $this->call(ClientUserSeeder::class);
 
+        // Contractor users (FRD §1.4) — need the contractors seeded above.
+        $this->call(ContractorUserSeeder::class);
+
         // A driver needs a matching `drivers` row (residence/license/
         // insurance), not just the role — assignRole() alone reproduced
         // the real bug this seeder is now written to avoid: a driver

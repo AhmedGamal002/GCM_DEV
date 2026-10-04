@@ -78,6 +78,7 @@ return [
         'company_id' => 'الشركة',
         'project_ids' => 'المشروعات',
         'projects_scope' => 'المشروعات',
+        'contractor_id' => 'المتعهد',
         'representative_id' => 'حساب الممثل',
         'additional_data' => 'البيانات الإضافية',
         'prefix' => 'الاسم المختصر',

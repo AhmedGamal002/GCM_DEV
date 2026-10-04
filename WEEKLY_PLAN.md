@@ -288,7 +288,7 @@
 | 3 | **المتعهدين (§1.10)** + `contractor_id` FK في السائقين/المركبات/الأصول + خيار "تابع لمتعهد" | ✅ خلص |
 | 4 | **شركات العملاء (§1.11)** | ✅ خلص |
 | 5 | **المشروعات (§1.12)** + "إدراج أصل في مشروع" + حالة "في مشروع" | ✅ خلص |
-| 6 | **حسابات العملاء** ✅ (+ ممثل الشركة/المشروع + حصر الرؤية في المشروعات) — حسابات **المتعهدين** + "حساب ممثل المتعهد" ⬜ (موديول المتعهدين نفسه خلص، الحسابات لسه) | 🟡 جزئيًا: العملاء خلصوا |
+| 6 | **حسابات العملاء** ✅ (+ ممثل الشركة/المشروع + حصر الرؤية في المشروعات) + **حسابات مستخدمي المتعهد ✅ + "حساب ممثل المتعهد" ✅** | ✅ |
 
 #### ✅ الجزء 2 — الخدمات الأساسية والفرعية (خلص — branch `phase_2_maaloum`)
 - **الداتا:** `main_services` (الاسم فريد لكل tenant، `service_type` = `non_hazardous`/`hazardous`/`supplying`، `operational_status`، بيانات إضافية، `updated_by`) + pivot `main_service_vehicle_category`؛ `sub_services` (`main_service_id`، الاسم فريد جوه نفس الأساسية، `asset_type` حاوية/صهريج، `requires_recycle_receipt`، `skip_color_code` من قائمة ثابتة 11 لون في `SubService::SKIP_COLORS`، الحالة، بيانات إضافية) + pivots `sub_service_asset_capacity` و`sub_service_facility`. مفيش رقم تعريفي (`code`) — الـFRD مابيذكرش واحد للخدمات.
@@ -308,7 +308,7 @@
 - **الـAPI:** `/api/v1/contractors` (list/show/store/update + `/status` + `/export` + `/stats` + تنزيل المرفقات `/contractors/{id}/documents/{contract|cr|tax}`). `filteredQuery()` واحدة لـ`index` و`export` (بحث: الاسم والاسم التجاري والاسم المختصر والرقم التعريفي). كل صف فيه `drivers_count`/`vehicles_count`/`containers_count`/`tanks_count` (`withCount` بشرط `asset_type`)، و`/stats` = أربع كروت (المتعهدين + المركبات + الأصول حاويات/صهاريج + السائقين اللي `contractor_id` بتاعهم مش null).
 - **التبعية (FRD §1.3/§1.5/§1.7):** رادِيو "تابع لـGCM / تابع لمتعهد" بقى شغال في فورمات السائق والمركبة والأصل — اختيار متعهد بيظهر Select2 فيه المتعهدين النشطين. `ValidatesAffiliation` (trait في الـFormRequests) + `Affiliation::attributes()` (بيحوّل الحقلين لأعمدة، و`gcm` بيصفّر `contractor_id`) + `window.gcmAffiliation(form)` (`resources/js/gcm-affiliation.js`) + partial `_partials/affiliation-field`. **التعديل:** المركبة والسائق **قابلين لتغيير التبعية** (الـFRD: "جميع البيانات قابلة للتعديل")، والأصل **مقفول** (الـFRD: الاسم فقط). السائق: `users.affiliation/contractor_id` و`drivers.contractor_id` بيتحدّثوا مع بعض. `affiliation` بقى **إلزامي** في `POST /drivers` (كان بيتجاهل). القوائم والتفاصيل والتصدير بتعرض **اسم المتعهد** في عمود التبعية (`entity_name` + `contractor` في الـresources)، و`contractor_id` فلتر جديد في المركبات/الأصول/السائقين/المستخدمين، و`User::entityName()` بيرجّع اسم المتعهد لسائقه.
 - **الواجهة:** `/app/contractor/{list,add,view,edit}` (قائمة server-side + 4 كروت إحصائيات + فورم بكروت: بيانات أساسية / الخدمات المعتمدة (checkboxes) / العقد / السجلات / بيانات إضافية + تفاصيل بعمودين + كارت التعطيل في التعديل)، بند "Contractors" تحت Operations بعد Services (List · Add)، تصدير Excel/PDF (`app/Domain/Contractors/Exports`).
-- **مؤجّل عمدًا:** "حساب ممثل المتعهد" (محتاج حسابات مستخدمي المتعهد — الجزء 6)، ودور `contractor_user` (مش في `RoleSeeder` لسه).
+- **اتنفّذ بعد كده:** "حساب ممثل المتعهد" ودور `contractor_user` — شوف "حسابات مستخدمي المتعهد" تحت (الجزء 6).
 - **التحقق:** 61 تست جديد (`tests/Feature/Contractors/*` + `ExportFiltersTest` + `MenuVisibilityTest` + `ClientUserAccessTest`) → **746 تست إجمالًا (1 skipped: تست الـFK بيشتغل على MySQL بس)**، وبالمتصفح فعليًا: إنشاء متعهد بخدمة معتمدة، التفاصيل، التعديل (مسح الخدمات = الكل)، التعطيل، فورم المركبة (المتعهدين النشطين بس + prefill في التعديل)، فورم السائق، تعديل أصل تابع لمتعهد (مقفول). ملف القبول `docs/acceptance/week-5-contractors.md` (بنود 2 و4–14 اتضافت لقايمة العميل)، وPostman مجلد "10. Contractors" (والباقي اترقّم 11–16).
 
 #### ✅ الجزء 4 — شركات العملاء (خلص)
@@ -341,7 +341,15 @@
 - **حصر الرؤية:** `Project::scopeVisibleTo(User)` / `isVisibleTo()` / `User::accessibleProjects()` — القاعدة الواحدة اللي أي موديول مبني على المشروعات (الرحلات/التعاقدات/التقارير) **لازم** يفلتر بيها؛ محتاجة تتوصّل بيها هناك (مفيش شاشة عميل بتعرضها لسه — متغطّاة بتستات بس).
 - **الواجهة:** `/app/client-user/add` و`/app/client-user/edit/{id}` (فورم مشترك `tenant/users/_client-form.blade.php` + `resources/assets/js/client-user/form-core.js`)، قائمة المستخدمين (خيار "Add User ← Client Account" + فلاتر التبعية والشركة)، صفحة التفاصيل (الشركة والمشروعات كروابط + التوقيع/الختم)، ملف شخصي بكارت "Signature & Stamp" لحساب العميل، وخانة الممثل في تعديل الشركة وإنشاء/تعديل المشروع (Select2). صفحة `/app/user/edit/{id}` العامة بتحوّل حساب العميل لفورمه.
 - **التحقق:** 87 تست جديد (`tests/Feature/ClientAccounts/*` + `Profile/ClientSignatureStampTest` + `DatabaseSeederTest` + `ReadOnlyRoleListTest`) → **535 تست إجمالًا**، وبالمتصفح فعليًا: إنشاء حساب عميل بمشروع محدد وتوقيع وختم، التفاصيل (الصور بتتحمّل من الرابط المحمي)، التعديل بتغيير الاسم والحالة مع بقاء الصور، ممثل الشركة والمشروع في التعديل والإنشاء، الملف الشخصي لحساب العميل، والعربي (RTL). ملف القبول `docs/acceptance/week-5-client-accounts.md` (بنود 1–13 و17 اتضافت لقايمة العميل)، وPostman: مجلد "4. Users" و"2. Me / Profile" و"9/10".
-- **المتبقي من الجزء 6:** حسابات المتعهدين (مستخدم المتعهد + "حساب ممثل المتعهد" على الشركة/المتعهد) بعد الجزء 3، والتقفيل الشامل للمرحلة 2.
+- **المتبقي من الجزء 6:** التقفيل الشامل للمرحلة 2 (حسابات المتعهدين اتنفّذت — تحت).
+
+#### ✅ الجزء 6 (شق المتعهدين) — حسابات مستخدمي المتعهد + ممثل المتعهد
+- **الداتا:** دور `contractor_user` في `RoleSeeder`، و`users.contractor_id` (موجود من المرحلة 1، FK أضافه الجزء 3) بيتستخدم لمستخدم المتعهد كمان (مش للسائق بس)، وعمود جديد `contractors.representative_id` (FK للمستخدم، `nullOnDelete`) — migration `2026_10_04_100000_add_contractor_representative`.
+- **الـAPI:** `POST /api/v1/contractor-users` و`PATCH /api/v1/contractor-users/{id}` (الإنشاء والتعديل **هنا بس**؛ `POST /users` بيرفض الدور و`PATCH /users/{id}` بيرجّع 403 لمستخدم متعهد). القراءة والحالة والتصدير من `/users` المشتركة (فلتر `contractor_id` اللي زميلي ضافه + `role=contractor_user`). `UserResource` فيه `contractor_id`/`contractor`، و`ContractorResource` فيه `representative`. `PATCH /contractors/{id}` بيقبل `representative_id` (مستخدم نشط من نفس المتعهد؛ القيمة الحالية تفضل مقبولة؛ الغياب = من غير تغيير؛ `null` = تفريغ).
+- **القواعد:** المتعهد لازم نشط وقت الإنشاء، الإيميل فريد على النظام كله وبيتعدّل من الأدمن/مدخل البيانات، نقل المستخدم لمتعهد تاني بيفرّغ ممثل المتعهد القديم (`SyncContractorAccess`). مدير النظام ومدخل البيانات ينشئوا ويعدّلوا ويغيّروا الحالة، المراقب عرض فقط.
+- **الواجهة:** `/app/contractor-user/add` و`/app/contractor-user/edit/{id}` (فورم مشترك `tenant/users/_contractor-user-form.blade.php` + `resources/assets/js/contractor-user/form-core.js`)، "Add User ← Contractor User" وفلتر الدور في قايمة المستخدمين، صفحة التفاصيل (المتعهد كرابط + زر Edit لفورمه)، توجيه الفورم العام لفورمه، حقل "حساب ممثل المتعهد" (Select2، مقفول في الإنشاء) وعرضه في تفاصيل المتعهد.
+- **مؤجّل عمدًا:** صفحات الدور نفسها (عرض/تصدير سائقين/مستخدمي المتعهد/مركبات/حاويات/رحلات متعهده) — جاية مع الرحلات؛ لحد دلوقتي الدور بيدخل للملف الشخصي بس والقائمة فاضية، وأي API إداري بيرجّعله 403 (متغطّى بتستات).
+- **التحقق:** 32 تست جديد (`tests/Feature/Contractors/ContractorUserManagementTest`) + ملف قبول `docs/acceptance/week-5-contractor-users.md` + بالمتصفح فعليًا: إنشاء مستخدم متعهد، تعديل الإيميل والمتعهد والحالة، اختيار وتفريغ ممثل المتعهد، ودخول مستخدم متعهد حقيقي بـbearer token (الـAPI الإدارية 403).
 
 ---
 
@@ -376,7 +384,7 @@
 **مهام الباك اند:**
 - Migration: `main_services`, `sub_services`, `units_of_measure`, `intermediate_facilities`, `facility_sub_service_recycling_rate` (جدول ربط النسب)، `waste_yards`
 - Migration: `contractors` + **إضافة FK constraint على `contractor_id`** في `drivers`, `vehicles`, `assets` (migration منفصلة بـ `Schema::table()`)
-- إضافة دور `contractor_user` للـ Seeder
+- إضافة دور `contractor_user` للـ Seeder (اتنفّذ في الجزء 6)
 - Controllers: `MainServiceController`, `SubServiceController`, `UnitOfMeasureController`, `FacilityController`, `WasteYardController`, `ContractorController`
 
 **ربط Vuexy:**

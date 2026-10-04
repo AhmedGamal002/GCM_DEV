@@ -9,6 +9,8 @@ document.addEventListener('DOMContentLoaded', function () {
   const driverLink = document.getElementById('user-edit-driver-link');
   const clientRedirect = document.getElementById('user-edit-client-redirect');
   const clientLink = document.getElementById('user-edit-client-link');
+  const contractorRedirect = document.getElementById('user-edit-contractor-redirect');
+  const contractorLink = document.getElementById('user-edit-contractor-link');
   const formWrapper = document.getElementById('user-edit-form-wrapper');
   const statusBox = document.getElementById('user-edit-status');
   const errorBox = document.getElementById('user-edit-error');
@@ -51,6 +53,14 @@ document.addEventListener('DOMContentLoaded', function () {
         clientLink.href = t.client_edit_url_base + '/' + u.id;
         loading.classList.add('d-none');
         clientRedirect.classList.remove('d-none');
+        return;
+      }
+
+      // And a contractor company's user — its contractor lives on the contractor user form.
+      if (u.roles.includes('contractor_user')) {
+        contractorLink.href = t.contractor_user_edit_url_base + '/' + u.id;
+        loading.classList.add('d-none');
+        contractorRedirect.classList.remove('d-none');
         return;
       }
 

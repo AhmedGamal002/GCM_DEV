@@ -38,6 +38,7 @@
     add_gcm_staff: @json(__('GCM Staff')),
     add_driver: @json(__('Driver')),
     add_client: @json(__('Client Account (Project Manager / Auditor)')),
+    add_contractor_user: @json(__('Contractor User')),
     search_user: @json(__('Search User')),
     no_users_found: @json(__('No users found.')),
     generic_error: @json(__('Something went wrong. Please try again.')),
@@ -48,6 +49,7 @@
     add_user_url: @json(route('app-user-add')),
     add_driver_url: @json(route('app-driver-add')),
     add_client_url: @json(route('app-client-user-add')),
+    add_contractor_user_url: @json(route('app-contractor-user-add')),
     view_url_base: @json(url('/app/user/view')),
     edit_url_base: @json(url('/app/user/edit'))
   };

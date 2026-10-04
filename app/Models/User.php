@@ -21,6 +21,9 @@ class User extends Authenticatable
   /** FRD §1.4 — the two roles that belong to a client company. */
   public const CLIENT_ROLES = ['client_project_manager', 'client_project_auditor'];
 
+  /** FRD §1.4 — the role of a contractor company's account. */
+  public const CONTRACTOR_ROLE = 'contractor_user';
+
   protected $guard_name = 'web';
 
   /**
@@ -142,6 +145,12 @@ class User extends Authenticatable
   public function isClient(): bool
   {
     return $this->hasAnyRole(self::CLIENT_ROLES);
+  }
+
+  /** A contractor company's own account (not a contractor-supplied driver — that one is a driver). */
+  public function isContractorUser(): bool
+  {
+    return $this->hasRole(self::CONTRACTOR_ROLE);
   }
 
   /**

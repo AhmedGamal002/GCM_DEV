@@ -57,7 +57,7 @@ class UserPolicy
      */
     public function update(User $actor, User $target): bool
     {
-        return $this->canManage($actor, $target) && ! $target->hasRole('driver') && ! $target->isClient();
+        return $this->canManage($actor, $target) && ! $target->hasRole('driver') && ! $target->isClient() && ! $target->isContractorUser();
     }
 
     /**
@@ -70,6 +70,15 @@ class UserPolicy
     public function updateClient(User $actor, User $target): bool
     {
         return $this->canManage($actor, $target) && $target->isClient();
+    }
+
+    /**
+     * Same split for a contractor user (PATCH /api/v1/contractor-users/{id}): its contractor
+     * lives on its own form, and the generic one would re-role it to data_entry/auditor.
+     */
+    public function updateContractorUser(User $actor, User $target): bool
+    {
+        return $this->canManage($actor, $target) && $target->isContractorUser();
     }
 
     /**

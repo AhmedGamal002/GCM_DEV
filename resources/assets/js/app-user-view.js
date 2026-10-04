@@ -43,12 +43,18 @@ document.addEventListener('DOMContentLoaded', function () {
     // Client accounts (FRD §1.4): the entity is the company (linked) and the
     // projects they may see. All names are user input — DOM text, no innerHTML.
     const isClient = u.affiliation === 'client';
+    const isContractorUser = u.roles.includes('contractor_user');
     const entity = document.getElementById('uv-entity');
     entity.textContent = '';
     if (isClient && u.company) {
       const a = document.createElement('a');
       a.href = `${t.company_url_base}/${u.company.id}`;
       a.textContent = u.company.name;
+      entity.appendChild(a);
+    } else if (isContractorUser && u.contractor) {
+      const a = document.createElement('a');
+      a.href = `${t.contractor_url_base}/${u.contractor.id}`;
+      a.textContent = u.contractor.name;
       entity.appendChild(a);
     } else {
       entity.textContent = u.entity_name || '';
@@ -107,8 +113,10 @@ document.addEventListener('DOMContentLoaded', function () {
     statusBadge.textContent = s.title;
     statusBadge.className = 'badge ' + s.class;
 
-    // A client account is edited on its own form (company, project access, signature/stamp).
-    document.getElementById('uv-edit-link').href = (isClient ? t.client_edit_url_base : t.edit_url_base) + '/' + u.id;
+    // A client account is edited on its own form (company, project access, signature/stamp), a
+    // contractor user on its own too (its contractor).
+    const editBase = isClient ? t.client_edit_url_base : isContractorUser ? t.contractor_user_edit_url_base : t.edit_url_base;
+    document.getElementById('uv-edit-link').href = editBase + '/' + u.id;
 
     document.querySelector(`#userStatusForm input[name="new_status"][value="${u.status}"]`).checked = true;
 

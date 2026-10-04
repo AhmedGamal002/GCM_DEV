@@ -965,6 +965,130 @@
           }
         },
         {
+          "name": "Create Contractor User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Contractor User",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "contractor.user+{{$timestamp}}@gcm.test",
+                  "type": "text"
+                },
+                {
+                  "key": "phone",
+                  "value": "0100000{{$timestamp}}",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "Password123!",
+                  "type": "text"
+                },
+                {
+                  "key": "password_confirmation",
+                  "value": "Password123!",
+                  "type": "text"
+                },
+                {
+                  "key": "contractor_id",
+                  "value": "{{last_contractor_id}}",
+                  "type": "text",
+                  "description": "An ACTIVE contractor of the tenant"
+                },
+                {
+                  "key": "status",
+                  "value": "active",
+                  "type": "text",
+                  "description": "active | on_vacation | deactivated"
+                },
+                {
+                  "key": "photo",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "additional_data",
+                  "value": "",
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{api_base}}/contractor-users",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "contractor-users"
+              ]
+            },
+            "description": "FRD V01.14 §1.4. Contractor users (role contractor_user, fixed) are created ONLY here (POST /users refuses the role). Saves last_user_id."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    if (body.data && body.data.id) {",
+                  "        pm.collectionVariables.set('last_user_id', body.data.id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Contractor User",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Contractor User (edited)\",\n  \"phone\": \"0100000000\",\n  \"contractor_id\": {{last_contractor_id}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/contractor-users/{{last_user_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "contractor-users",
+                "{{last_user_id}}"
+              ]
+            },
+            "description": "Every field (email and contractor included; send `email` to change it — unique across the system). Omit password to keep the current one. Status goes through \"Update User Status\". To replace the photo send multipart (POST with _method=PATCH). 403 for a non-contractor-user account. Moving the user to another contractor clears it as the old contractor's representative."
+          }
+        },
+        {
           "name": "Download Signature / Stamp",
           "request": {
             "method": "GET",
@@ -4182,6 +4306,13 @@
                   "type": "text",
                   "disabled": true,
                   "description": "الاسم التجاري (الشهرة) — optional"
+                },
+                {
+                  "key": "representative_id",
+                  "value": "{{last_user_id}}",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "Contractor representative account (FRD §1.10.2) — an ACTIVE contractor user of THIS contractor. Edit only (not accepted on create). Omit = unchanged; send empty = clear."
                 },
                 {
                   "key": "logo",

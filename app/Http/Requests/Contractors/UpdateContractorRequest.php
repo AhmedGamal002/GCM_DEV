@@ -3,6 +3,8 @@
 namespace App\Http\Requests\Contractors;
 
 use App\Models\Contractor;
+use App\Models\User;
+use Closure;
 
 /**
  * FRD V01.14 §1.10.4: every contractor field is editable by (System Admin /
@@ -32,6 +34,25 @@ class UpdateContractorRequest extends StoreContractorRequest
     {
         $rules = $this->baseRules(null);
         unset($rules['prefix']);
+
+        // FRD §1.10.2: "حساب ممثل المتعهد" — optional; one of THIS contractor's
+        // users (a contractor user of another contractor, drivers and GCM staff
+        // are refused). An unchanged value is always accepted so saving other
+        // fields still works after the rep was later put on vacation /
+        // deactivated.
+        $rules['representative_id'] = ['nullable', 'integer', function (string $attribute, mixed $value, Closure $fail) {
+            $contractor = $this->targetContractor();
+
+            if ((int) $value === $contractor->representative_id) {
+                return;
+            }
+
+            $user = User::find($value);
+
+            if (! $user || $user->contractor_id !== $contractor->id || ! $user->isContractorUser() || $user->status !== 'active') {
+                $fail(__('Choose an active user of this contractor.'));
+            }
+        }];
 
         return $rules;
     }

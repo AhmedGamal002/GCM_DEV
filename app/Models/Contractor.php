@@ -20,6 +20,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *  - sequence, code     — generated in booted() (code = prefix + C + number)
  *  - operational_status — only ever set through UpdateContractorStatusAction
  *  - updated_by         — set explicitly by the create/update actions
+ *  - representative_id  — the optional representative account (FRD §1.10.2),
+ *                         set by UpdateContractorAction (edit only)
  *  - the *_path columns — set by the actions after storing the uploads
  */
 class Contractor extends Model
@@ -103,6 +105,12 @@ class Contractor extends Model
     public function assets(): HasMany
     {
         return $this->hasMany(Asset::class);
+    }
+
+    /** The optional "contractor representative account" (FRD §1.10.2): one of the contractor's own users. */
+    public function representative(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'representative_id');
     }
 
     public function updatedBy(): BelongsTo

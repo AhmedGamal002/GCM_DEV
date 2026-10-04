@@ -63,6 +63,20 @@
           <div class="text-danger small mt-1 d-none" data-feedback></div>
         </div>
 
+        {{-- FRD §1.10.2 "حساب ممثل المتعهد". A new contractor has no accounts yet, so on create the field is shown but locked; it is chosen on edit. --}}
+        <div class="col-md-6">
+          <label class="form-label" for="representative_id">{{ __('Contractor representative account') }}</label>
+          <select id="representative_id" name="representative_id" class="select2 form-select" data-placeholder="{{ __('No representative') }}" {{ $isCreate ? 'disabled' : '' }}>
+            <option value=""></option>
+          </select>
+          <div class="form-text">
+            {{ $isCreate
+              ? __('Available after you create the contractor and add its users — choose it from the edit page.')
+              : __('Optional. Lists the active users of this contractor.') }}
+          </div>
+          <div class="text-danger small mt-1 d-none" data-feedback></div>
+        </div>
+
         @if($isCreate)
           <div class="col-md-6">
             <label class="form-label d-block">{{ __('Operational status') }}</label>

@@ -80,6 +80,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('cv-trading-name').classList.toggle('d-none', !c.trading_name);
     text('cv-code', c.code);
     text('cv-prefix', c.prefix);
+    text('cv-representative', c.representative && c.representative.name);
     text('cv-phone', c.phone);
     text('cv-address', c.address);
 

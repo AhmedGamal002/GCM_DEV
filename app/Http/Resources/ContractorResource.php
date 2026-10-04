@@ -49,6 +49,13 @@ class ContractorResource extends JsonResource
                 'download_url' => $this->downloadUrl('tax'),
             ],
 
+            // "Contractor representative account" (FRD §1.10.2) — one of the contractor's users.
+            'representative' => $this->whenLoaded('representative', fn () => $this->representative ? [
+                'id' => $this->representative->id,
+                'name' => $this->representative->name,
+                'email' => $this->representative->email,
+            ] : null),
+
             'operational_status' => $this->operational_status,
             'additional_data' => $this->additional_data,
 

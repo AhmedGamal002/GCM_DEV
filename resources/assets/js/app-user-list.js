@@ -198,9 +198,8 @@ $(function () {
       {
         // Per the FRD: "Add User" opens a menu of the main user
         // categories, each with its own dedicated form — not a single
-        // shared form with a role picker. GCM staff, client accounts and
-        // drivers so far; contractor users slot into this same menu once
-        // the Contractor module lands.
+        // shared form with a role picker. GCM staff, client accounts,
+        // contractor users and drivers.
         extend: 'collection',
         className: 'add-new btn btn-primary dropdown-toggle waves-effect waves-light',
         text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">' + (t.add_user || 'Add User') + '</span>',
@@ -214,6 +213,11 @@ $(function () {
             text: '<i class="ti ti-building-community me-2"></i>' + (t.add_client || 'Client Account'),
             className: 'dropdown-item',
             action: () => window.location.assign(t.add_client_url || '/app/client-user/add')
+          },
+          {
+            text: '<i class="ti ti-truck me-2"></i>' + (t.add_contractor_user || 'Contractor User'),
+            className: 'dropdown-item',
+            action: () => window.location.assign(t.add_contractor_user_url || '/app/contractor-user/add')
           },
           {
             text: '<i class="ti ti-steering-wheel me-2"></i>' + (t.add_driver || 'Driver'),
@@ -256,7 +260,7 @@ $(function () {
           currentRole = $(this).val();
           api.draw();
         });
-      ['data_entry', 'auditor', 'client_project_manager', 'client_project_auditor', 'driver'].forEach((role) => {
+      ['data_entry', 'auditor', 'client_project_manager', 'client_project_auditor', 'contractor_user', 'driver'].forEach((role) => {
         roleSelect.append('<option value="' + role + '">' + role + '</option>');
       });
 
