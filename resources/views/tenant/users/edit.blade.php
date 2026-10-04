@@ -71,7 +71,7 @@
         </div>
         <div class="col-md-6">
           <label class="form-label" for="email">{{ __('Email') }}</label>
-          <input type="email" id="email" class="form-control" disabled />
+          <input type="email" id="email" class="form-control" maxlength="255" dir="ltr" required />
         </div>
         <div class="col-md-6">
           <label class="form-label" for="phone">{{ __('Mobile Number') }}</label>
