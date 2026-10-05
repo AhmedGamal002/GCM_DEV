@@ -134,6 +134,25 @@ document.addEventListener('DOMContentLoaded', function () {
       document.getElementById('insurance_number').value = d.insurance.number || '';
       document.getElementById('insurance_valid_to').value = d.insurance.valid_to || '';
 
+      // The files already on record — same idea as the vehicle edit page: a link to the
+      // current one next to its input (leaving the input empty keeps it).
+      if (d.photo_url) {
+        const el = document.getElementById('photo_current');
+        el.innerHTML = '<a href="' + d.photo_url + '" target="_blank">' + $('<div>').text(d.photo_url.split('/').pop()).html() + '</a>';
+        el.classList.remove('d-none');
+      }
+      [
+        ['residence', d.residence, 'residence'],
+        ['license', d.license, 'license'],
+        ['operational_license', d.operational_license, 'operational-license'],
+        ['insurance', d.insurance, 'insurance']
+      ].forEach(function (doc) {
+        if (!doc[1] || !doc[1].has_attachment) return;
+        const el = document.getElementById(doc[0] + '_current');
+        el.innerHTML = '<a href="/api/v1/drivers/' + id + '/documents/' + doc[2] + '" target="_blank"><i class="ti ti-download"></i></a>';
+        el.classList.remove('d-none');
+      });
+
       loading.classList.add('d-none');
       formWrapper.classList.remove('d-none');
     })
