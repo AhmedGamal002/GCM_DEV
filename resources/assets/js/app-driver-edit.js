@@ -18,6 +18,42 @@ document.addEventListener('DOMContentLoaded', function () {
 
   cancelLink.href = t.view_url_base + '/' + id;
 
+  const permitsList = document.getElementById('entry-permits-list');
+  const permitsEmpty = document.getElementById('entry-permits-empty');
+  const permitTemplate = document.getElementById('entry-permit-row-template');
+
+  const syncPermitsEmpty = () => permitsEmpty.classList.toggle('d-none', permitsList.children.length > 0);
+
+  // One row per permit; `permit` is the saved record (null for a blank new row). A saved permit keeps
+  // its hidden id and a link to its current file — leaving the file input empty keeps that file.
+  function addPermitRow(permit) {
+    const row = permitTemplate.content.cloneNode(true);
+    const root = row.querySelector('.entry-permit-row');
+
+    if (permit) {
+      root.querySelector('.entry-id').value = permit.id;
+      root.querySelector('.entry-area-name').value = permit.area_name || '';
+      root.querySelector('.entry-permit-number').value = permit.permit_number || '';
+      root.querySelector('.entry-valid-to').value = permit.valid_to || '';
+      if (permit.has_attachment) {
+        const hint = root.querySelector('.entry-current');
+        hint.innerHTML = '<a href="/api/v1/driver-entry-permits/' + permit.id + '/attachment" target="_blank"><i class="ti ti-download"></i></a>';
+        hint.classList.remove('d-none');
+      }
+    }
+
+    root.querySelector('.remove-entry-permit').addEventListener('click', function () {
+      root.remove();
+      syncPermitsEmpty();
+    });
+    permitsList.appendChild(row);
+    syncPermitsEmpty();
+  }
+
+  document.getElementById('add-entry-permit').addEventListener('click', function () {
+    addPermitRow(null);
+  });
+
   const quill = new Quill(document.getElementById('additional-data-editor'), {
     theme: 'snow',
     placeholder: ''
@@ -139,6 +175,9 @@ document.addEventListener('DOMContentLoaded', function () {
       document.getElementById('insurance_number').value = d.insurance.number || '';
       document.getElementById('insurance_valid_to').value = d.insurance.valid_to || '';
 
+      (d.entry_permits || []).forEach(addPermitRow);
+      syncPermitsEmpty();
+
       // The files already on record — same idea as the vehicle edit page: a link to the
       // current one next to its input (leaving the input empty keeps it).
       if (d.photo_url) {
@@ -211,6 +250,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const photo = document.getElementById('photo').files[0];
     if (photo) data.append('photo', photo);
+
+    // The whole permit list is sent (matched by id on the server; a permit that is not in it is
+    // removed). The flag makes "every permit removed" work — a multipart form can't send an empty array.
+    data.append('sync_entry_permits', '1');
+    permitsList.querySelectorAll('.entry-permit-row').forEach(function (row, i) {
+      const permitId = row.querySelector('.entry-id').value;
+      if (permitId) data.append(`entry_permits[${i}][id]`, permitId);
+      data.append(`entry_permits[${i}][area_name]`, row.querySelector('.entry-area-name').value);
+      data.append(`entry_permits[${i}][permit_number]`, row.querySelector('.entry-permit-number').value);
+      data.append(`entry_permits[${i}][valid_to]`, row.querySelector('.entry-valid-to').value);
+      const file = row.querySelector('.entry-attachment').files[0];
+      if (file) data.append(`entry_permits[${i}][attachment]`, file);
+    });
 
     window.gcmBusy.start({ progress: true });
 

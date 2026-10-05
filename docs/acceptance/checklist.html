@@ -102,7 +102,7 @@
       <span>تم: <b id="s-pass">0</b></span>
       <span>فشل: <b id="s-fail" style="color:var(--bad)">0</b></span>
       <span>متبقي: <b id="s-left">0</b></span>
-      <span>من <b>196</b> بند</span>
+      <span>من <b>197</b> بند</span>
     </div>
     <div class="prog"><i class="p" id="b-pass"></i><i class="f" id="b-fail"></i></div>
     <div class="tools">
@@ -985,6 +985,16 @@
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
       <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.7.1</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح أي أصل وغيّر حالته لـ&quot;في الصيانة&quot;.</li><li>غيّرها بعدين لـ&quot;معطّل&quot;.</li><li>أعد تنشيطه.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>كل التحويلات التلاتة بتنجح.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Assets/AssetManagementTest::test_data_entry_can_set_maintenance_and_deactivate</code> (نفس الـaction، ومدير النظام صلاحيته أوسع)</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-3-vehicles-drivers-assets#28" data-title="تعديل السائق — الملفات الحالية وتصاريح الدخول">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">28</span></label>
+        <h3>تعديل السائق — الملفات الحالية وتصاريح الدخول</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.3 (تعديل حساب سائق — كل البيانات قابلة للتعديل، وتصاريح الدخول من بياناته)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح تعديل سائق عنده مرفقات وتصريح دخول (من الـseed أو بعد إنشاء واحد).</li><li>بص على الصورة وكل مرفق (إقامة / رخصة / رخصة تشغيلية / تأمين) وكارت &quot;Truck Entry Permits&quot;.</li><li>عدّل منطقة تصريح موجود واضغط &quot;Add Permit&quot; وأضف تصريح جديد، واحفظ.</li><li>ارجع للتعديل وشيل كل التصاريح واحفظ.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>جنب كل مرفق موجود أيقونة تنزيل (والصورة باسم الملف)، ومفيهاش حاجة للمرفق الفاضي. كارت التصاريح بيعرض كل تصريح بمرفقه الحالي. التعديل بيحفظ في نفس التصريح (مش بيعمل نسخة)، والتصريح الجديد بيتضاف، وبعد الحذف الكامل التفاصيل بتقول إن مفيش تصاريح. ترك خانة الملف فاضية بيحافظ على المرفق، ورفع جديد بيبدّله.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Drivers/DriverEntryPermitsEditTest</code>, <code>Drivers/DriverEditCurrentFilesTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     </details>
@@ -2376,7 +2386,7 @@
     </article>
     </details>
   </section>
-  <p class="foot">اتولّد تلقائيًا من ملفات <code>docs/acceptance/week-*.md</code> بتاريخ 2026-10-04 — للتحديث: <code>node docs/acceptance/build-checklist.mjs</code>. متعدّلش الملف ده بإيدك.</p>
+  <p class="foot">اتولّد تلقائيًا من ملفات <code>docs/acceptance/week-*.md</code> بتاريخ 2026-10-05 — للتحديث: <code>node docs/acceptance/build-checklist.mjs</code>. متعدّلش الملف ده بإيدك.</p>
 </div>
 
 <script>

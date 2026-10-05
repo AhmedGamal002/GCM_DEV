@@ -199,6 +199,19 @@
     </div>
 
     <div class="card mb-6">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">{{ __('Truck Entry Permits') }}</h5>
+        <button type="button" id="add-entry-permit" class="btn btn-label-secondary btn-sm">
+          <i class="ti ti-plus me-1"></i>{{ __('Add Permit') }}
+        </button>
+      </div>
+      <div class="card-body">
+        <div id="entry-permits-list"></div>
+        <p class="text-muted mb-0 d-none" id="entry-permits-empty">{{ __('No entry permits recorded for this driver.') }}</p>
+      </div>
+    </div>
+
+    <div class="card mb-6">
       <h5 class="card-header">{{ __('Additional Info') }}</h5>
       <div class="card-body">
         <div class="row g-6">
@@ -216,5 +229,32 @@
     </div>
   </form>
 </div>
+
+<!-- Entry permit row template (the hidden id is set for permits that already exist) -->
+<template id="entry-permit-row-template">
+  <div class="row g-6 align-items-end entry-permit-row mb-4 pb-4 border-bottom">
+    <input type="hidden" class="entry-id" />
+    <div class="col-md-3">
+      <label class="form-label">{{ __('Area Name') }}</label>
+      <input type="text" class="form-control entry-area-name" required />
+    </div>
+    <div class="col-md-3">
+      <label class="form-label">{{ __('Permit Number') }}</label>
+      <input type="text" class="form-control entry-permit-number" required />
+    </div>
+    <div class="col-md-3">
+      <label class="form-label">{{ __('Valid To') }}</label>
+      <input type="date" class="form-control entry-valid-to" required />
+    </div>
+    <div class="col-md-2">
+      <label class="form-label">{{ __('Attachment') }}</label>
+      <input type="file" class="form-control entry-attachment" accept=".pdf,image/*" />
+      <div class="form-text d-none entry-current"></div>
+    </div>
+    <div class="col-md-1">
+      <button type="button" class="btn btn-icon btn-text-danger remove-entry-permit"><i class="ti ti-trash"></i></button>
+    </div>
+  </div>
+</template>
 
 @endsection

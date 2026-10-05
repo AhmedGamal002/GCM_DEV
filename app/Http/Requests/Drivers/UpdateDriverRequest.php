@@ -81,6 +81,18 @@ class UpdateDriverRequest extends FormRequest
             'insurance_number' => ['required', 'string', 'max:64'],
             'insurance_valid_to' => ['required', 'date'],
             'insurance_attachment' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:5120'],
+
+            // Entry permits are replaced by the submitted list (matched by id; the rest are removed)
+            // — but only when the request carries them: a payload without `entry_permits` and
+            // without `sync_entry_permits` leaves the permits alone. The edit form always sends the
+            // flag, so removing every permit works (a multipart form can't send an empty array).
+            'sync_entry_permits' => ['nullable', 'boolean'],
+            'entry_permits' => ['nullable', 'array'],
+            'entry_permits.*.id' => ['nullable', 'integer'],
+            'entry_permits.*.area_name' => ['required', 'string', 'max:255'],
+            'entry_permits.*.permit_number' => ['required', 'string', 'max:64'],
+            'entry_permits.*.valid_to' => ['required', 'date'],
+            'entry_permits.*.attachment' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:5120'],
         ];
     }
 

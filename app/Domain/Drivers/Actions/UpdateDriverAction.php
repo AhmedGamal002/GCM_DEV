@@ -7,6 +7,7 @@ use App\Models\Driver;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Updates the driver's account basics (name/phone/photo/additional_data
@@ -21,10 +22,12 @@ class UpdateDriverAction
     /**
      * @param  array<string, mixed>  $data
      * @param  array<string, ?UploadedFile>  $documents  keys: residence, license, operational_license, insurance — only replaced if present
+     * @param  ?array<int, array{id?: ?int, area_name: string, permit_number: string, valid_to: string, attachment?: ?UploadedFile}>  $entryPermits
+     *         the driver's full list of entry permits — null leaves them untouched
      */
-    public function execute(Driver $driver, array $data, ?UploadedFile $photo, array $documents): Driver
+    public function execute(Driver $driver, array $data, ?UploadedFile $photo, array $documents, ?array $entryPermits = null): Driver
     {
-        return DB::transaction(function () use ($driver, $data, $photo, $documents) {
+        return DB::transaction(function () use ($driver, $data, $photo, $documents, $entryPermits) {
             $user = $driver->user;
             $user->name = $data['name'];
             if (isset($data['email'])) {
@@ -86,7 +89,59 @@ class UpdateDriverAction
 
             $driver->qualifiedVehicleCategories()->sync($data['vehicle_category_ids']);
 
+            if ($entryPermits !== null) {
+                $this->syncEntryPermits($driver, $entryPermits);
+            }
+
             return $driver->fresh(['user.roles', 'entryPermits', 'defaultVehicle.category', 'qualifiedVehicleCategories']);
         });
+    }
+
+    /**
+     * The edit form sends the driver's whole permit list: a row with an id updates that permit (a
+     * new file replaces the old one, no file keeps it), a row without one is added, and any
+     * permit not in the list is removed together with its file. Same behaviour as the vehicle form.
+     * An id that doesn't belong to this driver is treated as a new row, never as someone else's permit.
+     *
+     * @param  array<int, array{id?: ?int, area_name: string, permit_number: string, valid_to: string, attachment?: ?UploadedFile}>  $permits
+     */
+    private function syncEntryPermits(Driver $driver, array $permits): void
+    {
+        $keptIds = [];
+
+        foreach ($permits as $permit) {
+            $existing = empty($permit['id']) ? null : $driver->entryPermits()->find($permit['id']);
+            $attachment = $permit['attachment'] ?? null;
+
+            $attributes = [
+                'area_name' => $permit['area_name'],
+                'permit_number' => $permit['permit_number'],
+                'valid_to' => $permit['valid_to'],
+            ];
+
+            if ($attachment) {
+                if ($existing?->attachment) {
+                    Storage::disk('local')->delete($existing->attachment);
+                }
+                $attributes['attachment'] = $attachment->store('driver-documents', 'local');
+            }
+
+            if ($existing) {
+                $existing->update($attributes);
+                $keptIds[] = $existing->id;
+            } else {
+                $keptIds[] = $driver->entryPermits()->create($attributes)->id;
+            }
+        }
+
+        $driver->entryPermits()
+            ->when($keptIds, fn ($q) => $q->whereNotIn('id', $keptIds))
+            ->get()
+            ->each(function ($old) {
+                if ($old->attachment) {
+                    Storage::disk('local')->delete($old->attachment);
+                }
+                $old->delete();
+            });
     }
 }

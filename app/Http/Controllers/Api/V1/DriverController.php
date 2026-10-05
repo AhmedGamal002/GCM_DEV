@@ -158,12 +158,23 @@ class DriverController extends Controller
     {
         $driver = Driver::findOrFail($driver);
 
+        // null = the request says nothing about permits, so they stay as they are.
+        $entryPermits = null;
+        if ($request->has('entry_permits') || $request->boolean('sync_entry_permits')) {
+            $entryPermits = [];
+            foreach ($request->input('entry_permits', []) as $i => $permit) {
+                $entryPermits[] = array_merge($permit, [
+                    'attachment' => $request->file("entry_permits.{$i}.attachment"),
+                ]);
+            }
+        }
+
         $driver = $action->execute($driver, $request->validated(), $request->file('photo'), [
             'residence' => $request->file('residence_attachment'),
             'license' => $request->file('license_attachment'),
             'operational_license' => $request->file('operational_license_attachment'),
             'insurance' => $request->file('insurance_attachment'),
-        ]);
+        ], $entryPermits);
 
         return DriverResource::make($driver);
     }

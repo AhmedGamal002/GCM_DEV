@@ -1593,6 +1593,45 @@
                   "type": "file",
                   "src": [],
                   "disabled": true
+                },
+                {
+                  "key": "sync_entry_permits",
+                  "value": "1",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "Send 1 to REPLACE the driver's entry permits with the entry_permits[] list below (a permit not in the list is removed, with its file). Send neither this nor entry_permits[] = permits are left untouched. Needed to remove ALL permits."
+                },
+                {
+                  "key": "entry_permits[0][id]",
+                  "value": "1",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "Existing permit id = update it (no file = keep its file); omit for a new permit"
+                },
+                {
+                  "key": "entry_permits[0][area_name]",
+                  "value": "Port",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "entry_permits[0][permit_number]",
+                  "value": "1234",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "entry_permits[0][valid_to]",
+                  "value": "2030-06-01",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "entry_permits[0][attachment]",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true,
+                  "description": "pdf/jpg/png, max 5 MB — replaces the permit's current file"
                 }
               ]
             },
