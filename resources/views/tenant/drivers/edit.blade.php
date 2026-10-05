@@ -70,6 +70,7 @@
           <div class="col-md-6">
             <label class="form-label" for="photo">{{ __('Photo') }}</label>
             <input type="file" id="photo" class="form-control" accept="image/*" />
+            <div class="form-text d-none" id="photo_current"></div>
           </div>
           <div class="col-md-6">
             <div class="form-password-toggle">
@@ -128,6 +129,7 @@
           <div class="col-md-4">
             <label class="form-label" for="residence_attachment">{{ __('Replace Attachment') }}</label>
             <input type="file" id="residence_attachment" class="form-control" accept=".pdf,image/*" />
+            <div class="form-text d-none" id="residence_current"></div>
           </div>
         </div>
       </div>
@@ -148,6 +150,7 @@
           <div class="col-md-4">
             <label class="form-label" for="license_attachment">{{ __('Replace Attachment') }}</label>
             <input type="file" id="license_attachment" class="form-control" accept=".pdf,image/*" />
+            <div class="form-text d-none" id="license_current"></div>
           </div>
         </div>
       </div>
@@ -168,6 +171,7 @@
           <div class="col-md-4">
             <label class="form-label" for="operational_license_attachment">{{ __('Replace Attachment') }}</label>
             <input type="file" id="operational_license_attachment" class="form-control" accept=".pdf,image/*" />
+            <div class="form-text d-none" id="operational_license_current"></div>
           </div>
         </div>
       </div>
@@ -188,6 +192,7 @@
           <div class="col-md-4">
             <label class="form-label" for="insurance_attachment">{{ __('Replace Attachment') }}</label>
             <input type="file" id="insurance_attachment" class="form-control" accept=".pdf,image/*" />
+            <div class="form-text d-none" id="insurance_current"></div>
           </div>
         </div>
       </div>
