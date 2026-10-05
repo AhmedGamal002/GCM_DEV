@@ -178,7 +178,15 @@
       </div>
 
       <hr class="my-6 mx-n4" />
-      <h6>7. {{ __('Additional Info') }}</h6>
+      <h6>7. {{ __('Truck Entry Permits') }}</h6>
+      <div id="entry-permits-list"></div>
+      <p class="text-muted d-none" id="entry-permits-empty">{{ __('No entry permits recorded for this driver.') }}</p>
+      <button type="button" id="add-entry-permit" class="btn btn-label-secondary btn-sm mt-2">
+        <i class="ti ti-plus me-1"></i>{{ __('Add Permit') }}
+      </button>
+
+      <hr class="my-6 mx-n4" />
+      <h6>8. {{ __('Additional Info') }}</h6>
       <div class="row g-6">
         <div class="col-12">
           <label class="form-label">{{ __('Additional Data') }}</label>
@@ -193,5 +201,32 @@
     </form>
   </div>
 </div>
+
+<!-- Entry permit row template (the hidden id is set for permits that already exist) -->
+<template id="entry-permit-row-template">
+  <div class="row g-6 align-items-end entry-permit-row mb-4 pb-4 border-bottom">
+    <input type="hidden" class="entry-id" />
+    <div class="col-md-3">
+      <label class="form-label">{{ __('Area Name') }}</label>
+      <input type="text" class="form-control entry-area-name" required />
+    </div>
+    <div class="col-md-3">
+      <label class="form-label">{{ __('Permit Number') }}</label>
+      <input type="text" class="form-control entry-permit-number" required />
+    </div>
+    <div class="col-md-3">
+      <label class="form-label">{{ __('Valid To') }}</label>
+      <input type="date" class="form-control entry-valid-to" required />
+    </div>
+    <div class="col-md-2">
+      <label class="form-label">{{ __('Attachment') }}</label>
+      <input type="file" class="form-control entry-attachment" accept=".pdf,image/*" />
+      <div class="form-text d-none entry-current"></div>
+    </div>
+    <div class="col-md-1">
+      <button type="button" class="btn btn-icon btn-text-danger remove-entry-permit"><i class="ti ti-trash"></i></button>
+    </div>
+  </div>
+</template>
 
 @endsection

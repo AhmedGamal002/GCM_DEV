@@ -300,6 +300,7 @@
   "The plate number must contain digits only.": "The plate number must contain digits only.",
   "The document number must contain digits only.": "The document number must contain digits only.",
   "The permit number must contain digits only.": "The permit number must contain digits only.",
+  "No entry permits recorded for this driver.": "No entry permits recorded for this driver.",
   "No entry permits recorded for this vehicle.": "No entry permits recorded for this vehicle.",
   "__assets_module__": "── Assets & Supply Hub module ── keys below belong to resources/views/tenant/assets/*, resources/views/tenant/asset-categories/* and app/Http/Requests/Assets|AssetCapacityCategories/*. Keep this block at the end of the file.",
   "Assets": "Assets",
