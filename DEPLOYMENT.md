@@ -185,6 +185,8 @@ bash ~/apps/gcm/dev/scripts/hostinger-sync-public.sh \
   ~/domains/digitswat.com/public_html/gcm/dev
 ```
 
+**⚠️ لو ملفات `/build/assets/*` رجّعت 404 رغم إنها موجودة على القرص** (والرد فيه `x-powered-by: PHP` و`content-type: text/html`): فولدر `public_html/.../build` غالبًا صلاحياته `700`. `scp -r` من ويندوز بيرفعه كده، و`rsync -a` كان بينسخ الصلاحيات زي ما هي فيضيّع أي `chmod` يدوي في كل مزامنة، ويوزر الـweb server مش بيعرف يدخله فالـ`.htaccess` يحوّل الطلب لـ`index.php`. السكريبت دلوقتي بيفرض `755/644` بنفسه (`--chmod=D755,F644`)، فالمشكلة مش المفروض تتكرر؛ ولو حصلت: `chmod -R u=rwX,go=rX <app_dir>/public/build <web_dir>/build`. تشخيصها: ملف تجربة جنب `build/` بيشتغل، وأي ملف جوه `build/` لأ.
+
 ## 9. Storage + الكاش
 
 ```bash
