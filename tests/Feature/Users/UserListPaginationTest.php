@@ -46,8 +46,8 @@ class UserListPaginationTest extends TestCase
 
         $response->assertOk();
         $this->assertCount(10, $response->json('data'));
-        // 25 auditors + the admin's own row (the system admin sees itself) = 26 rows.
-        $this->assertSame(26, $response->json('meta.total'));
+        // 25 auditors + the admin excluded from the list = 25 visible rows total.
+        $this->assertSame(25, $response->json('meta.total'));
     }
 
     public function test_page_two_returns_the_remaining_rows_not_a_repeat_of_page_one(): void

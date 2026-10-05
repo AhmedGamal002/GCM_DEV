@@ -226,7 +226,7 @@ class UserPolicyTest extends TestCase
         $this->assertNull(User::where('email', 'auditor2@tenant-a.test')->firstOrFail()->additional_data);
     }
 
-    public function test_the_system_admin_sees_every_account_including_its_own(): void
+    public function test_users_list_never_includes_the_caller_themselves(): void
     {
         $auditor = User::factory()->create(['email' => 'auditor@tenant-a.test']);
         $auditor->assignRole('auditor');
@@ -236,7 +236,7 @@ class UserPolicyTest extends TestCase
         $response->assertOk();
         $ids = collect($response->json('data'))->pluck('id');
         $this->assertTrue($ids->contains($auditor->id));
-        $this->assertTrue($ids->contains($this->systemAdmin->id));
+        $this->assertFalse($ids->contains($this->systemAdmin->id));
     }
 
     public function test_system_admin_from_tenant_a_cannot_reach_tenant_b_user(): void

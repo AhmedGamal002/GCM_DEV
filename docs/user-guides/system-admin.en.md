@@ -45,7 +45,7 @@ The only screen exclusive to the System Admin among tenant roles.
 - **You cannot create a second System Admin** — the option isn't offered, and a direct request is rejected.
 
 ### View / edit user
-- **The System Admin can change every field of every account — the email included, and its own account too** (it shows in the Users list for the admin only). The admin's role is fixed and the admin account can never be deactivated. The email must be unique across the whole system.
+- **The System Admin can change every field of every account — the email included, and its own account too** (its row is not shown in the Users list — the list shows the other accounts only; your own photo and password are on "My Profile"). The admin's role is fixed and the admin account can never be deactivated. The email must be unique across the whole system.
 - Separate details and edit pages.
 - **New password (optional):** on the edit page you can set a new password + confirmation for any user or driver — leave it blank to keep the current one. This is how you set someone else's password (every user can also change their own from the profile page).
 - If the user is a driver, the edit page shows a notice pointing you to the driver-edit page (residence/license/insurance details are edited there).
