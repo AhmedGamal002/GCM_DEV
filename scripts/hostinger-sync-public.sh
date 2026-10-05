@@ -40,12 +40,21 @@ WEB_DIR="$(cd "$WEB_DIR" && pwd)"
 if command -v rsync >/dev/null 2>&1; then
   # --delete removes anything in WEB_DIR that no longer exists in public/
   # (e.g. an old build/ hash-named asset) so it never accumulates cruft.
-  rsync -a --delete --exclude 'index.php' --exclude 'storage' "$APP_DIR/public/" "$WEB_DIR/"
+  #
+  # --chmod forces web-readable permissions instead of copying the source's:
+  # `public/build` arrives from a Windows `scp -r` as 700, and plain `-a`
+  # copies that as-is — the web server user then can't enter build/, every
+  # /build/assets/* request fails the `!-f` check in .htaccess, falls through to
+  # index.php and 404s (x-powered-by: PHP) even though the file is on disk.
+  rsync -a --delete --chmod=D755,F644 --exclude 'index.php' --exclude 'storage' "$APP_DIR/public/" "$WEB_DIR/"
 else
   # Fallback if rsync isn't available on this account — less thorough
   # (won't remove stale files), but works.
   cp -r "$APP_DIR"/public/* "$WEB_DIR/"
   rm -f "$WEB_DIR/index.php"
+  # Same permission fix as the rsync branch above (cp keeps the source modes).
+  find "$WEB_DIR" -type d ! -path "$WEB_DIR/storage*" -exec chmod 755 {} \;
+  find "$WEB_DIR" -type f -exec chmod 644 {} \;
 fi
 
 # index.php's three `__DIR__ . '/../...'` paths assume public/ is a direct
