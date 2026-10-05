@@ -38,8 +38,7 @@ class UserListQueryEfficiencyTest extends TestCase
         DB::disableQueryLog();
 
         $response->assertOk();
-        // 10 auditors + the admin's own row.
-        $this->assertCount(11, $response->json('data'));
+        $this->assertCount(10, $response->json('data'));
 
         // A handful of fixed queries (auth, tenant scoping, the paginated
         // select, its count, eager-loaded tenant + roles + role_has_permissions

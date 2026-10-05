@@ -131,11 +131,11 @@ class AdminEditsEveryAccountTest extends TestCase
             ->assertForbidden();
     }
 
-    public function test_the_admin_sees_their_own_row_in_the_users_list(): void
+    public function test_the_admin_does_not_see_their_own_row_in_the_users_list(): void
     {
         $names = collect($this->actingAs($this->admin, 'web')->getJson('/api/v1/users')->assertOk()->json('data'))->pluck('name');
 
-        $this->assertContains('The Admin', $names);
+        $this->assertNotContains('The Admin', $names);
     }
 
     public function test_data_entry_does_not_see_their_own_row_or_the_admin(): void
