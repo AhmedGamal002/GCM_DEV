@@ -5482,7 +5482,71 @@
       ]
     },
     {
-      "name": "13. Platform Auth (Super Admin)",
+      "name": "13. General Settings (System Admin only)",
+      "item": [
+        {
+          "name": "Get Document Expiry Settings",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/settings/document-expiry",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "settings",
+                "document-expiry"
+              ]
+            },
+            "description": "system_admin only (TenantSettingPolicy) — 403 for every other role. Returns how many days before a driver / vehicle document end date its progress bar turns red (default 30 each)."
+          }
+        },
+        {
+          "name": "Update Document Expiry Settings",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"driver_expiry_warning_days\": 45,\n  \"vehicle_expiry_warning_days\": 30\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/settings/document-expiry",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "settings",
+                "document-expiry"
+              ]
+            },
+            "description": "system_admin only. Both fields required, whole numbers 1–365. driver_expiry_warning_days covers the residence, licenses, insurance and entry permits of every driver; vehicle_expiry_warning_days covers every vehicle document and entry permit. The driver / vehicle records then carry `expiry` ({status: ok|warning|expired, percent, days_remaining, label}) next to every valid_to."
+          }
+        }
+      ]
+    },
+    {
+      "name": "14. Platform Auth (Super Admin)",
       "item": [
         {
           "name": "Get Login Page (capture CSRF)",
@@ -5609,7 +5673,7 @@
       ]
     },
     {
-      "name": "14. Platform - Tenants",
+      "name": "15. Platform - Tenants",
       "auth": {
         "type": "noauth"
       },
@@ -5849,7 +5913,7 @@
       ]
     },
     {
-      "name": "15. Platform - Roles",
+      "name": "16. Platform - Roles",
       "auth": {
         "type": "noauth"
       },
@@ -6058,7 +6122,7 @@
       ]
     },
     {
-      "name": "16. Platform - Permissions",
+      "name": "17. Platform - Permissions",
       "auth": {
         "type": "noauth"
       },

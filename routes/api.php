@@ -61,6 +61,9 @@ Route::prefix('v1')->group(function () {
         // never through the generic /users form (see StoreClientUserRequest).
         Route::post('/client-users', [ClientUserController::class, 'store']);
         Route::patch('/client-users/{user}', [ClientUserController::class, 'update'])->whereNumber('user');
+        // General settings (system admin only) — the "expiring soon" thresholds for driver / vehicle documents.
+        Route::get('/settings/document-expiry', [\App\Http\Controllers\Api\V1\SettingsController::class, 'showDocumentExpiry']);
+        Route::patch('/settings/document-expiry', [\App\Http\Controllers\Api\V1\SettingsController::class, 'updateDocumentExpiry']);
         // Contractor users (FRD V01.14 §1.4) — same split, see StoreContractorUserRequest.
         Route::post('/contractor-users', [ContractorUserController::class, 'store']);
         Route::patch('/contractor-users/{user}', [ContractorUserController::class, 'update'])->whereNumber('user');

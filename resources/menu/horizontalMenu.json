@@ -558,6 +558,13 @@
           ]
         },
         {
+          "url": "app/settings",
+          "name": "General Settings",
+          "icon": "menu-icon tf-icons ti ti-settings",
+          "slug": "app-settings",
+          "roles": ["system_admin"]
+        },
+        {
           "name": "Roles & Permissions",
           "icon": "menu-icon tf-icons ti ti-settings",
           "slug": "app-access",

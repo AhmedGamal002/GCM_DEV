@@ -220,6 +220,8 @@ return [
         'contract_number' => 'contract number',
         'cr_number' => 'commercial registration number',
         'tax_number' => 'tax registration number',
+        'driver_expiry_warning_days' => 'driver documents warning period',
+        'vehicle_expiry_warning_days' => 'vehicle documents warning period',
     ],
 
 ];

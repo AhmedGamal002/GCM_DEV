@@ -112,13 +112,15 @@
 
     <div class="card mb-6 d-none" id="vehicle-docs-card">
       <h5 class="card-header">{{ __('Documents') }}</h5>
-      <div class="table-responsive">
+      <div class="card-datatable table-responsive">
         <table class="table table-hover mb-0" id="vv-docs-table">
           <thead>
             <tr>
               <th>{{ __('Document') }}</th>
               <th>{{ __('Number') }}</th>
               <th>{{ __('Valid to') }}</th>
+              <th>{{ __('Time left') }}</th>
+              <th>{{ __('Status') }}</th>
               <th>{{ __('Attachment') }}</th>
             </tr>
           </thead>
@@ -129,13 +131,15 @@
 
     <div class="card mb-6 d-none" id="vehicle-permits-card">
       <h5 class="card-header">{{ __('Truck entry permits') }}</h5>
-      <div class="table-responsive">
+      <div class="card-datatable table-responsive">
         <table class="table table-hover mb-0" id="vv-permits-table">
           <thead>
             <tr>
               <th>{{ __('Area name') }}</th>
               <th>{{ __('Permit number') }}</th>
               <th>{{ __('Valid to') }}</th>
+              <th>{{ __('Time left') }}</th>
+              <th>{{ __('Status') }}</th>
               <th>{{ __('Attachment') }}</th>
             </tr>
           </thead>

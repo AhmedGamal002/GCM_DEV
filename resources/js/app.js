@@ -7,6 +7,7 @@ import './required-marks';
 import './gcm-select2';
 import './gcm-fetch-all';
 import './gcm-affiliation';
+import './expiry-bar';
 /*
   Add custom scripts here
 */

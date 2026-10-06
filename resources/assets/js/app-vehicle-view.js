@@ -115,26 +115,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Same DataTables look as the list pages (search + pagination) for both
     // tables — data is already loaded with the vehicle, so no server
     // round-trip, just the shared visual/behaviour shell.
-    const dtOptions = (emptyMessage) => ({
-      responsive: true,
-      searching: true,
-      lengthChange: false,
-      pageLength: 10,
-      language: {
-        search: '',
-        searchPlaceholder: t.search || 'Search',
-        emptyTable: emptyMessage,
-        zeroRecords: emptyMessage,
-        info: t.info || 'Showing _START_ to _END_ of _TOTAL_ entries',
-        infoEmpty: t.info_empty || 'Showing 0 to 0 of 0 entries',
-        paginate: {
-          next: '<i class="ti ti-chevron-right ti-sm"></i>',
-          previous: '<i class="ti ti-chevron-left ti-sm"></i>'
-        }
-      },
-      dom: '<"row"<"col-12"f>>t<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
-      columnDefs: [{ targets: -1, orderable: false }]
-    });
+    const dtOptions = (emptyMessage) => window.gcmDocTableOptions(t, emptyMessage);
 
     if (documents.length) {
       document.getElementById('vv-docs-body').innerHTML = documents
@@ -144,6 +125,8 @@ document.addEventListener('DOMContentLoaded', function () {
             '<td>' + esc((t.doc_labels && t.doc_labels[d.type]) || d.type) + '</td>' +
             '<td>' + esc(d.document_number) + '</td>' +
             '<td>' + esc(d.valid_to) + '</td>' +
+            '<td>' + window.gcmExpiryBar(d.expiry) + '</td>' +
+            '<td>' + window.gcmExpiryTag(d.expiry) + '</td>' +
             '<td>' + attachmentCell(d) + '</td></tr>'
         )
         .join('');
@@ -158,6 +141,8 @@ document.addEventListener('DOMContentLoaded', function () {
           '<td>' + esc(d.area_name) + '</td>' +
           '<td>' + esc(d.document_number) + '</td>' +
           '<td>' + esc(d.valid_to) + '</td>' +
+          '<td>' + window.gcmExpiryBar(d.expiry) + '</td>' +
+          '<td>' + window.gcmExpiryTag(d.expiry) + '</td>' +
           '<td>' + attachmentCell(d) + '</td></tr>'
       )
       .join('');
@@ -168,6 +153,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     loading.classList.add('d-none');
     content.classList.remove('d-none');
+    window.gcmRecalcDocTables();
     if (window.gcmCanManage) document.getElementById('vehicle-status-card').classList.remove('d-none');
   }
 

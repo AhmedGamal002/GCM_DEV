@@ -1,0 +1,49 @@
+# قبول التنفيذ — شريط الوقت المتبقي على الوثائق والتصاريح + الإعدادات العامة
+
+> آخر مزامنة: **FRD V01.14** (2026-10-01) · تحسين بطلب العميل (مش في الـFRD) · شغّل `php artisan test` الأول (لازم كله أخضر) ثم `php artisan migrate:fresh --seed`.
+
+الحسابات: `admin@gcm.test` · `dataentry@gcm.test` · `auditor@gcm.test` (كلمة السر `password`).
+
+---
+
+## أ) شريط الوقت المتبقي في صفحتَي عرض السائق والمركبة
+
+### 1. السائق: الإقامة والرخص والتأمين وتصاريح الدخول
+- **FRD:** حقول "صالح حتى" (Valid To) في فورم السائق وتصاريحه — الشريط إضافة بطلب العميل
+- **الدور:** مدير النظام (وكل دور يشوف صفحة السائق)
+- **الخطوات:** عدّل تاريخ "صالح حتى" لوثائق سائق: واحدة بعد 200 يوم، وواحدة بعد 12 يوم، وواحدة بعد 30 يوم، وواحدة قبل 3 أيام. افتح صفحة عرض السائق.
+- **المتوقع:** الوثائق الأربعة في جدول واحد "Documents" (زي المركبات): الوثيقة / الرقم / Valid To / **Time left** (شريط والأيام المتبقية مكتوبة **تحته**) / **Status** (تاج) / المرفق. اللي بعد 200 يوم: شريط **أخضر كامل** وتاج **Valid**. اللي بعد 30 يوم أو أقل: شريط **أصفر** بيقصر كل ما الأيام تقل (12 يوم من 30 = حوالي 40%) وتاج **Need review**. المنتهية: شريط فاضي **أحمر** ومكتوب "Expired 3 days ago" وتاج **Expired** (الأحمر للمنتهي بس). جدول "Truck Entry Permits" فيه نفس الأعمدة. الجدولين فيهم بحث وترقيم، و"Showing x to y of z entries" والبحث مش لازقين في حافة الكارت.
+- **يغطيه آليًا:** `Settings/DocumentExpirySettingsTest::test_the_driver_record_carries_the_expiry_of_every_dated_document_and_permit` و`test_a_document_is_green_until_the_threshold_then_yellow_and_shrinking` و`test_each_state_has_its_tag_valid_need_review_or_expired` و`test_the_driver_and_vehicle_pages_list_their_documents_in_the_same_kind_of_table_with_a_status_column` و`test_an_expired_document_is_empty_and_says_how_long_ago`
+- **النتيجة:** ⬜
+
+### 2. المركبة: الوثائق الأربعة وتصاريح الدخول
+- **الدور:** مدير النظام
+- **الخطوات:** نفس الخطوات على مركبة (رخصة السيارة، وثيقة الحالة، شهادة الفحص، التأمين، وتصريح دخول). افتح صفحة عرض المركبة.
+- **المتوقع:** جدولا "Documents" و"Truck entry permits" فيهم عمودَي "Time left" (شريط والأيام تحته) و"Status" (Valid / Need review / Expired) بنفس الألوان والعدّاد المستخدمين في صفحة السائق.
+- **يغطيه آليًا:** `Settings/DocumentExpirySettingsTest::test_changing_the_driver_threshold_changes_the_drivers_bars_but_not_the_vehicles`
+- **النتيجة:** ⬜
+
+### 3. العدّاد بالعربي
+- **الدور:** مدير النظام
+- **الخطوات:** بدّل اللغة للعربي وافتح صفحة سائق فيه وثيقة بعد يومين، وبعد 5 أيام، وبعد 20 يوم، ومنتهية من 4 أيام.
+- **المتوقع:** "متبقٍّ يومان" / "متبقٍّ 5 أيام" / "متبقٍّ 20 يومًا" / "انتهت الصلاحية منذ 4 أيام" (صياغة العدد صحيحة نحويًا لكل رقم).
+- **يغطيه آليًا:** `Settings/DocumentExpirySettingsTest::test_the_label_is_in_arabic_in_the_arabic_locale`
+- **النتيجة:** ⬜
+
+---
+
+## ب) الإعدادات العامة (مدير النظام فقط)
+
+### 4. تغيير مدة التنبيه (الافتراضي 30 يوم) لكل من السائقين والمركبات
+- **الدور:** مدير النظام
+- **الخطوات:** من القائمة الجانبية افتح **General Settings**. غيّر "Driver documents — warning period (days)" إلى 60 واحفظ. ارجع لصفحة السائق اللي فيه وثيقة بعد 45 يوم.
+- **المتوقع:** رسالة "Settings saved successfully."، والوثيقة بعد 45 يوم بقت **صفراء** وتاجها "Need review" (كانت خضرا "Valid")، ومدة السائقين مالهاش تأثير على وثائق المركبات (ليها إعداد لوحدها). القيمة لازم رقم صحيح من 1 لـ365، غير كده رسالة خطأ تحت الحقل.
+- **يغطيه آليًا:** `Settings/DocumentExpirySettingsTest::test_the_system_admin_can_change_them_and_they_stick` و`test_the_days_must_be_a_whole_number_between_one_and_365`
+- **النتيجة:** ⬜
+
+### 5. الصفحة مش متاحة لغير مدير النظام
+- **الدور:** مدخل البيانات · المراقب · السائق
+- **الخطوات:** سجّل دخول بكل حساب وافتح `/app/settings` مباشرة.
+- **المتوقع:** 403، وعنصر "General Settings" مش ظاهر في القائمة الجانبية. نفس الشيء لطلبات `GET/PATCH /api/v1/settings/document-expiry`.
+- **يغطيه آليًا:** `Settings/DocumentExpirySettingsTest::test_the_settings_page_is_for_the_system_admin_only` و`test_only_the_system_admin_can_read_or_change_them`
+- **النتيجة:** ⬜

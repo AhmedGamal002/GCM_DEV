@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Domain\Settings\Support\ExpiryWarning;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -9,6 +10,10 @@ class DriverResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+        // `expiry` on every dated document = days left, green/red/expired and the label for the progress
+        // bars on the driver page (threshold: General Settings → driver documents).
+        $expiry = fn ($date) => app(ExpiryWarning::class)->describe($date, ExpiryWarning::SCOPE_DRIVER);
+
         return [
             'id' => $this->id,
             'user_id' => $this->user_id,
@@ -42,21 +47,25 @@ class DriverResource extends JsonResource
             'residence' => [
                 'number' => $this->residence_number,
                 'valid_to' => $this->residence_valid_to?->toDateString(),
+                'expiry' => $expiry($this->residence_valid_to),
                 'has_attachment' => (bool) $this->residence_attachment,
             ],
             'license' => [
                 'number' => $this->license_number,
                 'valid_to' => $this->license_valid_to?->toDateString(),
+                'expiry' => $expiry($this->license_valid_to),
                 'has_attachment' => (bool) $this->license_attachment,
             ],
             'operational_license' => [
                 'number' => $this->operational_license_number,
                 'valid_to' => $this->operational_license_valid_to?->toDateString(),
+                'expiry' => $expiry($this->operational_license_valid_to),
                 'has_attachment' => (bool) $this->operational_license_attachment,
             ],
             'insurance' => [
                 'number' => $this->insurance_number,
                 'valid_to' => $this->insurance_valid_to?->toDateString(),
+                'expiry' => $expiry($this->insurance_valid_to),
                 'has_attachment' => (bool) $this->insurance_attachment,
             ],
 
@@ -65,6 +74,7 @@ class DriverResource extends JsonResource
                 'area_name' => $permit->area_name,
                 'permit_number' => $permit->permit_number,
                 'valid_to' => $permit->valid_to?->toDateString(),
+                'expiry' => $expiry($permit->valid_to),
                 'has_attachment' => (bool) $permit->attachment,
             ])),
 

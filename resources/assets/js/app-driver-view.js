@@ -37,15 +37,6 @@ document.addEventListener('DOMContentLoaded', function () {
     errorBox.classList.remove('d-none');
   }
 
-  function setDocLink(anchorId, doc, downloadType) {
-    const anchor = document.getElementById(anchorId);
-    if (doc && doc.has_attachment) {
-      anchor.href = `/api/v1/drivers/${id}/documents/${downloadType}`;
-      anchor.target = '_blank';
-      anchor.classList.remove('d-none');
-    }
-  }
-
   function render(d) {
     if (d.updated_by_name && t.last_updated_by) {
       const at = d.updated_at ? new Date(d.updated_at).toLocaleString() : '';
@@ -87,57 +78,53 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.getElementById('dv-edit-link').href = t.edit_url_base + '/' + d.id;
 
-    document.getElementById('dv-residence-number').textContent = d.residence.number || '—';
-    document.getElementById('dv-residence-valid-to').textContent = d.residence.valid_to || '—';
-    setDocLink('dv-residence-download', d.residence, 'residence');
-
-    document.getElementById('dv-license-number').textContent = d.license.number || '—';
-    document.getElementById('dv-license-valid-to').textContent = d.license.valid_to || '—';
-    setDocLink('dv-license-download', d.license, 'license');
-
-    document.getElementById('dv-operational-license-number').textContent = d.operational_license.number || '—';
-    document.getElementById('dv-operational-license-valid-to').textContent = d.operational_license.valid_to || '—';
-    setDocLink('dv-operational-license-download', d.operational_license, 'operational-license');
-
-    document.getElementById('dv-insurance-number').textContent = d.insurance.number || '—';
-    document.getElementById('dv-insurance-valid-to').textContent = d.insurance.valid_to || '—';
-    setDocLink('dv-insurance-download', d.insurance, 'insurance');
+    // One table for the four dated documents, like the vehicle page: number, end date, the bar with the days
+    // left, the Valid / Need review / Expired tag and the attachment.
+    const attachmentCell = function (url) {
+      return url ? '<a href="' + url + '" target="_blank" class="btn btn-sm btn-text-primary"><i class="ti ti-download"></i></a>' : '—';
+    };
+    const docRows = [
+      ['residence', d.residence, 'residence'],
+      ['license', d.license, 'license'],
+      ['operational_license', d.operational_license, 'operational-license'],
+      ['insurance', d.insurance, 'insurance']
+    ];
+    document.getElementById('dv-docs-body').innerHTML = docRows
+      .map(function (row) {
+        const doc = row[1];
+        return (
+          '<tr>' +
+          '<td>' + escapeHtml((t.doc_labels && t.doc_labels[row[0]]) || row[0]) + '</td>' +
+          '<td>' + escapeHtml(doc.number || '—') + '</td>' +
+          '<td>' + escapeHtml(doc.valid_to || '—') + '</td>' +
+          '<td>' + window.gcmExpiryBar(doc.expiry) + '</td>' +
+          '<td>' + window.gcmExpiryTag(doc.expiry) + '</td>' +
+          '<td>' + attachmentCell(doc.has_attachment ? '/api/v1/drivers/' + id + '/documents/' + row[2] : null) + '</td>' +
+          '</tr>'
+        );
+      })
+      .join('');
+    $('#dv-docs-table').DataTable(window.gcmDocTableOptions(t, t.no_documents || 'No documents recorded for this driver.'));
 
     const permitsBody = document.getElementById('dv-entry-permits-body');
     permitsBody.innerHTML = (d.entry_permits || [])
       .map(function (p) {
-        const attachment = p.has_attachment
-          ? '<a href="/api/v1/driver-entry-permits/' + p.id + '/attachment" target="_blank">' + (t.download || 'Download') + '</a>'
-          : t.no_attachment || 'No attachment';
         return (
-          '<tr><td>' + escapeHtml(p.area_name) + '</td><td>' + escapeHtml(p.permit_number) + '</td><td>' + escapeHtml(p.valid_to) + '</td><td>' + attachment + '</td></tr>'
+          '<tr>' +
+          '<td>' + escapeHtml(p.area_name) + '</td>' +
+          '<td>' + escapeHtml(p.permit_number) + '</td>' +
+          '<td>' + escapeHtml(p.valid_to) + '</td>' +
+          '<td>' + window.gcmExpiryBar(p.expiry) + '</td>' +
+          '<td>' + window.gcmExpiryTag(p.expiry) + '</td>' +
+          '<td>' + attachmentCell(p.has_attachment ? '/api/v1/driver-entry-permits/' + p.id + '/attachment' : null) + '</td>' +
+          '</tr>'
         );
       })
       .join('');
 
-    // Same DataTables look as the list pages (search + pagination), on
-    // data that's already loaded — no server round-trip for a handful of
-    // permit rows. Initialised once the rows are in the DOM.
-    $('#dv-entry-permits-table').DataTable({
-      responsive: true,
-      searching: true,
-      lengthChange: false,
-      pageLength: 10,
-      language: {
-        search: '',
-        searchPlaceholder: t.search || 'Search',
-        emptyTable: t.no_entry_permits || 'No entry permits recorded for this driver.',
-        zeroRecords: t.no_entry_permits || 'No entry permits recorded for this driver.',
-        info: t.info || 'Showing _START_ to _END_ of _TOTAL_ entries',
-        infoEmpty: t.info_empty || 'Showing 0 to 0 of 0 entries',
-        paginate: {
-          next: '<i class="ti ti-chevron-right ti-sm"></i>',
-          previous: '<i class="ti ti-chevron-left ti-sm"></i>'
-        }
-      },
-      dom: '<"row"<"col-12"f>>t<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
-      columnDefs: [{ targets: -1, orderable: false }]
-    });
+    // Same DataTables look as the list pages (search + pagination), on data that's already loaded — no
+    // server round-trip for a handful of rows. Initialised once the rows are in the DOM.
+    $('#dv-entry-permits-table').DataTable(window.gcmDocTableOptions(t, t.no_entry_permits || 'No entry permits recorded for this driver.'));
     document.getElementById('driver-permits-card').classList.remove('d-none');
 
     document.querySelector(`#driverStatusForm input[name="new_status"][value="${d.status}"]`).checked = true;
@@ -145,6 +132,7 @@ document.addEventListener('DOMContentLoaded', function () {
     loading.classList.add('d-none');
     content.classList.remove('d-none');
     document.getElementById('driver-documents-section').classList.remove('d-none');
+    window.gcmRecalcDocTables();
     if (window.gcmCanManage) document.getElementById('driver-status-card').classList.remove('d-none');
   }
 

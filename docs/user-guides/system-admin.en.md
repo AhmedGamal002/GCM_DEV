@@ -249,4 +249,5 @@ Sidebar: heading **Clients & Projects** → **Client Projects** (List + Add). A 
 | Contractors | Full CRUD + deactivate/reactivate + certified services + attachments + statistics + export + **driver / vehicle / asset affiliation to a contractor** + **contractor representative account** | — |
 | Client companies | Full CRUD + deactivate/reactivate + attachments + export + projects count + company projects table + **representative + users count** | The contracts section (with Contracts) |
 | Client projects | Full CRUD + deactivate/reactivate + ID from the company short name + project assets + export + **representative + users count** | Contracts section and trip statistics |
+| General Settings | Warning period for driver and vehicle document expiry (default 30 days, 1–365) — the "time left" bars on the driver and vehicle pages turn yellow (tag "Need review") from then on | — |
 | Dashboard | Shell screen | Real stats (Week 8) |

@@ -767,5 +767,20 @@
   "Optional. Lists the active users of this contractor.": "اختياري. يعرض المستخدمين النشطين لهذا المتعهد.",
   "Exported by": "صدّر بواسطة",
   "Date": "التاريخ",
-  "Time": "الوقت"
+  "Time": "الوقت",
+  "General Settings": "الإعدادات العامة",
+  "System": "النظام",
+  "Document expiry alerts": "تنبيهات انتهاء الوثائق",
+  "Settings saved successfully.": "تم حفظ الإعدادات بنجاح.",
+  "A dated document shows a green bar with the days left. When the days left reach the number set here, the bar turns red and shrinks day by day until the date passes.": "تعرض كل وثيقة لها تاريخ انتهاء شريطًا أخضر مع عدد الأيام المتبقية. وعندما يصل عدد الأيام المتبقية إلى الرقم المحدد هنا يتحول الشريط إلى اللون الأحمر ويتناقص يومًا بعد يوم حتى يحين تاريخ الانتهاء.",
+  "Driver documents — warning period (days)": "مدة التنبيه لوثائق السائقين (بالأيام)",
+  "Vehicle documents — warning period (days)": "مدة التنبيه لوثائق المركبات (بالأيام)",
+  "Applies to the residence, driving license, operational license, insurance and entry permits of every driver.": "تسري على الإقامة ورخصة القيادة والرخصة التشغيلية والتأمين وتصاريح الدخول لدى جميع السائقين.",
+  "Applies to the registration card, fitness document, inspection certificate, insurance and entry permits of every vehicle.": "تسري على رخصة السيارة ووثيقة الحالة وشهادة الفحص والتأمين وتصاريح الدخول لدى جميع المركبات.",
+  "Time left": "الوقت المتبقي",
+  "{0} Expires today|{1} :count day left|[2,*] :count days left": "{0} تنتهي صلاحيته اليوم|{1} متبقٍّ يوم واحد|{2} متبقٍّ يومان|[3,10] متبقٍّ :count أيام|[11,*] متبقٍّ :count يومًا",
+  "{1} Expired :count day ago|[2,*] Expired :count days ago": "{1} انتهت الصلاحية منذ يوم واحد|{2} انتهت الصلاحية منذ يومين|[3,10] انتهت الصلاحية منذ :count أيام|[11,*] انتهت الصلاحية منذ :count يومًا",
+  "Valid": "ساري",
+  "Need review": "بحاجة إلى مراجعة",
+  "No documents recorded for this driver.": "لا توجد وثائق مسجّلة لهذا السائق."
 }

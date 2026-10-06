@@ -186,8 +186,20 @@ class MenuVisibilityTest extends TestCase
         $dataEntry = User::factory()->create();
         $dataEntry->assignRole('data_entry');
 
-        $this->assertSame(['Accounts', 'Fleet & Assets', 'Operations', 'Clients & Projects'], $this->headers($this->tenantAdmin));
+        // The "System" title (General Settings) is the system admin's alone.
+        $this->assertSame(['Accounts', 'Fleet & Assets', 'Operations', 'Clients & Projects', 'System'], $this->headers($this->tenantAdmin));
         $this->assertSame(['Accounts', 'Fleet & Assets', 'Operations', 'Clients & Projects'], $this->headers($dataEntry));
+    }
+
+    public function test_only_the_system_admin_sees_the_general_settings_menu_item(): void
+    {
+        $this->actingAs($this->tenantAdmin, 'web')->get('/app/user/list')->assertSee('app/settings', false);
+
+        foreach (['data_entry', 'auditor', 'driver'] as $role) {
+            $user = User::factory()->create();
+            $user->assignRole($role);
+            $this->actingAs($user, 'web')->get('/app/user/list')->assertDontSee('app/settings', false);
+        }
     }
 
     /** FRD V01.14: auditor now sees Users/Drivers too, so it gets the "Accounts" header as well — same set as data_entry/system_admin. */

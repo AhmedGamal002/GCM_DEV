@@ -767,5 +767,20 @@
   "Optional. Lists the active users of this contractor.": "Optional. Lists the active users of this contractor.",
   "Exported by": "Exported by",
   "Date": "Date",
-  "Time": "Time"
+  "Time": "Time",
+  "General Settings": "General Settings",
+  "System": "System",
+  "Document expiry alerts": "Document expiry alerts",
+  "Settings saved successfully.": "Settings saved successfully.",
+  "A dated document shows a green bar with the days left. When the days left reach the number set here, the bar turns red and shrinks day by day until the date passes.": "A dated document shows a green bar with the days left. When the days left reach the number set here, the bar turns red and shrinks day by day until the date passes.",
+  "Driver documents — warning period (days)": "Driver documents — warning period (days)",
+  "Vehicle documents — warning period (days)": "Vehicle documents — warning period (days)",
+  "Applies to the residence, driving license, operational license, insurance and entry permits of every driver.": "Applies to the residence, driving license, operational license, insurance and entry permits of every driver.",
+  "Applies to the registration card, fitness document, inspection certificate, insurance and entry permits of every vehicle.": "Applies to the registration card, fitness document, inspection certificate, insurance and entry permits of every vehicle.",
+  "Time left": "Time left",
+  "{0} Expires today|{1} :count day left|[2,*] :count days left": "{0} Expires today|{1} :count day left|[2,*] :count days left",
+  "{1} Expired :count day ago|[2,*] Expired :count days ago": "{1} Expired :count day ago|[2,*] Expired :count days ago",
+  "Valid": "Valid",
+  "Need review": "Need review",
+  "No documents recorded for this driver.": "No documents recorded for this driver."
 }

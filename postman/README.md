@@ -17,7 +17,7 @@
 
 ### 1. تينانت (`/api/v1/*`) — Bearer Token
 
-المجلدات 1-12 (Auth/Me/Roles/Users/Drivers/Vehicles/Assets/Intermediate Facilities/Services/Contractors/Client Companies/Client Projects). الـ collection معمول عليها auth من نوع Bearer على مستوى الـ root بقيمة `{{tenant_token}}`.
+المجلدات 1-13 (Auth/Me/Roles/Users/Drivers/Vehicles/Assets/Intermediate Facilities/Services/Contractors/Client Companies/Client Projects/General Settings). الـ collection معمول عليها auth من نوع Bearer على مستوى الـ root بقيمة `{{tenant_token}}`.
 
 - شغّل **"1. Auth (Tenant) → Login"** الأول. Postman مش هيبقى أبدًا من ضمن `SANCTUM_STATEFUL_DOMAINS`، فالسيرفر هيرجّعله `token` (نفس المسار اللي هيتستخدم لموبايل السائق مستقبلًا) بدل session cookie. الـ test script بتاع الريكوست بيحفظ التوكن تلقائي في `tenant_token`.
 - من بعدها أي ريكوست في المجلدات 2-11 هيبعت الـ Authorization header تلقائي.
@@ -25,9 +25,9 @@
 
 ### 2. Platform / Super Admin (`/platform/*`) — Session + CSRF
 
-المجلدات 12-15. **مش** Bearer — دي كنترولرز Blade كلاسيكية (guard `platform` منفصل تمامًا)، فمفيش JSON API هنا أصلًا.
+المجلدات 14-17. **مش** Bearer — دي كنترولرز Blade كلاسيكية (guard `platform` منفصل تمامًا)، فمفيش JSON API هنا أصلًا.
 
-- شغّل **"13. Platform Auth → Get Login Page (capture CSRF)"** الأول — بيسحب الـ `_token` من صفحة اللوجن ويحفظه في `platform_csrf`.
+- شغّل **"14. Platform Auth → Get Login Page (capture CSRF)"** الأول — بيسحب الـ `_token` من صفحة اللوجن ويحفظه في `platform_csrf`.
 - بعدين **"Login"** — بيرجّع 302 + session cookie، وPostman بيحتفظ بالكوكي تلقائي (cookie jar بتاعه) لباقي الريكوستات.
 - أي ريكوست POST/PUT/PATCH/DELETE في المجلدات 13-15 معاه **pre-request script** بيسحب توكن CSRF جديد تلقائيًا قبل ما يبعت (من صفحة `/platform/tenants` — أي صفحة مسجّل دخولها كفاية لإن الـ token واحد للـ session كله مش لكل صفحة). مش محتاج تعمل حاجة يدوي.
 - بعض الريكوستات (زي "Get Edit Tenant Form"، "Delete Permission") محتاجة id يدوي (`last_tenant_id`, `last_role_id`, `last_permission_id`) — مفيش auto-capture ليهم لإن صفحات الإنشاء بترجّع redirect للقائمة مش JSON فيه الـ id. جيب الـ id من ريسبونس "List..." وحطه في الـ variable يدوي. (نفس الكلام على `last_vehicle_document_id`.)

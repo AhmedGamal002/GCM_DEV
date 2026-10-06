@@ -113,5 +113,7 @@ return [
         'contract_number' => 'رقم العقد',
         'cr_number' => 'رقم السجل التجاري',
         'tax_number' => 'رقم السجل الضريبي',
+        'driver_expiry_warning_days' => 'مدة التنبيه لوثائق السائقين',
+        'vehicle_expiry_warning_days' => 'مدة التنبيه لوثائق المركبات',
     ],
 ];

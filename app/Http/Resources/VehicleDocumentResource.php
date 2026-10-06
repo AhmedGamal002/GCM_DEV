@@ -15,6 +15,9 @@ class VehicleDocumentResource extends JsonResource
             'document_number' => $this->document_number,
             'area_name' => $this->area_name,
             'valid_to' => $this->valid_to?->toDateString(),
+            // Days left + green/red/expired for the progress bar (threshold: General Settings → vehicle documents).
+            'expiry' => app(\App\Domain\Settings\Support\ExpiryWarning::class)
+                ->describe($this->valid_to, \App\Domain\Settings\Support\ExpiryWarning::SCOPE_VEHICLE),
             // The attachment is on the private disk — expose only whether
             // one exists and the Gate-checked download route, never a URL.
             'has_attachment' => $this->attachment_path !== null,

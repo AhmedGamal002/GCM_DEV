@@ -20,7 +20,8 @@ class AppServiceProvider extends ServiceProvider
    */
   public function register(): void
   {
-    //
+    // One read of the tenant's expiry thresholds per request, however many documents a page lists.
+    $this->app->singleton(\App\Domain\Settings\Support\ExpiryWarning::class);
   }
 
   /**
