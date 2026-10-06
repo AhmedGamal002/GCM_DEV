@@ -66,6 +66,37 @@ class DriverCreationTest extends TestCase
         ];
     }
 
+    public function test_the_default_vehicle_is_optional(): void
+    {
+        $payload = $this->basePayload();
+        unset($payload['default_vehicle_id']);
+
+        $this->actingAs($this->systemAdmin, 'web')
+            ->post('/api/v1/drivers', $payload)
+            ->assertCreated()
+            ->assertJsonPath('data.default_vehicle', null);
+
+        $this->assertNull(Driver::firstOrFail()->default_vehicle_id);
+    }
+
+    public function test_a_blank_default_vehicle_from_the_form_is_accepted_and_clears_it_on_edit(): void
+    {
+        $id = $this->actingAs($this->systemAdmin, 'web')
+            ->post('/api/v1/drivers', array_merge($this->basePayload(), ['default_vehicle_id' => '']))
+            ->assertCreated()
+            ->json('data.id');
+
+        $this->actingAs($this->systemAdmin, 'web')
+            ->post("/api/v1/drivers/{$id}", array_merge($this->basePayload(), ['_method' => 'PATCH', 'default_vehicle_id' => (string) $this->vehicle->id]))
+            ->assertOk()
+            ->assertJsonPath('data.default_vehicle.id', $this->vehicle->id);
+
+        $this->actingAs($this->systemAdmin, 'web')
+            ->post("/api/v1/drivers/{$id}", array_merge($this->basePayload(), ['_method' => 'PATCH', 'default_vehicle_id' => '']))
+            ->assertOk()
+            ->assertJsonPath('data.default_vehicle', null);
+    }
+
     public function test_system_admin_can_create_a_driver_with_full_profile_and_entry_permits(): void
     {
         $response = $this->actingAs($this->systemAdmin, 'web')
@@ -124,12 +155,12 @@ class DriverCreationTest extends TestCase
                 'password' => 'a-secure-password',
                 'password_confirmation' => 'a-secure-password',
                 'status' => 'active',
-                // missing vehicle_category_ids/default_vehicle_id/residence/license/operational_license/insurance
+                // missing vehicle_category_ids/residence/license/operational_license/insurance
             ]);
 
         $response->assertUnprocessable();
         $response->assertJsonValidationErrors([
-            'vehicle_category_ids', 'default_vehicle_id',
+            'vehicle_category_ids',
             'residence_number', 'license_number', 'operational_license_number', 'insurance_number',
         ]);
     }

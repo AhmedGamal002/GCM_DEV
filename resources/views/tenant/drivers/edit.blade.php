@@ -99,7 +99,7 @@
         </div>
         <div class="col-md-6">
           <label class="form-label" for="default_vehicle_id">{{ __('Default Vehicle') }}</label>
-          <select id="default_vehicle_id" class="form-select select2" required>
+          <select id="default_vehicle_id" class="form-select select2">
             <option value="">{{ __('Select vehicle type(s) first') }}</option>
           </select>
         </div>
