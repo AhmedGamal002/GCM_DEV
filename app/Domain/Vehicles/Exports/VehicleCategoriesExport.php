@@ -2,8 +2,10 @@
 
 namespace App\Domain\Vehicles\Exports;
 
+use App\Support\ExportHeader;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
@@ -12,8 +14,10 @@ use Maatwebsite\Excel\Concerns\WithMapping;
  * vehicles use it) plus the ID and creation date the other exports carry.
  * Expects `vehicles_count` (withCount) on each row.
  */
-class VehicleCategoriesExport implements FromCollection, WithHeadings, WithMapping
+class VehicleCategoriesExport implements FromCollection, WithEvents, WithHeadings, WithMapping
 {
+    use ExportHeader;
+
     public function __construct(private readonly Collection $categories) {}
 
     public function collection(): Collection

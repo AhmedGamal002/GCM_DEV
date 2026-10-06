@@ -2,13 +2,17 @@
 
 namespace App\Domain\Assets\Exports;
 
+use App\Support\ExportHeader;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
-class AssetsExport implements FromCollection, WithHeadings, WithMapping
+class AssetsExport implements FromCollection, WithEvents, WithHeadings, WithMapping
 {
+    use ExportHeader;
+
     public function __construct(private readonly Collection $assets) {}
 
     public function collection(): Collection

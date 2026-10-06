@@ -2,13 +2,17 @@
 
 namespace App\Domain\Services\Exports;
 
+use App\Support\ExportHeader;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
-class MainServicesExport implements FromCollection, WithHeadings, WithMapping
+class MainServicesExport implements FromCollection, WithEvents, WithHeadings, WithMapping
 {
+    use ExportHeader;
+
     public function __construct(private readonly Collection $services) {}
 
     public function collection(): Collection

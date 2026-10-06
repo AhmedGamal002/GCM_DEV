@@ -2,8 +2,10 @@
 
 namespace App\Domain\Drivers\Exports;
 
+use App\Support\ExportHeader;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
@@ -13,8 +15,10 @@ use Maatwebsite\Excel\Concerns\WithMapping;
  * different column set than UsersExport (no Entity/Role: this table is
  * driver-only, so Role is always "driver" and redundant here).
  */
-class DriversExport implements FromCollection, WithHeadings, WithMapping
+class DriversExport implements FromCollection, WithEvents, WithHeadings, WithMapping
 {
+    use ExportHeader;
+
     public function __construct(private readonly Collection $drivers)
     {
     }

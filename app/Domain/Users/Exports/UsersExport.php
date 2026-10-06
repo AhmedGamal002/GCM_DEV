@@ -2,9 +2,11 @@
 
 namespace App\Domain\Users\Exports;
 
+use App\Support\ExportHeader;
 use App\Support\PdfLabels;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
@@ -14,8 +16,10 @@ use Maatwebsite\Excel\Concerns\WithMapping;
  * — i.e. what's actually on screen in app-user-list, not an arbitrary
  * export-only column set (email/created_at were never in that spec).
  */
-class UsersExport implements FromCollection, WithHeadings, WithMapping
+class UsersExport implements FromCollection, WithEvents, WithHeadings, WithMapping
 {
+    use ExportHeader;
+
     public function __construct(private readonly Collection $users)
     {
     }
