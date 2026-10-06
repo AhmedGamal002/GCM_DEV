@@ -94,8 +94,8 @@ class FormAccessAndMessagesTest extends TestCase
 
         $errors = Validator::make(['phone' => '', 'company_id' => ''], ['phone' => 'required', 'company_id' => 'required'])->errors();
 
-        $this->assertSame('رقم الموبايل إجبارية.', $errors->first('phone'));
-        $this->assertSame('الشركة إجبارية.', $errors->first('company_id'));
+        $this->assertSame('حقل رقم الموبايل مطلوب.', $errors->first('phone'));
+        $this->assertSame('حقل الشركة مطلوب.', $errors->first('company_id'));
     }
 
     public function test_english_messages_use_the_form_label_not_the_column_name(): void

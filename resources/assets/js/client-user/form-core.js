@@ -325,6 +325,7 @@ export function initClientUserForm(opts) {
     form.querySelector(`input[name="status"][value="${u.status}"]`).checked = true;
     togglePicker();
 
+    showCurrentImage('current-photo', u.photo_url);
     showCurrentImage('current-signature', u.signature_url);
     showCurrentImage('current-stamp', u.stamp_url);
 

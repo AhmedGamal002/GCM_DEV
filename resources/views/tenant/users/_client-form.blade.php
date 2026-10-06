@@ -32,6 +32,7 @@
         <div class="col-md-6">
           <label class="form-label" for="photo">{{ __('Photo') }}</label>
           <input type="file" id="photo" name="photo" class="form-control" accept="image/*" />
+          <div class="small mt-1 d-none" id="current-photo"></div>
           <div class="text-danger small mt-1 d-none" data-feedback></div>
         </div>
         <div class="col-md-6">

@@ -32,7 +32,7 @@
         <div class="col-md-6">
           <label class="form-label" for="prefix">{{ __('Prefix name') }}</label>
           <input type="text" id="prefix" name="prefix" class="form-control text-uppercase" maxlength="3" dir="ltr" autocomplete="off" required />
-          <div class="form-text">{{ __('3 unique English letters that identify the facility, used with numbers to build a unique reference.') }}</div>
+          <div class="form-text">{{ __('3 unique English letters that identify the facility.') }}</div>
           <div class="text-danger small mt-1 d-none" data-feedback></div>
         </div>
 

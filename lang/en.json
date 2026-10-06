@@ -424,7 +424,7 @@
   "Auditor": "Auditor",
   "A vehicle on maintenance or deactivated cannot be selected for a trip.": "A vehicle on maintenance or deactivated cannot be selected for a trip.",
   "An asset on maintenance or deactivated cannot be selected for a trip.": "An asset on maintenance or deactivated cannot be selected for a trip.",
-  "3 unique English letters that identify the facility, used with numbers to build a unique reference.": "3 unique English letters that identify the facility, used with numbers to build a unique reference.",
+  "3 unique English letters that identify the facility.": "3 unique English letters that identify the facility.",
   "A deactivated facility can't be chosen for new sub-services or trips.": "A deactivated facility can't be chosen for new sub-services or trips.",
   "Address": "Address",
   "All services": "All services",

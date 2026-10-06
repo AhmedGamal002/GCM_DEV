@@ -46,7 +46,7 @@
 @include('tenant.projects._form', ['mode' => 'edit'])
 
 {{-- FRD V01.14 §1.12.4: deactivate / re-activate lives on the edit page. --}}
-<div class="card d-none" id="project-status-card">
+<div class="card d-none mt-6" id="project-status-card">
   <h5 class="card-header">{{ __('Project Status') }}</h5>
   <div class="card-body">
     <div class="alert alert-warning">

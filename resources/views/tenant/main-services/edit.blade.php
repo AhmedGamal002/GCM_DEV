@@ -45,7 +45,7 @@
 @include('tenant.main-services._form', ['mode' => 'edit'])
 
 {{-- FRD V01.14 §1.9.1: deactivate / re-activate lives on the edit page. --}}
-<div class="card d-none" id="main-service-status-card">
+<div class="card d-none mt-6" id="main-service-status-card">
   <h5 class="card-header">{{ __('Service Status') }}</h5>
   <div class="card-body">
     <div class="alert alert-warning">

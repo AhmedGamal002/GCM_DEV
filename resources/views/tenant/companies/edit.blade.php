@@ -50,7 +50,7 @@
 @include('tenant.companies._form', ['mode' => 'edit'])
 
 {{-- FRD V01.14 §1.11.4: deactivate / re-activate lives on the edit page. --}}
-<div class="card d-none" id="company-status-card">
+<div class="card d-none mt-6" id="company-status-card">
   <h5 class="card-header">{{ __('Company Status') }}</h5>
   <div class="card-body">
     <div class="alert alert-warning">

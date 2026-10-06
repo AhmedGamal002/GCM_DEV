@@ -51,7 +51,7 @@
 @include('tenant.contractors._form', ['mode' => 'edit'])
 
 {{-- FRD V01.14 §1.10.4: deactivate / re-activate lives on the edit page. --}}
-<div class="card d-none" id="contractor-status-card">
+<div class="card d-none mt-6" id="contractor-status-card">
   <h5 class="card-header">{{ __('Contractor Status') }}</h5>
   <div class="card-body">
     <div class="alert alert-warning">
