@@ -25,4 +25,10 @@ final class Brand
     {
         return asset('assets/img/branding/logo-light.png');
     }
+
+    /** The same logo as a file path, for DomPDF (which reads the file rather than fetching a URL). */
+    public static function logoPath(): string
+    {
+        return public_path('assets/img/branding/logo-light.png');
+    }
 }

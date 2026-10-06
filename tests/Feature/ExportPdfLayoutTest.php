@@ -6,6 +6,7 @@ use App\Models\Tenant;
 use App\Models\User;
 use App\Models\Vehicle;
 use App\Support\ArabicText;
+use App\Support\Brand;
 use App\Support\PdfLabels;
 use Database\Seeders\RoleSeeder;
 use Database\Seeders\VehicleCategorySeeder;
@@ -34,11 +35,35 @@ class ExportPdfLayoutTest extends TestCase
         ], fn ($v) => $v !== null))->render();
     }
 
+    /** The data tables only — the report header (logo / exported by) is a small table of its own. */
+    private function dataTables(string $html): int
+    {
+        return preg_match_all('/<table(?![^>]*report-head)/', $html);
+    }
+
+    public function test_every_pdf_opens_with_the_logo_and_who_exported_it_and_when(): void
+    {
+        $this->seed(RoleSeeder::class);
+        app()->instance('tenant', Tenant::create(['name' => 'GCM', 'slug' => 'gcm', 'status' => 'active']));
+        $admin = User::factory()->create(['name' => 'Sara Exporter']);
+        $admin->assignRole('system_admin');
+        $this->actingAs($admin, 'web');
+        $this->travelTo(now()->setDateTime(2026, 10, 6, 14, 5, 9));
+
+        $html = $this->render(3);
+
+        $this->assertStringContainsString('assets/img/branding/logo-light.png', $html);
+        $this->assertFileExists(Brand::logoPath());
+        $this->assertStringContainsString('Exported by: Sara Exporter', $html);
+        $this->assertStringContainsString('Date: 2026-10-06', $html);
+        $this->assertStringContainsString('Time: 14:05:09', $html);
+    }
+
     public function test_rows_are_split_into_tables_of_forty(): void
     {
         $html = $this->render(100);
 
-        $this->assertSame(3, substr_count($html, '<table'));            // 40 + 40 + 20
+        $this->assertSame(3, $this->dataTables($html));                     // 40 + 40 + 20
         $this->assertSame(3, substr_count($html, '<thead>'));           // header repeats per page
         $this->assertSame(200, substr_count($html, '<td>'));            // 100 rows x 2 cells, none lost in the split
     }
@@ -54,7 +79,7 @@ class ExportPdfLayoutTest extends TestCase
     {
         $html = $this->render(10);
 
-        $this->assertSame(1, substr_count($html, '<table'));
+        $this->assertSame(1, $this->dataTables($html));
         $this->assertSame(0, substr_count($html, 'page-break-after'));
     }
 

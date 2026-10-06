@@ -764,5 +764,8 @@
   "Contractor representative account": "حساب ممثل المتعهد",
   "Contractor representative": "ممثل المتعهد",
   "Available after you create the contractor and add its users — choose it from the edit page.": "يتاح بعد إنشاء المتعهد وإضافة مستخدميه — اخترْه من صفحة التعديل.",
-  "Optional. Lists the active users of this contractor.": "اختياري. يعرض المستخدمين النشطين لهذا المتعهد."
+  "Optional. Lists the active users of this contractor.": "اختياري. يعرض المستخدمين النشطين لهذا المتعهد.",
+  "Exported by": "صدّر بواسطة",
+  "Date": "التاريخ",
+  "Time": "الوقت"
 }
