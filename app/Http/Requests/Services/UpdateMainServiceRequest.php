@@ -8,10 +8,12 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 /**
- * FRD V01.14 §1.9.1 edit page: name + optional data, plus the supported
- * vehicle categories while the service is unused (UpdateMainServiceAction
- * refuses any edit once it is). The type of service is never accepted
- * (locked); operational_status changes only through the status endpoint.
+ * FRD V01.14 §1.9.1 edit page: "أسم الخدمة والبيانات الاختيارية" — the name
+ * and the additional data, nothing else (UpdateMainServiceAction refuses
+ * any edit once a PO includes the service). The type of service and the
+ * supported vehicle categories are fixed at creation: they are not in the
+ * validated set, so a payload carrying them is simply ignored.
+ * operational_status changes only through the status endpoint.
  *
  * Not route-model-bound (`{service}` is a raw id, see MainServiceController).
  */
@@ -47,8 +49,6 @@ class UpdateMainServiceRequest extends FormRequest
                 'required', 'string', 'max:255',
                 Rule::unique('main_services', 'name')->where('tenant_id', $tenantId)->ignore($this->target()->id),
             ],
-            'vehicle_category_ids' => ['sometimes', 'array', 'min:1'],
-            'vehicle_category_ids.*' => ['integer', 'distinct', Rule::exists('vehicle_categories', 'id')->where('tenant_id', $tenantId)],
             'additional_data' => ['nullable', 'string'],
         ];
     }

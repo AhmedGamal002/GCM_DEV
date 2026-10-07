@@ -21,6 +21,20 @@
     show_more: @json(__('Show more')),
     show_less: @json(__('Show less')),
     generic_error: @json(__('Something went wrong. Please try again.')),
+    all_types: @json(__('All types')),
+    search_in_all: @json(__('Search in: All')),
+    search_in_main: @json(__('Search in: Main services')),
+    search_in_sub: @json(__('Search in: Sub-services')),
+    placeholder_all: @json(__('Search main or sub-service')),
+    placeholder_main: @json(__('Search main service')),
+    placeholder_sub: @json(__('Search sub-service')),
+    all_statuses: @json(__('All statuses')),
+    info: @json(__('Showing _START_ to _END_ of _TOTAL_ entries')),
+    info_empty: @json(__('Showing 0 to 0 of 0 entries')),
+    of_total: @json(__(':shown of :total')),
+    view_all: @json(__('View all :count')),
+    previous: @json(__('Previous')),
+    next: @json(__('Next')),
     created: @json(__('Sub-service created successfully.')),
     can_manage: @json(auth()->user()->can('create', \App\Models\SubService::class)),
     main_view_url_base: @json(url('/app/main-service/view')),
@@ -42,8 +56,19 @@
 <div id="sub-service-list-error" class="alert alert-danger d-none"></div>
 
 <div class="card mb-6">
-  <div class="card-body d-flex flex-column flex-md-row gap-4 justify-content-between align-items-md-center">
-    <input type="search" id="sub-service-search" class="form-control w-auto flex-grow-1 flex-md-grow-0" style="min-width: 260px" placeholder="{{ __('Search sub-service') }}" />
+  <div class="card-body d-flex flex-column flex-xl-row gap-4 justify-content-between align-items-xl-center">
+    <div class="d-flex flex-column flex-md-row flex-wrap gap-4 flex-grow-1">
+      <input type="search" id="sub-service-search" class="form-control w-auto flex-grow-1 flex-md-grow-0" style="min-width: 260px" placeholder="{{ __('Search main or sub-service') }}" />
+      <select id="sub-service-search-in" class="form-select w-auto" aria-label="{{ __('Search in') }}"></select>
+      <select id="sub-service-type-filter" class="form-select w-auto" aria-label="{{ __('Type of Service') }}"></select>
+      <select id="sub-service-status-filter" class="form-select w-auto" aria-label="{{ __('Status') }}"></select>
+      <select id="sub-service-per-page" class="form-select w-auto">
+        <option value="10" selected>10</option>
+        <option value="25">25</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+      </select>
+    </div>
     @can('create', \App\Models\SubService::class)
       <a href="{{ route('app-sub-service-add') }}" class="btn btn-primary">
         <i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">{{ __('Create New Sub-service') }}</span>
@@ -61,5 +86,15 @@
 <div class="accordion" id="subServiceAccordion"></div>
 
 <div class="alert alert-info d-none" id="sub-service-list-empty"></div>
+
+{{-- Server-side pagination over the main services (see app-sub-service-list.js). --}}
+<div class="d-none" id="sub-service-footer">
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mt-2 mb-6">
+    <div class="text-muted" id="sub-service-info"></div>
+    <nav aria-label="{{ __('Sub Services') }}">
+      <ul class="pagination mb-0" id="sub-service-pager"></ul>
+    </nav>
+  </div>
+</div>
 
 @endsection

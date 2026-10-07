@@ -86,19 +86,6 @@ class IntermediateFacility extends Model
         return $this->belongsToMany(SubService::class, 'sub_service_facility');
     }
 
-    /**
-     * Whether the facility is already part of something — any sub-service's
-     * facility list (active or deactivated) or a trip. Once it is, its
-     * environmental service and recycling efficiency are locked (they would
-     * silently change what past and planned work means).
-     *
-     * Trips (FRD §1.14) don't exist yet; add them here when they land.
-     */
-    public function isInUse(): bool
-    {
-        return $this->subServices()->exists();
-    }
-
     public function updatedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'updated_by');

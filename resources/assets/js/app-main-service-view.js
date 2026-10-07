@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function render(s) {
     document.getElementById('msv-name').textContent = s.name;
     document.getElementById('msv-type').textContent = typeLabels[s.service_type] || s.service_type;
-    document.getElementById('msv-sub-count').textContent = (s.sub_services || []).length;
+    document.getElementById('msv-sub-count').textContent = s.sub_services_count != null ? s.sub_services_count : (s.sub_services || []).length;
 
     document.getElementById('msv-categories').innerHTML = (s.vehicle_categories || [])
       .map((c) => '<span class="badge bg-label-primary">' + escapeHtml(c.name) + '</span>')
@@ -84,7 +84,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const subView = t.sub_view_url_base || '/app/sub-service/view';
   const subEdit = t.sub_edit_url_base || '/app/sub-service/edit';
-  const listParams = () => ({ main_service_id: id });
+  // Filters of the sub-services table (asset type + status), read by every request.
+  let currentAssetType = '';
+  let currentSubStatus = '';
+  const listParams = () => ({
+    main_service_id: id,
+    asset_type: currentAssetType || undefined,
+    operational_status: currentSubStatus || undefined
+  });
 
   const buttons = [];
   if (t.can_manage) {
@@ -160,6 +167,21 @@ document.addEventListener('DOMContentLoaded', function () {
       '<"col-sm-12 col-md-6"p>' +
       '>',
     buttons: buttons,
-    responsive: true
+    responsive: true,
+    initComplete: function () {
+      const api = this.api();
+      const addFilter = (selector, allLabel, options, onChange) => {
+        const select = $('<select class="form-select"><option value="">' + escapeHtml(allLabel) + '</option></select>')
+          .appendTo(selector)
+          .on('change', function () {
+            onChange($(this).val());
+            api.draw();
+          });
+        options.forEach(([value, label]) => select.append('<option value="' + value + '">' + escapeHtml(label) + '</option>'));
+      };
+
+      addFilter('.msv_sub_asset_type', t.all_asset_types || 'All asset types', [['container', assetLabels.container], ['tank', assetLabels.tank]], (v) => (currentAssetType = v));
+      addFilter('.msv_sub_status', t.all_statuses || 'All statuses', [['active', statusObj.active.title], ['deactivated', statusObj.deactivated.title]], (v) => (currentSubStatus = v));
+    }
   });
 });

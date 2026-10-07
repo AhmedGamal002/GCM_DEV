@@ -2,8 +2,6 @@
 
 namespace Tests\Feature\Facilities;
 
-use App\Domain\Facilities\Actions\UpdateFacilityAction;
-use App\Domain\Facilities\Exceptions\FacilityInUseException;
 use App\Models\IntermediateFacility;
 use App\Models\SubService;
 use App\Models\Tenant;
@@ -298,79 +296,38 @@ class FacilityManagementTest extends TestCase
         $this->assertSame($code, $facility->fresh()->code);
     }
 
-    public function test_the_service_and_efficiency_can_change_while_the_facility_is_unused(): void
+    /**
+     * FRD §1.8 edit page: name + optional data only. The environmental
+     * service and the recycling efficiency are fixed at creation — whether or
+     * not anything uses the facility; a payload carrying them is ignored.
+     */
+    public function test_the_service_and_efficiency_are_fixed_at_creation(): void
     {
-        $facility = IntermediateFacility::factory()->create();
+        $recycling = IntermediateFacility::factory()->recycling(60)->create();
+        $disposal = IntermediateFacility::factory()->create();
 
-        $this->actingAs($this->admin, 'web')
-            ->patchJson("/api/v1/facilities/{$facility->id}", [
-                'name' => $facility->name, 'environmental_service' => 'recycle', 'recycling_efficiency' => 40,
-            ])
+        $this->actingAs($this->admin, 'web');
+
+        $this->patchJson("/api/v1/facilities/{$recycling->id}", [
+            'name' => 'Renamed', 'environmental_service' => 'disposal', 'recycling_efficiency' => 10,
+        ])
             ->assertOk()
-            ->assertJsonPath('data.environmental_service', 'recycle')
-            ->assertJsonPath('data.recycling_efficiency', 40);
-
-        // Switching away from recycling clears the efficiency.
-        $this->actingAs($this->admin, 'web')
-            ->patchJson("/api/v1/facilities/{$facility->id}", ['name' => $facility->name, 'environmental_service' => 'disposal'])
-            ->assertOk()
-            ->assertJsonPath('data.recycling_efficiency', null);
-    }
-
-    public function test_switching_to_recycle_still_needs_an_efficiency(): void
-    {
-        $facility = IntermediateFacility::factory()->create();
-
-        $this->actingAs($this->admin, 'web')
-            ->patchJson("/api/v1/facilities/{$facility->id}", ['name' => $facility->name, 'environmental_service' => 'recycle'])
-            ->assertStatus(422)
-            ->assertJsonValidationErrors(['recycling_efficiency']);
-    }
-
-    public function test_a_locked_form_that_omits_the_service_keeps_the_stored_values(): void
-    {
-        $facility = IntermediateFacility::factory()->recycling(60)->create();
-
-        // Disabled inputs aren't submitted — only the name comes through.
-        $this->actingAs($this->admin, 'web')
-            ->patchJson("/api/v1/facilities/{$facility->id}", ['name' => 'Renamed'])
-            ->assertOk()
+            ->assertJsonPath('data.name', 'Renamed')
             ->assertJsonPath('data.environmental_service', 'recycle')
             ->assertJsonPath('data.recycling_efficiency', 60);
+
+        $this->patchJson("/api/v1/facilities/{$disposal->id}", [
+            'name' => $disposal->name, 'environmental_service' => 'recycle', 'recycling_efficiency' => 40,
+        ])
+            ->assertOk()
+            ->assertJsonPath('data.environmental_service', 'disposal')
+            ->assertJsonPath('data.recycling_efficiency', null);
+
+        $this->assertSame('recycle', $recycling->fresh()->environmental_service);
+        $this->assertSame('disposal', $disposal->fresh()->environmental_service);
     }
 
-    public function test_the_service_and_efficiency_are_locked_once_the_facility_is_in_use(): void
-    {
-        $facility = new class extends IntermediateFacility
-        {
-            protected $table = 'intermediate_facilities';
-
-            public function isInUse(): bool
-            {
-                return true;
-            }
-        };
-        $facility->forceFill([
-            'name' => 'Used', 'prefix' => 'USD', 'environmental_service' => 'recycle', 'recycling_efficiency' => 50,
-        ])->save();
-
-        $action = app(UpdateFacilityAction::class);
-
-        // The name is still editable...
-        $action->execute($facility, ['name' => 'Used renamed'], $this->admin);
-        $this->assertSame('Used renamed', $facility->fresh()->name);
-
-        // ...the service and the efficiency are not.
-        $this->expectException(FacilityInUseException::class);
-        $action->execute($facility, ['name' => 'Used renamed', 'environmental_service' => 'disposal'], $this->admin);
-    }
-
-    /**
-     * The real lock, end to end: once a sub-service lists the facility
-     * (sub_service_facility), its service and efficiency can't change —
-     * even after that sub-service is deactivated.
-     */
-    public function test_a_facility_listed_by_a_sub_service_is_in_use_and_its_service_is_locked(): void
+    public function test_a_facility_listed_by_a_sub_service_shows_it_and_stays_editable_by_name(): void
     {
         $facility = IntermediateFacility::factory()->recycling(60)->create();
         $sub = SubService::factory()->deactivated()->create(['name' => 'Cardboard']);
@@ -380,30 +337,35 @@ class FacilityManagementTest extends TestCase
 
         $this->getJson("/api/v1/facilities/{$facility->id}")
             ->assertOk()
-            ->assertJsonPath('data.in_use', true)
-            ->assertJsonPath('data.supported_sub_services.0.name', 'Cardboard');
+            ->assertJsonPath('data.supported_sub_services.0.name', 'Cardboard')
+            ->assertJsonMissingPath('data.in_use');
 
-        $this->patchJson("/api/v1/facilities/{$facility->id}", ['name' => $facility->name, 'environmental_service' => 'disposal'])
-            ->assertStatus(422);
-        $this->patchJson("/api/v1/facilities/{$facility->id}", ['name' => $facility->name, 'recycling_efficiency' => 80])
-            ->assertStatus(422);
-
-        // The name is still editable.
         $this->patchJson("/api/v1/facilities/{$facility->id}", ['name' => 'Renamed'])
             ->assertOk()
             ->assertJsonPath('data.environmental_service', 'recycle')
             ->assertJsonPath('data.recycling_efficiency', 60);
     }
 
-    public function test_the_in_use_flag_is_exposed_for_the_edit_form(): void
+    public function test_the_contract_number_is_digits_only_on_create_and_edit(): void
     {
+        $this->actingAs($this->admin, 'web');
+
+        foreach (['C-1', 'abc', '12 34', '١٢٣x'] as $bad) {
+            $this->postJson('/api/v1/facilities', $this->payload(['contract_number' => $bad]))
+                ->assertStatus(422)
+                ->assertJsonValidationErrors(['contract_number']);
+        }
+
         $facility = IntermediateFacility::factory()->create();
 
-        $this->actingAs($this->admin, 'web')
-            ->getJson("/api/v1/facilities/{$facility->id}")
+        $this->patchJson("/api/v1/facilities/{$facility->id}", ['name' => $facility->name, 'contract_number' => 'A-77'])
+            ->assertStatus(422)
+            ->assertJsonValidationErrors(['contract_number']);
+
+        // leading zeros survive (it is stored as text)
+        $this->patchJson("/api/v1/facilities/{$facility->id}", ['name' => $facility->name, 'contract_number' => '00077'])
             ->assertOk()
-            ->assertJsonPath('data.in_use', false)
-            ->assertJsonPath('data.supported_sub_services', []);
+            ->assertJsonPath('data.contract_number', '00077');
     }
 
     // -------------------------------------------------------------- status

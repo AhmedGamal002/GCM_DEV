@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\SubService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -21,7 +22,17 @@ class MainServiceResource extends JsonResource
                 ->values()),
 
             'sub_services' => $this->whenLoaded('subServices', fn () => $this->subServices
-                ->map(fn ($s) => ['id' => $s->id, 'name' => $s->name, 'operational_status' => $s->operational_status])
+                ->map(fn ($s) => [
+                    'id' => $s->id,
+                    'name' => $s->name,
+                    'operational_status' => $s->operational_status,
+                    // What the Sub Services accordion shows on each row.
+                    'asset_type' => $s->asset_type,
+                    'requires_recycle_receipt' => (bool) $s->requires_recycle_receipt,
+                    'skip_color_code' => $s->skip_color_code,
+                    'skip_color_label' => SubService::skipColorLabel($s->skip_color_code),
+                    'skip_color_hex' => $s->skip_color_code ? (SubService::SKIP_COLORS[$s->skip_color_code][1] ?? null) : null,
+                ])
                 ->values()),
             'sub_services_count' => $this->whenCounted('subServices'),
 

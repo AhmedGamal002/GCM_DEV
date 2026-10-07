@@ -209,7 +209,7 @@ render: function (data, type, full) {
 
 ## 3.10.5 المنشآت الوسيطة (المرحلة 2) — قفل الحقول عند الاستخدام
 
-`intermediate_facilities.environmental_service` و`recycling_efficiency` قابلين للتعديل **بس طالما المنشأة مش مستخدمة** (قرار العميل، أوسع من نص الـFRD §1.8 اللي بيحصر التعديل في الاسم والاختياري). "مستخدمة" = مذكورة في `sub_service_facility` (موديول الخدمات) أو في رحلة (المرحلة 3) — `IntermediateFacility::isInUse()` هي نقطة الربط الوحيدة، و`UpdateFacilityAction` بترمي `FacilityInUseException` (تتحوّل 422) لو اتغيّر أحدهم وهي مستخدمة. الفورم بيبعت الحقلين بس لو مش `disabled` (الـ`disabled` مش بيتبعت)، والـrequest بيعتبر الحقل الناقص = القيمة المخزّنة. مرفق العقد **خاص** (`local` + endpoint تحميل محكوم بالـGate، زي وثائق المركبات §3.10)، واللوجو `public`.
+`intermediate_facilities.environmental_service` و`recycling_efficiency` والاسم المختصر **مقفولين من الإنشاء** — تعديل المنشأة = الاسم + البيانات الاختيارية بس (نص الـFRD §1.8 حرفيًا)، و`UpdateFacilityRequest` مابيقبلهمش (أي قيمة جاية لهم بتتجاهل). كان فيه قفل "طالما مش مستخدمة" (`isInUse()` + `FacilityInUseException`) واتشال بقرار العميل. رقم العقد أرقام بس. مرفق العقد **خاص** (`local` + endpoint تحميل محكوم بالـGate، زي وثائق المركبات §3.10)، واللوجو `public`.
 
 ## 3.11 باگ حرج اتصلح: أي طلب بـ Bearer Token كان بيفشل (500) على كل endpoint تينانتي
 

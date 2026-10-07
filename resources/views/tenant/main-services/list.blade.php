@@ -28,6 +28,8 @@
     active: @json(__('Active')),
     deactivated: @json(__('Deactivated')),
     no_sub_services: @json(__('No sub-services yet')),
+    more_link: @json(__('+:count more')),
+    more_link_title: @json(__('View all sub-services')),
     show_more: @json(__('Show more')),
     show_less: @json(__('Show less')),
     edit: @json(__('Edit')),

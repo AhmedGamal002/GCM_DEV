@@ -2,8 +2,9 @@
  * Shared engine for the create & edit main-service forms (both render
  * `tenant.main-services._form`). The supported vehicle categories come
  * from GET /api/v1/vehicle-categories — never a fixed list. On edit the
- * type of service is shown disabled (locked after creation), and the whole
- * form turns read-only when a PO includes the service (`in_use`).
+ * type of service and the supported vehicle categories are shown disabled
+ * (FRD §1.9.1: only the name and the additional data are editable), and the
+ * whole form turns read-only when a PO includes the service (`in_use`).
  */
 'use strict';
 
@@ -51,7 +52,7 @@ export function initMainServiceForm(opts) {
     if (!form.querySelector('input[name="service_type"]:checked')) {
       fail(form.querySelector('input[name="service_type"]'), t.required);
     }
-    if (!checkedValues(form, 'vehicle_category_ids').length) {
+    if (mode === 'create' && !checkedValues(form, 'vehicle_category_ids').length) {
       fail(errors.targetFor('vehicle_category_ids'), t.choose_one_category);
     }
 
@@ -66,10 +67,10 @@ export function initMainServiceForm(opts) {
 
     const data = {
       name: form.querySelector('#name').value.trim(),
-      vehicle_category_ids: checkedValues(form, 'vehicle_category_ids'),
       additional_data: quill.getLength() > 1 ? quill.root.innerHTML : null
     };
     if (mode === 'create') {
+      data.vehicle_category_ids = checkedValues(form, 'vehicle_category_ids');
       data.service_type = form.querySelector('input[name="service_type"]:checked').value;
       data.operational_status = form.querySelector('input[name="operational_status"]:checked').value;
     }
@@ -123,6 +124,9 @@ export function initMainServiceForm(opts) {
         (service.vehicle_categories || []).map((c) => c.id)
       );
       setLastUpdated('main-service-last-updated', service, t);
+
+      // Fixed at creation — shown, not editable.
+      form.querySelectorAll('input[name="vehicle_category_ids"]').forEach((el) => (el.disabled = true));
 
       if (service.in_use) {
         document.getElementById('main-service-locked').classList.remove('d-none');

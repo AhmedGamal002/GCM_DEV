@@ -237,9 +237,15 @@ class SubServiceManagementTest extends TestCase
 
     // -------------------------------------------------------------- update
 
-    public function test_the_components_are_editable_while_unlocked(): void
+    /**
+     * FRD §1.9.2 edit page: "أسم الخدمة والبيانات الاختيارية" — the name, the
+     * skip colour code and the additional data. The asset type, capacities,
+     * facilities and the recycle-receipt flag are fixed at creation: a
+     * payload carrying them is ignored.
+     */
+    public function test_only_the_name_and_the_optional_data_are_editable(): void
     {
-        $sub = SubService::factory()->forService($this->main)->create();
+        $sub = SubService::factory()->forService($this->main)->create(['asset_type' => 'container', 'requires_recycle_receipt' => false]);
         $sub->capacities()->sync([$this->skip->id]);
         $sub->facilities()->sync([$this->landfill->id]);
         $recycler = IntermediateFacility::factory()->recycling()->create();
@@ -247,31 +253,38 @@ class SubServiceManagementTest extends TestCase
         $this->actingAs($this->admin, 'web')
             ->patchJson("/api/v1/sub-services/{$sub->id}", [
                 'name' => 'Renamed',
+                'skip_color_code' => 'gray_plastic',
+                'additional_data' => '<p>x</p>',
+                // locked at creation — all of these are ignored
                 'asset_type' => 'tank',
                 'capacity_ids' => [$this->tank->id],
                 'facility_ids' => [$recycler->id],
                 'requires_recycle_receipt' => true,
-                'skip_color_code' => 'gray_plastic',
-                'additional_data' => '<p>x</p>',
             ])
             ->assertOk()
             ->assertJsonPath('data.name', 'Renamed')
-            ->assertJsonPath('data.asset_type', 'tank')
-            ->assertJsonPath('data.capacities.0.id', $this->tank->id)
-            ->assertJsonPath('data.facilities.0.id', $recycler->id)
-            ->assertJsonPath('data.requires_recycle_receipt', true)
-            ->assertJsonPath('data.skip_color_code', 'gray_plastic');
+            ->assertJsonPath('data.skip_color_code', 'gray_plastic')
+            ->assertJsonPath('data.additional_data', '<p>x</p>')
+            ->assertJsonPath('data.asset_type', 'container')
+            ->assertJsonPath('data.capacities.0.id', $this->skip->id)
+            ->assertJsonPath('data.facilities.0.id', $this->landfill->id)
+            ->assertJsonPath('data.requires_recycle_receipt', false);
+
+        $this->assertSame([$this->skip->id], $sub->capacities()->pluck('asset_capacity_categories.id')->all());
+        $this->assertSame([$this->landfill->id], $sub->facilities()->pluck('intermediate_facilities.id')->all());
     }
 
-    public function test_changing_the_asset_type_rechecks_the_stored_capacities(): void
+    public function test_a_name_only_edit_keeps_everything_else(): void
     {
-        $sub = SubService::factory()->forService($this->main)->create(['asset_type' => 'container']);
+        $sub = SubService::factory()->forService($this->main)->create(['skip_color_code' => 'green_general', 'additional_data' => '<p>keep</p>']);
         $sub->capacities()->sync([$this->skip->id]);
+        $sub->facilities()->sync([$this->landfill->id]);
 
         $this->actingAs($this->admin, 'web')
-            ->patchJson("/api/v1/sub-services/{$sub->id}", ['name' => $sub->name, 'asset_type' => 'tank'])
-            ->assertStatus(422)
-            ->assertJsonValidationErrors(['capacity_ids']);
+            ->patchJson("/api/v1/sub-services/{$sub->id}", ['name' => 'Renamed'])
+            ->assertOk()
+            ->assertJsonPath('data.capacities.0.id', $this->skip->id)
+            ->assertJsonPath('data.facilities.0.id', $this->landfill->id);
     }
 
     public function test_the_main_service_is_locked_after_creation(): void
@@ -283,18 +296,6 @@ class SubServiceManagementTest extends TestCase
             ->patchJson("/api/v1/sub-services/{$sub->id}", ['name' => 'X', 'main_service_id' => $other->id])
             ->assertOk()
             ->assertJsonPath('data.main_service_id', $this->main->id);
-    }
-
-    public function test_an_already_linked_facility_may_stay_after_it_is_deactivated(): void
-    {
-        $sub = SubService::factory()->forService($this->main)->create();
-        $sub->capacities()->sync([$this->skip->id]);
-        $sub->facilities()->sync([$this->landfill->id]);
-        $this->landfill->forceFill(['operational_status' => 'deactivated'])->save();
-
-        $this->actingAs($this->admin, 'web')
-            ->patchJson("/api/v1/sub-services/{$sub->id}", ['name' => 'Renamed', 'facility_ids' => [$this->landfill->id]])
-            ->assertOk();
     }
 
     public function test_a_locked_sub_service_cannot_be_edited(): void

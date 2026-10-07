@@ -18,6 +18,12 @@
   <div class="card mb-6">
     <h5 class="card-header">{{ __('Basic Data') }}</h5>
     <div class="card-body">
+      @unless($isCreate)
+        <div class="alert alert-info" role="alert">
+          {{ __('Only the name, the skip color code and the additional data can be edited. The main service, type, capacities, facilities and the recycle receipt setting are locked after creation.') }}
+        </div>
+      @endunless
+
       <div class="row g-6">
         <div class="col-md-6">
           <label class="form-label" for="name">{{ __('Service name') }}</label>

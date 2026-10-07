@@ -34,7 +34,6 @@ class IntermediateFacilityResource extends JsonResource
             'additional_data' => $this->additional_data,
 
             // Locks the service + efficiency fields on the edit form.
-            'in_use' => $this->isInUse(),
 
             // FRD §1.8 "supported sub-services": taken from the sub-services
             // that list this facility (loaded on the details endpoint only).

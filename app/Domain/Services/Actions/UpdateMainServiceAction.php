@@ -8,11 +8,11 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
 /**
- * FRD V01.14 §1.9.1 edit page: the name and the optional data. The
- * supported vehicle categories are editable too while the service is unused
- * (client decision beyond the FRD text, same rule as a facility's service);
- * the type of service never is — its sub-services are built on it. Nothing
- * is editable once a PO includes the service. Status has its own action.
+ * FRD V01.14 §1.9.1 edit page: the name and the optional data (the
+ * additional data) — nothing else. The type of service and the supported
+ * vehicle categories are fixed at creation (its sub-services are built on
+ * them). Nothing is editable once a PO includes the service. Status has its
+ * own action.
  */
 class UpdateMainServiceAction
 {
@@ -34,10 +34,6 @@ class UpdateMainServiceAction
             }
             $service->updated_by = $actor->id;
             $service->save();
-
-            if (array_key_exists('vehicle_category_ids', $data)) {
-                $service->vehicleCategories()->sync($data['vehicle_category_ids']);
-            }
 
             return $service->load(['vehicleCategories', 'updatedBy']);
         });

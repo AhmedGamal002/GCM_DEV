@@ -102,6 +102,15 @@ class SubServiceController extends Controller
             ->when($request->filled('operational_status'), fn ($q) => $q->where('operational_status', $request->string('operational_status')->toString()))
             ->when($request->filled('search'), function ($q) use ($request) {
                 $term = '%'.$request->string('search')->toString().'%';
+
+                // `search_in=sub`: the sub-service's own name only (the Sub Services
+                // page's "Search in" selector); otherwise its name or its main service's.
+                if ($request->string('search_in')->toString() === 'sub') {
+                    $q->where('name', 'like', $term);
+
+                    return;
+                }
+
                 $q->where(fn ($w) => $w->where('name', 'like', $term)
                     ->orWhereHas('mainService', fn ($m) => $m->where('name', 'like', $term)));
             });

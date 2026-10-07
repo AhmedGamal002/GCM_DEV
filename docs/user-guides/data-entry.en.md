@@ -59,14 +59,14 @@ Dashboard, then an **Accounts** section (Users · Drivers), a **Fleet & Assets**
 - **View** + stat cards (one per environmental service) + search (name / prefix) + filters + **export**.
 - **Create** a facility: name, prefix (3 English letters, unique, locked after creation), logo, environmental service (recycling also needs the recycling efficiency %), status, address, map link, contract (number, dates, attachment), additional data.
 - Saving generates the facility's **ID** (prefix + running number, `ALF-0001`...) — same as Client Companies.
-- **Edit:** the name and all optional data. The environmental service and recycling efficiency change only while no sub-service or trip uses the facility.
+- **Edit:** the name and the optional data only (logo, address, contract number — **digits only** — dates, attachment, additional data). The prefix, the environmental service and the recycling efficiency are locked after creation.
 - **Status:** deactivate / reactivate from the details page. Facilities are never deleted.
 
 ## 7. Services — `/app/main-service/list` and `/app/sub-service/list`
 
 - Exactly the System Admin's permissions (see the System Admin guide — Services).
-- **Main services:** view + search (which also covers sub-service names) + filters + **export**; create (name, type of service, supported vehicle categories); edit (the type is locked); deactivate / reactivate from the edit page — **deactivating also deactivates every sub-service under it**.
-- **Sub-services:** the accordion page; create (main service, type, capacities, facilities — optional only for supplying, recycle receipt, skip colour); edit (the main service is locked); deactivate / reactivate (not while its main service is deactivated).
+- **Main services:** view + search (which also covers sub-service names) + filters + **export**; create (name, type of service, supported vehicle categories); edit (the name and the additional data only; the type and the categories are locked); deactivate / reactivate from the edit page — **deactivating also deactivates every sub-service under it**.
+- **Sub-services:** the accordion page; create (main service, type, capacities, facilities — optional only for supplying, recycle receipt, skip colour); edit (the name, the skip colour and the additional data only; the rest is locked); deactivate / reactivate (not while its main service is deactivated).
 
 ## 8. Contractors — `/app/contractor/list`
 

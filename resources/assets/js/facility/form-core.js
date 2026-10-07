@@ -6,10 +6,10 @@
  * and the multipart submit (logo + contract attachment) with the busy
  * overlay and the pre-upload file-size guard.
  *
- * On edit the prefix is read-only, and the environmental service +
- * recycling efficiency are locked (disabled) when the API says the facility
- * is `in_use` — disabled inputs aren't submitted, so the server keeps the
- * stored values.
+ * On edit the prefix, the environmental service and the recycling
+ * efficiency are read-only (FRD §1.8: only the name and the optional data
+ * are editable) — disabled inputs aren't submitted, and the server ignores
+ * them anyway.
  *
  * Lives in a subdirectory so the `resources/assets/js/*.js` Vite glob
  * doesn't pick it up as its own entry; the two thin entry files import
@@ -138,6 +138,9 @@ export function initFacilityForm(opts) {
       const v = Number(efficiencyInput.value);
       if (Number.isNaN(v) || v < 0 || v > 100) fail(efficiencyInput, t.efficiency_range || 'Enter a percentage between 0 and 100.');
     }
+
+    const contractNumber = form.querySelector('#contract_number');
+    if (contractNumber.value && !/^[0-9]+$/.test(contractNumber.value)) fail(contractNumber, t.digits_only || 'The number must contain digits only.');
 
     const start = form.querySelector('#contract_start').value;
     const end = form.querySelector('#contract_end').value;
@@ -275,13 +278,10 @@ export function initFacilityForm(opts) {
       );
     }
 
-    // Locked once a sub-service or trip uses the facility.
-    if (f.in_use) {
-      form.querySelectorAll('input[name="environmental_service"], #recycling_efficiency').forEach((el) => {
-        el.disabled = true;
-      });
-      document.getElementById('facility-locked-alert').classList.remove('d-none');
-    }
+    // Fixed at creation.
+    form.querySelectorAll('input[name="environmental_service"], #recycling_efficiency').forEach((el) => {
+      el.disabled = true;
+    });
 
     const stamp = document.getElementById('facility-last-updated');
     if (stamp && f.updated_by_name && t.last_updated_by) {

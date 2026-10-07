@@ -57,12 +57,19 @@ class StoreFacilityRequest extends FormRequest
             'address' => ['nullable', 'string', 'max:255'],
             'location_url' => ['nullable', 'url', 'max:2048'],
 
-            'contract_number' => ['nullable', 'string', 'max:100'],
+            'contract_number' => ['nullable', 'string', 'max:50', 'regex:/^[0-9]+$/'],
             'contract_start' => ['nullable', 'date'],
             'contract_end' => ['nullable', 'date', 'after_or_equal:contract_start'],
             'contract_attachment' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:4096'],
 
             'additional_data' => ['nullable', 'string'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'contract_number.regex' => __('The number must contain digits only.'),
         ];
     }
 }

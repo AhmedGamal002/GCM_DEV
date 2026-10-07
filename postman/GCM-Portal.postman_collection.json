@@ -3258,8 +3258,9 @@
                 },
                 {
                   "key": "contract_number",
-                  "value": "C-1001",
-                  "type": "text"
+                  "value": "1001",
+                  "type": "text",
+                  "description": "digits only (max 50)"
                 },
                 {
                   "key": "contract_start",
@@ -3341,7 +3342,7 @@
                 "{{last_facility_id}}"
               ]
             },
-            "description": "`in_use` is true once a sub-service or trip uses the facility (always false until the Services module exists). `supported_sub_services` is filled by the Services module."
+            "description": "`supported_sub_services` lists the sub-services that offer this facility."
           }
         },
         {
@@ -3403,14 +3404,14 @@
                   "value": "recycle",
                   "type": "text",
                   "disabled": true,
-                  "description": "Editable only while the facility is unused — 422 once a sub-service or trip uses it."
+                  "description": "Ignored on update — the environmental service is fixed at creation (FRD §1.8: edit = name + optional data only)."
                 },
                 {
                   "key": "recycling_efficiency",
                   "value": "80",
                   "type": "text",
                   "disabled": true,
-                  "description": "Same lock as environmental_service."
+                  "description": "Ignored on update — fixed at creation, like the environmental service."
                 },
                 {
                   "key": "logo",
@@ -3629,7 +3630,7 @@
                 }
               ]
             },
-            "description": "search matches the main service name AND its sub-services' names (both columns are on screen). service_type: non_hazardous | hazardous | supplying. operational_status: active | deactivated. sort_by: name | service_type | operational_status | created_at. Each row carries sub_services [{id,name,operational_status}] and vehicle_categories."
+            "description": "search matches the main service name AND its sub-services' names (both columns are on screen). service_type: non_hazardous | hazardous | supplying. operational_status: active | deactivated. sort_by: name | service_type | operational_status | created_at. Each row carries sub_services [{id,name,operational_status,asset_type,requires_recycle_receipt,skip_color_code,skip_color_label,skip_color_hex}] and vehicle_categories. The Sub Services accordion page uses this endpoint with per_page/page (10 mains per page by default) + the same search/service_type/operational_status filters. subs_limit=N (max 50) returns only the first N sub-services of each row plus the true sub_services_count (omit it to get all of them); subs_match=1 together with search narrows both to the matching sub-services unless the main service itself matched. search_in = all (default) | main (the main service name only) | sub (its sub-services' names only) limits what search looks at."
           }
         },
         {
@@ -3715,7 +3716,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Solid Waste Transport (renamed)\",\n  \"vehicle_category_ids\": [\n    1,\n    2,\n    3\n  ],\n  \"additional_data\": null\n}",
+              "raw": "{\n  \"name\": \"Solid Waste Transport (renamed)\",\n  \"additional_data\": null\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -3732,7 +3733,7 @@
                 "{{last_main_service_id}}"
               ]
             },
-            "description": "name + additional_data; vehicle_category_ids optional. service_type / operational_status are ignored here. 422 when the service is in a PO."
+            "description": "FRD §1.9.1: name + additional_data only. service_type, vehicle_category_ids and operational_status are fixed at creation / have their own endpoint — they are ignored here. 422 when the service is in a PO."
           }
         },
         {
@@ -3992,7 +3993,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Construction debris (renamed)\",\n  \"asset_type\": \"container\",\n  \"capacity_ids\": [\n    1\n  ],\n  \"requires_recycle_receipt\": false,\n  \"skip_color_code\": null\n}",
+              "raw": "{\n  \"name\": \"Construction debris (renamed)\",\n  \"skip_color_code\": null,\n  \"additional_data\": null\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -4009,7 +4010,7 @@
                 "{{last_sub_service_id}}"
               ]
             },
-            "description": "name + additional_data, and — while unlocked — asset_type, capacity_ids, facility_ids, requires_recycle_receipt, skip_color_code (any omitted field keeps its value). main_service_id / operational_status are ignored here. 422 when locked."
+            "description": "FRD §1.9.2: name + skip_color_code + additional_data only (an omitted field keeps its value). main_service_id, asset_type, capacity_ids, facility_ids, requires_recycle_receipt and operational_status are ignored here. 422 when locked."
           }
         },
         {

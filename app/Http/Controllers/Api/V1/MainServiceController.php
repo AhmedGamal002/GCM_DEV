@@ -43,8 +43,35 @@ class MainServiceController extends Controller
         $sortDir = $request->string('sort_dir', 'asc')->lower()->toString() === 'desc' ? 'desc' : 'asc';
         $sortBy = in_array($sortBy, self::SORTABLE_COLUMNS, true) ? $sortBy : 'name';
 
+        // A main service can group hundreds of sub-services. The pages that only
+        // preview them (the Sub Services accordion, the main services table) ask
+        // for `subs_limit` — each row then carries just its first N sub-services
+        // plus the true `sub_services_count`; without it every sub-service is
+        // returned, as before. `subs_match` (with a search term) narrows them to
+        // the ones the search matched, unless the main service itself matched.
+        $limit = $request->integer('subs_limit');
+        $limit = $limit > 0 ? min($limit, 50) : null;
+        $scope = $this->searchScope($request);
+        $matching = $request->boolean('subs_match') && $request->filled('search') && $scope !== 'main';
+        $term = '%'.$request->string('search')->toString().'%';
+        $narrow = fn ($q) => $matching
+            ? ($scope === 'sub'
+                ? $q->where('name', 'like', $term)
+                : $q->where(fn ($w) => $w->where('name', 'like', $term)
+                    ->orWhereHas('mainService', fn ($m) => $m->where('name', 'like', $term))))
+            : $q;
+
         $services = $this->filteredQuery($request)
-            ->with(['subServices' => fn ($q) => $q->orderBy('name'), 'vehicleCategories'])
+            ->with([
+                'subServices' => function ($q) use ($limit, $narrow) {
+                    $narrow($q->orderBy('name'));
+                    if ($limit !== null) {
+                        $q->limit($limit);
+                    }
+                },
+                'vehicleCategories',
+            ])
+            ->withCount(['subServices as sub_services_count' => fn ($q) => $narrow($q)])
             ->orderBy($sortBy, $sortDir)
             ->paginate($request->integer('per_page', 15));
 
@@ -66,7 +93,10 @@ class MainServiceController extends Controller
      */
     public function show(int $service)
     {
-        $service = MainService::with(['vehicleCategories', 'subServices' => fn ($q) => $q->orderBy('name'), 'updatedBy'])
+        // Just the number of sub-services (a service can have hundreds) — the
+        // details page lists them in its own server-side table.
+        $service = MainService::with(['vehicleCategories', 'updatedBy'])
+            ->withCount('subServices')
             ->findOrFail($service);
 
         Gate::authorize('view', $service);
@@ -137,9 +167,29 @@ class MainServiceController extends Controller
             ->when($request->filled('operational_status'), fn ($q) => $q->where('operational_status', $request->string('operational_status')->toString()))
             ->when($request->filled('search'), function ($q) use ($request) {
                 $term = '%'.$request->string('search')->toString().'%';
-                $q->where(fn ($w) => $w->where('name', 'like', $term)
-                    ->orWhereHas('subServices', fn ($s) => $s->where('name', 'like', $term)));
+                $scope = $this->searchScope($request);
+
+                $q->where(function ($w) use ($term, $scope) {
+                    if ($scope !== 'sub') {
+                        $w->where('name', 'like', $term);
+                    }
+                    if ($scope !== 'main') {
+                        $w->orWhereHas('subServices', fn ($s) => $s->where('name', 'like', $term));
+                    }
+                });
             });
+    }
+
+    /**
+     * What the search box looks in: `main` (the main service's name only),
+     * `sub` (its sub-services' names only) or — the default — both. Used by the
+     * Sub Services page's "Search in" selector; every other caller sends none.
+     */
+    private function searchScope(Request $request): string
+    {
+        $scope = $request->string('search_in')->toString();
+
+        return in_array($scope, ['main', 'sub'], true) ? $scope : 'all';
     }
 
     /**

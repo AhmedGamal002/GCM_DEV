@@ -1,8 +1,8 @@
 /**
  * Edit Facility page — thin entry over the shared facility form engine.
- * The prefix is locked; the environmental service + recycling efficiency
- * lock too once the facility is in use; operational_status changes via the
- * status card on the details page.
+ * The prefix, the environmental service and the recycling efficiency are
+ * locked after creation (FRD §1.8: name + optional data only);
+ * operational_status changes via the status card.
  */
 'use strict';
 

@@ -37,6 +37,9 @@ $(function () {
   }
 
   const SUB_BADGES_SHOWN = 3;
+  // Up to this many sub-services can be folded/expanded in place; a main service
+  // with more links to its details page instead of dumping hundreds of badges.
+  const SUBS_PREVIEW = 10;
 
   const toggleIcon = (expanded) => '<i class="ti ' + (expanded ? 'ti-minus' : 'ti-plus') + ' ti-xs"></i>';
 
@@ -72,7 +75,9 @@ $(function () {
     processing: true,
     serverSide: true,
     searchDelay: 500,
-    ajax: window.gcmServerSideAjax('/api/v1/main-services', listParams),
+    // Only a preview of each row's sub-services travels with the table (the
+    // export does not use this — it builds its own query from listParams).
+    ajax: window.gcmServerSideAjax('/api/v1/main-services', () => Object.assign({ subs_limit: SUBS_PREVIEW }, listParams()), t.no_permission),
     columns: [
       { data: 'id' },
       { data: 'name' },
@@ -109,6 +114,7 @@ $(function () {
         orderable: false,
         render: function (data, type, full) {
           const subs = full.sub_services || [];
+          const total = full.sub_services_count != null ? full.sub_services_count : subs.length;
           if (!subs.length) return '<small class="text-muted">' + escapeHtml(t.no_sub_services || 'No sub-services yet') + '</small>';
 
           const badge = (s, hidden) =>
@@ -120,6 +126,19 @@ $(function () {
           // A main service can group many sub-services — show the first few
           // and fold the rest behind a "+N more" toggle so rows stay one line tall.
           const extra = subs.length - SUB_BADGES_SHOWN;
+
+          // Too many to expand in the cell: the first few + a "+N more" badge that
+          // opens the main service's details page (its table has search and paging).
+          if (total > SUBS_PREVIEW) {
+            const more = (t.more_link || '+:count more').replace(':count', total - SUB_BADGES_SHOWN);
+            return (
+              '<div class="d-flex flex-nowrap align-items-center gap-1">' +
+              subs.slice(0, SUB_BADGES_SHOWN).map((s) => badge(s, false)).join('') +
+              '<a href="' + viewBase + '/' + full.id + '" class="badge bg-dark flex-shrink-0" title="' + escapeHtml(t.more_link_title || 'View all sub-services') + '">' + escapeHtml(more) + '</a>' +
+              '</div>'
+            );
+          }
+
           return (
             // Collapsed: one line (nowrap) so every row keeps the same height;
             // the toggle switches to wrapping once the rest is expanded.

@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api\V1;
 use App\Domain\Facilities\Actions\CreateFacilityAction;
 use App\Domain\Facilities\Actions\UpdateFacilityAction;
 use App\Domain\Facilities\Actions\UpdateFacilityStatusAction;
-use App\Domain\Facilities\Exceptions\FacilityInUseException;
 use App\Domain\Facilities\Exports\FacilitiesExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Facilities\StoreFacilityRequest;
@@ -72,11 +71,7 @@ class FacilityController extends Controller
     {
         $facility = IntermediateFacility::findOrFail($facility);
 
-        try {
-            $facility = $action->execute($facility, $request->validated(), $request->user(), $this->extractFiles($request));
-        } catch (FacilityInUseException $e) {
-            abort(422, $e->getMessage());
-        }
+        $facility = $action->execute($facility, $request->validated(), $request->user(), $this->extractFiles($request));
 
         return IntermediateFacilityResource::make($facility);
     }

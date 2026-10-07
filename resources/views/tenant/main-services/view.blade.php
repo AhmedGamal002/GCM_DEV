@@ -37,6 +37,8 @@
     actions: @json(__('Actions')),
     search_sub_service: @json(__('Search sub-service')),
     no_sub_services_found: @json(__('No sub-services under this main service yet.')),
+    all_asset_types: @json(__('All asset types')),
+    all_statuses: @json(__('All statuses')),
     no_permission: @json(__("You don't have permission to view this data.")),
     info: @json(__('Showing _START_ to _END_ of _TOTAL_ entries')),
     info_empty: @json(__('Showing 0 to 0 of 0 entries')),
@@ -109,6 +111,12 @@
 
     <div class="card">
       <h5 class="card-header">{{ __('Sub-services under this main service') }}</h5>
+      <div class="card-header border-top pt-4 pb-0">
+        <div class="row g-4">
+          <div class="col-md-4 msv_sub_asset_type"></div>
+          <div class="col-md-4 msv_sub_status"></div>
+        </div>
+      </div>
       <div class="card-datatable table-responsive">
         <table class="datatables-main-service-subs table">
           <thead class="border-top">

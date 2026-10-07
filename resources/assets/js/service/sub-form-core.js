@@ -10,7 +10,10 @@
  *    that applies to "both" fits either);
  *  - facilities are required unless the main service is a supplying one;
  *    only active facilities are offered (plus any already linked, on edit).
- * The whole form turns read-only when the sub-service is locked.
+ * On edit (FRD §1.9.2: only the name and the optional data — skip colour,
+ * additional data — are editable) the main service, asset type, capacities,
+ * facilities and the recycle-receipt switch are shown disabled. The whole
+ * form turns read-only when the sub-service is locked.
  */
 'use strict';
 
@@ -135,11 +138,14 @@ export function initSubServiceForm(opts) {
     const mainSelect = form.querySelector('#main_service_id');
     if (mainSelect && !mainSelect.value) fail(mainSelect, t.required);
 
-    if (!form.querySelector('input[name="asset_type"]:checked')) fail(form.querySelector('input[name="asset_type"]'), t.required);
-    else if (!checkedValues(form, 'capacity_ids').length) fail(errors.targetFor('capacity_ids'), t.choose_one_capacity);
+    // Fixed at creation — nothing to check on edit.
+    if (mode === 'create') {
+      if (!form.querySelector('input[name="asset_type"]:checked')) fail(form.querySelector('input[name="asset_type"]'), t.required);
+      else if (!checkedValues(form, 'capacity_ids').length) fail(errors.targetFor('capacity_ids'), t.choose_one_capacity);
 
-    const supplying = currentMain && currentMain.service_type === 'supplying';
-    if (!supplying && !checkedValues(form, 'facility_ids').length) fail(errors.targetFor('facility_ids'), t.choose_one_facility);
+      const supplying = currentMain && currentMain.service_type === 'supplying';
+      if (!supplying && !checkedValues(form, 'facility_ids').length) fail(errors.targetFor('facility_ids'), t.choose_one_facility);
+    }
 
     if (first && first.scrollIntoView) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
     return !first;
@@ -153,14 +159,14 @@ export function initSubServiceForm(opts) {
     const color = form.querySelector('input[name="skip_color_code"]:checked');
     const data = {
       name: form.querySelector('#name').value.trim(),
-      asset_type: form.querySelector('input[name="asset_type"]:checked').value,
-      capacity_ids: checkedValues(form, 'capacity_ids'),
-      facility_ids: checkedValues(form, 'facility_ids'),
-      requires_recycle_receipt: form.querySelector('#requires_recycle_receipt').checked,
       skip_color_code: color && color.value ? color.value : null,
       additional_data: quill.getLength() > 1 ? quill.root.innerHTML : null
     };
     if (mode === 'create') {
+      data.asset_type = form.querySelector('input[name="asset_type"]:checked').value;
+      data.capacity_ids = checkedValues(form, 'capacity_ids');
+      data.facility_ids = checkedValues(form, 'facility_ids');
+      data.requires_recycle_receipt = form.querySelector('#requires_recycle_receipt').checked;
       data.main_service_id = form.querySelector('#main_service_id').value;
       data.operational_status = form.querySelector('input[name="operational_status"]:checked').value;
     }
@@ -258,6 +264,11 @@ export function initSubServiceForm(opts) {
       return loadMain(sub.main_service_id).then(() => sub);
     })
     .then((sub) => {
+      // Fixed at creation — shown, not editable.
+      form
+        .querySelectorAll('input[name="asset_type"], input[name="capacity_ids"], input[name="facility_ids"], #requires_recycle_receipt')
+        .forEach((el) => (el.disabled = true));
+
       if (sub.locked) {
         document.getElementById('sub-service-locked').classList.remove('d-none');
         form.querySelectorAll('input, button[type="submit"]').forEach((el) => (el.disabled = true));

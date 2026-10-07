@@ -171,6 +171,142 @@ class MainServiceManagementTest extends TestCase
         $this->getJson('/api/v1/main-services?operational_status=deactivated')->assertJsonCount(1, 'data')->assertJsonPath('data.0.name', 'S');
     }
 
+    /**
+     * The Sub Services accordion is paginated over the main services: one page
+     * of mains comes back with their sub-services (and everything a row shows),
+     * the search/type/status filters apply across every page, and the total
+     * stays the true count.
+     */
+    public function test_the_sub_services_page_gets_one_page_of_mains_with_full_sub_service_rows(): void
+    {
+        foreach (range(1, 25) as $i) {
+            $main = MainService::factory()->create(['name' => sprintf('Main %02d', $i), 'service_type' => $i % 2 ? 'hazardous' : 'non_hazardous']);
+            SubService::factory()->forService($main)->create([
+                'name' => sprintf('Sub %02d', $i), 'asset_type' => 'tank', 'requires_recycle_receipt' => true, 'skip_color_code' => 'gray_plastic',
+            ]);
+        }
+
+        $this->actingAs($this->admin, 'web');
+
+        $page = $this->getJson('/api/v1/main-services?per_page=10&page=2&sort_by=name')
+            ->assertOk()
+            ->assertJsonCount(10, 'data')
+            ->assertJsonPath('meta.total', 25)
+            ->assertJsonPath('meta.last_page', 3)
+            ->assertJsonPath('data.0.name', 'Main 11')
+            ->assertJsonPath('data.0.sub_services.0.name', 'Sub 11')
+            ->assertJsonPath('data.0.sub_services.0.asset_type', 'tank')
+            ->assertJsonPath('data.0.sub_services.0.requires_recycle_receipt', true)
+            ->assertJsonPath('data.0.sub_services.0.skip_color_code', 'gray_plastic')
+            ->assertJsonPath('data.0.sub_services.0.skip_color_hex', '#8d99ae');
+        $this->assertNotNull($page->json('data.0.sub_services.0.skip_color_label'));
+
+        // type filter + paging: 13 hazardous mains over two pages of 10
+        $this->getJson('/api/v1/main-services?per_page=10&service_type=hazardous&page=2')
+            ->assertJsonPath('meta.total', 13)
+            ->assertJsonCount(3, 'data');
+
+        // search reaches a sub-service on a page the user is not looking at
+        $this->getJson('/api/v1/main-services?per_page=10&search=Sub 24')
+            ->assertJsonPath('meta.total', 1)
+            ->assertJsonPath('data.0.name', 'Main 24');
+    }
+
+    /**
+     * A main service can have hundreds of sub-services: the previews ask for
+     * `subs_limit` and get the first N plus the true count; without it every
+     * sub-service comes back as before; the details endpoint returns only the
+     * count (its table pages through /sub-services).
+     */
+    public function test_a_main_service_with_many_sub_services_returns_a_preview_and_the_true_count(): void
+    {
+        $big = MainService::factory()->create(['name' => 'Big']);
+        foreach (range(1, 30) as $i) {
+            SubService::factory()->forService($big)->create(['name' => sprintf('Bulk %02d', $i)]);
+        }
+        $small = MainService::factory()->create(['name' => 'Small']);
+        SubService::factory()->forService($small)->create(['name' => 'Only one']);
+
+        $this->actingAs($this->admin, 'web');
+
+        $rows = collect($this->getJson('/api/v1/main-services?subs_limit=10&sort_by=name')->assertOk()->json('data'))->keyBy('name');
+        $this->assertCount(10, $rows['Big']['sub_services']);
+        $this->assertSame('Bulk 01', $rows['Big']['sub_services'][0]['name']);
+        $this->assertSame(30, $rows['Big']['sub_services_count']);
+        $this->assertCount(1, $rows['Small']['sub_services']);
+        $this->assertSame(1, $rows['Small']['sub_services_count']);
+
+        // without a limit: every sub-service, as before
+        $all = collect($this->getJson('/api/v1/main-services')->json('data'))->keyBy('name');
+        $this->assertCount(30, $all['Big']['sub_services']);
+
+        // a limit never exceeds 50
+        $this->getJson('/api/v1/main-services?subs_limit=9999')->assertOk();
+
+        // a search that only matches a sub-service narrows the preview — and the count — to the matches
+        $narrow = collect($this->getJson('/api/v1/main-services?subs_limit=10&subs_match=1&search=Bulk 2')->json('data'))->keyBy('name');
+        $this->assertSame(10, $narrow['Big']['sub_services_count']);      // Bulk 20..29
+        $this->assertSame('Bulk 20', $narrow['Big']['sub_services'][0]['name']);
+        $this->assertArrayNotHasKey('Small', $narrow->all());
+
+        // a search that matches the MAIN service keeps all of its sub-services
+        $byMain = collect($this->getJson('/api/v1/main-services?subs_limit=10&subs_match=1&search=Big')->json('data'))->keyBy('name');
+        $this->assertSame(30, $byMain['Big']['sub_services_count']);
+
+        // details: the count, not the list
+        $this->getJson("/api/v1/main-services/{$big->id}")
+            ->assertOk()
+            ->assertJsonPath('data.sub_services_count', 30)
+            ->assertJsonMissingPath('data.sub_services');
+
+        // the sub-services endpoint pages through them and filters by type/status
+        $this->getJson("/api/v1/sub-services?main_service_id={$big->id}&per_page=10&page=3&sort_by=name")
+            ->assertOk()
+            ->assertJsonCount(10, 'data')
+            ->assertJsonPath('meta.total', 30)
+            ->assertJsonPath('data.0.name', 'Bulk 21');
+    }
+
+    /**
+     * The Sub Services page's "Search in" selector: `search_in` limits the
+     * search to the main services' names, to their sub-services' names, or (the
+     * default) both.
+     */
+    public function test_the_search_can_be_limited_to_main_services_or_to_sub_services(): void
+    {
+        // "Alpha" appears in a MAIN name and in a SUB name of another service.
+        $alpha = MainService::factory()->create(['name' => 'Alpha Haulage']);
+        SubService::factory()->forService($alpha)->create(['name' => 'General']);
+        SubService::factory()->forService($alpha)->create(['name' => 'Special']);
+        $beta = MainService::factory()->create(['name' => 'Beta Works']);
+        SubService::factory()->forService($beta)->create(['name' => 'Alpha skip']);
+        SubService::factory()->forService($beta)->create(['name' => 'Other']);
+
+        $this->actingAs($this->admin, 'web');
+        $names = fn (string $qs) => collect($this->getJson('/api/v1/main-services?sort_by=name&subs_limit=10&'.$qs)->assertOk()->json('data'))->pluck('name')->all();
+
+        // default / all: the main OR any sub-service
+        $this->assertSame(['Alpha Haulage', 'Beta Works'], $names('search=Alpha'));
+        $this->assertSame(['Alpha Haulage', 'Beta Works'], $names('search=Alpha&search_in=all'));
+        // main only: the main service's own name
+        $this->assertSame(['Alpha Haulage'], $names('search=Alpha&search_in=main'));
+        // sub only: the services that have a matching sub-service
+        $this->assertSame(['Beta Works'], $names('search=Alpha&search_in=sub'));
+
+        // the sub-services preview follows the scope
+        $rows = collect($this->getJson('/api/v1/main-services?subs_limit=10&subs_match=1&search=Alpha&search_in=sub')->json('data'))->keyBy('name');
+        $this->assertSame(1, $rows['Beta Works']['sub_services_count']);
+        $this->assertSame('Alpha skip', $rows['Beta Works']['sub_services'][0]['name']);
+
+        $byMain = collect($this->getJson('/api/v1/main-services?subs_limit=10&subs_match=1&search=Alpha&search_in=main')->json('data'))->keyBy('name');
+        $this->assertSame(2, $byMain['Alpha Haulage']['sub_services_count']);   // a main-name search keeps every sub-service
+
+        // "Load more" inside a tab uses the sub-services endpoint with the same scope
+        $this->getJson("/api/v1/sub-services?main_service_id={$beta->id}&search=Alpha&search_in=sub")->assertJsonCount(1, 'data');
+        $this->getJson("/api/v1/sub-services?main_service_id={$beta->id}&search=Beta")->assertJsonCount(2, 'data');      // via the main's name
+        $this->getJson("/api/v1/sub-services?main_service_id={$beta->id}&search=Beta&search_in=sub")->assertJsonCount(0, 'data');
+    }
+
     public function test_the_details_carry_zero_stats_and_the_embedded_containers_of_supported_vehicles(): void
     {
         $compactor = VehicleCategory::where('slug', 'compactor')->first();
@@ -198,7 +334,12 @@ class MainServiceManagementTest extends TestCase
 
     // -------------------------------------------------------------- update
 
-    public function test_the_name_additional_data_and_categories_are_editable(): void
+    /**
+     * FRD §1.9.1 edit page: "أسم الخدمة والبيانات الاختيارية" — the name and
+     * the additional data only. The supported vehicle categories are fixed
+     * at creation: a payload carrying them is ignored.
+     */
+    public function test_only_the_name_and_the_additional_data_are_editable(): void
     {
         $main = MainService::factory()->create();
         $main->vehicleCategories()->sync($this->categoryIds('hook_lift'));
@@ -212,7 +353,12 @@ class MainServiceManagementTest extends TestCase
             ->assertOk()
             ->assertJsonPath('data.name', 'Renamed')
             ->assertJsonPath('data.additional_data', '<p>x</p>')
-            ->assertJsonCount(2, 'data.vehicle_categories');
+            ->assertJsonCount(1, 'data.vehicle_categories');
+
+        $this->assertSame(
+            $this->categoryIds('hook_lift'),
+            $main->vehicleCategories()->pluck('vehicle_categories.id')->all()
+        );
     }
 
     public function test_the_type_of_service_is_locked_after_creation(): void

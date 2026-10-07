@@ -15,10 +15,7 @@
     <div class="card-body">
       @unless($isCreate)
         <div class="alert alert-info" role="alert">
-          {{ __('The prefix can\'t be changed after creation. The environmental service and recycling efficiency can be changed only while no sub-service or trip uses this facility.') }}
-        </div>
-        <div class="alert alert-warning d-none" role="alert" id="facility-locked-alert">
-          {{ __('This facility is in use, so its environmental service and recycling efficiency are locked.') }}
+          {{ __('Only the name and the optional data can be edited. The prefix, the environmental service and the recycling efficiency are locked after creation.') }}
         </div>
       @endunless
 
@@ -103,7 +100,7 @@
       <div class="row g-6">
         <div class="col-md-6">
           <label class="form-label" for="contract_number">{{ __('Contract No.') }}</label>
-          <input type="text" id="contract_number" name="contract_number" class="form-control" maxlength="100" dir="ltr" />
+          <input type="text" id="contract_number" name="contract_number" class="form-control" inputmode="numeric" maxlength="50" dir="ltr" />
           <div class="text-danger small mt-1 d-none" data-feedback></div>
         </div>
 
