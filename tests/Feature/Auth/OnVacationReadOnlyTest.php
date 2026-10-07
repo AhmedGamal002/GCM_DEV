@@ -98,4 +98,74 @@ class OnVacationReadOnlyTest extends TestCase
 
         $response->assertCreated();
     }
+
+    /** Every list export (Excel and PDF downloads are GETs under /api/v1/<module>/export). */
+    private const EXPORTS = [
+        'users', 'drivers', 'vehicles', 'vehicle-categories', 'assets', 'asset-capacity-categories',
+        'facilities', 'main-services', 'contractors', 'companies', 'projects',
+    ];
+
+    private function userWithStatus(string $status, string $role = 'system_admin'): User
+    {
+        app()->instance('tenant', Tenant::first() ?? Tenant::create(['name' => 'GCM', 'slug' => 'gcm', 'status' => 'active']));
+        $user = User::factory()->create(['status' => $status]);
+        $user->assignRole($role);
+
+        return $user;
+    }
+
+    public function test_an_on_vacation_account_cannot_export_anything_in_any_format(): void
+    {
+        $user = $this->userWithStatus('on_vacation');
+
+        foreach (self::EXPORTS as $module) {
+            foreach (['xlsx', 'pdf'] as $format) {
+                $this->actingAs($user, 'web')->getJson("/api/v1/{$module}/export?format={$format}")
+                    ->assertForbidden()
+                    ->assertJsonPath('message', 'Your account is on vacation — you can view data but not export or make changes.');
+            }
+        }
+    }
+
+    public function test_an_on_vacation_data_entry_account_cannot_export_either(): void
+    {
+        $user = $this->userWithStatus('on_vacation', 'data_entry');
+
+        $this->actingAs($user, 'web')->getJson('/api/v1/vehicles/export?format=xlsx')->assertForbidden();
+    }
+
+    public function test_an_on_vacation_account_cannot_export_with_a_token_either(): void
+    {
+        $tenant = Tenant::create(['name' => 'GCM', 'slug' => 'gcm', 'status' => 'active']);
+        app()->instance('tenant', $tenant);
+        $user = User::factory()->create(['password' => bcrypt('secret-password'), 'status' => 'on_vacation']);
+        $user->assignRole('system_admin');
+        app()->forgetInstance('tenant');
+
+        $token = $this->tokenFor($user);
+
+        $this->withHeader('Authorization', "Bearer {$token}")->getJson('/api/v1/drivers/export?format=xlsx')->assertForbidden();
+        // Reading the list itself is still fine.
+        $this->withHeader('Authorization', "Bearer {$token}")->getJson('/api/v1/drivers')->assertOk();
+    }
+
+    public function test_an_active_account_can_still_export(): void
+    {
+        \Maatwebsite\Excel\Facades\Excel::fake();
+        $user = $this->userWithStatus('active');
+
+        foreach (self::EXPORTS as $module) {
+            $this->actingAs($user, 'web')->get("/api/v1/{$module}/export?format=xlsx")->assertOk();
+        }
+    }
+
+    public function test_the_export_button_is_locked_and_the_banner_says_so_for_an_on_vacation_account(): void
+    {
+        $this->withoutVite();
+        $user = $this->userWithStatus('on_vacation');
+
+        $this->actingAs($user, 'web')->get('/app/vehicle/list')->assertOk()
+            ->assertSee('You can only view data. You cannot export, create, edit or change anything', false)
+            ->assertDontSee('You can view and export data', false);
+    }
 }

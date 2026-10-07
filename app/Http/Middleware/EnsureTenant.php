@@ -34,7 +34,7 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * Also enforces the FRD's "on vacation" account status here: such a user
  * can still log in and read (GET/HEAD/OPTIONS pass through) but any
- * write request is rejected — this is the single choke point both the
+ * write request — and any export download — is rejected. This is the single choke point both the
  * API (auth:sanctum+tenant) and tenant web routes (auth+tenant) share.
  */
 class EnsureTenant
@@ -76,8 +76,10 @@ class EnsureTenant
             return redirect()->route('login', ['deactivated' => 1]);
         }
 
-        if ($user && $user->status === 'on_vacation' && ! $request->isMethodSafe()) {
-            abort(403, __('Your account is on vacation — you can view but not make changes.'));
+        // On vacation = look only: every write is refused, and so is every export (the lists' Excel / PDF
+        // downloads are GETs under /api/v1/<module>/export, so they need their own check).
+        if ($user && $user->status === 'on_vacation' && (! $request->isMethodSafe() || $request->is('api/v1/*/export'))) {
+            abort(403, __('Your account is on vacation — you can view data but not export or make changes.'));
         }
 
         if ($tenant) {

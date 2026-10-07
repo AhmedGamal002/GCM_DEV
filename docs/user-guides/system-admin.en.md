@@ -73,7 +73,7 @@ A contractor user is an account of one contractor company (the role "Contractor 
 ### Change user status
 - **Nobody changes their own status** — not the admin, not Data Entry, not anyone: no "on vacation", no deactivate, no reactivate. The status controls are hidden on your own account's pages and the server refuses the request (403). Ask another account holder who may manage accounts.
 - A **deactivated** account is signed out on its very next request (web session or mobile token) and lands on the login page with the deactivation message.
-- An account **on vacation** sees a warning banner on every page, and every create/edit control (buttons, links, forms) is disabled up front; the server also refuses any write (403). It can still view, search, filter and export.
+- An account **on vacation** sees a warning banner on every page, and every create/edit control (buttons, links, forms) is disabled up front; the server also refuses any write (403). It can still view, search and filter, **but it cannot export** (the Export button is locked and the server refuses exports).
 - Active / on vacation / deactivated — from the details page.
 - **Deactivating a System Admin is always blocked.**
 

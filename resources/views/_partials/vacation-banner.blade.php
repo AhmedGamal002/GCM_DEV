@@ -7,12 +7,12 @@
 @auth
   @if(auth()->user() instanceof \App\Models\User && auth()->user()->status === 'on_vacation')
     <div id="gcm-vacation-banner" class="alert alert-warning d-flex align-items-center mb-6" role="alert"
-      data-message="{{ __('Your account is on vacation — you can view but not make changes.') }}"
+      data-message="{{ __('Your account is on vacation — you can view data but not export or make changes.') }}"
       data-disabled-hint="{{ __('Unavailable while your account is on vacation') }}">
       <i class="ti ti-beach me-3 ti-md"></i>
       <div>
         <strong>{{ __('Your account is on vacation') }}</strong>
-        <div class="small">{{ __('You can view and export data, but you cannot create, edit or change anything until the System Admin or Data Entry puts your account back to active.') }}</div>
+        <div class="small">{{ __('You can only view data. You cannot export, create, edit or change anything until the System Admin or Data Entry puts your account back to active.') }}</div>
       </div>
     </div>
   @endif

@@ -9,7 +9,8 @@
  *   - links/buttons that lead to a create/edit form or delete something are disabled with a tooltip;
  *   - as a last net, any non-GET axios request is stopped locally with the same message.
  * Tables and filters are rendered later by DataTables, so a MutationObserver re-applies this to whatever
- * appears. Export, search, filters, paging and the logout link keep working.
+ * appears. The Export button is locked too (the server refuses exports for such an account). Search,
+ * filters, paging and the logout link keep working.
  */
 const banner = document.getElementById('gcm-vacation-banner');
 // The auditor only ever views (FRD V01.14: view / export on every page): its pages simply never show the
@@ -39,7 +40,8 @@ if (banner) {
 
   // Links that open a create / edit form (sidebar included), and the "Add ..." / delete buttons.
   const WRITE_LINKS = 'a[href*="/add"], a[href*="/edit/"], a[href*="insert-into-project"]';
-  const WRITE_BUTTONS = '.add-new, .delete-category';
+  // "Add ..." / delete buttons, and the Export dropdown of every list (the only dropdown in .dt-buttons).
+  const WRITE_BUTTONS = '.add-new, .delete-category, .dt-buttons .dropdown-toggle';
 
   const lockForm = (form) => {
     // Not guarded by a "done" flag: widgets (Quill toolbars, Select2) add their own controls after the
