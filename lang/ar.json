@@ -782,5 +782,7 @@
   "{1} Expired :count day ago|[2,*] Expired :count days ago": "{1} انتهت الصلاحية منذ يوم واحد|{2} انتهت الصلاحية منذ يومين|[3,10] انتهت الصلاحية منذ :count أيام|[11,*] انتهت الصلاحية منذ :count يومًا",
   "Valid": "ساري",
   "Need review": "بحاجة إلى مراجعة",
-  "No documents recorded for this driver.": "لا توجد وثائق مسجّلة لهذا السائق."
+  "No documents recorded for this driver.": "لا توجد وثائق مسجّلة لهذا السائق.",
+  "Documents Status": "حالة الوثائق",
+  "All documents statuses": "كل حالات الوثائق"
 }

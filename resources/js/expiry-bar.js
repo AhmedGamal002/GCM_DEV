@@ -93,7 +93,11 @@ window.gcmDocTableOptions = function (t, emptyMessage) {
       { targets: 3, responsivePriority: 3 },
       { targets: 2, responsivePriority: 4 },
       { targets: 5, responsivePriority: 5 },
-      { targets: 1, responsivePriority: 6 }
+      { targets: 1, responsivePriority: 6 },
+      // One line per cell (a date like 2027-04-24 or the "Valid to" heading must never wrap), content centred
+      // against the two-line "Time left" cell. If the card is too narrow the responsive plugin folds columns
+      // instead of squeezing them.
+      { targets: '_all', className: 'text-nowrap align-middle' }
     ]
   };
 };

@@ -102,7 +102,7 @@
       <span>تم: <b id="s-pass">0</b></span>
       <span>فشل: <b id="s-fail" style="color:var(--bad)">0</b></span>
       <span>متبقي: <b id="s-left">0</b></span>
-      <span>من <b>202</b> بند</span>
+      <span>من <b>203</b> بند</span>
     </div>
     <div class="prog"><i class="p" id="b-pass"></i><i class="f" id="b-fail"></i></div>
     <div class="tools">
@@ -1771,6 +1771,20 @@
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
       <dl><div class="row"><dt>الدور</dt><dd>مدخل البيانات · المراقب · السائق</dd></div><div class="row"><dt>الخطوات</dt><dd>سجّل دخول بكل حساب وافتح <code>/app/settings</code> مباشرة.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>403، وعنصر &quot;General Settings&quot; مش ظاهر في القائمة الجانبية. نفس الشيء لطلبات <code>GET/PATCH /api/v1/settings/document-expiry</code>.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Settings/DocumentExpirySettingsTest::test_the_settings_page_is_for_the_system_admin_only</code> و<code>test_only_the_system_admin_can_read_or_change_them</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+    <details open class="group">
+      <summary>ج) عمود &quot;Documents Status&quot; في قايمتَي السائقين والمركبات <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-5-document-expiry#6" data-title="حالة الوثائق في صف السائق / المركبة">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">6</span></label>
+        <h3>حالة الوثائق في صف السائق / المركبة</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>الدور</dt><dd>مدير النظام (وكل دور يشوف القايمتين)</dd></div><div class="row"><dt>الخطوات</dt><dd>جهّز 4 سائقين (أو 4 مركبات): (أ) كل وثائقه وتصاريحه بعد أكتر من 30 يوم. (ب) وثيقة واحدة بعد 10 أيام والباقي بعيد. (ج) كل وثائقه منتهية. (د) وثيقة منتهية والباقي بعيد، من غير أي واحدة في الأصفر. افتح <strong>Drivers</strong> ثم <strong>Vehicles</strong> وبص على عمود &quot;Documents Status&quot;.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>(أ) <strong>Valid</strong> أخضر. (ب) <strong>Need review</strong> أصفر. (ج) <strong>Expired</strong> أحمر. (د) <strong>Need review</strong> أصفر (وثيقة منتهية جنب وثائق سارية تحتاج مراجعة، مش &quot;Valid&quot;). الحساب بيشمل <strong>تصاريح الدخول كمان</strong> — سائق كل وثائقه بعيدة وتصريحه بعد 7 أيام يطلع <strong>Need review</strong>. العمود مش بيتفرز، وبيتغيّر مع مدة التنبيه في الإعدادات العامة. <strong>فلتر &quot;Documents Status&quot;</strong> في أعلى القايمتين (كل حالات الوثائق / Valid / Need review / Expired) بيرجّع نفس الصفوف اللي تاجها كده بالظبط (بما فيها حدود 30 يوم / 31 يوم / النهارده)، ونفس الفلتر بيطبّق على تصدير Excel/PDF. نفس العمود في التصدير بعنوان &quot;Documents Status&quot;.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Settings/DocumentsStatusColumnTest</code> (قواعد الحالة، الجمع بين الوثائق والتصاريح، الترجمة العربي، عدم تكرار الاستعلام لكل صف، وظهور العمود والفلتر في الصفحتين، وإن الفلتر في الـSQL بيطابق التاج في كل حالة حدّية، واتباعه لمدة التنبيه، وتطبيقه على التصدير)</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     </details>

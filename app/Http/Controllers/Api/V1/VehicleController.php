@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Domain\Settings\Support\ExpiryWarning;
 use App\Domain\Vehicles\Actions\CreateVehicleAction;
 use App\Domain\Vehicles\Actions\UpdateVehicleAction;
 use App\Domain\Vehicles\Actions\UpdateVehicleStatusAction;
@@ -230,11 +231,16 @@ class VehicleController extends Controller
     private function filteredQuery(Request $request): Builder
     {
         return Vehicle::query()
-            ->with(self::LIST_WITH)
+            // `documents` (permits included) feed the list's documents-status column and its export.
+            ->with([...self::LIST_WITH, 'documents'])
             ->when($request->filled('category'), fn ($q) => $q->whereHas('category', fn ($c) => $c->where('slug', $request->string('category'))))
             ->when($request->filled('operational_status'), fn ($q) => $q->where('operational_status', $request->string('operational_status')))
             ->when($request->filled('affiliation'), fn ($q) => $q->where('affiliation', $request->string('affiliation')))
             ->when($request->filled('contractor_id'), fn ($q) => $q->where('contractor_id', $request->integer('contractor_id')))
+            // "Documents Status" filter: ok | warning | expired — the SQL twin of the tag on each row.
+            ->when(in_array($request->string('documents_status')->toString(), ExpiryWarning::STATUSES, true), fn ($q) => app(ExpiryWarning::class)->filterByOverallStatus(
+                $q, $request->string('documents_status')->toString(), ExpiryWarning::SCOPE_VEHICLE, [], 'documents'
+            ))
             ->when($request->filled('search'), function ($q) use ($request) {
                 // The UI shows/exposes the plate as "AAA 1234" (Vehicle::plate(),
                 // letters + space + numbers), but it's stored as two separate

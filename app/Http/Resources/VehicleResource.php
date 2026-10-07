@@ -57,6 +57,8 @@ class VehicleResource extends JsonResource
             'trips_count' => 0,
 
             'documents' => VehicleDocumentResource::collection($this->whenLoaded('documents')),
+            // The list column: Valid / Need review / Expired across every document and permit.
+            'documents_status' => $this->whenLoaded('documents', fn () => $this->documentsStatus()),
 
             // FRD: view/edit pages show "Last updated by X — <datetime>".
             'updated_by_name' => $this->whenLoaded('updatedBy', fn () => $this->updatedBy?->name),

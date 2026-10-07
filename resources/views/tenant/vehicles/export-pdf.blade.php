@@ -1,13 +1,14 @@
 @php use App\Support\PdfLabels; @endphp
 @include('exports.pdf-table', [
   'title' => __('Vehicles'),
-  'headers' => [__('ID'), __('Plate'), __('Category'), __('Affiliation'), __('Status'), __('Created At')],
+  'headers' => [__('ID'), __('Plate'), __('Category'), __('Affiliation'), __('Status'), __('Documents Status'), __('Created At')],
   'rows' => $vehicles->map(fn ($v) => [
     $v->id,
     $v->plate(),
     $v->category?->name(),
     $v->affiliation === 'contractor' && $v->contractor ? $v->contractor->name : PdfLabels::of($v->affiliation),
     PdfLabels::of($v->operational_status),
+    $v->documentsStatus()['status_label'] ?? '—',
     $v->created_at,
   ]),
 ])

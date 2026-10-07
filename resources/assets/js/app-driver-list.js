@@ -50,12 +50,14 @@ $(function () {
 
   let currentAffiliation = '';
   let currentStatus = '';
+  let currentDocumentsStatus = '';
 
   // Filters currently applied to the list — the table's own requests AND the
   // Excel/PDF export read this, so an export always matches what is on screen.
   const listParams = () => ({
     affiliation: currentAffiliation || undefined,
-    status: currentStatus || undefined
+    status: currentStatus || undefined,
+    documents_status: currentDocumentsStatus || undefined
   });
 
   dtDriverTable.DataTable({
@@ -70,6 +72,7 @@ $(function () {
       { data: 'name' },
       { data: 'affiliation' },
       { data: 'status' },
+      { data: 'documents_status', defaultContent: '' },
       { data: 'id' }
     ],
     columnDefs: [
@@ -118,6 +121,13 @@ $(function () {
           const status = statusObj[full.status] || { title: full.status, class: 'bg-label-secondary' };
           return '<span class="badge ' + status.class + '">' + status.title + '</span>';
         }
+      },
+      {
+        // Valid / Need review / Expired across the four documents and every entry permit.
+        targets: 6,
+        orderable: false,
+        searchable: false,
+        render: (data, type, full) => window.gcmExpiryTag(full.documents_status)
       },
       {
         targets: -1,
@@ -232,6 +242,21 @@ $(function () {
       ['active', 'on_vacation', 'deactivated'].forEach((status) => {
         statusSelect.append('<option value="' + status + '">' + statusObj[status].title + '</option>');
       });
+
+      // Documents status filter — the same Valid / Need review / Expired as the column.
+      const documentsSelect = $(
+        '<select class="form-select"><option value="">' + (t.all_documents_statuses || 'All documents statuses') + '</option></select>'
+      )
+        .appendTo('.driver_documents')
+        .on('change', function () {
+          currentDocumentsStatus = $(this).val();
+          api.draw();
+        });
+      [
+        ['ok', t.valid || 'Valid'],
+        ['warning', t.need_review || 'Need review'],
+        ['expired', t.expired || 'Expired']
+      ].forEach((o) => documentsSelect.append('<option value="' + o[0] + '">' + o[1] + '</option>'));
     }
   });
 });

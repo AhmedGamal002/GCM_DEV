@@ -30,7 +30,7 @@ class DriversExport implements FromCollection, WithEvents, WithHeadings, WithMap
 
     public function headings(): array
     {
-        return ['ID', 'Driver Name', 'Affiliation', 'Driver Availability'];
+        return ['ID', 'Driver Name', 'Affiliation', 'Driver Availability', 'Documents Status'];
     }
 
     public function map($driver): array
@@ -42,6 +42,7 @@ class DriversExport implements FromCollection, WithEvents, WithHeadings, WithMap
             $user->name,
             $user->affiliation === 'gcm' ? 'GCM' : ($user->contractor?->name ?? $user->affiliation),
             $user->status,
+            $driver->documentsStatus()['status_label'] ?? '—',
         ];
     }
 }

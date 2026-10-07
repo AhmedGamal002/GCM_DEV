@@ -23,6 +23,10 @@
     no_permission: @json(__("You don't have permission to view this data.")),
     all_statuses: @json(__('All statuses')),
     all_affiliations: @json(__('All affiliations')),
+    all_documents_statuses: @json(__('All documents statuses')),
+    valid: @json(__('Valid')),
+    need_review: @json(__('Need review')),
+    expired: @json(__('Expired')),
     active: @json(__('Active')),
     on_vacation: @json(__('On Vacation')),
     deactivated: @json(__('Deactivated')),
@@ -138,6 +142,7 @@
     <div class="d-flex justify-content-between align-items-center row pt-4 gap-4 gap-md-0">
       <div class="col-md-4 driver_affiliation"></div>
       <div class="col-md-4 driver_status"></div>
+      <div class="col-md-4 driver_documents"></div>
     </div>
   </div>
   <div class="card-datatable table-responsive">
@@ -150,6 +155,7 @@
           <th>{{ __('Driver Name') }}</th>
           <th>{{ __('Affiliation') }}</th>
           <th>{{ __('Driver Availability') }}</th>
+          <th>{{ __('Documents Status') }}</th>
           <th>{{ __('Actions') }}</th>
         </tr>
       </thead>

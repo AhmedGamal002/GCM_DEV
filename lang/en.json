@@ -782,5 +782,7 @@
   "{1} Expired :count day ago|[2,*] Expired :count days ago": "{1} Expired :count day ago|[2,*] Expired :count days ago",
   "Valid": "Valid",
   "Need review": "Need review",
-  "No documents recorded for this driver.": "No documents recorded for this driver."
+  "No documents recorded for this driver.": "No documents recorded for this driver.",
+  "Documents Status": "Documents Status",
+  "All documents statuses": "All documents statuses"
 }

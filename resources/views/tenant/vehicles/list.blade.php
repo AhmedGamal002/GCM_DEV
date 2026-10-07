@@ -24,6 +24,10 @@
     all_categories: @json(__('All categories')),
     all_statuses: @json(__('All statuses')),
     all_affiliations: @json(__('All affiliations')),
+    all_documents_statuses: @json(__('All documents statuses')),
+    valid: @json(__('Valid')),
+    need_review: @json(__('Need review')),
+    expired: @json(__('Expired')),
     active: @json(__('Active')),
     on_maintenance: @json(__('On Maintenance')),
     deactivated: @json(__('Deactivated')),
@@ -100,9 +104,10 @@
   <div class="card-header border-bottom">
     <h5 class="card-title mb-0">{{ __('Filters') }}</h5>
     <div class="d-flex justify-content-between align-items-center row pt-4 gap-4 gap-md-0">
-      <div class="col-md-4 vehicle_category"></div>
-      <div class="col-md-4 vehicle_status"></div>
-      <div class="col-md-4 vehicle_affiliation"></div>
+      <div class="col-md-3 vehicle_category"></div>
+      <div class="col-md-3 vehicle_status"></div>
+      <div class="col-md-3 vehicle_affiliation"></div>
+      <div class="col-md-3 vehicle_documents"></div>
     </div>
   </div>
   <div class="card-datatable table-responsive">
@@ -116,6 +121,7 @@
           <th>{{ __('Trips') }}</th>
           <th>{{ __('Affiliation') }}</th>
           <th>{{ __('Availability') }}</th>
+          <th>{{ __('Documents Status') }}</th>
           <th>{{ __('Actions') }}</th>
         </tr>
       </thead>

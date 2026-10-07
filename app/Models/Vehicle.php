@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Concerns\BelongsToTenant;
+use App\Domain\Settings\Support\ExpiryWarning;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -80,5 +81,19 @@ class Vehicle extends Model
     public function plate(): string
     {
         return trim(mb_strtoupper((string) $this->plate_letters).' '.$this->plate_numbers);
+    }
+
+    /**
+     * The single "Valid / Need review / Expired" status of the list row, from every dated document and
+     * entry permit (see ExpiryWarning::overall()). List queries eager-load `documents`.
+     *
+     * @return array{status: string, status_label: string}|null
+     */
+    public function documentsStatus(): ?array
+    {
+        return app(ExpiryWarning::class)->overall(
+            $this->documents->pluck('valid_to'),
+            ExpiryWarning::SCOPE_VEHICLE,
+        );
     }
 }

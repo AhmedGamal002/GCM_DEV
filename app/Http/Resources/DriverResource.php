@@ -44,6 +44,9 @@ class DriverResource extends JsonResource
                 'category' => $this->defaultVehicle->category?->name(),
             ] : null),
 
+            // The list column: Valid / Need review / Expired across the four documents and every permit.
+            'documents_status' => $this->whenLoaded('entryPermits', fn () => $this->documentsStatus()),
+
             'residence' => [
                 'number' => $this->residence_number,
                 'valid_to' => $this->residence_valid_to?->toDateString(),

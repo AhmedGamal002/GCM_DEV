@@ -6,6 +6,7 @@ use App\Domain\Drivers\Actions\AddDriverEntryPermitAction;
 use App\Domain\Drivers\Actions\CreateDriverAction;
 use App\Domain\Drivers\Actions\UpdateDriverAction;
 use App\Domain\Drivers\Exports\DriversExport;
+use App\Domain\Settings\Support\ExpiryWarning;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Drivers\AddDriverEntryPermitRequest;
 use App\Http\Requests\Drivers\StoreDriverRequest;
@@ -229,7 +230,8 @@ class DriverController extends Controller
     private function filteredQuery(Request $request): Builder
     {
         return Driver::query()
-            ->with(['user' => fn ($q) => $q->with(['tenant', 'roles', 'contractor'])])
+            // `entryPermits` feed the list's documents-status column and its export.
+            ->with(['entryPermits', 'user' => fn ($q) => $q->with(['tenant', 'roles', 'contractor'])])
             ->when($request->filled('status'), fn ($q) => $q->whereHas(
                 'user',
                 fn ($q2) => $q2->where('status', $request->string('status'))
@@ -242,6 +244,14 @@ class DriverController extends Controller
                 fn ($q2) => $q2->where('affiliation', $request->string('affiliation'))
             ))
             ->when($request->filled('contractor_id'), fn ($q) => $q->where('drivers.contractor_id', $request->integer('contractor_id')))
+            // "Documents Status" filter: ok | warning | expired — the SQL twin of the tag on each row.
+            ->when(in_array($request->string('documents_status')->toString(), ExpiryWarning::STATUSES, true), fn ($q) => app(ExpiryWarning::class)->filterByOverallStatus(
+                $q,
+                $request->string('documents_status')->toString(),
+                ExpiryWarning::SCOPE_DRIVER,
+                ['drivers.residence_valid_to', 'drivers.license_valid_to', 'drivers.operational_license_valid_to', 'drivers.insurance_valid_to'],
+                'entryPermits',
+            ))
             ->when($request->filled('search'), function ($q) use ($request) {
                 // Same reasoning as UserController's search fix — `code`
                 // (on `users`, same as name/email here) is the list's own

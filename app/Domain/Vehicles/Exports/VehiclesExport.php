@@ -22,7 +22,7 @@ class VehiclesExport implements FromCollection, WithEvents, WithHeadings, WithMa
 
     public function headings(): array
     {
-        return ['ID', 'Plate', 'Category', 'Affiliation', 'Status', 'Created At'];
+        return ['ID', 'Plate', 'Category', 'Affiliation', 'Status', 'Documents Status', 'Created At'];
     }
 
     public function map($vehicle): array
@@ -33,6 +33,7 @@ class VehiclesExport implements FromCollection, WithEvents, WithHeadings, WithMa
             $vehicle->category?->name(),
             $vehicle->affiliation === 'gcm' ? 'GCM' : ($vehicle->contractor?->name ?? $vehicle->affiliation),
             $vehicle->operational_status,
+            $vehicle->documentsStatus()['status_label'] ?? '—',
             $vehicle->created_at,
         ];
     }

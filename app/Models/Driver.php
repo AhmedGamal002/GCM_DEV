@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Concerns\BelongsToTenant;
+use App\Domain\Settings\Support\ExpiryWarning;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -87,5 +88,25 @@ class Driver extends Model
     public function qualifiedVehicleCategories(): BelongsToMany
     {
         return $this->belongsToMany(VehicleCategory::class, 'driver_vehicle_categories');
+    }
+
+    /**
+     * The single "Valid / Need review / Expired" status of the list row, from the four documents and every
+     * entry permit (see ExpiryWarning::overall()). List queries eager-load `entryPermits`.
+     *
+     * @return array{status: string, status_label: string}|null
+     */
+    public function documentsStatus(): ?array
+    {
+        return app(ExpiryWarning::class)->overall(
+            [
+                $this->residence_valid_to,
+                $this->license_valid_to,
+                $this->operational_license_valid_to,
+                $this->insurance_valid_to,
+                ...$this->entryPermits->pluck('valid_to')->all(),
+            ],
+            ExpiryWarning::SCOPE_DRIVER,
+        );
     }
 }
