@@ -20,6 +20,12 @@ document.addEventListener('DOMContentLoaded', function () {
   const loading = document.getElementById('asset-category-view-loading');
   const content = document.getElementById('asset-category-view-content');
 
+  if (new URLSearchParams(window.location.search).get('saved')) {
+    const box = document.getElementById('asset-category-view-status');
+    box.textContent = t.saved;
+    box.classList.remove('d-none');
+  }
+
   const appliesLabels = {
     container: t.container || 'Containers',
     tank: t.tank || 'Tanks',
@@ -119,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('acv-assets-count').textContent = c.assets_count ?? 0;
 
     if (c.additional_data) {
-      document.getElementById('acv-additional').textContent = c.additional_data;
+      document.getElementById('acv-additional').innerHTML = c.additional_data;
       document.getElementById('acv-additional-wrapper').classList.remove('d-none');
     }
 

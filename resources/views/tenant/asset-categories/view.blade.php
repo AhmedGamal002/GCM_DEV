@@ -23,6 +23,7 @@
     tank: @json(__('Tanks')),
     both: @json(__('All')),
     generic_error: @json(__('Something went wrong. Please try again.')),
+    saved: @json(__('Changes saved successfully.')),
     last_updated_by: @json(__('Last updated by :name — :at')),
     // (system admin / data entry) only — the auditor gets a read-only page.
     can_manage: @json(auth()->user()->can('create', \App\Models\AssetCapacityCategory::class)),
@@ -49,12 +50,13 @@
 
 @section('content')
 
-@include('_partials.breadcrumb', ['pageTitle' => __('Capacity Details'), 'breadcrumbs' => [
+@include('_partials.breadcrumb', ['updatedId' => 'acv-updated-by', 'pageTitle' => __('Capacity Details'), 'breadcrumbs' => [
   ['title' => __('Assets'), 'url' => route('app-asset-list')],
   ['title' => __('Assets Capacities'), 'url' => route('app-asset-category-list')],
   ['title' => __('Capacity Details')],
 ]])
 
+<div id="asset-category-view-status" class="alert alert-success d-none"></div>
 <div id="asset-category-view-error" class="alert alert-danger d-none"></div>
 
 <div class="row">
@@ -82,7 +84,6 @@
           <span class="h6 d-block mb-2">{{ __('Additional data') }}:</span>
           <div id="acv-additional"></div>
         </div>
-        <p class="small text-muted mb-4" id="acv-updated-by"></p>
         <div class="d-flex justify-content-center">
           <a href="#" id="acv-edit-link" class="btn btn-primary me-4">{{ __('Edit') }}</a>
           <a href="{{ route('app-asset-category-list') }}" class="btn btn-label-secondary">{{ __('Back to list') }}</a>

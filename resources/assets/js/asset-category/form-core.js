@@ -1,8 +1,9 @@
 /**
  * Shared engine for the create & edit asset-capacity-category forms (both
  * render `tenant.asset-categories._form`). Small form — name, applies_to,
- * CBM, TON, notes. On edit the FRD allows ONLY the name to change, so
- * every other field is rendered pre-filled but disabled.
+ * CBM, TON, notes (a Quill editor, like every other module). On edit only the name and the additional data can
+ * change (FRD: name only; the client added the notes), so every other
+ * field is rendered pre-filled but disabled.
  *
  * Lives in a subdirectory so the `resources/assets/js/*.js` Vite glob
  * doesn't pick it up; the thin entry files import `initAssetCategoryForm`.
@@ -26,6 +27,10 @@ export function initAssetCategoryForm(opts) {
   const errorBox = document.getElementById('asset-category-form-error');
   const loading = document.getElementById('asset-category-form-loading');
   const submitBtn = form.querySelector('button[type="submit"]');
+
+  const quill = new Quill(document.getElementById('additional-data-editor'), { theme: 'snow', placeholder: '' });
+  // An untouched/cleared Quill editor holds <p><br></p> — send null instead (the server normalises too).
+  const notes = () => (quill.getLength() > 1 ? quill.root.innerHTML : null);
 
   function feedbackEl(el) {
     const wrapper = el.closest('[class*="col-"]') || el.parentElement;
@@ -113,20 +118,27 @@ export function initAssetCategoryForm(opts) {
     if (mode === 'edit') {
       url = `/api/v1/asset-capacity-categories/${id}`;
       method = 'patch';
-      payload = { name: form.querySelector('#name').value };
+      payload = {
+        name: form.querySelector('#name').value,
+        additional_data: notes()
+      };
     } else {
       payload = {
         name: form.querySelector('#name').value,
         applies_to: form.querySelector('#applies_to').value,
         capacity_cbm: form.querySelector('#capacity_cbm').value,
         capacity_ton: form.querySelector('#capacity_ton').value,
-        additional_data: form.querySelector('#additional_data').value || null
+        additional_data: notes()
       };
     }
 
     window.axios[method](url, payload, { onUploadProgress: window.gcmBusy.onUploadProgress })
       .then(() => {
-        window.location.href = `${t.list_url || '/app/asset-category/list'}?created=1`;
+        if (mode === 'edit') {
+          window.location.href = `${t.view_url_base || '/app/asset-category/view'}/${id}?saved=1`;
+        } else {
+          window.location.href = `${t.list_url || '/app/asset-category/list'}?created=1`;
+        }
       })
       .catch((error) => {
         window.gcmBusy.stop();
@@ -144,7 +156,10 @@ export function initAssetCategoryForm(opts) {
 
   if (mode === 'edit') {
     const cancel = document.getElementById('asset-category-form-cancel');
-    if (cancel && t.cancel) cancel.textContent = t.cancel;
+    if (cancel) {
+      cancel.href = `${t.view_url_base || '/app/asset-category/view'}/${id}`;
+      if (t.cancel) cancel.textContent = t.cancel;
+    }
 
     window.axios
       .get(`/api/v1/asset-capacity-categories/${id}`)
@@ -154,7 +169,7 @@ export function initAssetCategoryForm(opts) {
         form.querySelector('#applies_to').value = c.applies_to;
         form.querySelector('#capacity_cbm').value = c.capacity_cbm;
         form.querySelector('#capacity_ton').value = c.capacity_ton;
-        form.querySelector('#additional_data').value = c.additional_data || '';
+        quill.root.innerHTML = c.additional_data || '';
 
         form.querySelectorAll('input, select, textarea').forEach((el) => {
           if (el.id !== 'name') el.disabled = true;

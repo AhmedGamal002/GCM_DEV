@@ -319,7 +319,7 @@ class VehicleManagementTest extends TestCase
 
         $response
             ->assertJsonPath('data.availability.on_maintenance', 1)
-            ->assertJsonPath('data.availability.on_trip', 0);
+            ->assertJsonMissingPath('data.availability.on_trip');
     }
 
     public function test_export_returns_xlsx_and_pdf(): void
