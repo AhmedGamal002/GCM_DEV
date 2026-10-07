@@ -62,14 +62,13 @@
 
 @php($vehicleStatCards = [
   ['key' => 'available',      'label' => __('Available'),      'color' => 'success',   'icon' => 'ti-circle-check'],
-  ['key' => 'on_trip',        'label' => __('On a trip'),      'color' => 'info',      'icon' => 'ti-route'],
   ['key' => 'on_maintenance', 'label' => __('On Maintenance'), 'color' => 'warning',   'icon' => 'ti-tool'],
   ['key' => 'deactivated',    'label' => __('Deactivated'),    'color' => 'secondary', 'icon' => 'ti-ban'],
 ])
 
 <div class="row g-4 mb-6" id="vehicle-stats">
   @foreach ($vehicleStatCards as $c)
-    <div class="col-lg-3 col-sm-6">
+    <div class="col-lg-4 col-sm-6">
       <div class="card card-border-shadow-{{ $c['color'] }} h-100">
         <div class="card-body">
           <div class="d-flex align-items-center mb-2">

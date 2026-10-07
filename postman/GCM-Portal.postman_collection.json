@@ -642,7 +642,7 @@
             "method": "GET",
             "header": [{ "key": "Accept", "value": "application/json" }],
             "url": { "raw": "{{api_base}}/vehicles/stats", "host": ["{{api_base}}"], "path": ["vehicles", "stats"] },
-            "description": "Counts for the list page cards: by_category (an ARRAY of {id, slug, name, count} — one entry per category the tenant has, zero-count ones included) + availability (available/on_trip/on_maintenance/deactivated), computed in SQL against the full tenant-scoped set. on_trip is always 0 until the Trips module (Week 7)."
+            "description": "Counts for the list page cards: by_category (an ARRAY of {id, slug, name, count} — one entry per category the tenant has, zero-count ones included) + availability (available/on_maintenance/deactivated), computed in SQL against the full tenant-scoped set. There is no on-a-trip card."
           }
         },
         {
@@ -1039,13 +1039,13 @@
           }
         },
         {
-          "name": "Update Capacity Category (name only)",
+          "name": "Update Capacity Category (name + notes)",
           "request": {
             "method": "PATCH",
             "header": [{ "key": "Accept", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Roll-on/off (renamed)\"\n}",
+              "raw": "{\n  \"name\": \"Roll-on/off (renamed)\",\n  \"additional_data\": \"<p>Optional notes</p>\"\n}",
               "options": { "raw": { "language": "json" } }
             },
             "url": {
@@ -1053,7 +1053,7 @@
               "host": ["{{api_base}}"],
               "path": ["asset-capacity-categories", "{{last_asset_capacity_category_id}}"]
             },
-            "description": "FRD §1.7.2 — only the name is editable. `applies_to` and the capacities are locked after creation (any other keys sent are ignored). No delete route."
+            "description": "FRD §1.7.2 — the FRD lets only the name change; the client also kept the additional data editable (omit it to leave the notes untouched, send null/an empty editor to clear them). `applies_to` and the capacities are locked after creation (any other keys sent are ignored). No delete route."
           }
         },
         {
@@ -1134,13 +1134,13 @@
           }
         },
         {
-          "name": "Update Asset (name only)",
+          "name": "Update Asset (name + notes)",
           "request": {
             "method": "PATCH",
             "header": [{ "key": "Accept", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Container A-01 (renamed)\"\n}",
+              "raw": "{\n  \"name\": \"Container A-01 (renamed)\",\n  \"additional_data\": \"<p>Optional notes</p>\"\n}",
               "options": { "raw": { "language": "json" } }
             },
             "url": {
@@ -1148,7 +1148,7 @@
               "host": ["{{api_base}}"],
               "path": ["assets", "{{last_asset_id}}"]
             },
-            "description": "FRD §1.7.3 — the name is the ONLY editable field. Type, capacity, affiliation, purchase date, notes and compatible vehicle categories are all locked (any other keys sent are ignored). operational_status changes via Change Operational Status."
+            "description": "FRD §1.7.3 — the FRD lets only the name change; the client also kept the additional data editable (omit it to leave the notes untouched, send null/an empty editor to clear them). Type, capacity, affiliation, purchase date and compatible vehicle categories are locked (any other keys sent are ignored). operational_status changes via Change Operational Status."
           }
         },
         {

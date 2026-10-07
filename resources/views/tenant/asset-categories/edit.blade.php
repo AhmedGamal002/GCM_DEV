@@ -3,11 +3,18 @@
 @section('title', __('Edit Capacity'))
 
 @section('vendor-style')
-@vite(['resources/assets/vendor/libs/select2/select2.scss'])
+@vite([
+  'resources/assets/vendor/libs/select2/select2.scss',
+  'resources/assets/vendor/libs/quill/typography.scss',
+  'resources/assets/vendor/libs/quill/editor.scss'
+])
 @endsection
 
 @section('vendor-script')
-@vite(['resources/assets/vendor/libs/select2/select2.js'])
+@vite([
+  'resources/assets/vendor/libs/select2/select2.js',
+  'resources/assets/vendor/libs/quill/quill.js'
+])
 @endsection
 
 @section('page-script')
@@ -17,7 +24,8 @@
     required: @json(__('This field is required.')),
     cancel: @json(__('Cancel')),
     last_updated_by: @json(__('Last updated by :name — :at')),
-    list_url: @json(route('app-asset-category-list'))
+    list_url: @json(route('app-asset-category-list')),
+    view_url_base: @json(url('/app/asset-category/view'))
   };
   window.assetCategoryEditId = {{ $categoryId }};
 </script>

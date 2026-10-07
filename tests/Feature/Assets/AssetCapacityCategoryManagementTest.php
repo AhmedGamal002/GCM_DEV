@@ -60,17 +60,19 @@ class AssetCapacityCategoryManagementTest extends TestCase
         ])->assertStatus(422)->assertJsonValidationErrors(['capacity_cbm', 'capacity_ton']);
     }
 
-    public function test_edit_only_changes_the_name_capacity_and_type_are_locked(): void
+    public function test_edit_only_changes_the_name_and_notes_capacity_and_type_are_locked(): void
     {
         $category = AssetCapacityCategory::factory()->create([
             'name' => 'Old name',
             'applies_to' => 'container',
             'capacity_cbm' => 10,
             'capacity_ton' => 3.5,
+            'additional_data' => 'old notes',
         ]);
 
         $this->actingAs($this->dataEntry, 'web')->patchJson("/api/v1/asset-capacity-categories/{$category->id}", [
             'name' => 'New name',
+            'additional_data' => 'new notes',
             'applies_to' => 'tank',
             'capacity_cbm' => 999,
             'capacity_ton' => 999,
@@ -78,10 +80,49 @@ class AssetCapacityCategoryManagementTest extends TestCase
 
         $category->refresh();
         $this->assertSame('New name', $category->name);
+        $this->assertSame('new notes', $category->additional_data);
         $this->assertSame('container', $category->applies_to);
         $this->assertSame('10.00', $category->capacity_cbm);
         $this->assertSame('3.50', $category->capacity_ton);
         $this->assertSame($this->dataEntry->id, $category->updated_by);
+    }
+
+    public function test_an_empty_quill_editor_is_stored_as_null_on_create_and_edit(): void
+    {
+        $id = $this->actingAs($this->admin, 'web')->postJson('/api/v1/asset-capacity-categories', [
+            'name' => 'Rich notes',
+            'applies_to' => 'both',
+            'capacity_cbm' => 5,
+            'capacity_ton' => 2,
+            'additional_data' => '<p><br></p>',
+        ])->assertCreated()->json('data.id');
+
+        $this->assertNull(AssetCapacityCategory::findOrFail($id)->additional_data);
+
+        $this->actingAs($this->admin, 'web')
+            ->patchJson("/api/v1/asset-capacity-categories/{$id}", ['name' => 'Rich notes', 'additional_data' => '<p>real</p>'])
+            ->assertOk();
+        $this->assertSame('<p>real</p>', AssetCapacityCategory::findOrFail($id)->additional_data);
+
+        $this->actingAs($this->admin, 'web')
+            ->patchJson("/api/v1/asset-capacity-categories/{$id}", ['name' => 'Rich notes', 'additional_data' => '<p><br></p>'])
+            ->assertOk();
+        $this->assertNull(AssetCapacityCategory::findOrFail($id)->additional_data);
+    }
+
+    public function test_a_name_only_edit_keeps_the_notes_and_an_empty_value_clears_them(): void
+    {
+        $category = AssetCapacityCategory::factory()->create(['additional_data' => 'keep me']);
+
+        $this->actingAs($this->admin, 'web')
+            ->patchJson("/api/v1/asset-capacity-categories/{$category->id}", ['name' => 'Renamed'])
+            ->assertOk();
+        $this->assertSame('keep me', $category->refresh()->additional_data);
+
+        $this->actingAs($this->admin, 'web')
+            ->patchJson("/api/v1/asset-capacity-categories/{$category->id}", ['name' => 'Renamed', 'additional_data' => ''])
+            ->assertOk();
+        $this->assertNull($category->refresh()->additional_data);
     }
 
     public function test_index_filters_by_applies_to_and_for_type(): void

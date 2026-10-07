@@ -61,7 +61,7 @@ The only screen exclusive to the System Admin among tenant roles.
 The System Admin has **full access**: view, create, edit, export, and all status changes (including deactivate and reactivate-from-deactivated).
 
 ### List
-- Stat cards: available / on a trip (0 for now — arrives with the Trip module) / on maintenance / deactivated, plus per-category cards (**one card for every category your company actually has** — not a fixed number).
+- Stat cards: available / on maintenance / deactivated, plus per-category cards (**one card for every category your company actually has** — not a fixed number).
 - Full server-side table: a vehicle's identity is its **plate** (no `code`). Search finds it even if you type the full plate with a space (`AAA 1234`).
 - Filters: category / operational status / affiliation. Export button (Excel / PDF).
 - **Add Vehicle** button.
@@ -118,10 +118,10 @@ System Admin: view, create, edit (full data), export, and all status changes.
 - Name, type (container / tank), capacity category (filtered by type), compatible vehicle categories (checkboxes, per-asset), status, affiliation, purchase date, additional data.
 
 ### Edit asset
-- **Name only** is editable — capacity and category are locked after creation (per FRD: they affect contracts and trips).
+- The **name and the additional data** are editable — capacity, type, affiliation and categories are locked after creation (per FRD: they affect contracts and trips; the additional data is a client add-on, plain notes).
 
 ### Assets capacities — `/app/asset-category/list`
-- Create and edit. After creation, **name only** is editable (capacity and kind locked). No delete, no deactivate.
+- Create and edit. After creation, the **name and the additional data** are editable (capacity and kind locked). No delete, no deactivate.
 - The list's eye icon opens a **details page** (a client add-on, not in the FRD): the capacity's own data plus a table of every asset carrying it, linking to each asset's own details page.
 
 ## 8. Change asset status

@@ -44,12 +44,12 @@ Dashboard, then an **Accounts** section (Users · Drivers) and a **Fleet & Asset
 
 - **View** + stat cards (containers and tanks separately) + filters + **export**.
 - **Create** a new asset (name, type, capacity category, compatible vehicle categories, purchase date, ...) — including directly in "deactivated" status if needed.
-- **Edit** an asset: **name only** — everything else is locked after creation.
+- **Edit** an asset: **name and additional data** — everything else is locked after creation.
 - **Status:** "on maintenance", or **deactivate / reactivate**.
 
 ### Assets capacities — `/app/asset-category/list`
 - **Create** a new capacity.
-- **Edit:** name only (capacity and kind locked).
+- **Edit:** name and additional data (capacity and kind locked).
 - No delete, no deactivate.
 - The list's eye icon opens a **details page** (client add-on): the capacity's data plus a table of the assets carrying it.
 

@@ -879,14 +879,14 @@
       <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.7 (إحصائيات لكل من الحاويات والصهاريج بشكل منفصل)</dd></div><div class="row"><dt>الخطوات</dt><dd>أنشئ أصلين (حاوية + صهريج) وافتح القائمة.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>مجموعتين كروت منفصلتين، كل مجموعة: متاح / في مشاريع=0 / في الصيانة / معطّل.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Assets/AssetManagementTest::test_stats...</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
-    <article class="item" data-id="week-3-vehicles-drivers-assets#18" data-title="تعديل الأصل — الاسم فقط">
+    <article class="item" data-id="week-3-vehicles-drivers-assets#18" data-title="تعديل الأصل — الاسم والبيانات الإضافية فقط">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
           <span class="num">18</span></label>
-        <h3>تعديل الأصل — الاسم فقط</h3>
+        <h3>تعديل الأصل — الاسم والبيانات الإضافية فقط</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.7.3 (&quot;اما السعة والتصنيف وما سواها&quot; مقفول — تؤثر على التعاقدات والرحلات)</dd></div><div class="row"><dt>الخطوات</dt><dd>بـ<code>admin</code> افتح تعديل أصل موجود.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>خانة الاسم فقط قابلة للتعديل؛ السعة والتصنيف معروضين للعرض فقط (أو غير موجودين في فورم التعديل).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Assets/AssetManagementTest</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.7.3 (&quot;اسم الأصل فقط المسموح بتعديله، أما السعة والتصنيف وما سواها&quot; مقفول — تؤثر على التعاقدات والرحلات). <strong>توسيع بطلب العميل:</strong> &quot;البيانات الإضافية&quot; كمان قابلة للتعديل (ملاحظات حرة مالهاش أثر على التعاقدات والرحلات).</dd></div><div class="row"><dt>الخطوات</dt><dd>بـ<code>admin</code> افتح تعديل أصل موجود. غيّر الاسم واكتب/امسح البيانات الإضافية واحفظ.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>خانة الاسم ومحرر &quot;البيانات الإضافية&quot; قابلين للتعديل؛ باقي الحقول (النوع، السعة، تصنيفات المركبات، التبعية...) معروضة ومقفولة. بعد الحفظ بترجع للتفاصيل والبيانات الجديدة ظاهرة؛ مسح المحرر بيخلي البيانات الإضافية فاضية (مفيش عنوان فاضي في التفاصيل).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Assets/AssetManagementTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-vehicles-drivers-assets#19" data-title="تصنيف السعة يتفلتر حسب نوع الأصل">
@@ -899,14 +899,14 @@
       <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.7.3 (قائمة السعة تتفلتر حسب النوع المختار)</dd></div><div class="row"><dt>الخطوات</dt><dd>في فورم إنشاء أصل، بدّل النوع بين &quot;حاوية&quot; و&quot;صهريج&quot; ولاحظ قائمة تصنيف السعة.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>كل نوع يعرض تصنيفات السعة المتوافقة معه (و<code>both</code> يظهر للاتنين).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Assets/AssetManagementTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
-    <article class="item" data-id="week-3-vehicles-drivers-assets#20" data-title="سعات الأصول — الاسم فقط للتعديل">
+    <article class="item" data-id="week-3-vehicles-drivers-assets#20" data-title="سعات الأصول — الاسم والبيانات الإضافية فقط للتعديل">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
           <span class="num">20</span></label>
-        <h3>سعات الأصول — الاسم فقط للتعديل</h3>
+        <h3>سعات الأصول — الاسم والبيانات الإضافية فقط للتعديل</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.7.2 (تعديل الاسم فقط — حجم السعة والنوعية مقفولين، لا حذف ولا تعطيل)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح <code>/app/asset-category/list</code>.</li><li>أنشئ سعة (زر &quot;Add Capacity&quot;).</li><li>عدّلها.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>التعديل الاسم فقط؛ مفيش زر حذف ولا تعطيل.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Assets/AssetCapacityCategoryManagementTest</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.7.2 (تعديل الاسم فقط — حجم السعة والنوعية مقفولين، لا حذف ولا تعطيل). <strong>توسيع بطلب العميل:</strong> &quot;البيانات الإضافية&quot; كمان قابلة للتعديل.</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح <code>/app/asset-category/list</code>.</li><li>أنشئ سعة (زر &quot;Add Capacity&quot;).</li><li>عدّلها.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>في التعديل الاسم والبيانات الإضافية بس قابلين للتغيير (النوع وحجم السعة مقفولين)؛ مفيش زر حذف ولا تعطيل. &quot;البيانات الإضافية&quot; محرر نص غني (زي باقي الموديولات) في الإنشاء والتعديل. بعد حفظ التعديل بترجع لصفحة التفاصيل برسالة &quot;تم حفظ التعديلات بنجاح&quot;، وسطر &quot;آخر تحديث: تم بواسطة ...&quot; تحت العنوان، وجدول الأصول التابعة للسعة DataTable بحث + ترقيم.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Assets/AssetCapacityCategoryManagementTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-vehicles-drivers-assets#21" data-title="البيانات الإضافية الفاضية مبتظهرش (كل الموديولات)">
@@ -989,7 +989,7 @@
     </article>
     </details>
   </section>
-  <p class="foot">اتولّد تلقائيًا من ملفات <code>docs/acceptance/week-*.md</code> بتاريخ 2026-10-01 — للتحديث: <code>node docs/acceptance/build-checklist.mjs</code>. متعدّلش الملف ده بإيدك.</p>
+  <p class="foot">اتولّد تلقائيًا من ملفات <code>docs/acceptance/week-*.md</code> بتاريخ 2026-10-07 — للتحديث: <code>node docs/acceptance/build-checklist.mjs</code>. متعدّلش الملف ده بإيدك.</p>
 </div>
 
 <script>

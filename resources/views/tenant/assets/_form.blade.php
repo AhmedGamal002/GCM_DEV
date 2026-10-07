@@ -12,7 +12,7 @@
 
     @unless($isCreate)
       <div class="alert alert-info" role="alert">
-        {{ __('Only the asset name can be edited. Capacity, type, affiliation and compatible vehicle categories are locked after creation.') }}
+        {{ __('Only the asset name and additional data can be edited. Capacity, type, affiliation and compatible vehicle categories are locked after creation.') }}
 
       </div>
     @endunless

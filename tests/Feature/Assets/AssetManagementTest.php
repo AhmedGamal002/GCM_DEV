@@ -121,7 +121,7 @@ class AssetManagementTest extends TestCase
         $this->assertSame('deactivated', Asset::firstOrFail()->operational_status);
     }
 
-    public function test_update_only_changes_the_name(): void
+    public function test_update_only_changes_the_name_and_the_additional_data(): void
     {
         // Built via the factory (not a second acting user) — switching the
         // acting user inside one test method is unreliable for
@@ -135,7 +135,9 @@ class AssetManagementTest extends TestCase
                 'name' => 'Renamed container',
                 'asset_type' => 'tank',
                 'asset_capacity_category_id' => 999,
-                'additional_data' => 'hacked',
+                'operational_status' => 'deactivated',
+                'purchase_date' => '2001-01-01',
+                'additional_data' => '<p>edited</p>',
             ])
             ->assertOk();
 
@@ -143,8 +145,33 @@ class AssetManagementTest extends TestCase
         $this->assertSame('Renamed container', $asset->name);
         $this->assertSame($originalType, $asset->asset_type);
         $this->assertSame($originalCapacity, $asset->asset_capacity_category_id);
-        $this->assertSame('<p>original</p>', $asset->additional_data);
+        $this->assertSame('<p>edited</p>', $asset->additional_data);
+        $this->assertSame('active', $asset->operational_status);
+        $this->assertNotSame('2001-01-01', optional($asset->purchase_date)->toDateString());
         $this->assertSame($this->dataEntry->id, $asset->updated_by);
+    }
+
+    public function test_a_name_only_update_keeps_the_additional_data(): void
+    {
+        $asset = Asset::factory()->create(['additional_data' => '<p>keep me</p>']);
+
+        $this->actingAs($this->admin, 'web')
+            ->patchJson("/api/v1/assets/{$asset->id}", ['name' => 'Only the name'])
+            ->assertOk();
+
+        $this->assertSame('<p>keep me</p>', $asset->refresh()->additional_data);
+    }
+
+    public function test_clearing_the_additional_data_on_edit_stores_null(): void
+    {
+        $asset = Asset::factory()->create(['additional_data' => '<p>note</p>']);
+
+        // an emptied Quill editor submits <p><br></p>
+        $this->actingAs($this->admin, 'web')
+            ->patchJson("/api/v1/assets/{$asset->id}", ['name' => 'Same', 'additional_data' => '<p><br></p>'])
+            ->assertOk();
+
+        $this->assertNull($asset->refresh()->additional_data);
     }
 
     public function test_data_entry_can_set_maintenance_and_deactivate(): void
@@ -214,9 +241,8 @@ class AssetManagementTest extends TestCase
     /**
      * Same normalization as the equivalent Vehicles/Drivers tests — an
      * untouched Quill editor submits `<p><br></p>`, not an empty string.
-     * Assets only take additional_data at create time (edit is name-only
-     * per FRD §1.7.3 — see UpdateAssetRequest's docblock), so this is the
-     * only place it needs covering for this module.
+     * Edit takes the additional_data too (client request on top of FRD
+     * §1.7.3 — see UpdateAssetRequest's docblock); it's covered below.
      */
     public function test_an_empty_quill_editor_is_stored_as_null_not_empty_markup(): void
     {

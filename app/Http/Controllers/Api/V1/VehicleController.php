@@ -115,8 +115,8 @@ class VehicleController extends Controller
     }
 
     /**
-     * Counts for the list page's stat cards. `on_trip` needs the Trip
-     * module (Week 7) — 0 for now.
+     * Counts for the list page's stat cards (available / on maintenance /
+     * deactivated — there is no "on a trip" card).
      */
     public function stats()
     {
@@ -151,7 +151,6 @@ class VehicleController extends Controller
                 'by_category' => $byCategory,
                 'availability' => [
                     'available' => (int) ($byStatus['active'] ?? 0),
-                    'on_trip' => 0,
                     'on_maintenance' => (int) ($byStatus['on_maintenance'] ?? 0),
                     'deactivated' => (int) ($byStatus['deactivated'] ?? 0),
                 ],

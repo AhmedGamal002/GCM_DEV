@@ -2,6 +2,20 @@
 
 @section('title', __('Capacity Details'))
 
+@section('vendor-style')
+@vite([
+  'resources/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.scss',
+  'resources/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.scss'
+])
+@endsection
+
+@section('vendor-script')
+@vite([
+  'resources/assets/vendor/libs/moment/moment.js',
+  'resources/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js'
+])
+@endsection
+
 @section('page-script')
 <script>
   window.assetCategoryViewTranslations = {
@@ -9,6 +23,7 @@
     tank: @json(__('Tanks')),
     both: @json(__('All')),
     generic_error: @json(__('Something went wrong. Please try again.')),
+    saved: @json(__('Changes saved successfully.')),
     last_updated_by: @json(__('Last updated by :name — :at')),
     // (system admin / data entry) only — the auditor gets a read-only page.
     can_manage: @json(auth()->user()->can('create', \App\Models\AssetCapacityCategory::class)),
@@ -21,21 +36,27 @@
     deactivated: @json(__('Deactivated')),
     gcm: @json(__('GCM')),
     contractor: @json(__('Contractor')),
-    view: @json(__('View'))
+    view: @json(__('View')),
+    no_assets_found: @json(__('No assets found.')),
+    no_permission: @json(__("You don't have permission to view this data.")),
+    search_asset: @json(__('Search Asset')),
+    info: @json(__('Showing _START_ to _END_ of _TOTAL_ entries')),
+    info_empty: @json(__('Showing 0 to 0 of 0 entries'))
   };
   window.assetCategoryViewId = {{ $categoryId }};
 </script>
-@vite('resources/assets/js/app-asset-category-view.js')
+@vite(['resources/assets/js/datatables-server-side.js', 'resources/assets/js/app-asset-category-view.js'])
 @endsection
 
 @section('content')
 
-@include('_partials.breadcrumb', ['pageTitle' => __('Capacity Details'), 'breadcrumbs' => [
+@include('_partials.breadcrumb', ['updatedId' => 'acv-updated-by', 'pageTitle' => __('Capacity Details'), 'breadcrumbs' => [
   ['title' => __('Assets'), 'url' => route('app-asset-list')],
   ['title' => __('Assets Capacities'), 'url' => route('app-asset-category-list')],
   ['title' => __('Capacity Details')],
 ]])
 
+<div id="asset-category-view-status" class="alert alert-success d-none"></div>
 <div id="asset-category-view-error" class="alert alert-danger d-none"></div>
 
 <div class="row">
@@ -63,7 +84,6 @@
           <span class="h6 d-block mb-2">{{ __('Additional data') }}:</span>
           <div id="acv-additional"></div>
         </div>
-        <p class="small text-muted mb-4" id="acv-updated-by"></p>
         <div class="d-flex justify-content-center">
           <a href="#" id="acv-edit-link" class="btn btn-primary me-4">{{ __('Edit') }}</a>
           <a href="{{ route('app-asset-category-list') }}" class="btn btn-label-secondary">{{ __('Back to list') }}</a>
@@ -73,26 +93,21 @@
   </div>
 
   <div class="col-xl-8 col-lg-7">
-    <div class="card mb-6">
+    <div class="card">
       <h5 class="card-header">{{ __('Assets') }}</h5>
-      <div class="card-body text-center py-6" id="acv-assets-loading">
-        <div class="spinner-border" role="status"></div>
-      </div>
-      <div class="table-responsive d-none" id="acv-assets-table-wrapper">
-        <table class="table table-hover mb-0">
-          <thead>
+      <div class="card-datatable table-responsive">
+        <table class="datatables-category-assets table table-hover">
+          <thead class="border-top">
             <tr>
               <th>{{ __('Name') }}</th>
               <th>{{ __('Type') }}</th>
               <th>{{ __('Affiliation') }}</th>
               <th>{{ __('Status') }}</th>
-              <th></th>
+              <th>{{ __('Actions') }}</th>
             </tr>
           </thead>
-          <tbody id="acv-assets-rows"></tbody>
         </table>
       </div>
-      <div class="alert alert-info m-6 d-none" id="acv-assets-empty">{{ __('No assets found.') }}</div>
     </div>
   </div>
 </div>

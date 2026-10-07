@@ -212,7 +212,10 @@ export function initAssetForm(opts) {
     if (mode === 'edit') {
       url = `/api/v1/assets/${id}`;
       method = 'patch';
-      payload = { name: form.querySelector('#name').value };
+      payload = {
+        name: form.querySelector('#name').value,
+        additional_data: quill.getLength() > 1 ? quill.root.innerHTML : null
+      };
     } else {
       payload = {
         name: form.querySelector('#name').value,
@@ -251,11 +254,11 @@ export function initAssetForm(opts) {
   });
 
   // --------------------------------------------------------- mode bootstrap
+  // FRD: only the name is editable — the client also keeps the additional data (the Quill editor) open.
   function lockEverythingButName() {
     form.querySelectorAll('input, select, textarea').forEach((el) => {
       if (el.id !== 'name') el.disabled = true;
     });
-    quill.disable();
 
     // Select2 only reads the disabled state when it's (re-)wired — a plain
     // .disabled = true on an already-wired select leaves its widget
