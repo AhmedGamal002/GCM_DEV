@@ -4045,6 +4045,94 @@
             },
             "description": "status: active | deactivated. Reactivating is refused (422) while the main service is deactivated; deactivating is refused while locked."
           }
+        },
+        {
+          "name": "Export Sub-services (Excel)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/sub-services/export?format=xlsx",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "sub-services",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "xlsx"
+                },
+                {
+                  "key": "main_service_id",
+                  "value": "{{last_main_service_id}}",
+                  "disabled": true
+                },
+                {
+                  "key": "asset_type",
+                  "value": "tank",
+                  "disabled": true
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "The sub-services table of a main service's details page — same filters and search as GET /sub-services (main_service_id, asset_type container|tank, operational_status, search), so the file holds exactly the rows on screen. system_admin / data_entry / auditor; driver 403. Use \"Send and Download\"."
+          }
+        },
+        {
+          "name": "Export Sub-services (PDF)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/sub-services/export?format=pdf",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "sub-services",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "pdf"
+                },
+                {
+                  "key": "main_service_id",
+                  "value": "{{last_main_service_id}}",
+                  "disabled": true
+                },
+                {
+                  "key": "asset_type",
+                  "value": "tank",
+                  "disabled": true
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "The sub-services table of a main service's details page — same filters and search as GET /sub-services (main_service_id, asset_type container|tank, operational_status, search), so the file holds exactly the rows on screen. system_admin / data_entry / auditor; driver 403. Use \"Send and Download\"."
+          }
         }
       ]
     },

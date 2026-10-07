@@ -123,13 +123,15 @@ Route::prefix('v1')->group(function () {
         Route::get('/facilities/{facility}/contract', [FacilityController::class, 'downloadContract'])->whereNumber('facility');
 
         // Services (FRD §1.9) — /main-services/export MUST come before
-        // /main-services/{service}. Sub-services have no export (FRD).
+        // /main-services/{service}. /sub-services/export (the table on a main
+        // service's details page) likewise comes before /sub-services/{service}.
         Route::get('/main-services/export', [MainServiceController::class, 'export']);
         Route::get('/main-services', [MainServiceController::class, 'index']);
         Route::post('/main-services', [MainServiceController::class, 'store']);
         Route::get('/main-services/{service}', [MainServiceController::class, 'show'])->whereNumber('service');
         Route::patch('/main-services/{service}', [MainServiceController::class, 'update'])->whereNumber('service');
         Route::patch('/main-services/{service}/status', [MainServiceController::class, 'status'])->whereNumber('service');
+        Route::get('/sub-services/export', [SubServiceController::class, 'export']);
         Route::get('/sub-services', [SubServiceController::class, 'index']);
         Route::post('/sub-services', [SubServiceController::class, 'store']);
         Route::get('/sub-services/{service}', [SubServiceController::class, 'show'])->whereNumber('service');

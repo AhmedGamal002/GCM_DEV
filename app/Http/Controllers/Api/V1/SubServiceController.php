@@ -7,6 +7,7 @@ use App\Domain\Services\Actions\UpdateSubServiceAction;
 use App\Domain\Services\Actions\UpdateSubServiceStatusAction;
 use App\Domain\Services\Exceptions\MainServiceDeactivatedException;
 use App\Domain\Services\Exceptions\SubServiceInUseException;
+use App\Domain\Services\Exports\SubServicesExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Services\StoreSubServiceRequest;
 use App\Http\Requests\Services\UpdateSubServiceRequest;
@@ -16,6 +17,7 @@ use App\Models\SubService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Maatwebsite\Excel\Facades\Excel;
 
 /**
  * Sub-services — FRD V01.14 §1.9.2.
@@ -46,6 +48,33 @@ class SubServiceController extends Controller
             ->paginate($request->integer('per_page', 15));
 
         return SubServiceResource::collection($subs);
+    }
+
+    /**
+     * Excel / PDF of the sub-services table on a main service's details page —
+     * the same filters and search as the table (filteredQuery), so the file
+     * holds exactly the rows on screen.
+     */
+    public function export(Request $request)
+    {
+        Gate::authorize('export', SubService::class);
+
+        $subServices = $this->filteredQuery($request)
+            ->with(['mainService', 'capacities', 'facilities'])
+            ->orderBy('name')
+            ->get();
+
+        if ($request->query('format', 'xlsx') === 'pdf') {
+            // DomPDF is CPU-heavy on big lists; the default 30s cap on shared
+            // hosting turns a slow export into a 500. Excel is unaffected.
+            set_time_limit(180);
+
+            $pdf = app('dompdf.wrapper')->loadView('tenant.sub-services.export-pdf', ['subServices' => $subServices]);
+
+            return $pdf->download('sub-services.pdf');
+        }
+
+        return Excel::download(new SubServicesExport($subServices), 'sub-services.xlsx');
     }
 
     public function store(StoreSubServiceRequest $request, CreateSubServiceAction $action)

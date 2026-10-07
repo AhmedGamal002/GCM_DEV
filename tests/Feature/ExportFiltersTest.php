@@ -246,6 +246,50 @@ class ExportFiltersTest extends TestCase
         $this->actingAs($this->admin, 'web')->get('/api/v1/main-services/export?format=pdf&search=المخلفات')->assertOk();
     }
 
+    public function test_sub_service_export_honours_the_tables_filters_and_search(): void
+    {
+        $solid = MainService::factory()->create(['name' => 'Solid Waste']);
+        $other = MainService::factory()->create(['name' => 'Other Service']);
+        SubService::factory()->forService($solid)->create(['name' => 'Construction debris']);
+        SubService::factory()->forService($solid)->create(['name' => 'Oily sludge', 'asset_type' => 'tank']);
+        SubService::factory()->forService($solid)->deactivated()->create(['name' => 'Old stream']);
+        SubService::factory()->forService($other)->create(['name' => 'Not mine']);
+
+        $names = fn (string $qs) => $this->exported('/api/v1/sub-services/export?format=xlsx&'.$qs, 'sub-services.xlsx')->pluck('name')->all();
+
+        // the details page's table: one main service, then its own filters + search
+        $this->assertSame(['Construction debris', 'Oily sludge', 'Old stream'], $names('main_service_id='.$solid->id));
+        $this->assertSame(['Oily sludge'], $names('main_service_id='.$solid->id.'&asset_type=tank'));
+        $this->assertSame(['Old stream'], $names('main_service_id='.$solid->id.'&operational_status=deactivated'));
+        $this->assertSame(['Construction debris'], $names('main_service_id='.$solid->id.'&search=debris'));
+        $this->assertCount(4, $this->exported('/api/v1/sub-services/export?format=xlsx', 'sub-services.xlsx'));
+    }
+
+    public function test_sub_service_export_pdf_works(): void
+    {
+        $main = MainService::factory()->create(['name' => 'نقل المخلفات الصلبة']);
+        SubService::factory()->forService($main)->create(['name' => 'ركام البناء']);
+
+        $this->actingAs($this->admin, 'web')->get('/api/v1/sub-services/export?format=pdf&main_service_id='.$main->id)->assertOk();
+    }
+
+    // One actor per test method (see CLAUDE.md: switching the acting user inside one method is unreliable).
+    public function test_the_auditor_can_export_sub_services(): void
+    {
+        $auditor = User::factory()->create();
+        $auditor->assignRole('auditor');
+
+        $this->actingAs($auditor, 'web')->get('/api/v1/sub-services/export?format=xlsx')->assertOk();
+    }
+
+    public function test_a_driver_cannot_export_sub_services(): void
+    {
+        $driver = User::factory()->create();
+        $driver->assignRole('driver');
+
+        $this->actingAs($driver, 'web')->get('/api/v1/sub-services/export?format=xlsx')->assertForbidden();
+    }
+
     public function test_contractor_export_honours_search_and_filter(): void
     {
         $alpha = Contractor::factory()->create(['name' => 'Alpha Haul', 'prefix' => 'ALP', 'trading_name' => 'Alpha Brand']);

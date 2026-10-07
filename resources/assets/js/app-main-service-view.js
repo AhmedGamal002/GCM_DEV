@@ -93,7 +93,26 @@ document.addEventListener('DOMContentLoaded', function () {
     operational_status: currentSubStatus || undefined
   });
 
-  const buttons = [];
+  // Excel / PDF of exactly the rows the table shows (same filters + search).
+  const buttons = [
+    {
+      extend: 'collection',
+      className: 'btn btn-label-secondary dropdown-toggle mx-4 waves-effect waves-light',
+      text: '<i class="ti ti-upload me-2 ti-xs"></i>' + escapeHtml(t.export || 'Export'),
+      buttons: [
+        {
+          text: '<i class="ti ti-file-spreadsheet me-2"></i>Excel',
+          className: 'dropdown-item',
+          action: (e, dt) => window.gcmExport('/api/v1/sub-services/export', 'xlsx', dt, listParams)
+        },
+        {
+          text: '<i class="ti ti-file-code-2 me-2"></i>Pdf',
+          className: 'dropdown-item',
+          action: (e, dt) => window.gcmExport('/api/v1/sub-services/export', 'pdf', dt, listParams)
+        }
+      ]
+    }
+  ];
   if (t.can_manage) {
     buttons.push({
       text:

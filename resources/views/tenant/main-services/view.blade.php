@@ -38,6 +38,7 @@
     search_sub_service: @json(__('Search sub-service')),
     no_sub_services_found: @json(__('No sub-services under this main service yet.')),
     all_asset_types: @json(__('All asset types')),
+    export: @json(__('Export')),
     all_statuses: @json(__('All statuses')),
     no_permission: @json(__("You don't have permission to view this data.")),
     info: @json(__('Showing _START_ to _END_ of _TOTAL_ entries')),
