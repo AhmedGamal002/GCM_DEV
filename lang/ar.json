@@ -445,5 +445,7 @@
   "Choose the container type first.": "اختر نوع الحاوية المدمجة (حاوية / صهريج) أولًا.",
   "No :type capacities are defined yet.": "لا توجد سعات معرّفة لنوع \":type\" بعد.",
   "The selected capacity doesn't apply to a :type.": "السعة المختارة لا تنطبق على نوع \":type\".",
-  "You cannot change the status of your own account — ask the System Admin or Data Entry.": "مينفعش تغيّر حالة حسابك بنفسك — اطلب ده من مدير النظام أو مدخل البيانات."
+  "You cannot change the status of your own account — ask the System Admin or Data Entry.": "مينفعش تغيّر حالة حسابك بنفسك — اطلب ده من مدير النظام أو مدخل البيانات.",
+  "Current file": "الملف الحالي",
+  "Leave empty to keep the current file.": "اترك الحقل فارغًا للإبقاء على الملف الحالي."
 }

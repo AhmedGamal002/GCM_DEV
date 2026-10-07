@@ -18,6 +18,8 @@
 @section('page-script')
 <script>
   window.userEditTranslations = {
+    current_file: @json(__('Current file')),
+    keep_file_hint: @json(__('Leave empty to keep the current file.')),
     data_entry: @json(__('Data Entry')),
     system_auditor: @json(__('System Auditor')),
     active: @json(__('Active')),
@@ -82,6 +84,7 @@
         <div class="col-md-6">
           <label class="form-label" for="photo">{{ __('Photo') }}</label>
           <input type="file" id="photo" class="form-control" accept="image/*" />
+          <div class="small mt-1 d-none" id="current-photo"></div>
         </div>
         <div class="col-md-6">
           <div class="form-password-toggle">

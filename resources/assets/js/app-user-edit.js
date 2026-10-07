@@ -47,6 +47,24 @@ document.addEventListener('DOMContentLoaded', function () {
       document.getElementById('phone').value = u.phone;
       quill.root.innerHTML = u.additional_data || '';
 
+      // The photo already on record: a link next to the input (leaving it empty keeps it).
+      if (u.photo_url) {
+        const photoEl = document.getElementById('current-photo');
+        const link = document.createElement('a');
+        link.href = u.photo_url;
+        link.target = '_blank';
+        link.rel = 'noopener';
+        link.textContent = t.current_file || 'Current file';
+        photoEl.appendChild(link);
+        if (t.keep_file_hint) {
+          const hint = document.createElement('span');
+          hint.className = 'text-muted ms-2';
+          hint.textContent = t.keep_file_hint;
+          photoEl.appendChild(hint);
+        }
+        photoEl.classList.remove('d-none');
+      }
+
       if (u.updated_by_name && t.last_updated_by) {
         const at = u.updated_at ? new Date(u.updated_at).toLocaleString() : '';
         document.getElementById('ue-updated-by').textContent = t.last_updated_by
