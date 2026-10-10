@@ -186,4 +186,45 @@ class ExportPdfLayoutTest extends TestCase
         $this->assertLessThan(200_000, strlen($pdf));
         $this->assertStringContainsString('DejaVu', $pdf);
     }
+
+    private function renderColumns(int $columns, array $cells = null): string
+    {
+        $headers = array_map(fn ($i) => "H{$i}", range(1, $columns));
+
+        return view('exports.pdf-table', [
+            'title' => 'Wide',
+            'headers' => $headers,
+            'rows' => collect([$cells ?? array_map(fn ($i) => "v{$i}", range(1, $columns))]),
+        ])->render();
+    }
+
+    public function test_a_table_wider_than_five_columns_prints_on_landscape_so_the_last_columns_are_not_cut_off(): void
+    {
+        $this->assertStringContainsString('size: A4 landscape', $this->renderColumns(9));
+        $this->assertStringContainsString('size: A4 landscape', $this->renderColumns(6));
+        $this->assertStringNotContainsString('landscape', $this->renderColumns(5));
+        $this->assertStringNotContainsString('landscape', $this->renderColumns(2));
+
+        // Wider tables also get a smaller font so they fit.
+        $this->assertStringContainsString('font-size: 7px', $this->renderColumns(9));
+        $this->assertStringContainsString('font-size: 9px', $this->renderColumns(4));
+    }
+
+    public function test_a_list_cell_puts_each_item_on_its_own_line_and_escapes_it(): void
+    {
+        $html = $this->renderColumns(2, [['Standard skip', 'Roll-on/off', '<b>x</b>'], 'plain']);
+
+        $this->assertStringContainsString('Standard skip<br>Roll-on/off<br>&lt;b&gt;x&lt;/b&gt;', $html);
+        $this->assertStringNotContainsString('<b>x</b>', $html);
+        $this->assertSame(2, substr_count($html, '<td>'), 'a list is still one cell');
+    }
+
+    public function test_english_cells_wrap_while_arabic_ones_never_do(): void
+    {
+        $this->assertStringContainsString('white-space: normal', $this->renderColumns(3));
+
+        app()->setLocale('ar');
+        $this->assertStringContainsString('white-space: nowrap', $this->renderColumns(3));
+        $this->assertStringNotContainsString('white-space: normal', $this->renderColumns(3));
+    }
 }

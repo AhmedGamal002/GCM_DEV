@@ -12,6 +12,7 @@ use App\Http\Requests\Projects\UpdateProjectRequest;
 use App\Http\Requests\Projects\UpdateProjectStatusRequest;
 use App\Http\Resources\ProjectResource;
 use App\Models\Project;
+use App\Support\PdfExport;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -44,7 +45,7 @@ class ProjectController extends Controller
 
         $projects = $this->filteredQuery($request)
             ->orderBy($sortBy, $sortDir)
-            ->paginate($request->integer('per_page', 15));
+            ->paginate($this->perPage($request));
 
         return ProjectResource::collection($projects);
     }
@@ -94,21 +95,14 @@ class ProjectController extends Controller
     {
         Gate::authorize('export', Project::class);
 
-        $projects = $this->filteredQuery($request)
-            ->orderBy('name')
-            ->get();
+        // `id` breaks ties so the chunked read of a big PDF never repeats or skips a row.
+        $query = $this->filteredQuery($request)->orderBy('name')->orderBy('id');
 
         if ($request->query('format', 'xlsx') === 'pdf') {
-            // DomPDF is CPU-heavy on big lists; the default 30s cap on shared
-            // hosting turns a slow export into a 500. Excel is unaffected.
-            set_time_limit(180);
-
-            $pdf = app('dompdf.wrapper')->loadView('tenant.projects.export-pdf', ['projects' => $projects]);
-
-            return $pdf->download('projects.pdf');
+            return PdfExport::downloadQuery('tenant.projects.export-pdf', 'projects', $query, 'projects.pdf');
         }
 
-        return Excel::download(new ProjectsExport($projects), 'projects.xlsx');
+        return Excel::download(new ProjectsExport($query->get()), 'projects.xlsx');
     }
 
     /**

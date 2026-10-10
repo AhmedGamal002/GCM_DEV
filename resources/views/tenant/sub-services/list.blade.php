@@ -56,24 +56,37 @@
 <div id="sub-service-list-error" class="alert alert-danger d-none"></div>
 
 <div class="card mb-6">
-  <div class="card-body d-flex flex-column flex-xl-row gap-4 justify-content-between align-items-xl-center">
-    <div class="d-flex flex-column flex-md-row flex-wrap gap-4 flex-grow-1">
-      <input type="search" id="sub-service-search" class="form-control w-auto flex-grow-1 flex-md-grow-0" style="min-width: 260px" placeholder="{{ __('Search main or sub-service') }}" />
-      <select id="sub-service-search-in" class="form-select w-auto" aria-label="{{ __('Search in') }}"></select>
-      <select id="sub-service-type-filter" class="form-select w-auto" aria-label="{{ __('Type of Service') }}"></select>
-      <select id="sub-service-status-filter" class="form-select w-auto" aria-label="{{ __('Status') }}"></select>
-      <select id="sub-service-per-page" class="form-select w-auto">
-        <option value="10" selected>10</option>
-        <option value="25">25</option>
-        <option value="50">50</option>
-        <option value="100">100</option>
-      </select>
+  <div class="card-body">
+    {{-- Row 1: the search box takes whatever width is left, the create button keeps its text on one line.
+         Row 2: the four selects share the width equally (2 x 2 on a narrow screen, 4 across from md up), so the
+         bar never wraps into a ragged second line. --}}
+    <div class="d-flex gap-4 align-items-center mb-4">
+      <input type="search" id="sub-service-search" class="form-control flex-grow-1" placeholder="{{ __('Search main or sub-service') }}" />
+      @can('create', \App\Models\SubService::class)
+        <a href="{{ route('app-sub-service-add') }}" class="btn btn-primary flex-shrink-0 text-nowrap" title="{{ __('Create New Sub-service') }}">
+          <i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline">{{ __('Create New Sub-service') }}</span>
+        </a>
+      @endcan
     </div>
-    @can('create', \App\Models\SubService::class)
-      <a href="{{ route('app-sub-service-add') }}" class="btn btn-primary">
-        <i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">{{ __('Create New Sub-service') }}</span>
-      </a>
-    @endcan
+    <div class="row g-4">
+      <div class="col-6 col-md-3">
+        <select id="sub-service-search-in" class="form-select" aria-label="{{ __('Search in') }}"></select>
+      </div>
+      <div class="col-6 col-md-3">
+        <select id="sub-service-type-filter" class="form-select" aria-label="{{ __('Type of Service') }}"></select>
+      </div>
+      <div class="col-6 col-md-3">
+        <select id="sub-service-status-filter" class="form-select" aria-label="{{ __('Status') }}"></select>
+      </div>
+      <div class="col-6 col-md-3">
+        <select id="sub-service-per-page" class="form-select">
+          <option value="10" selected>10</option>
+          <option value="25">25</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+        </select>
+      </div>
+    </div>
   </div>
 </div>
 

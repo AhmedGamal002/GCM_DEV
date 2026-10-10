@@ -15,6 +15,7 @@ use App\Models\Asset;
 use App\Models\Contractor;
 use App\Models\Driver;
 use App\Models\Vehicle;
+use App\Support\PdfExport;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -48,7 +49,7 @@ class ContractorController extends Controller
 
         $contractors = $this->filteredQuery($request)
             ->orderBy($sortBy, $sortDir)
-            ->paginate($request->integer('per_page', 15));
+            ->paginate($this->perPage($request));
 
         return ContractorResource::collection($contractors);
     }
@@ -145,21 +146,14 @@ class ContractorController extends Controller
     {
         Gate::authorize('export', Contractor::class);
 
-        $contractors = $this->filteredQuery($request)
-            ->orderBy('name')
-            ->get();
+        // `id` breaks ties so the chunked read of a big PDF never repeats or skips a row.
+        $query = $this->filteredQuery($request)->orderBy('name')->orderBy('id');
 
         if ($request->query('format', 'xlsx') === 'pdf') {
-            // DomPDF is CPU-heavy on big lists; the default 30s cap on shared
-            // hosting turns a slow export into a 500. Excel is unaffected.
-            set_time_limit(180);
-
-            $pdf = app('dompdf.wrapper')->loadView('tenant.contractors.export-pdf', ['contractors' => $contractors]);
-
-            return $pdf->download('contractors.pdf');
+            return PdfExport::downloadQuery('tenant.contractors.export-pdf', 'contractors', $query, 'contractors.pdf');
         }
 
-        return Excel::download(new ContractorsExport($contractors), 'contractors.xlsx');
+        return Excel::download(new ContractorsExport($query->get()), 'contractors.xlsx');
     }
 
     /**

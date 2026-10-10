@@ -10,6 +10,7 @@ use App\Http\Requests\AssetCapacityCategories\StoreAssetCapacityCategoryRequest;
 use App\Http\Requests\AssetCapacityCategories\UpdateAssetCapacityCategoryRequest;
 use App\Http\Resources\AssetCapacityCategoryResource;
 use App\Models\AssetCapacityCategory;
+use App\Support\PdfExport;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -51,7 +52,7 @@ class AssetCapacityCategoryController extends Controller
         // need the full unpaginated reference list.
         return AssetCapacityCategoryResource::collection(
             $request->filled('per_page')
-                ? $query->paginate($request->integer('per_page', 15))
+                ? $query->paginate($this->perPage($request))
                 : $query->get()
         );
     }
@@ -90,13 +91,7 @@ class AssetCapacityCategoryController extends Controller
             ->get();
 
         if ($request->query('format', 'xlsx') === 'pdf') {
-            // DomPDF is CPU-heavy on big lists; the default 30s cap on shared
-            // hosting turns a slow export into a 500. Excel is unaffected.
-            set_time_limit(180);
-
-            $pdf = app('dompdf.wrapper')->loadView('tenant.asset-categories.export-pdf', ['categories' => $categories]);
-
-            return $pdf->download('asset-capacity-categories.pdf');
+            return PdfExport::download('tenant.asset-categories.export-pdf', ['categories' => $categories], 'asset-capacity-categories.pdf');
         }
 
         return Excel::download(new AssetCapacityCategoriesExport($categories), 'asset-capacity-categories.xlsx');

@@ -13,6 +13,7 @@ use App\Http\Requests\VehicleCategories\StoreVehicleCategoryRequest;
 use App\Http\Requests\VehicleCategories\UpdateVehicleCategoryRequest;
 use App\Http\Resources\VehicleCategoryResource;
 use App\Models\VehicleCategory;
+use App\Support\PdfExport;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -50,7 +51,7 @@ class VehicleCategoryController extends Controller
             ->orderBy($sortBy === 'vehicles_count' && ! $paged ? 'id' : $sortBy, $sortDir);
 
         return VehicleCategoryResource::collection(
-            $paged ? $query->paginate($request->integer('per_page', 15)) : $query->get()
+            $paged ? $query->paginate($this->perPage($request)) : $query->get()
         );
     }
 
@@ -102,13 +103,7 @@ class VehicleCategoryController extends Controller
             ->get();
 
         if ($request->query('format', 'xlsx') === 'pdf') {
-            // DomPDF is CPU-heavy on big lists; the default 30s cap on shared
-            // hosting turns a slow export into a 500. Excel is unaffected.
-            set_time_limit(180);
-
-            $pdf = app('dompdf.wrapper')->loadView('tenant.vehicle-categories.export-pdf', ['categories' => $categories]);
-
-            return $pdf->download('vehicle-categories.pdf');
+            return PdfExport::download('tenant.vehicle-categories.export-pdf', ['categories' => $categories], 'vehicle-categories.pdf');
         }
 
         return Excel::download(new VehicleCategoriesExport($categories), 'vehicle-categories.xlsx');

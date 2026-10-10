@@ -12,6 +12,7 @@ use App\Http\Requests\Companies\UpdateCompanyRequest;
 use App\Http\Requests\Companies\UpdateCompanyStatusRequest;
 use App\Http\Resources\CompanyResource;
 use App\Models\Company;
+use App\Support\PdfExport;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -46,7 +47,7 @@ class CompanyController extends Controller
 
         $companies = $this->filteredQuery($request)
             ->orderBy($sortBy, $sortDir)
-            ->paginate($request->integer('per_page', 15));
+            ->paginate($this->perPage($request));
 
         return CompanyResource::collection($companies);
     }
@@ -108,21 +109,14 @@ class CompanyController extends Controller
     {
         Gate::authorize('export', Company::class);
 
-        $companies = $this->filteredQuery($request)
-            ->orderBy('name')
-            ->get();
+        // `id` breaks ties so the chunked read of a big PDF never repeats or skips a row.
+        $query = $this->filteredQuery($request)->orderBy('name')->orderBy('id');
 
         if ($request->query('format', 'xlsx') === 'pdf') {
-            // DomPDF is CPU-heavy on big lists; the default 30s cap on shared
-            // hosting turns a slow export into a 500. Excel is unaffected.
-            set_time_limit(180);
-
-            $pdf = app('dompdf.wrapper')->loadView('tenant.companies.export-pdf', ['companies' => $companies]);
-
-            return $pdf->download('client-companies.pdf');
+            return PdfExport::downloadQuery('tenant.companies.export-pdf', 'companies', $query, 'client-companies.pdf');
         }
 
-        return Excel::download(new CompaniesExport($companies), 'client-companies.xlsx');
+        return Excel::download(new CompaniesExport($query->get()), 'client-companies.xlsx');
     }
 
     /**

@@ -6,8 +6,9 @@
     $s->name,
     $s->mainService?->name,
     PdfLabels::of($s->asset_type),
-    $s->capacities->pluck('name')->implode(', '),
-    $s->facilities->pluck('name')->implode(', '),
+    // Lists go in as arrays: one item per line, so a long list makes the row taller, not the table wider.
+    $s->capacities->pluck('name')->all(),
+    $s->facilities->pluck('name')->all(),
     $s->requires_recycle_receipt ? __('Yes') : __('No'),
     SubService::skipColorLabel($s->skip_color_code),
     PdfLabels::of($s->operational_status),

@@ -91,8 +91,9 @@ class Vehicle extends Model
      */
     public function documentsStatus(): ?array
     {
+        // Raw column values, not the Carbon casts: this runs once per row of a list that can have 50,000 of them.
         return app(ExpiryWarning::class)->overall(
-            $this->documents->pluck('valid_to'),
+            $this->documents->map(fn ($document) => $document->getRawOriginal('valid_to')),
             ExpiryWarning::SCOPE_VEHICLE,
         );
     }

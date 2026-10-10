@@ -11,13 +11,29 @@
   order) and the font is DejaVu Sans, the bundled one that has Arabic. In the
   Arabic locale the whole table is mirrored — columns run right to left and
   cells align right. Because the text is pre-reversed a cell must never wrap,
-  hence white-space: nowrap.
+  hence white-space: nowrap (in English, where nothing is reversed, cells wrap
+  normally).
+
+  A table with more than 5 columns is printed on A4 landscape with a smaller
+  font — on portrait the last columns ran off the edge of the page. A cell can
+  be an ARRAY of strings (a list: capacities, facilities, sub-services...): each
+  item goes on its own line, so a long list makes a taller row instead of a
+  wider table.
 
   Every export opens with the GCM logo + product name on one side and, on the
   other, who exported it and when (auth user, app timezone).
 
   $title (string), $headers (array), $rows (Collection of arrays of cells)
 --}}
+@php
+  // PdfExport first runs the template just to read its data (title / headers / rows) and may render it with the
+  // fast PdfTableWriter instead of this HTML — see PdfExport. In that pass print nothing.
+  if (\App\Support\PdfExport::collecting()) {
+    \App\Support\PdfExport::collect($title, $headers, $rows);
+
+    return;
+  }
+@endphp
 @php
   use App\Support\ArabicText;
   use App\Support\Brand;
@@ -26,10 +42,19 @@
   $align = $rtl ? 'right' : 'left';
   $pdf = fn ($value) => ArabicText::forPdf(is_null($value) ? '' : (string) $value);
   $headers = array_values($headers);
+  $columns = count($headers);
   if ($rtl) {
     $headers = array_reverse($headers);
   }
-  $chunks = $rows->chunk($perPage ?? 40);
+  // Wide tables: landscape + a smaller font (see the note above).
+  $landscape = $columns > 5;
+  $fontSize = $columns >= 9 ? 7 : ($columns >= 7 ? 8 : 9);
+  $wrap = $rtl ? 'nowrap' : 'normal';
+  $chunks = $rows->chunk($perPage ?? ($landscape ? 25 : 40));
+  // One cell: a list becomes one escaped line per item, anything else a single escaped string.
+  $cellHtml = fn ($cell) => is_array($cell)
+    ? implode('<br>', array_map(fn ($item) => e($pdf($item)), $cell))
+    : e($pdf($cell));
 
   $exportedAt = now();
   $exportedBy = auth()->user()?->name;
@@ -42,7 +67,10 @@
 <head>
   <meta charset="utf-8">
   <style>
-    body { font-family: 'DejaVu Sans', sans-serif; font-size: 9px; }
+    @if ($landscape)
+    @page { size: A4 landscape; margin: 28px 32px; }
+    @endif
+    body { font-family: 'DejaVu Sans', sans-serif; font-size: {{ $fontSize }}px; }
     h3 { margin: 0 0 6px; text-align: {{ $align }}; }
     table.report-head { margin-bottom: 8px; border-bottom: 1px solid #cfcfcf; }
     table.report-head td { padding: 0 0 6px; vertical-align: middle; white-space: nowrap; }
@@ -50,8 +78,8 @@
     .brand-name { font-size: 11px; font-weight: bold; color: #1b2a5c; }
     .meta { font-size: 8px; color: #555; line-height: 1.5; }
     table { width: 100%; }
-    th { background: #f0f0f0; text-align: {{ $align }}; padding: 3px 4px; white-space: nowrap; }
-    td { text-align: {{ $align }}; padding: 3px 4px; white-space: nowrap; }
+    th { background: #f0f0f0; text-align: {{ $align }}; padding: 3px 4px; white-space: {{ $wrap }}; vertical-align: top; }
+    td { text-align: {{ $align }}; padding: 3px 4px; white-space: {{ $wrap }}; vertical-align: top; }
     tr.z td { background: #f7f7f7; }
   </style>
 </head>
@@ -97,7 +125,7 @@
           @php($cells = $rtl ? array_reverse(array_values($row)) : $row)
           <tr @if ($i % 2) class="z" @endif>
             @foreach ($cells as $cell)
-              <td>{{ $pdf($cell) }}</td>
+              <td>{!! $cellHtml($cell) !!}</td>
             @endforeach
           </tr>
         @endforeach

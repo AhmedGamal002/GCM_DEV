@@ -14,6 +14,7 @@ use App\Http\Requests\Drivers\UpdateDriverRequest;
 use App\Http\Resources\DriverResource;
 use App\Models\Driver;
 use App\Models\DriverEntryPermit;
+use App\Support\PdfExport;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -60,7 +61,7 @@ class DriverController extends Controller
                     ->orderBy("users.{$sortBy}", $sortDir),
                 fn ($q) => $q->orderBy("drivers.{$sortBy}", $sortDir)
             )
-            ->paginate($request->integer('per_page', 15));
+            ->paginate($this->perPage($request));
 
         return DriverResource::collection($drivers);
     }
@@ -103,23 +104,17 @@ class DriverController extends Controller
     {
         Gate::authorize('viewAny', Driver::class);
 
-        $drivers = $this->filteredQuery($request)
+        $query = $this->filteredQuery($request)
             ->join('users', 'users.id', '=', 'drivers.user_id')
             ->select('drivers.*')
-            ->orderBy('users.name')
-            ->get();
+            ->orderBy('users.name');
 
+        // A big list is streamed in chunks (see PdfExport::downloadQuery) instead of loaded whole.
         if ($request->query('format', 'xlsx') === 'pdf') {
-            // DomPDF is CPU-heavy on big lists; the default 30s cap on shared
-            // hosting turns a slow export into a 500. Excel is unaffected.
-            set_time_limit(180);
-
-            $pdf = app('dompdf.wrapper')->loadView('tenant.drivers.export-pdf', ['drivers' => $drivers]);
-
-            return $pdf->download('drivers.pdf');
+            return PdfExport::downloadQuery('tenant.drivers.export-pdf', 'drivers', $query, 'drivers.pdf');
         }
 
-        return Excel::download(new DriversExport($drivers), 'drivers.xlsx');
+        return Excel::download(new DriversExport($query->get()), 'drivers.xlsx');
     }
 
     public function store(StoreDriverRequest $request, CreateDriverAction $action)

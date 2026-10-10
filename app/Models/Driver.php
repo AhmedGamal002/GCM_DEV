@@ -99,12 +99,13 @@ class Driver extends Model
     public function documentsStatus(): ?array
     {
         return app(ExpiryWarning::class)->overall(
+            // Raw column values, not the Carbon casts: this runs once per row of a long list.
             [
-                $this->residence_valid_to,
-                $this->license_valid_to,
-                $this->operational_license_valid_to,
-                $this->insurance_valid_to,
-                ...$this->entryPermits->pluck('valid_to')->all(),
+                $this->getRawOriginal('residence_valid_to'),
+                $this->getRawOriginal('license_valid_to'),
+                $this->getRawOriginal('operational_license_valid_to'),
+                $this->getRawOriginal('insurance_valid_to'),
+                ...$this->entryPermits->map(fn ($permit) => $permit->getRawOriginal('valid_to'))->all(),
             ],
             ExpiryWarning::SCOPE_DRIVER,
         );

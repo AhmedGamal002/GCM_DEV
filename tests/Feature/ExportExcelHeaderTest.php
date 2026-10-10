@@ -10,11 +10,15 @@ use App\Domain\Drivers\Exports\DriversExport;
 use App\Domain\Facilities\Exports\FacilitiesExport;
 use App\Domain\Projects\Exports\ProjectsExport;
 use App\Domain\Services\Exports\MainServicesExport;
+use App\Domain\Services\Exports\SubServicesExport;
 use App\Domain\Users\Exports\UsersExport;
 use App\Domain\Vehicles\Exports\VehicleCategoriesExport;
 use App\Domain\Vehicles\Exports\VehiclesExport;
 use App\Models\Tenant;
 use App\Models\User;
+use App\Support\ExportHeader;
+use Maatwebsite\Excel\Concerns\FromArray;
+use Maatwebsite\Excel\Concerns\WithEvents;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
@@ -45,6 +49,7 @@ class ExportExcelHeaderTest extends TestCase
             'facilities' => [FacilitiesExport::class],
             'projects' => [ProjectsExport::class],
             'main services' => [MainServicesExport::class],
+            'sub-services' => [SubServicesExport::class],
             'users' => [UsersExport::class],
             'vehicle categories' => [VehicleCategoriesExport::class],
             'vehicles' => [VehiclesExport::class],
@@ -73,5 +78,41 @@ class ExportExcelHeaderTest extends TestCase
         $this->assertCount(1, $sheet->getDrawingCollection());
         // The export's own headings follow the header block.
         $this->assertNotEmpty($sheet->getCell('A6')->getValue());
+    }
+
+    public function test_columns_are_wide_enough_for_their_data_and_long_ones_wrap_instead_of_being_cut_off(): void
+    {
+        $this->seed(RoleSeeder::class);
+        app()->instance('tenant', Tenant::create(['name' => 'GCM', 'slug' => 'gcm', 'status' => 'active']));
+        $admin = User::factory()->create(['name' => 'A very long exporter name that must not widen column A at all']);
+        $admin->assignRole('system_admin');
+        $this->actingAs($admin, 'web');
+
+        $long = str_repeat('Standard skip, ', 12);               // ~180 characters in one cell
+        $export = new class($long) implements FromArray, WithEvents
+        {
+            use ExportHeader;
+
+            public function __construct(private readonly string $long) {}
+
+            public function array(): array
+            {
+                return [['Name', 'Capacities', 'Code'], ['Cardboard & paper recycling', $this->long, 'X1']];
+            }
+        };
+
+        $file = tempnam(sys_get_temp_dir(), 'xlsx');
+        file_put_contents($file, Excel::raw($export, ExcelWriter::XLSX));
+        $sheet = IOFactory::load($file)->getActiveSheet();
+        unlink($file);
+
+        // A: the data ("Cardboard & paper recycling" = 27 chars) sets it, not the long "Exported by" line above.
+        $this->assertEqualsWithDelta(30, $sheet->getColumnDimension('A')->getWidth(), 1);
+        // B: capped, and wrapping so the text is all there.
+        $this->assertSame(60.0, (float) $sheet->getColumnDimension('B')->getWidth());
+        $this->assertTrue($sheet->getStyle('B7')->getAlignment()->getWrapText());
+        $this->assertFalse($sheet->getStyle('A7')->getAlignment()->getWrapText());
+        // C: never narrower than the minimum.
+        $this->assertSame(10.0, (float) $sheet->getColumnDimension('C')->getWidth());
     }
 }

@@ -12,6 +12,7 @@ use App\Http\Requests\Facilities\UpdateFacilityRequest;
 use App\Http\Requests\Facilities\UpdateFacilityStatusRequest;
 use App\Http\Resources\IntermediateFacilityResource;
 use App\Models\IntermediateFacility;
+use App\Support\PdfExport;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -45,7 +46,7 @@ class FacilityController extends Controller
 
         $facilities = $this->filteredQuery($request)
             ->orderBy($sortBy, $sortDir)
-            ->paginate($request->integer('per_page', 15));
+            ->paginate($this->perPage($request));
 
         return IntermediateFacilityResource::collection($facilities);
     }
@@ -114,21 +115,14 @@ class FacilityController extends Controller
     {
         Gate::authorize('export', IntermediateFacility::class);
 
-        $facilities = $this->filteredQuery($request)
-            ->orderBy('name')
-            ->get();
+        // `id` breaks ties so the chunked read of a big PDF never repeats or skips a row.
+        $query = $this->filteredQuery($request)->orderBy('name')->orderBy('id');
 
         if ($request->query('format', 'xlsx') === 'pdf') {
-            // DomPDF is CPU-heavy on big lists; the default 30s cap on shared
-            // hosting turns a slow export into a 500. Excel is unaffected.
-            set_time_limit(180);
-
-            $pdf = app('dompdf.wrapper')->loadView('tenant.facilities.export-pdf', ['facilities' => $facilities]);
-
-            return $pdf->download('facilities.pdf');
+            return PdfExport::downloadQuery('tenant.facilities.export-pdf', 'facilities', $query, 'facilities.pdf');
         }
 
-        return Excel::download(new FacilitiesExport($facilities), 'facilities.xlsx');
+        return Excel::download(new FacilitiesExport($query->get()), 'facilities.xlsx');
     }
 
     public function downloadContract(int $facility)

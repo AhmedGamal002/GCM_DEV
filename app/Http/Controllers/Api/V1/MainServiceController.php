@@ -12,8 +12,11 @@ use App\Http\Requests\Services\StoreMainServiceRequest;
 use App\Http\Requests\Services\UpdateMainServiceRequest;
 use App\Http\Requests\Services\UpdateMainServiceStatusRequest;
 use App\Http\Resources\MainServiceResource;
+use App\Models\AssetCapacityCategory;
 use App\Models\MainService;
 use App\Models\Vehicle;
+use App\Models\VehicleCategory;
+use App\Support\PdfExport;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -73,7 +76,7 @@ class MainServiceController extends Controller
             ])
             ->withCount(['subServices as sub_services_count' => fn ($q) => $narrow($q)])
             ->orderBy($sortBy, $sortDir)
-            ->paginate($request->integer('per_page', 15));
+            ->paginate($this->perPage($request));
 
         return MainServiceResource::collection($services);
     }
@@ -136,22 +139,17 @@ class MainServiceController extends Controller
     {
         Gate::authorize('export', MainService::class);
 
-        $services = $this->filteredQuery($request)
+        // `id` breaks ties so the chunked read of a big PDF never repeats or skips a row.
+        $query = $this->filteredQuery($request)
             ->with(['subServices' => fn ($q) => $q->orderBy('name'), 'vehicleCategories'])
             ->orderBy('name')
-            ->get();
+            ->orderBy('id');
 
         if ($request->query('format', 'xlsx') === 'pdf') {
-            // DomPDF is CPU-heavy on big lists; the default 30s cap on shared
-            // hosting turns a slow export into a 500. Excel is unaffected.
-            set_time_limit(180);
-
-            $pdf = app('dompdf.wrapper')->loadView('tenant.main-services.export-pdf', ['services' => $services]);
-
-            return $pdf->download('main-services.pdf');
+            return PdfExport::downloadQuery('tenant.main-services.export-pdf', 'services', $query, 'main-services.pdf');
         }
 
-        return Excel::download(new MainServicesExport($services), 'main-services.xlsx');
+        return Excel::download(new MainServicesExport($query->get()), 'main-services.xlsx');
     }
 
     /**
@@ -206,24 +204,31 @@ class MainServiceController extends Controller
             return [];
         }
 
-        return Vehicle::query()
+        // Counted in SQL: a category can hold thousands of vehicles, and loading
+        // them as models just to group them was this page's whole cost.
+        $groups = Vehicle::query()
             ->whereIn('vehicle_category_id', $categoryIds)
             ->where('has_embedded_container', true)
             ->where('operational_status', '!=', 'deactivated')
             ->whereNotNull('embedded_asset_capacity_category_id')
-            ->with(['category', 'embeddedCapacityCategory'])
-            ->get()
-            ->groupBy(fn (Vehicle $v) => $v->vehicle_category_id.'-'.$v->embedded_container_type.'-'.$v->embedded_asset_capacity_category_id)
-            ->map(function ($group) {
-                $v = $group->first();
+            ->selectRaw('vehicle_category_id, embedded_container_type, embedded_asset_capacity_category_id, count(*) as vehicles')
+            ->groupBy('vehicle_category_id', 'embedded_container_type', 'embedded_asset_capacity_category_id')
+            ->get();
+
+        $categories = VehicleCategory::query()->whereIn('id', $groups->pluck('vehicle_category_id')->unique())->get()->keyBy('id');
+        $capacities = AssetCapacityCategory::query()->whereIn('id', $groups->pluck('embedded_asset_capacity_category_id')->unique())->get()->keyBy('id');
+
+        return $groups
+            ->map(function ($g) use ($categories, $capacities) {
+                $capacity = $capacities->get($g->embedded_asset_capacity_category_id);
 
                 return [
-                    'vehicle_category' => $v->category?->name(),
-                    'asset_type' => $v->embedded_container_type,
-                    'capacity_name' => $v->embeddedCapacityCategory?->name,
-                    'capacity_cbm' => (float) $v->embeddedCapacityCategory?->capacity_cbm,
-                    'capacity_ton' => (float) $v->embeddedCapacityCategory?->capacity_ton,
-                    'vehicles' => $group->count(),
+                    'vehicle_category' => $categories->get($g->vehicle_category_id)?->name(),
+                    'asset_type' => $g->embedded_container_type,
+                    'capacity_name' => $capacity?->name,
+                    'capacity_cbm' => (float) $capacity?->capacity_cbm,
+                    'capacity_ton' => (float) $capacity?->capacity_ton,
+                    'vehicles' => (int) $g->vehicles,
                 ];
             })
             ->values()

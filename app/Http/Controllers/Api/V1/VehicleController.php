@@ -16,6 +16,7 @@ use App\Models\Driver;
 use App\Models\Vehicle;
 use App\Models\VehicleCategory;
 use App\Models\VehicleDocument;
+use App\Support\PdfExport;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
@@ -77,7 +78,7 @@ class VehicleController extends Controller
             })
             ->orderBy($sortBy, $sortDir)
             ->when($sortBy === 'plate_letters', fn ($q) => $q->orderBy('plate_numbers', $sortDir))
-            ->paginate($request->integer('per_page', 15));
+            ->paginate($this->perPage($request));
 
         return VehicleResource::collection($vehicles);
     }
@@ -163,19 +164,14 @@ class VehicleController extends Controller
     {
         Gate::authorize('export', Vehicle::class);
 
-        $vehicles = $this->filteredQuery($request)->get();
+        $query = $this->filteredQuery($request);
 
+        // A big list is streamed in chunks (see PdfExport::downloadQuery) instead of loaded whole.
         if ($request->query('format', 'xlsx') === 'pdf') {
-            // DomPDF is CPU-heavy on big lists; the default 30s cap on shared
-            // hosting turns a slow export into a 500. Excel is unaffected.
-            set_time_limit(180);
-
-            $pdf = app('dompdf.wrapper')->loadView('tenant.vehicles.export-pdf', ['vehicles' => $vehicles]);
-
-            return $pdf->download('vehicles.pdf');
+            return PdfExport::downloadQuery('tenant.vehicles.export-pdf', 'vehicles', $query, 'vehicles.pdf');
         }
 
-        return Excel::download(new VehiclesExport($vehicles), 'vehicles.xlsx');
+        return Excel::download(new VehiclesExport($query->get()), 'vehicles.xlsx');
     }
 
     public function downloadDocument(int $vehicle, int $document)

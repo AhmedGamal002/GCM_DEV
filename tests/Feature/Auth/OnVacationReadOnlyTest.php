@@ -102,7 +102,7 @@ class OnVacationReadOnlyTest extends TestCase
     /** Every list export (Excel and PDF downloads are GETs under /api/v1/<module>/export). */
     private const EXPORTS = [
         'users', 'drivers', 'vehicles', 'vehicle-categories', 'assets', 'asset-capacity-categories',
-        'facilities', 'main-services', 'contractors', 'companies', 'projects',
+        'facilities', 'main-services', 'sub-services', 'contractors', 'companies', 'projects',
     ];
 
     private function userWithStatus(string $status, string $role = 'system_admin'): User

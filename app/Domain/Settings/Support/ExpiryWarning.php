@@ -137,7 +137,10 @@ class ExpiryWarning
             foreach ($columns as $column) {
                 $q->orWhere(fn ($w) => $apply($w, $column, $kind));
             }
-            $q->orWhereHas($relation, fn ($r) => $apply($r, 'valid_to', $kind));
+            // Without the related model's tenant scope: the join on the parent's id already pins the rows to this
+            // tenant, and that extra `tenant_id = ?` was a cheap-looking index that MySQL sometimes chose over the
+            // per-parent one (scanning the whole tenant's documents for every vehicle: a count that never finished).
+            $q->orWhereHas($relation, fn ($r) => $apply($r->withoutGlobalScopes(), 'valid_to', $kind));
         };
 
         return match ($status) {
@@ -161,17 +164,26 @@ class ExpiryWarning
      *
      * Documents without a date are ignored; null when there is no dated document at all.
      *
-     * @param  iterable<CarbonInterface|null>  $dates
+     * @param  iterable<CarbonInterface|string|null>  $dates  dates, or their raw 'Y-m-d' column values (cheaper)
      * @return array{status: string, status_label: string}|null
      */
     public function overall(iterable $dates, string $scope): ?array
     {
+        // Status only, compared as 'Y-m-d' strings (which sort like dates): no labels, no percentages, no Carbon
+        // object per document. Done per document the translated labels and date maths made a 50,000-vehicle export
+        // (250,000 documents) spend more time here than in the database. Same rule as describe(): a date before
+        // today is expired, up to today + threshold is warning, later is ok.
+        $today = now()->toDateString();
+        $limit = now()->addDays($this->days($scope))->toDateString();
         $statuses = [];
 
         foreach ($dates as $date) {
-            if ($described = $this->describe($date, $scope)) {
-                $statuses[] = $described['status'];
+            if ($date === null || $date === '') {
+                continue;
             }
+
+            $day = $date instanceof CarbonInterface ? $date->toDateString() : substr((string) $date, 0, 10);
+            $statuses[] = $day < $today ? 'expired' : ($day <= $limit ? 'warning' : 'ok');
         }
 
         if ($statuses === []) {
