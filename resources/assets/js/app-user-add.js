@@ -39,6 +39,14 @@ document.addEventListener('DOMContentLoaded', function () {
       data.append('photo', photo);
     }
 
+    // Optional signature / operational stamp (private uploads).
+    ['signature', 'stamp'].forEach(function (name) {
+      const file = document.getElementById(name).files[0];
+      if (file) {
+        data.append(name, file);
+      }
+    });
+
     // Server limit: 2 MB per photo — fail now, not after the upload.
     const tooLarge = window.gcmFileGuard(form, { default: 2048 });
     if (tooLarge) {

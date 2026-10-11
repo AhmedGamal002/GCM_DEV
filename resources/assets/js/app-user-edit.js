@@ -30,6 +30,25 @@ document.addEventListener('DOMContentLoaded', function () {
     window.scrollTo(0, 0);
   }
 
+  // The file already on record: a link next to its input (leaving the input empty keeps it).
+  function showCurrentFile(elId, url) {
+    const el = document.getElementById(elId);
+    if (!el || !url) return;
+    const link = document.createElement('a');
+    link.href = url;
+    link.target = '_blank';
+    link.rel = 'noopener';
+    link.textContent = t.current_file || 'Current file';
+    el.appendChild(link);
+    if (t.keep_file_hint) {
+      const hint = document.createElement('span');
+      hint.className = 'text-muted ms-2';
+      hint.textContent = t.keep_file_hint;
+      el.appendChild(hint);
+    }
+    el.classList.remove('d-none');
+  }
+
   window.axios
     .get(`/api/v1/users/${id}`)
     .then(function (response) {
@@ -69,23 +88,9 @@ document.addEventListener('DOMContentLoaded', function () {
       document.getElementById('phone').value = u.phone;
       quill.root.innerHTML = u.additional_data || '';
 
-      // The photo already on record: a link next to the input (leaving it empty keeps it).
-      if (u.photo_url) {
-        const photoEl = document.getElementById('current-photo');
-        const link = document.createElement('a');
-        link.href = u.photo_url;
-        link.target = '_blank';
-        link.rel = 'noopener';
-        link.textContent = t.current_file || 'Current file';
-        photoEl.appendChild(link);
-        if (t.keep_file_hint) {
-          const hint = document.createElement('span');
-          hint.className = 'text-muted ms-2';
-          hint.textContent = t.keep_file_hint;
-          photoEl.appendChild(hint);
-        }
-        photoEl.classList.remove('d-none');
-      }
+      showCurrentFile('current-photo', u.photo_url);
+      showCurrentFile('current-signature', u.signature_url);
+      showCurrentFile('current-stamp', u.stamp_url);
 
       if (u.updated_by_name && t.last_updated_by) {
         const at = u.updated_at ? new Date(u.updated_at).toLocaleString() : '';
@@ -153,6 +158,14 @@ document.addEventListener('DOMContentLoaded', function () {
     if (photo) {
       data.append('photo', photo);
     }
+
+    // Optional signature / operational stamp — leaving one empty keeps the current file.
+    ['signature', 'stamp'].forEach(function (name) {
+      const file = document.getElementById(name).files[0];
+      if (file) {
+        data.append(name, file);
+      }
+    });
 
     // Server limit: 2 MB per photo — fail now, not after the upload.
     const tooLarge = window.gcmFileGuard(form, { default: 2048 });

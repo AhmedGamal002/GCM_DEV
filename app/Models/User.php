@@ -154,6 +154,17 @@ class User extends Authenticatable
   }
 
   /**
+   * Accounts that carry a signature and an operational stamp (both optional):
+   * a client company's accounts (FRD §1.4) and — by the client's request, not
+   * the FRD — GCM's own staff (system admin / data entry / auditor). Drivers
+   * and contractor users have neither.
+   */
+  public function canHaveSignatureStamp(): bool
+  {
+    return $this->hasAnyRole([...self::CLIENT_ROLES, 'system_admin', 'data_entry', 'auditor']);
+  }
+
+  /**
    * FRD §1.4 — a client account sees the projects of ITS company only:
    * every one of them when it was given "all projects" (current and
    * future), otherwise just the ones it was assigned. Anyone who isn't a

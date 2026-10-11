@@ -14,8 +14,9 @@ use Tests\TestCase;
 
 /**
  * FRD V01.14 §1.4: a client account changes its own photo, password,
- * signature image and operational-stamp image from the profile page — and
- * nobody else has a signature/stamp at all.
+ * signature image and operational-stamp image from the profile page. GCM staff
+ * (system admin / data entry / auditor) have the same two optional images by
+ * the client's request; drivers and contractor users have neither.
  */
 class ClientSignatureStampTest extends TestCase
 {
@@ -113,10 +114,44 @@ class ClientSignatureStampTest extends TestCase
     }
 
     #[DataProvider('staffRoles')]
-    public function test_nobody_else_has_a_signature_or_stamp(string $role): void
+    public function test_gcm_staff_upload_their_own_signature_and_stamp_privately(string $role): void
     {
         $user = User::factory()->create();
         $user->assignRole($role);
+
+        $this->actingAs($user, 'web')
+            ->post('/api/v1/me', ['_method' => 'PATCH', 'signature' => UploadedFile::fake()->image('s.png'), 'stamp' => UploadedFile::fake()->image('t.png')])
+            ->assertOk();
+
+        $user->refresh();
+        Storage::disk('local')->assertExists($user->signature_image);
+        Storage::disk('local')->assertExists($user->stamp_image);
+        Storage::disk('public')->assertMissing($user->signature_image);
+    }
+
+    #[DataProvider('staffRoles')]
+    public function test_the_signature_and_stamp_stay_optional_for_gcm_staff(string $role): void
+    {
+        $user = User::factory()->create();
+        $user->assignRole($role);
+
+        $this->actingAs($user, 'web')
+            ->post('/api/v1/me', ['_method' => 'PATCH', 'photo' => UploadedFile::fake()->image('me.jpg')])
+            ->assertOk();
+
+        $this->assertNull($user->fresh()->signature_image);
+        $this->assertNull($user->fresh()->stamp_image);
+    }
+
+    public static function staffRoles(): array
+    {
+        return [['system_admin'], ['data_entry'], ['auditor']];
+    }
+
+    public function test_a_driver_has_no_signature_or_stamp(): void
+    {
+        $user = User::factory()->create();
+        $user->assignRole('driver');
 
         $this->actingAs($user, 'web')
             ->post('/api/v1/me', ['_method' => 'PATCH', 'photo' => UploadedFile::fake()->image('me.jpg'), 'signature' => UploadedFile::fake()->image('s.png')], ['Accept' => 'application/json'])
@@ -126,25 +161,24 @@ class ClientSignatureStampTest extends TestCase
         $this->assertNull($user->fresh()->signature_image);
     }
 
-    public static function staffRoles(): array
-    {
-        return [['system_admin'], ['data_entry'], ['auditor'], ['driver']];
-    }
-
-    public function test_the_profile_page_offers_the_signature_card_to_client_accounts_only(): void
+    public function test_the_profile_page_offers_the_signature_card_to_clients_and_gcm_staff(): void
     {
         $this->withoutVite();
 
         $this->actingAs($this->client(), 'web')->get('/pages/account-settings-account')->assertOk()->assertSee('formSignatureStamp', false);
+
+        $staff = User::factory()->create();
+        $staff->assignRole('data_entry');
+        $this->actingAs($staff, 'web')->get('/pages/account-settings-account')->assertOk()->assertSee('formSignatureStamp', false);
     }
 
-    public function test_the_profile_page_hides_the_signature_card_from_staff(): void
+    public function test_the_profile_page_hides_the_signature_card_from_drivers(): void
     {
         $this->withoutVite();
-        $admin = User::factory()->create();
-        $admin->assignRole('system_admin');
+        $driver = User::factory()->create();
+        $driver->assignRole('driver');
 
-        $this->actingAs($admin, 'web')->get('/pages/account-settings-account')->assertOk()->assertDontSee('formSignatureStamp', false);
+        $this->actingAs($driver, 'web')->get('/pages/account-settings-account')->assertOk()->assertDontSee('formSignatureStamp', false);
     }
 
     #[DataProvider('clientRoles')]

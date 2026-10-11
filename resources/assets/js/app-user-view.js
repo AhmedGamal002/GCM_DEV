@@ -75,14 +75,15 @@ document.addEventListener('DOMContentLoaded', function () {
         });
       }
       document.getElementById('uv-projects-row').classList.remove('d-none');
-
-      [['signature', u.signature_url], ['stamp', u.stamp_url]].forEach(([key, url]) => {
-        if (!url) return;
-        document.getElementById(`uv-${key}`).src = url;
-        document.getElementById(`uv-${key}-wrap`).classList.remove('d-none');
-        document.getElementById('uv-images').classList.remove('d-none');
-      });
     }
+
+    // Signature / operational stamp — client accounts and GCM staff (only when uploaded).
+    [['signature', u.signature_url], ['stamp', u.stamp_url]].forEach(([key, url]) => {
+      if (!url) return;
+      document.getElementById(`uv-${key}`).src = url;
+      document.getElementById(`uv-${key}-wrap`).classList.remove('d-none');
+      document.getElementById('uv-images').classList.remove('d-none');
+    });
 
     if (u.updated_by_name && t.last_updated_by) {
       const at = u.updated_at ? new Date(u.updated_at).toLocaleString() : '';

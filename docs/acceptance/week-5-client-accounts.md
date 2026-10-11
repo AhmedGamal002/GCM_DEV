@@ -169,7 +169,7 @@
   - ارفع صورة توقيع (بس) واضغط "Save signature & stamp"، وبعدين ارفع صورة ختم.
   - غيّر كلمة السر من كارت "Change Password".
   - جرّب تضغط الحفظ من غير ما تختار صورة.
-- **المتوقع:** فيه 3 كروت: الصورة، **Signature & Stamp**، Change Password. رفع صورة واحدة بيسيب التانية زي ما هي. من غير اختيار صورة بتظهر رسالة "Choose a signature or stamp image first". الاسم والبريد للقراءة فقط. القائمة الجانبية فاضية، ولو فتحت `/app/user/list` أو أي API إداري بترجع 403. باقي الأدوار (مدير النظام/مدخل البيانات/المراقب/السائق) مفيش عندهم كارت التوقيع والختم.
+- **المتوقع:** فيه 3 كروت: الصورة، **Signature & Stamp**، Change Password. رفع صورة واحدة بيسيب التانية زي ما هي. من غير اختيار صورة بتظهر رسالة "Choose a signature or stamp image first". الاسم والبريد للقراءة فقط. القائمة الجانبية فاضية، ولو فتحت `/app/user/list` أو أي API إداري بترجع 403. السائق ومستخدم المتعهد مفيش عندهم كارت التوقيع والختم (موظفو GCM — مدير النظام/مدخل البيانات/المراقب — عندهم بطلب العميل، شوف بند 22 في الأسبوع 1–2).
 - **يغطيه آليًا:** `Profile/ClientSignatureStampTest` (كلها)، `ClientAccounts/ClientUserAccessTest::test_a_client_account_cannot_reach_any_admin_module`, `test_client_accounts_are_offered_no_admin_menu_entries`
 - **النتيجة:** ⬜
 

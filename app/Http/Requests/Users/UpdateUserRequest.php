@@ -68,6 +68,9 @@ class UpdateUserRequest extends FormRequest
                     ->ignore($this->targetUser()->id),
             ],
             'photo' => ['nullable', 'image', 'max:2048'],
+            // Optional private uploads — leaving one out keeps the current file.
+            'signature' => ['nullable', 'image', 'max:2048'],
+            'stamp' => ['nullable', 'image', 'max:2048'],
             // FRD: GCM users can't change their own password — an admin
             // (system_admin / data_entry) sets it here. Blank = unchanged.
             'password' => ['nullable', 'string', 'confirmed', Password::defaults()],

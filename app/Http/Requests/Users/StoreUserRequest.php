@@ -61,6 +61,9 @@ class StoreUserRequest extends FormRequest
                 Rule::unique('users', 'phone')->where(fn ($q) => $q->where('tenant_id', $tenantId)),
             ],
             'photo' => ['nullable', 'image', 'max:2048'],
+            // Optional private uploads (GCM staff carry a signature and stamp too).
+            'signature' => ['nullable', 'image', 'max:2048'],
+            'stamp' => ['nullable', 'image', 'max:2048'],
             'password' => ['required', 'string', 'confirmed', Password::defaults()],
             'status' => ['required', Rule::in(['active', 'on_vacation', 'deactivated'])],
             'additional_data' => ['nullable', 'string'],

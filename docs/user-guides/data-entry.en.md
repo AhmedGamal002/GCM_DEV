@@ -13,13 +13,13 @@ Dashboard, then an **Accounts** section (Users · Drivers), a **Fleet & Assets**
 ## 1. Sign in and profile
 
 - `/login` with email + password.
-- **My Profile** from the top bar: change your profile photo **and your password** (the "Security" tab — you enter your current password first). Name and email are read-only. If you forget your password use "Forgot Password" on the login page.
+- **My Profile** from the top bar: change your profile photo **and your password** (the "Security" tab — you enter your current password first). You can also upload your own **signature image and operational stamp image** (both optional, PNG/JPG, max 2 MB — private files). Name and email are read-only. If you forget your password use "Forgot Password" on the login page.
 
 ## 2. Users — `/app/user/list`
 
 - **You do not see the System Admin account** — not in the list, search, export, or by direct link (403).
 - **View** the list of GCM staff accounts (not drivers — they have their own page) + **export** (Excel / PDF).
-- **Create** a new account (data_entry or auditor — there is no "system_admin" option here at all), or a **client account** (Project Manager / Auditor of a client company, with all or specific projects + signature/stamp images), or a **contractor user** (of an active contractor) from the "Add User" menu.
+- **Create** a new account (data_entry or auditor — there is no "system_admin" option here at all; optional signature + stamp images like the other accounts), or a **client account** (Project Manager / Auditor of a client company, with all or specific projects + signature/stamp images), or a **contractor user** (of an active contractor) from the "Add User" menu.
 - **Edit** any account (except drivers; client accounts are edited on their own client-account form, which the Edit button opens) — and set a **new password** (optional) from the edit page. **You cannot edit the System Admin's account** or change its status (returns 403).
 - **Status:** you can move an account to **"on vacation"**, or **deactivate / reactivate it**.
   - **The one exception:** the **System Admin's own account** — nobody can touch it, System Admin included.

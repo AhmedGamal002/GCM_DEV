@@ -15,8 +15,9 @@ class UpdateUserAction
      * a system_admin. Every field, the email included, is editable by the admin.
      *
      * @param  array{name: string, phone: string, additional_data?: ?string, roles: array<int, string>}  $data
+     * @param  array{signature?: ?UploadedFile, stamp?: ?UploadedFile}  $images  a missing one keeps the current file
      */
-    public function execute(User $user, array $data, ?UploadedFile $photo = null): User
+    public function execute(User $user, array $data, ?UploadedFile $photo = null, array $images = []): User
     {
         $user->name = $data['name'];
         if (isset($data['email'])) {
@@ -32,6 +33,8 @@ class UpdateUserAction
         if ($photo) {
             $user->photo = $photo->store('avatars', 'public');
         }
+
+        StoreUserImages::into($user, $images);
 
         $user->updated_by = auth()->id();
         $user->save();

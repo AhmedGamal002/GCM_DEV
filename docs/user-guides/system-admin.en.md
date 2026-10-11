@@ -42,7 +42,8 @@ The only screen exclusive to the System Admin among tenant roles.
 - **Contractor User** → the dedicated contractor-user form (`/app/contractor-user/add`) — see "Contractor users" below.
 
 ### Create GCM user
-- Fields: name, email, phone, photo (optional), password, status, role (data_entry or auditor only — not system_admin or driver), additional data (optional).
+- Fields: name, email, phone, photo (optional), password, status, role (data_entry or auditor only — not system_admin or driver), **signature image and operational stamp image (both optional, PNG/JPG, max 2 MB — private files, shown on the account's details page)**, additional data (optional).
+- The same two images can be changed later from the account's edit page (leave one empty to keep it), and each staff member — you included — can change their own from **My Profile**.
 - **You cannot create a second System Admin** — the option isn't offered, and a direct request is rejected.
 
 ### View / edit user

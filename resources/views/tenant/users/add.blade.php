@@ -119,6 +119,22 @@
   </div>
 
   <div class="card mb-6">
+    <h5 class="card-header">{{ __('Signature & Stamp') }}</h5>
+    <div class="card-body">
+      <div class="row g-6">
+        <div class="col-md-6">
+          <label class="form-label" for="signature">{{ __('Signature image') }}</label>
+          <input type="file" id="signature" class="form-control" accept="image/*" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label" for="stamp">{{ __('Operational stamp image') }}</label>
+          <input type="file" id="stamp" class="form-control" accept="image/*" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-6">
     <h5 class="card-header">{{ __('Additional Info') }}</h5>
     <div class="card-body">
       <div class="row g-6">

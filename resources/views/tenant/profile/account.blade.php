@@ -47,8 +47,8 @@
       </div>
     </div>
 
-    {{-- FRD V01.14 §1.4: a client account also manages its own signature and operational stamp. --}}
-    @if($user->isClient())
+    {{-- FRD V01.14 §1.4: a client account also manages its own signature and operational stamp — GCM staff too (client request). --}}
+    @if($user->canHaveSignatureStamp())
     <div class="card mb-6" id="signature-card">
       <h5 class="card-header">{{ __('Signature & Stamp') }}</h5>
       <div class="card-body pt-1">

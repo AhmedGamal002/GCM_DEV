@@ -15,8 +15,9 @@ class CreateUserAction
 {
     /**
      * @param  array{name: string, email: string, phone: string, password: string, status: string, roles: array<int, string>, additional_data?: ?string}  $data
+     * @param  array{signature?: ?UploadedFile, stamp?: ?UploadedFile}  $images
      */
-    public function execute(array $data, ?UploadedFile $photo = null): User
+    public function execute(array $data, ?UploadedFile $photo = null, array $images = []): User
     {
         // tenant_id is stamped automatically by BelongsToTenant's creating
         // hook — never set explicitly here.
@@ -32,6 +33,10 @@ class CreateUserAction
         ]);
         // FRD "اخر تحديث: تم بواسطة X" — audit field outside $fillable, same as assets.
         $user->updated_by = auth()->id();
+        $user->save();
+
+        // The signature/stamp paths are built from the user's id, which only exists after the first save.
+        StoreUserImages::into($user, $images);
         $user->save();
 
         $user->syncRoles($data['roles']);

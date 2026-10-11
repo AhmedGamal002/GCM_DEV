@@ -13,8 +13,8 @@ use Illuminate\Support\Facades\Hash;
  * Self-service only — separate from MeController (pure "who am I" read)
  * and from UserController (admins managing OTHER users). From one's own
  * profile only the photo and the password can change (name/email/
- * everything else is admin-managed) — and, for a client account, its
- * signature and stamp images; the password part is gated by
+ * everything else is admin-managed) — and, for a client account or GCM
+ * staff, the signature and stamp images; the password part is gated by
  * User::canChangeOwnPassword(), which every role passes. Email is also
  * immutable for a technical reason: LoginController looks users up by
  * email globally (before the tenant is known).

@@ -378,7 +378,7 @@ console.log(`checklist.html built — ${total} items from ${files.length} files`
 // buildClientDocs throws if one doesn't, so a typo or a renumbered source
 // item is caught immediately instead of silently vanishing.
 const CLIENT_GROUPS = [
-  { title: 'المستخدمين', ids: ['week-1-2-auth-users-roles#8', 'week-1-2-auth-users-roles#20', 'week-1-2-auth-users-roles#21', 'week-1-2-auth-users-roles#10', 'week-1-2-auth-users-roles#11', 'week-1-2-auth-users-roles#12'] },
+  { title: 'المستخدمين', ids: ['week-1-2-auth-users-roles#8', 'week-1-2-auth-users-roles#20', 'week-1-2-auth-users-roles#22', 'week-1-2-auth-users-roles#21', 'week-1-2-auth-users-roles#10', 'week-1-2-auth-users-roles#11', 'week-1-2-auth-users-roles#12'] },
   { title: 'حسابات العملاء', ids: ['week-5-client-accounts#1', 'week-5-client-accounts#2', 'week-5-client-accounts#3', 'week-5-client-accounts#4', 'week-5-client-accounts#5', 'week-5-client-accounts#6', 'week-5-client-accounts#7', 'week-5-client-accounts#8', 'week-5-client-accounts#9', 'week-5-client-accounts#10', 'week-5-client-accounts#11', 'week-5-client-accounts#12', 'week-5-client-accounts#13', 'week-5-client-accounts#17'] },
   { title: 'السائقين', ids: ['week-3-vehicles-drivers-assets#10', 'week-3-vehicles-drivers-assets#11', 'week-3-vehicles-drivers-assets#23', 'week-3-vehicles-drivers-assets#24', 'week-3-frd-gap-review#9', 'week-3-vehicles-drivers-assets#12', 'week-3-vehicles-drivers-assets#13', 'week-3-vehicles-drivers-assets#14', 'week-3-vehicles-drivers-assets#15', 'week-3-vehicles-drivers-assets#28'] },
   { title: 'المركبات', ids: ['week-3-vehicles-drivers-assets#1', 'week-3-vehicles-drivers-assets#2', 'week-3-vehicles-drivers-assets#25', 'week-3-vehicles-drivers-assets#6', 'week-3-vehicles-drivers-assets#3', 'week-3-vehicles-drivers-assets#4', 'week-3-vehicles-drivers-assets#5', 'week-3-vehicles-drivers-assets#8'] },
@@ -473,6 +473,19 @@ const CLIENT_OVERRIDES = {
     ],
     expected:
       'المستخدم يظهر فورًا في قائمة Users. **خيارات الدور في فورم "Add User" ده تحديدًا** فيها دورين بس (مدخل بيانات ومراقب) — دور مدير النظام ودور السائق مش من ضمنهم في **الفورم ده**، لأن السائق ليه صفحة إنشاء مخصصة منفصلة (Drivers، وبعدين Add Driver). ده مايمنعش إن حسابات السائقين الموجودة أصلًا تظهر عادي في قائمة Users العامة مع باقي الحسابات.',
+  },
+  'week-1-2-auth-users-roles#22': {
+    title: 'توقيع وختم موظفي GCM (اختياري)',
+    frd: 'طلب العميل — نفس صورتي التوقيع والختم التشغيلي لحسابات العملاء',
+    stepsList: [
+      'من القائمة الجانبية افتح Users ← "Add User" ← GCM Staff.',
+      'املأ البيانات وارفع صورة توقيع وصورة ختم (PNG أو JPG حتى 2 ميجا) ودوس حفظ.',
+      'افتح تفاصيل الحساب الجديد، ثم دوس Edit وارفع صورة توقيع جديدة فقط (من غير ما تلمس الختم) واحفظ.',
+      'أنشئ حساب GCM تاني من غير ما ترفع أي صورة.',
+      'افتح My Profile بتاعك (من قائمة الحساب أعلى الصفحة) وشوف كارت "Signature & Stamp".',
+    ],
+    expected:
+      'الصورتين اختياريتين — الحساب بيتنشئ من غيرهم. بيظهروا في صفحة التفاصيل، وفي التعديل بيظهر رابط "Current file" جنب كل واحدة، ورفع التوقيع لوحده بيسيب الختم زي ما هو. الملف اللي مش صورة أو الأكبر من 2 ميجا بيترفض. في My Profile بتاعك فيه كارت "Signature & Stamp" تقدر تغيّر منه صورتك بنفسك.',
   },
   'week-1-2-auth-users-roles#17': {
     title: 'عناصر القائمة الجانبية لمدير النظام',

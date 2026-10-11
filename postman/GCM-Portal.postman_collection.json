@@ -349,7 +349,7 @@
           }
         },
         {
-          "name": "Update Profile (Signature & Stamp — client accounts)",
+          "name": "Update Profile (Signature & Stamp — client accounts + GCM staff)",
           "request": {
             "method": "POST",
             "header": [
@@ -370,7 +370,7 @@
                   "key": "signature",
                   "type": "file",
                   "src": [],
-                  "description": "Client accounts only (422 for everyone else). Either one alone is enough; the other is kept."
+                  "description": "Client accounts and GCM staff (system_admin / data_entry / auditor) — 422 for drivers and contractor users. Either one alone is enough; the other is kept."
                 },
                 {
                   "key": "stamp",
@@ -641,6 +641,19 @@
                   "disabled": true
                 },
                 {
+                  "key": "signature",
+                  "type": "file",
+                  "src": [],
+                  "description": "Optional private image (PNG/JPG, max 2 MB). GCM staff carry a signature + stamp like client accounts.",
+                  "disabled": true
+                },
+                {
+                  "key": "stamp",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
                   "key": "password",
                   "value": "Password123!",
                   "type": "text"
@@ -744,6 +757,19 @@
                 },
                 {
                   "key": "photo",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "signature",
+                  "type": "file",
+                  "src": [],
+                  "description": "Optional — leave out to keep the current file.",
+                  "disabled": true
+                },
+                {
+                  "key": "stamp",
                   "type": "file",
                   "src": [],
                   "disabled": true

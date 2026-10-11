@@ -102,7 +102,7 @@
       <span>تم: <b id="s-pass">0</b></span>
       <span>فشل: <b id="s-fail" style="color:var(--bad)">0</b></span>
       <span>متبقي: <b id="s-left">0</b></span>
-      <span>من <b>203</b> بند</span>
+      <span>من <b>204</b> بند</span>
     </div>
     <div class="prog"><i class="p" id="b-pass"></i><i class="f" id="b-fail"></i></div>
     <div class="tools">
@@ -361,6 +361,16 @@
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
       <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.4 (&quot;تعديل الحساب الي حالة (في إجازة) او تعطيله من خلال (مدير النظام / مدخل البيانات)&quot;)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح أي مستخدم غير مدير النظام وغيّر حالته لـ&quot;في إجازة&quot;.</li><li>غيّرها بعدين لـ&quot;معطّل&quot;.</li><li>أعد تنشيطه (رجّعها &quot;نشط&quot;).</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>كل التحويلات التلاتة بتنجح فورًا وتظهر في صفحة التفاصيل.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Users/UserPolicyTest::test_data_entry_can_set_vacation_and_deactivate</code> (نفس الـaction، ومدير النظام صلاحيته أوسع)</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-1-2-auth-users-roles#22" data-title="توقيع وختم موظفي GCM (اختياري)">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">22</span></label>
+        <h3>توقيع وختم موظفي GCM (اختياري)</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>— (طلب العميل، خارج الـFRD؛ نفس صورتي التوقيع والختم التشغيلي لحسابات العملاء §1.4)</dd></div><div class="row"><dt>الدور</dt><dd>مدير النظام / مدخل البيانات / المراقب</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>بـ<code>admin@gcm.test</code> افتح Users ← Add User ← GCM Staff، املا البيانات وارفع صورة توقيع وصورة ختم، وسجّل.</li><li>افتح تفاصيل الحساب الجديد، ثم دوس Edit وارفع صورة توقيع جديدة بس (من غير ما تلمس الختم) واحفظ.</li><li>سجّل دخول بالحساب الجديد (أو بـ<code>dataentry@gcm.test</code>) وافتح My Profile.</li><li>من غير ما ترفع أي صورة، أنشئ حساب GCM تاني.</li><li>بـ<code>driver@gcm.test</code> افتح My Profile.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الصورتين اختياريتين — الحساب بيتنشئ من غيرهم. الصورتين بيظهروا في صفحة التفاصيل، وفي التعديل بيظهر رابط &quot;Current file&quot; جنب كل واحدة، ورفع التوقيع لوحده بيسيب الختم زي ما هو. في My Profile فيه كارت <strong>Signature &amp; Stamp</strong> للموظف يقدر يغيّر منه صورته. الملف الأكبر من 2MB أو اللي مش صورة بيترفض. الصورتين مش على رابط عام (بيتحمّلوا من رابط محمي بصلاحية). مدخل البيانات مايشوفش توقيع/ختم مدير النظام. السائق مفيش عنده كارت التوقيع والختم.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Users/StaffSignatureStampTest</code> (كلها)، <code>Profile/ClientSignatureStampTest::test_gcm_staff_upload_their_own_signature_and_stamp_privately</code>, <code>test_a_driver_has_no_signature_or_stamp</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     </details>
@@ -1385,7 +1395,7 @@
         <h3>الملف الشخصي لحساب العميل</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.4 (المستخدم يقدر يغيّر من ملفه الشخصي: الصورة، كلمة المرور، صورة التوقيع، صورة الختم)</dd></div><div class="row"><dt>الدور</dt><dd>حساب عميل (<code>client.manager@gcm.test</code>)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>سجّل دخول بحساب العميل وافتح My Profile.</li><li>ارفع صورة توقيع (بس) واضغط &quot;Save signature &amp; stamp&quot;، وبعدين ارفع صورة ختم.</li><li>غيّر كلمة السر من كارت &quot;Change Password&quot;.</li><li>جرّب تضغط الحفظ من غير ما تختار صورة.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>فيه 3 كروت: الصورة، <strong>Signature &amp; Stamp</strong>، Change Password. رفع صورة واحدة بيسيب التانية زي ما هي. من غير اختيار صورة بتظهر رسالة &quot;Choose a signature or stamp image first&quot;. الاسم والبريد للقراءة فقط. القائمة الجانبية فاضية، ولو فتحت <code>/app/user/list</code> أو أي API إداري بترجع 403. باقي الأدوار (مدير النظام/مدخل البيانات/المراقب/السائق) مفيش عندهم كارت التوقيع والختم.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Profile/ClientSignatureStampTest</code> (كلها)، <code>ClientAccounts/ClientUserAccessTest::test_a_client_account_cannot_reach_any_admin_module</code>, <code>test_client_accounts_are_offered_no_admin_menu_entries</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.4 (المستخدم يقدر يغيّر من ملفه الشخصي: الصورة، كلمة المرور، صورة التوقيع، صورة الختم)</dd></div><div class="row"><dt>الدور</dt><dd>حساب عميل (<code>client.manager@gcm.test</code>)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>سجّل دخول بحساب العميل وافتح My Profile.</li><li>ارفع صورة توقيع (بس) واضغط &quot;Save signature &amp; stamp&quot;، وبعدين ارفع صورة ختم.</li><li>غيّر كلمة السر من كارت &quot;Change Password&quot;.</li><li>جرّب تضغط الحفظ من غير ما تختار صورة.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>فيه 3 كروت: الصورة، <strong>Signature &amp; Stamp</strong>، Change Password. رفع صورة واحدة بيسيب التانية زي ما هي. من غير اختيار صورة بتظهر رسالة &quot;Choose a signature or stamp image first&quot;. الاسم والبريد للقراءة فقط. القائمة الجانبية فاضية، ولو فتحت <code>/app/user/list</code> أو أي API إداري بترجع 403. السائق ومستخدم المتعهد مفيش عندهم كارت التوقيع والختم (موظفو GCM — مدير النظام/مدخل البيانات/المراقب — عندهم بطلب العميل، شوف بند 22 في الأسبوع 1–2).</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Profile/ClientSignatureStampTest</code> (كلها)، <code>ClientAccounts/ClientUserAccessTest::test_a_client_account_cannot_reach_any_admin_module</code>, <code>test_client_accounts_are_offered_no_admin_menu_entries</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-5-client-accounts#15" data-title="الصلاحيات حسب الدور">
@@ -2463,7 +2473,7 @@
     </article>
     </details>
   </section>
-  <p class="foot">اتولّد تلقائيًا من ملفات <code>docs/acceptance/week-*.md</code> بتاريخ 2026-10-07 — للتحديث: <code>node docs/acceptance/build-checklist.mjs</code>. متعدّلش الملف ده بإيدك.</p>
+  <p class="foot">اتولّد تلقائيًا من ملفات <code>docs/acceptance/week-*.md</code> بتاريخ 2026-10-11 — للتحديث: <code>node docs/acceptance/build-checklist.mjs</code>. متعدّلش الملف ده بإيدك.</p>
 </div>
 
 <script>

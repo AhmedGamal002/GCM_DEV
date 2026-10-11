@@ -13,7 +13,7 @@ Dashboard, then an **Accounts** section (Users · Drivers), a **Fleet & Assets**
 ## 1. Sign in and profile
 
 - `/login` with email + password.
-- **My Profile**: change your profile photo, **and your password too** (the "Security" tab — you enter your current password first). Name and email stay read-only.
+- **My Profile**: change your profile photo, **and your password too** (the "Security" tab — you enter your current password first). You can also upload your own **signature image and operational stamp image** (optional, PNG/JPG, max 2 MB). Name and email stay read-only.
 
 ## 2. Users — `/app/user/list`
 

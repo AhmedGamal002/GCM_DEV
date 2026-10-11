@@ -62,7 +62,7 @@ class UserController extends Controller
 
     public function store(StoreUserRequest $request, CreateUserAction $action)
     {
-        $user = $action->execute($request->validated(), $request->file('photo'));
+        $user = $action->execute($request->validated(), $request->file('photo'), $this->images($request));
 
         return UserResource::make($user)->response()->setStatusCode(201);
     }
@@ -84,9 +84,20 @@ class UserController extends Controller
     {
         $user = User::findOrFail($user);
 
-        $user = $action->execute($user, $request->validated(), $request->file('photo'));
+        $user = $action->execute($user, $request->validated(), $request->file('photo'), $this->images($request));
 
         return UserResource::make($user->load(['driver', 'updatedBy']));
+    }
+
+    /**
+     * @return array{signature: ?\Illuminate\Http\UploadedFile, stamp: ?\Illuminate\Http\UploadedFile}
+     */
+    private function images(Request $request): array
+    {
+        return [
+            'signature' => $request->file('signature'),
+            'stamp' => $request->file('stamp'),
+        ];
     }
 
     public function status(UpdateUserStatusRequest $request, int $user, UpdateUserStatusAction $action)
@@ -103,7 +114,7 @@ class UserController extends Controller
     }
 
     /**
-     * A client account's signature / stamp (private disk). Visible to the
+     * A client or GCM staff account's signature / stamp (private disk). Visible to the
      * account's owner and to whoever may view accounts (system_admin /
      * data_entry / auditor); anyone else gets 403.
      */
