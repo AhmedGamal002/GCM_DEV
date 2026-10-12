@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Concerns\BelongsToTenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -32,7 +33,47 @@ class VehicleCategory extends Model
         'tractor_truck' => ['Tractor truck', 'شاحنة جرّارة (رأس مقطورة)'],
     ];
 
-    protected $fillable = ['slug', 'name_en', 'name_ar'];
+    protected $fillable = [
+        'slug', 'name_en', 'name_ar',
+        // Starting values for the create-vehicle form (client request) —
+        // not constraints; the vehicle keeps its own copy.
+        'default_has_embedded_container',
+        'default_embedded_container_type',
+        'default_embedded_asset_capacity_category_id',
+    ];
+
+    protected function casts(): array
+    {
+        return ['default_has_embedded_container' => 'boolean'];
+    }
+
+    /**
+     * The default_* columns to write for validated request data. Absent
+     * from the data → empty array (an API caller that doesn't mention
+     * them leaves the stored defaults alone). "No embedded container"
+     * clears the kind and the capacity so a stale pair can't linger.
+     *
+     * @return array<string, mixed>
+     */
+    public static function embeddedDefaultsFrom(array $data): array
+    {
+        if (! array_key_exists('default_has_embedded_container', $data)) {
+            return [];
+        }
+
+        $has = (bool) $data['default_has_embedded_container'];
+
+        return [
+            'default_has_embedded_container' => $has,
+            'default_embedded_container_type' => $has ? ($data['default_embedded_container_type'] ?? null) : null,
+            'default_embedded_asset_capacity_category_id' => $has ? ($data['default_embedded_asset_capacity_category_id'] ?? null) : null,
+        ];
+    }
+
+    public function defaultEmbeddedCapacityCategory(): BelongsTo
+    {
+        return $this->belongsTo(AssetCapacityCategory::class, 'default_embedded_asset_capacity_category_id');
+    }
 
     /**
      * Idempotent — gives a tenant any of the defaults it doesn't have yet.

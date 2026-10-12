@@ -89,7 +89,7 @@ The System Admin has **full access**: view, create, edit, export, and all status
 - **Add Vehicle** button.
 
 ### Create / edit vehicle
-- Basics: plate (letters + digits, digits only), category, affiliation, whether it has an embedded container (if yes: its type + capacity — the list shows the capacities defined for that type: "container" lists container capacities, "tank" lists tank capacities, and a capacity defined for both shows under either).
+- Basics: plate (letters + digits, digits only), category, affiliation, whether it has an embedded container (if yes: its type + capacity — the list shows the capacities defined for that type: "container" lists container capacities, "tank" lists tank capacities, and a capacity defined for both shows under either). Picking the category pre-fills these from the category's default embedded container (see "Vehicle categories"); you can still change them.
 - Photos (front/back) + documents (registration card / fitness / inspection certificate / insurance) with numbers and expiry dates.
 - Repeatable entry permits (area / number / expiry / attachment).
 - **All document and permit numbers are digits only.**
@@ -100,6 +100,7 @@ The System Admin has **full access**: view, create, edit, export, and all status
 - A new category automatically becomes a card on the Vehicles page, an option in the category filter, and an option in the vehicle, driver and asset forms. Renaming changes it everywhere (vehicles linked to it stay linked).
 - **Export** (Excel / PDF) button on the list — the file holds the rows matching the search box.
 - A "Manage categories" link above the category cards on the Vehicles page takes you to the same screen.
+- **Default embedded container** (in the create/edit form): whether vehicles of this category usually have an embedded container, its type (container / tank) and, optionally, its capacity. When you pick the category on **Create vehicle** — or change it on **Edit vehicle** — those values are filled in automatically. They stay editable per vehicle, and changing a category's defaults later never touches vehicles that already exist. A category left at "No embedded container" fills nothing.
 
 ### Vehicle status
 - **System Admin**: "on maintenance" + **deactivate** + **reactivate from deactivated**.

@@ -172,8 +172,14 @@ export function initVehicleForm(opts) {
   const capSelect = document.getElementById('embedded_asset_capacity_category_id');
   const capHint = document.getElementById('embedded-capacity-hint');
 
+  // Kept so picking a category can pre-fill its embedded-container defaults.
+  const categoriesById = new Map();
+
   const refsReady = window.axios.get('/api/v1/vehicle-categories').then((cats) => {
-    cats.data.data.forEach((c) => catSelect.add(new Option(c.name, c.id)));
+    cats.data.data.forEach((c) => {
+      categoriesById.set(String(c.id), c);
+      catSelect.add(new Option(c.name, c.id));
+    });
     window.refreshGcmSelect(catSelect);
   });
 
@@ -260,6 +266,40 @@ export function initVehicleForm(opts) {
   form.querySelectorAll('input[name="embedded_container_type"]').forEach((r) =>
     r.addEventListener('change', () => refreshEmbeddedCapacities())
   );
+
+  // A category carries the embedded-container values most of its vehicles
+  // share. Picking the category pre-fills them (has one / container or tank
+  // / capacity); every field stays editable. On edit this only fires when
+  // the user CHANGES the category (wired after the vehicle's own values are
+  // loaded) — opening the page never overwrites what the vehicle has.
+  let appliedCategoryId = null;
+
+  function applyCategoryDefaults() {
+    if (catSelect.value === appliedCategoryId) return; // same category re-selected
+    appliedCategoryId = catSelect.value;
+
+    const c = categoriesById.get(catSelect.value);
+    if (!c) return;
+
+    const has = !!c.default_has_embedded_container;
+    form.querySelector(`input[name="has_embedded_container"][value="${has ? '1' : '0'}"]`).checked = true;
+    typeWrapper.classList.toggle('d-none', !has);
+    capacityWrapper.classList.toggle('d-none', !has);
+
+    form.querySelectorAll('input[name="embedded_container_type"]').forEach((r) => {
+      r.checked = has && r.value === c.default_embedded_container_type;
+      clearFieldError(r);
+    });
+
+    if (has) {
+      refreshEmbeddedCapacities(c.default_embedded_asset_capacity_category_id ? String(c.default_embedded_asset_capacity_category_id) : '');
+    } else {
+      capSelect.value = '';
+      clearFieldError(capSelect);
+      window.refreshGcmSelect(capSelect);
+    }
+  }
+  if (mode === 'create') $(catSelect).on('change', applyCategoryDefaults);
 
   // --------------------------------------------------------- entry permits
   const container = document.getElementById('entry-permits-container');
@@ -419,6 +459,9 @@ export function initVehicleForm(opts) {
     Promise.all([refsReady, window.axios.get(`/api/v1/vehicles/${id}`)])
       .then(([, res]) => prefill(res.data.data))
       .then(() => {
+        // Only now — prefill() triggers 'change' on the category itself.
+        appliedCategoryId = catSelect.value;
+        $(catSelect).on('change', applyCategoryDefaults);
         loading.classList.add('d-none');
         form.classList.remove('d-none');
       })

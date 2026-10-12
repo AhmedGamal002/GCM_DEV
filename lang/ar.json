@@ -798,5 +798,7 @@
   "Search in: Sub-services": "البحث في: الخدمات الفرعية",
   "Search main or sub-service": "ابحث عن خدمة أساسية أو فرعية",
   "Search main service": "ابحث عن خدمة أساسية",
-  "Intermediate facilities": "المنشآت الوسيطة"
+  "Intermediate facilities": "المنشآت الوسيطة",
+  "Default embedded container": "الحاوية المدمجة الافتراضية",
+  "Pre-filled when a vehicle of this category is created. They can still be changed for each vehicle.": "تُملأ تلقائيًا عند إضافة مركبة من هذا التصنيف، ويمكن تعديلها لكل مركبة على حدة."
 }

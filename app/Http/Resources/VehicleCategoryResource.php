@@ -19,6 +19,11 @@ class VehicleCategoryResource extends JsonResource
             'name_ar' => $this->name_ar,
             // Primary (built-in) category: renamable, never deletable.
             'is_default' => $this->isDefault(),
+            // Embedded-container values the create-vehicle form pre-fills
+            // when this category is picked (editable on the vehicle).
+            'default_has_embedded_container' => (bool) $this->default_has_embedded_container,
+            'default_embedded_container_type' => $this->default_has_embedded_container ? $this->default_embedded_container_type : null,
+            'default_embedded_asset_capacity_category_id' => $this->default_has_embedded_container ? $this->default_embedded_asset_capacity_category_id : null,
             // Only present when the controller asked for usage counts
             // (the management list / single fetch) — the plain dropdown
             // call skips the three sub-selects.

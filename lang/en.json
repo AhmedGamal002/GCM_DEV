@@ -798,5 +798,7 @@
   "Search in: Sub-services": "Search in: Sub-services",
   "Search main or sub-service": "Search main or sub-service",
   "Search main service": "Search main service",
-  "Intermediate facilities": "Intermediate facilities"
+  "Intermediate facilities": "Intermediate facilities",
+  "Default embedded container": "Default embedded container",
+  "Pre-filled when a vehicle of this category is created. They can still be changed for each vehicle.": "Pre-filled when a vehicle of this category is created. They can still be changed for each vehicle."
 }

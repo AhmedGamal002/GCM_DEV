@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 class CreateVehicleCategoryAction
 {
     /**
-     * @param  array{name_en: string, name_ar: string}  $data
+     * @param  array{name_en: string, name_ar: string, default_has_embedded_container?: bool, default_embedded_container_type?: ?string, default_embedded_asset_capacity_category_id?: ?int}  $data
      */
     public function execute(array $data): VehicleCategory
     {
@@ -16,6 +16,7 @@ class CreateVehicleCategoryAction
             'slug' => $this->uniqueSlug($data['name_en']),
             'name_en' => $data['name_en'],
             'name_ar' => $data['name_ar'],
+            ...VehicleCategory::embeddedDefaultsFrom($data),
         ]);
     }
 
