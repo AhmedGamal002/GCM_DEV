@@ -37,7 +37,7 @@
     add_user: @json(__('Add User')),
     add_gcm_staff: @json(__('GCM Staff')),
     add_driver: @json(__('Driver')),
-    add_client: @json(__('Client Account (Project Manager / Auditor)')),
+    add_client: @json(__('Client Account')),
     add_contractor_user: @json(__('Contractor User')),
     search_user: @json(__('Search User')),
     no_users_found: @json(__('No users found.')),

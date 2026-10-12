@@ -37,7 +37,7 @@ The only screen exclusive to the System Admin among tenant roles.
 
 ### "Add User" button — dropdown
 - **GCM Staff** → standard user-creation form (Data Entry / Auditor roles).
-- **Client Account (Project Manager / Auditor)** → the dedicated client-account form (`/app/client-user/add`) — see "Client accounts" below.
+- **Client Account** → the dedicated client-account form (`/app/client-user/add`) — see "Client accounts" below.
 - **Driver** → sends you to the dedicated driver-creation page (`/app/driver/add`) — a different form.
 - **Contractor User** → the dedicated contractor-user form (`/app/contractor-user/add`) — see "Contractor users" below.
 
