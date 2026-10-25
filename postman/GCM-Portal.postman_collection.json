@@ -1974,7 +1974,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name_en\": \"Crane truck\",\n  \"name_ar\": \"مركبات رافعة\"\n}",
+              "raw": "{\n  \"name_en\": \"Crane truck\",\n  \"name_ar\": \"مركبات رافعة\",\n  \"default_has_embedded_container\": false,\n  \"default_embedded_container_type\": null,\n  \"default_embedded_asset_capacity_category_id\": null\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1990,7 +1990,7 @@
                 "vehicle-categories"
               ]
             },
-            "description": "system_admin ONLY (403 for everyone else). name_en + name_ar required, each unique within the tenant. The slug is generated from name_en once and never changes on rename. Saves last_vehicle_category_id."
+            "description": "system_admin ONLY (403 for everyone else). name_en + name_ar required, each unique within the tenant. OPTIONAL embedded-container defaults that the create-vehicle form pre-fills when this category is picked (still editable per vehicle): default_has_embedded_container (bool, default false), default_embedded_container_type (container|tank, required when has=true), default_embedded_asset_capacity_category_id (optional; must exist in this tenant and fit the type, see GET /asset-capacity-categories?for_type=). The slug is generated from name_en once and never changes on rename. Saves last_vehicle_category_id."
           },
           "event": [
             {
@@ -2043,7 +2043,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name_en\": \"Crane truck (renamed)\",\n  \"name_ar\": \"مركبات رافعة\"\n}",
+              "raw": "{\n  \"name_en\": \"Crane truck (renamed)\",\n  \"name_ar\": \"مركبات رافعة\",\n  \"default_has_embedded_container\": true,\n  \"default_embedded_container_type\": \"container\",\n  \"default_embedded_asset_capacity_category_id\": null\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2060,7 +2060,7 @@
                 "{{last_vehicle_category_id}}"
               ]
             },
-            "description": "system_admin only. Names only — the slug is stable."
+            "description": "system_admin only. Names + the embedded-container defaults (omit the default_* fields to leave them as they are; default_has_embedded_container=false clears the type and capacity). The slug is stable. Changing the defaults never touches existing vehicles."
           }
         },
         {
