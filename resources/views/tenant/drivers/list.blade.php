@@ -140,7 +140,7 @@
   <div class="card-header border-bottom">
     <h5 class="card-title mb-0">{{ __('Filters') }}</h5>
     <div class="d-flex justify-content-between align-items-center row pt-4 gap-4 gap-md-0">
-      <div class="col-md-4 driver_affiliation"></div>
+      <div class="col-md-4 driver_affiliation @if((auth()->user() instanceof \App\Models\User && auth()->user()->isContractorUser())) d-none @endif"></div>
       <div class="col-md-4 driver_status"></div>
       <div class="col-md-4 driver_documents"></div>
     </div>

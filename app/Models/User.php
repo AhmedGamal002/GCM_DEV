@@ -24,6 +24,9 @@ class User extends Authenticatable
   /** FRD §1.4 — the role of a contractor company's account. */
   public const CONTRACTOR_ROLE = 'contractor_user';
 
+  /** The accounts a contractor's own account may see (FRD §6.1.1): its drivers and its contractor users. */
+  public const CONTRACTOR_VISIBLE_ROLES = ['driver', 'contractor_user'];
+
   protected $guard_name = 'web';
 
   /**
@@ -129,9 +132,12 @@ class User extends Authenticatable
   }
 
   /**
-   * Accounts a data_entry user is not allowed to know about: the tenant's
-   * system_admin. Everyone else sees every account of the tenant (the
-   * auditor included — FRD V01.14: view/export on every page).
+   * Accounts an actor is not allowed to know about:
+   *  - data_entry never sees the tenant's system_admin;
+   *  - a contractor's own account (FRD §6) sees only its contractor's drivers
+   *    and contractor users — never GCM staff, clients or another contractor.
+   * Everyone else sees every account of the tenant (the auditor included —
+   * FRD V01.14: view/export on every page).
    */
   public function scopeVisibleTo(Builder $query, User $actor): Builder
   {
@@ -139,7 +145,28 @@ class User extends Authenticatable
       $query->whereDoesntHave('roles', fn ($r) => $r->where('name', 'system_admin'));
     }
 
+    if ($actor->isContractorUser()) {
+      if ($actor->contractor_id === null) {
+        $query->whereRaw('0 = 1');
+      } else {
+        $query->where('users.contractor_id', $actor->contractor_id)
+          ->whereHas('roles', fn ($r) => $r->whereIn('name', self::CONTRACTOR_VISIBLE_ROLES));
+      }
+    }
+
     return $query;
+  }
+
+  /**
+   * Whether $actor (a contractor's own account) may open this account:
+   * a driver or contractor user of the same contractor.
+   */
+  public function isInContractorOf(User $actor): bool
+  {
+    return $actor->contractor_id !== null
+      && $this->contractor_id !== null
+      && (int) $this->contractor_id === (int) $actor->contractor_id
+      && $this->hasAnyRole(self::CONTRACTOR_VISIBLE_ROLES);
   }
 
   public function isClient(): bool

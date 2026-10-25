@@ -124,7 +124,10 @@ class VehicleController extends Controller
     {
         Gate::authorize('viewAny', Vehicle::class);
 
+        $actor = request()->user();
+
         $countsByCategoryId = Vehicle::query()
+            ->visibleTo($actor)
             ->selectRaw('vehicle_category_id, count(*) as total')
             ->groupBy('vehicle_category_id')
             ->pluck('total', 'vehicle_category_id');
@@ -144,6 +147,7 @@ class VehicleController extends Controller
             ->values();
 
         $byStatus = Vehicle::query()
+            ->visibleTo($actor)
             ->selectRaw('operational_status, count(*) as total')
             ->groupBy('operational_status')
             ->pluck('total', 'operational_status');
@@ -227,6 +231,8 @@ class VehicleController extends Controller
     private function filteredQuery(Request $request): Builder
     {
         return Vehicle::query()
+            // A contractor's own account only ever sees its contractor's vehicles.
+            ->visibleTo($request->user())
             // `documents` (permits included) feed the list's documents-status column and its export.
             ->with([...self::LIST_WITH, 'documents'])
             ->when($request->filled('category'), fn ($q) => $q->whereHas('category', fn ($c) => $c->where('slug', $request->string('category'))))

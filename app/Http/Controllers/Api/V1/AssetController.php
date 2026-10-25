@@ -96,6 +96,7 @@ class AssetController extends Controller
         Gate::authorize('viewAny', Asset::class);
 
         $rows = Asset::query()
+            ->visibleTo(request()->user())
             ->selectRaw('asset_type, operational_status, (project_id is not null) as in_project, count(*) as total')
             ->groupBy('asset_type', 'operational_status', 'in_project')
             ->get();
@@ -159,6 +160,8 @@ class AssetController extends Controller
     private function filteredQuery(Request $request): Builder
     {
         return Asset::query()
+            // A contractor's own account only ever sees its contractor's assets.
+            ->visibleTo($request->user())
             ->with(self::LIST_WITH)
             ->when($request->filled('asset_capacity_category_id'), fn ($q) => $q->where('asset_capacity_category_id', $request->integer('asset_capacity_category_id')))
             ->when($request->filled('asset_type'), fn ($q) => $q->where('asset_type', $request->string('asset_type')))

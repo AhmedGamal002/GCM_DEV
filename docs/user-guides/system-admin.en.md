@@ -234,7 +234,7 @@ Sidebar: heading **Clients & Projects** → **Client Projects** (List + Add). A 
 - **Optional:** operational region, phone, email, address, map link (`http`/`https` only), additional data, and the **project representative account** (an active client account that can see the project; on create only the chosen company's "all projects" accounts are listed).
 
 ### Details and edit
-- Details page: the data + statistics (contracts, trips, waste — `0` for now) + the contracts section (not built yet) + a table of the **assets in the project** (type filter + export + an insert-asset button).
+- Details page: the data + a **Google map of the project's location** (built from the pasted map link, or from the address when the link is a shortened one — the link stays visible) + statistics (contracts, trips, waste — `0` for now) + the contracts section (not built yet) + a table of the **assets in the project** (type filter + export + an insert-asset button).
 - Edit page: every field except the company (locked; the ID is shown above the form).
 - **Deactivate / reactivate** from the "Project Status" card on the edit page (with a confirmation). There is no delete. Deactivating a project does **not** deactivate the company, and deactivating a company does **not** deactivate its projects; a deactivated project is not offered when inserting an asset.
 

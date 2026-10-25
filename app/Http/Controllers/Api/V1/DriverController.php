@@ -80,6 +80,7 @@ class DriverController extends Controller
         Gate::authorize('viewAny', Driver::class);
 
         $byStatus = Driver::query()
+            ->visibleTo(request()->user())
             ->join('users', 'users.id', '=', 'drivers.user_id')
             ->selectRaw('users.status, count(*) as total')
             ->groupBy('users.status')
@@ -225,6 +226,8 @@ class DriverController extends Controller
     private function filteredQuery(Request $request): Builder
     {
         return Driver::query()
+            // A contractor's own account only ever sees its own drivers.
+            ->visibleTo($request->user())
             // `entryPermits` feed the list's documents-status column and its export.
             ->with(['entryPermits', 'user' => fn ($q) => $q->with(['tenant', 'roles', 'contractor'])])
             ->when($request->filled('status'), fn ($q) => $q->whereHas(

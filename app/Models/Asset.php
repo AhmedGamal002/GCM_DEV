@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Concerns\BelongsToTenant;
+use App\Concerns\VisibleToContractorAccount;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -26,7 +27,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  */
 class Asset extends Model
 {
-    use BelongsToTenant, HasFactory;
+    use BelongsToTenant, HasFactory, VisibleToContractorAccount;
 
     protected $fillable = [
         'name',

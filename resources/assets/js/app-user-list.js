@@ -260,7 +260,11 @@ $(function () {
           currentRole = $(this).val();
           api.draw();
         });
-      ['data_entry', 'auditor', 'client_project_manager', 'client_project_auditor', 'contractor_user', 'driver'].forEach((role) => {
+      // A contractor's own account only ever lists its drivers and its contractor users (FRD §6.1.1).
+      const roleOptions = t.contractor_scoped
+        ? ['contractor_user', 'driver']
+        : ['data_entry', 'auditor', 'client_project_manager', 'client_project_auditor', 'contractor_user', 'driver'];
+      roleOptions.forEach((role) => {
         roleSelect.append('<option value="' + role + '">' + role + '</option>');
       });
 
@@ -294,8 +298,11 @@ $(function () {
             companySelect.append($('<option>').val(c.id).text(c.name));
           });
         });
-      if (window.gcmPageLoader) window.gcmPageLoader.whenReady(loadCompanies);
-      else loadCompanies();
+      // The company filter isn't shown to a contractor's account (and the companies list is not its to read).
+      if (!t.contractor_scoped) {
+        if (window.gcmPageLoader) window.gcmPageLoader.whenReady(loadCompanies);
+        else loadCompanies();
+      }
 
       const statusSelect = $(
         '<select class="form-select"><option value="">' + (t.all_statuses || 'All statuses') + '</option></select>'

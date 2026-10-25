@@ -73,7 +73,7 @@ class ContractorUserManagementTest extends TestCase
     /** A contractor user made straight in the database — for tests whose actor is NOT the admin (see the actingAs caching note in CLAUDE.md). */
     private function contractorUser(array $attributes = []): User
     {
-        return User::factory()->contractorUser($this->desert)->create($attributes + ['phone' => '+9665000'.random_int(10000, 99999)]);
+        return User::factory()->contractorUser($this->desert)->create($attributes + ['phone' => '+9665000' . random_int(10000, 99999)]);
     }
 
     private function staff(string $role): User
@@ -165,8 +165,13 @@ class ContractorUserManagementTest extends TestCase
     {
         $this->actingAs($this->admin, 'web')
             ->postJson('/api/v1/users', [
-                'name' => 'X', 'email' => 'x@x.test', 'phone' => '+966500000302', 'password' => 'Str0ng!Pass#1',
-                'password_confirmation' => 'Str0ng!Pass#1', 'status' => 'active', 'roles' => ['contractor_user'],
+                'name' => 'X',
+                'email' => 'x@x.test',
+                'phone' => '+966500000302',
+                'password' => 'Str0ng!Pass#1',
+                'password_confirmation' => 'Str0ng!Pass#1',
+                'status' => 'active',
+                'roles' => ['contractor_user'],
             ])
             ->assertUnprocessable()
             ->assertJsonValidationErrors('roles.0');
@@ -189,8 +194,12 @@ class ContractorUserManagementTest extends TestCase
 
         $this->actingAs($this->admin, 'web')
             ->patchJson("/api/v1/contractor-users/{$user->id}", [
-                'name' => 'Omar Renamed', 'email' => 'omar2@gulf.test', 'phone' => '+966500000333',
-                'contractor_id' => $this->gulf->id, 'password' => 'N3w!Passw0rd#', 'password_confirmation' => 'N3w!Passw0rd#',
+                'name' => 'Omar Renamed',
+                'email' => 'omar2@gulf.test',
+                'phone' => '+966500000333',
+                'contractor_id' => $this->gulf->id,
+                'password' => 'N3w!Passw0rd#',
+                'password_confirmation' => 'N3w!Passw0rd#',
             ])
             ->assertOk()
             ->assertJsonPath('data.email', 'omar2@gulf.test')
@@ -276,7 +285,7 @@ class ContractorUserManagementTest extends TestCase
         $byRole = collect($this->actingAs($this->admin, 'web')->getJson('/api/v1/users?role=contractor_user')->assertOk()->json('data'));
         $this->assertCount(2, $byRole);
 
-        $byContractor = collect($this->actingAs($this->admin, 'web')->getJson('/api/v1/users?contractor_id='.$this->desert->id)->assertOk()->json('data'));
+        $byContractor = collect($this->actingAs($this->admin, 'web')->getJson('/api/v1/users?contractor_id=' . $this->desert->id)->assertOk()->json('data'));
         $this->assertSame([$omar->id], $byContractor->pluck('id')->all());
         $this->assertSame('Desert Haulage', $byContractor->first()['entity_name']);
     }
@@ -289,14 +298,15 @@ class ContractorUserManagementTest extends TestCase
         $this->assertSame('on_vacation', $user->fresh()->status);
     }
 
-    public function test_a_contractor_user_can_change_their_own_password_but_reach_no_admin_module(): void
+    public function test_a_contractor_user_can_change_their_own_password_but_reach_no_management_module(): void
     {
         $user = $this->contractorUser();
 
         $this->assertTrue($user->canChangeOwnPassword());
 
-        // No admin module is reachable for the role.
-        foreach (['/api/v1/users', '/api/v1/contractors', '/api/v1/vehicles', '/api/v1/drivers', '/api/v1/assets'] as $url) {
+        // Its contractor's drivers / users / vehicles / assets are readable (FRD §6 — see
+        // ContractorUserResourcePagesTest); nothing else is reachable.
+        foreach (['/api/v1/contractors', '/api/v1/companies', '/api/v1/projects', '/api/v1/facilities', '/api/v1/main-services', '/api/v1/sub-services'] as $url) {
             $this->actingAs($user, 'web')->getJson($url)->assertForbidden();
         }
     }
@@ -330,13 +340,18 @@ class ContractorUserManagementTest extends TestCase
         }
     }
 
-    public function test_a_contractor_user_is_offered_no_admin_menu_entries(): void
+    public function test_a_contractor_user_is_offered_only_the_read_pages_of_its_resources(): void
     {
         $this->withoutVite();
 
         $html = $this->actingAs($this->contractorUser(), 'web')->get('/dashboard')->assertOk()->getContent();
 
-        foreach (['app/user/list', 'app/contractor/list', 'app/vehicle/list', 'app/driver/list', 'app/asset/list', 'app/company/list'] as $path) {
+        // The read pages of its own resources are offered (FRD §6); nothing that manages or belongs to GCM.
+        foreach (['app/user/list', 'app/driver/list', 'app/vehicle/list', 'app/asset/list'] as $path) {
+            $this->assertStringContainsString($path, $html);
+        }
+
+        foreach (['app/contractor/list', 'app/company/list', 'app/project/list', 'app/facility/list', 'app/main-service/list', 'app/user/add', 'app/vehicle/add', 'app/asset/add', 'app/driver/add', 'app/vehicle-category/list', 'app/asset-category/list'] as $path) {
             $this->assertStringNotContainsString($path, $html);
         }
     }

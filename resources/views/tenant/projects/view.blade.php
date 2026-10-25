@@ -91,6 +91,16 @@
           <li class="mb-2"><span class="h6">{{ __('Location (map link)') }}:</span> <span id="pv-location">—</span></li>
         </ul>
 
+        {{-- FRD V01.14 §1.12.3 "خريطة جوجل لموقع المشروع": built from the pasted map link (or the address) — see gcm-map-embed.js. --}}
+        <div id="pv-map-wrapper" class="mb-6 d-none">
+          <span class="h6 d-block mb-2">{{ __('Project location map') }}:</span>
+          {{-- 4:3 box by padding (the theme ships no .ratio helper) --}}
+          <div class="rounded border overflow-hidden" style="position: relative; padding-top: 75%;">
+            <iframe id="pv-map" title="{{ __('Project location map') }}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen
+              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"></iframe>
+          </div>
+        </div>
+
         <div id="pv-additional-wrapper" class="mb-6 d-none">
           <span class="h6 d-block mb-2">{{ __('Additional Data') }}:</span>
           <div id="pv-additional"></div>

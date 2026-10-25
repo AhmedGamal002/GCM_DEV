@@ -24,7 +24,7 @@ class UserPolicy
 {
     public function viewAny(User $actor): bool
     {
-        return $actor->hasAnyRole(['system_admin', 'data_entry', 'auditor']);
+        return $actor->hasAnyRole(['system_admin', 'data_entry', 'auditor', User::CONTRACTOR_ROLE]);
     }
 
     /**
@@ -34,6 +34,11 @@ class UserPolicy
      */
     public function view(User $actor, User $target): bool
     {
+        // A contractor's own account: its own drivers / contractor users only (FRD §6.1.1).
+        if ($actor->isContractorUser()) {
+            return $target->isInContractorOf($actor);
+        }
+
         if ($actor->hasRole('data_entry') && ! $actor->hasRole('system_admin') && $target->hasRole('system_admin')) {
             return false;
         }

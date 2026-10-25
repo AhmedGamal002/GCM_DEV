@@ -77,6 +77,15 @@ document.addEventListener('DOMContentLoaded', function () {
       holder.appendChild(a);
     }
 
+    // The map itself (FRD §1.12.3): the pasted link's place, or the address when the link can't be read.
+    const mapSrc = window.gcmMapEmbedUrl
+      ? window.gcmMapEmbedUrl(p.location_url, [p.address, p.operational_region].filter(Boolean).join(' '))
+      : null;
+    if (mapSrc) {
+      document.getElementById('pv-map').src = mapSrc;
+      document.getElementById('pv-map-wrapper').classList.remove('d-none');
+    }
+
     if (p.additional_data) {
       document.getElementById('pv-additional').innerHTML = p.additional_data;
       document.getElementById('pv-additional-wrapper').classList.remove('d-none');

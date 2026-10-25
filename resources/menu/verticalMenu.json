@@ -5,7 +5,7 @@
       "name": "Dashboard",
       "icon": "menu-icon tf-icons ti ti-smart-home",
       "slug": "app-dashboard",
-      "roles": ["system_admin", "data_entry", "auditor", "driver"]
+      "roles": ["system_admin", "data_entry", "auditor", "driver", "contractor_user"]
     },
     {
       "menuHeader": "Accounts"
@@ -14,13 +14,13 @@
       "name": "Users",
       "icon": "menu-icon tf-icons ti ti-users",
       "slug": "app-user",
-      "roles": ["system_admin", "data_entry", "auditor"],
+      "roles": ["system_admin", "data_entry", "auditor", "contractor_user"],
       "submenu": [
         {
           "url": "app/user/list",
           "name": "List",
           "slug": "app-user-list",
-          "roles": ["system_admin", "data_entry", "auditor"]
+          "roles": ["system_admin", "data_entry", "auditor", "contractor_user"]
         },
         {
           "name": "View",
@@ -59,13 +59,13 @@
       "name": "Drivers",
       "icon": "menu-icon tf-icons ti ti-steering-wheel",
       "slug": "app-driver",
-      "roles": ["system_admin", "data_entry", "auditor"],
+      "roles": ["system_admin", "data_entry", "auditor", "contractor_user"],
       "submenu": [
         {
           "url": "app/driver/list",
           "name": "List",
           "slug": "app-driver-list",
-          "roles": ["system_admin", "data_entry", "auditor"]
+          "roles": ["system_admin", "data_entry", "auditor", "contractor_user"]
         },
         {
           "url": "app/driver/add",
@@ -82,13 +82,13 @@
       "name": "Vehicles",
       "icon": "menu-icon tf-icons ti ti-truck",
       "slug": "app-vehicle",
-      "roles": ["system_admin", "data_entry", "auditor"],
+      "roles": ["system_admin", "data_entry", "auditor", "contractor_user"],
       "submenu": [
         {
           "url": "app/vehicle/list",
           "name": "List",
           "slug": "app-vehicle-list",
-          "roles": ["system_admin", "data_entry", "auditor"]
+          "roles": ["system_admin", "data_entry", "auditor", "contractor_user"]
         },
         {
           "url": "app/vehicle/add",
@@ -108,13 +108,13 @@
       "name": "Assets",
       "icon": "menu-icon tf-icons ti ti-box",
       "slug": "app-asset",
-      "roles": ["system_admin", "data_entry", "auditor"],
+      "roles": ["system_admin", "data_entry", "auditor", "contractor_user"],
       "submenu": [
         {
           "url": "app/asset/list",
           "name": "List",
           "slug": "app-asset-list",
-          "roles": ["system_admin", "data_entry", "auditor"]
+          "roles": ["system_admin", "data_entry", "auditor", "contractor_user"]
         },
         {
           "url": "app/asset/add",

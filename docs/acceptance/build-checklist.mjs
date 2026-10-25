@@ -5,6 +5,7 @@
 import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { buildUat } from './build-uat.mjs';
 
 const dir = dirname(fileURLToPath(import.meta.url));
 
@@ -106,6 +107,7 @@ function renderDocs(docsArr) {
       d => `
   <section class="doc" data-doc="${esc(d.key)}">
     ${d.title ? `<h2 class="doc-title">${esc(d.title)}${d.sync ? `<small>${esc(d.sync)}</small>` : ''}</h2>` : ''}
+    ${d.note ? `<p class="doc-note">${inline(d.note)}</p>` : ''}
     ${d.sections
       .map(
         s => `
@@ -390,7 +392,7 @@ const CLIENT_GROUPS = [
   { title: 'المتعهدين', ids: ['week-5-contractors#2', 'week-5-contractors#4', 'week-5-contractors#5', 'week-5-contractors#6', 'week-5-contractors#7', 'week-5-contractors#8', 'week-5-contractors#9', 'week-5-contractors#10', 'week-5-contractors#11', 'week-5-contractors#12', 'week-5-contractors#13', 'week-5-contractors#14'] },
   { title: 'مستخدمو المتعهدين', ids: ['week-5-contractor-users#1', 'week-5-contractor-users#2', 'week-5-contractor-users#3', 'week-5-contractor-users#4', 'week-5-contractor-users#5', 'week-5-contractor-users#6', 'week-5-contractor-users#7', 'week-5-contractor-users#8', 'week-5-contractor-users#9'] },
   { title: 'شركات العملاء', ids: ['week-4-client-companies#1', 'week-4-client-companies#2', 'week-4-client-companies#3', 'week-4-client-companies#4', 'week-4-client-companies#5', 'week-4-client-companies#6', 'week-4-client-companies#7', 'week-4-client-companies#8', 'week-4-client-companies#9'] },
-  { title: 'المشروعات', ids: ['week-5-projects#2', 'week-5-projects#3', 'week-5-projects#4', 'week-5-projects#5', 'week-5-projects#6', 'week-5-projects#7', 'week-5-projects#9', 'week-5-projects#10', 'week-5-projects#11', 'week-5-projects#12', 'week-5-projects#13', 'week-5-projects#15', 'week-5-projects#16', 'week-5-projects#17'] },
+  { title: 'المشروعات', ids: ['week-5-projects#2', 'week-5-projects#3', 'week-5-projects#4', 'week-5-projects#5', 'week-5-projects#6', 'week-5-projects#7', 'week-5-projects#9', 'week-5-projects#10', 'week-5-projects#11', 'week-5-projects#12', 'week-5-projects#13', 'week-5-projects#15', 'week-5-projects#16', 'week-5-projects#17', 'week-5-projects#21'] },
   { title: 'الإعدادات العامة وتنبيهات الوثائق', ids: ['week-5-document-expiry#1', 'week-5-document-expiry#2', 'week-5-document-expiry#3', 'week-5-document-expiry#4', 'week-5-document-expiry#6'] },
   { title: 'الملف الشخصي', ids: ['week-1-2-auth-users-roles#2', 'week-3-frd-gap-review#4'] },
   { title: 'قواعد عامة عبر الموديولات', ids: ['week-3-frd-gap-review#5', 'week-3-frd-gap-review#6', 'week-3-frd-gap-review#7'] },
@@ -491,7 +493,7 @@ const CLIENT_OVERRIDES = {
     title: 'عناصر القائمة الجانبية لمدير النظام',
     stepsList: ['سجّل دخول بحسابك (مدير النظام) وبصّ على القائمة الجانبية.', 'بدّل اللغة لعربي.'],
     expected:
-      'تشوف Dashboard، وتحت عنوان **Accounts**: Users وDrivers، وتحت عنوان **Fleet & Assets**: Vehicles وAssets، وتحت عنوان **Operations**: Facilities، وتحت عنوان **Clients & Projects**: Client Companies — من غير أي بنود تانية. بالعربي العناوين بتبقى "الحسابات" و"الأسطول والأصول" و"العمليات" و"العملاء والمشروعات".',
+      'تشوف Dashboard، وتحت عنوان **Accounts**: Users وDrivers، وتحت **Fleet & Assets**: Vehicles (List/Add/Categories) وAssets (List/Add/Capacities)، وتحت **Operations**: Facilities وServices (Main/Sub) وContractors، وتحت **Clients & Projects**: Client Companies وClient Projects، وتحت **System**: General Settings — من غير أي بنود تانية. بالعربي العناوين بتبقى "الحسابات" و"الأسطول والأصول" و"العمليات" و"العملاء والمشروعات" و"النظام".',
   },
   'week-3-frd-gap-review#1': {
     steps: 'سجّل دخول بحسابك. بصّ على الشريط العلوي. بدّل اللغة لعربي وارجع لإنجليزي.',
@@ -507,7 +509,7 @@ const CLIENT_OVERRIDES = {
       'جرّب ملف مش صورة، وجرّب "Save photo" من غير ما تختار صورة.',
     ],
     expected:
-      'الاسم والبريد للقراءة فقط، وفيه تابين "Account" و"Security" (كلمة السر بتتغيّر من التاب التاني). الصورة بتتحفظ وتظهر في الصفحة **وفي الشريط العلوي**. لو اخترت ملف مش صورة، أو دُست حفظ من غير ما تختار حاجة، هتظهر رسالة خطأ واضحة.',
+      'الاسم والبريد للقراءة فقط. الصفحة كارتين: كارت الصورة وتحته كارت "Change Password" (مفيش تابات)، ومعاهم كارت "Signature & Stamp" لموظفي GCM. الصورة بتتحفظ وتظهر في الصفحة **وفي الشريط العلوي**. لو اخترت ملف مش صورة، أو دُست حفظ من غير ما تختار حاجة، هتظهر رسالة خطأ واضحة.',
   },
   'week-3-frd-gap-review#6': {
     steps: 'افتح فورم إنشاء مستخدم، فورم إنشاء سائق، وصفحة تعديل/تفاصيل كل واحد، بالعربي والإنجليزي.',
@@ -612,12 +614,14 @@ const clientDocs = buildClientDocs(docs);
 const clientTotal = clientDocs.reduce((n, d) => n + d.sections.reduce((m, s) => m + s.items.length, 0), 0);
 const clientBody = renderDocs(clientDocs);
 
-const clientHtml = `<!DOCTYPE html>
+// One page shell for client-checklist.html and every per-role UAT file (build-uat.mjs): only the
+// header/credentials block, the body, the counter and the storage/export names differ.
+const renderClientPage = ({ title, h1, sub, setup, body, total, storageKey, xlsxName }) => `<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>GCM Portal — اختبار القبول</title>
+<title>${title}</title>
 <style>
   :root {
     --bg:#f6f7fb; --card:#fff; --text:#1f2430; --muted:#69708a; --line:#e3e6ef;
@@ -642,6 +646,10 @@ const clientHtml = `<!DOCTYPE html>
   .setup table { width:100%; border-collapse:collapse; margin-top:4px; font-size:.95rem; }
   .setup th, .setup td { text-align:start; padding:6px 8px; border-bottom:1px solid var(--line); }
   .setup a { color:var(--accent); font-weight:600; }
+  .setup p { margin:6px 0; }
+  .setup ul { margin:6px 0; padding-inline-start:22px; }
+  .setup h2 + p, .setup table + h2, .setup ul + h2, .setup p + h2 { margin-top:14px; }
+  .doc-note { color:var(--muted); margin:2px 0 8px; font-size:.92rem; }
 
   .bar { background:var(--bg); padding:12px 0 10px; border-bottom:1px solid var(--line); }
   @media (min-width:720px) { .bar { position:sticky; top:0; z-index:5; } }
@@ -693,24 +701,17 @@ const clientHtml = `<!DOCTYPE html>
 </head>
 <body>
 <div class="wrap">
-  <h1>GCM Portal — اختبار القبول</h1>
-  <p class="sub">لكل بند: جرّب الخطوات وقارن بالنتيجة المتوقعة. علّم ✔ لو نجح، ودوس "فشل" واكتب ملاحظة لو طلع غلط. تقدّمك بيتحفظ تلقائيًا في المتصفح ده، ولما تخلص صدّر النتيجة.</p>
+  <h1>${h1}</h1>
+  <p class="sub">${sub}</p>
 
-  <div class="setup">
-    <h2>بيانات الدخول</h2>
-    <table>
-      <tr><th>الرابط</th><td><a href="https://gcm-dev.digitswat.com" target="_blank" rel="noopener">https://gcm-dev.digitswat.com</a></td></tr>
-      <tr><th>البريد الإلكتروني</th><td><code>admin@gcm.test</code></td></tr>
-      <tr><th>كلمة المرور</th><td><code>password</code></td></tr>
-    </table>
-  </div>
+${setup}
 
   <div class="bar">
     <div class="stats">
       <span>تم: <b id="s-pass">0</b></span>
       <span>فشل: <b id="s-fail" style="color:var(--bad)">0</b></span>
       <span>متبقي: <b id="s-left">0</b></span>
-      <span>من <b>${clientTotal}</b> بند</span>
+      <span>من <b>${total}</b> بند</span>
     </div>
     <div class="prog"><i class="p" id="b-pass"></i><i class="f" id="b-fail"></i></div>
     <div class="tools">
@@ -724,12 +725,12 @@ const clientHtml = `<!DOCTYPE html>
       <button type="button" class="btn" id="reset">مسح كل العلامات</button>
     </div>
   </div>
-${clientBody}
+${body}
 </div>
 
 <script>
 (function () {
-  var KEY = 'gcm-client-checklist-v1';
+  var KEY = '${storageKey}';
   var state = {};
   try { state = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {}
   state.items = state.items || {};
@@ -829,6 +830,10 @@ ${clientBody}
       // "القسم" is the module name (Users, Vehicles, ...), not a leftover
       // count badge — grab the summary's own first text node only.
       var groupTitle = groupEl.querySelector('summary').childNodes[0].textContent.trim();
+      // Per-role UAT pages split the items into parts (phase 2 / phase 1 gaps / improvements) — keep
+      // the part in the sheet's first column too. The plain client page has no part heading.
+      var partEl = groupEl.closest('.doc').querySelector('.doc-title');
+      if (partEl) groupTitle = partEl.childNodes[0].textContent.trim() + ' — ' + groupTitle;
       [].forEach.call(groupEl.querySelectorAll('.item'), function (el) {
         var st = get(el.dataset.id);
         var num = el.querySelector('.num').textContent;
@@ -838,7 +843,7 @@ ${clientBody}
     });
 
     var sheet = XLSX.utils.aoa_to_sheet(rows);
-    sheet['!cols'] = [{ wch: 30 }, { wch: 6 }, { wch: 50 }, { wch: 12 }, { wch: 40 }];
+    sheet['!cols'] = [{ wch: 45 }, { wch: 6 }, { wch: 50 }, { wch: 12 }, { wch: 40 }];
     rows.forEach(function (row, r) {
       var rowStyle = r === 0 ? HEADER_STYLE : ROW_STYLE[statuses[r]];
       if (!rowStyle) return;
@@ -850,7 +855,7 @@ ${clientBody}
 
     var workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, sheet, 'نتيجة الاختبار');
-    XLSX.writeFile(workbook, 'نتيجة اختبار GCM Portal.xlsx');
+    XLSX.writeFile(workbook, '${xlsxName}');
   });
 
   refresh();
@@ -860,5 +865,26 @@ ${clientBody}
 </html>
 `;
 
+const clientHtml = renderClientPage({
+  title: 'GCM Portal — اختبار القبول',
+  h1: 'GCM Portal — اختبار القبول',
+  sub: 'لكل بند: جرّب الخطوات وقارن بالنتيجة المتوقعة. علّم ✔ لو نجح، ودوس "فشل" واكتب ملاحظة لو طلع غلط. تقدّمك بيتحفظ تلقائيًا في المتصفح ده، ولما تخلص صدّر النتيجة.',
+  setup: `  <div class="setup">
+    <h2>بيانات الدخول</h2>
+    <table>
+      <tr><th>الرابط</th><td><a href="https://gcm-dev.digitswat.com" target="_blank" rel="noopener">https://gcm-dev.digitswat.com</a></td></tr>
+      <tr><th>البريد الإلكتروني</th><td><code>admin@gcm.test</code></td></tr>
+      <tr><th>كلمة المرور</th><td><code>password</code></td></tr>
+    </table>
+  </div>`,
+  body: clientBody,
+  total: clientTotal,
+  storageKey: 'gcm-client-checklist-v1',
+  xlsxName: 'نتيجة اختبار GCM Portal.xlsx',
+});
+
 writeFileSync(join(dir, 'client-checklist.html'), clientHtml);
 console.log(`client-checklist.html built — ${clientTotal} items (curated System-Admin-only subset for the client's tester)`);
+
+// Per-role UAT files (docs/acceptance/uat/*.html) — phase 2 + phase 1 gaps + improvements, one file per role.
+buildUat({ dir, docs, parseFile, renderDocs, renderClientPage, esc, inline, CLIENT_OVERRIDES });

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Concerns\BelongsToTenant;
+use App\Concerns\VisibleToContractorAccount;
 use App\Domain\Settings\Support\ExpiryWarning;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Vehicle extends Model
 {
-    use BelongsToTenant, HasFactory;
+    use BelongsToTenant, HasFactory, VisibleToContractorAccount;
 
     /**
      * tenant_id is deliberately excluded — stamped by BelongsToTenant.

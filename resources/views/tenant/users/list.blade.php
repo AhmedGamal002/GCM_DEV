@@ -46,6 +46,7 @@
     info: @json(__('Showing _START_ to _END_ of _TOTAL_ entries')),
     info_empty: @json(__('Showing 0 to 0 of 0 entries')),
     created: @json(__('User created successfully.')),
+    contractor_scoped: @json(auth()->user() instanceof \App\Models\User && auth()->user()->isContractorUser()),
     add_user_url: @json(route('app-user-add')),
     add_driver_url: @json(route('app-driver-add')),
     add_client_url: @json(route('app-client-user-add')),
@@ -71,8 +72,8 @@
   <div class="card-header border-bottom">
     <h5 class="card-title mb-0">{{ __('Filters') }}</h5>
     <div class="d-flex justify-content-between align-items-center row pt-4 gap-4 gap-md-0">
-      <div class="col-md-3 user_affiliation"></div>
-      <div class="col-md-3 user_company"></div>
+      <div class="col-md-3 user_affiliation @if((auth()->user() instanceof \App\Models\User && auth()->user()->isContractorUser())) d-none @endif"></div>
+      <div class="col-md-3 user_company @if((auth()->user() instanceof \App\Models\User && auth()->user()->isContractorUser())) d-none @endif"></div>
       <div class="col-md-3 user_role"></div>
       <div class="col-md-3 user_status"></div>
     </div>

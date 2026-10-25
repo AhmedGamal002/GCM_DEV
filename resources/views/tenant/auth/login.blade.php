@@ -33,17 +33,17 @@ $customizerHidden = 'customizer-hide';
           </div>
           <!-- /Logo -->
           <h4 class="mb-1">{{ __('Welcome to :name', ['name' => \App\Support\Brand::name()]) }} 👋</h4>
-          <p class="mb-6">Please sign-in to your account and start the adventure</p>
+          <p class="mb-6">{{ __('Please sign-in to your account and start the adventure') }}</p>
 
           <div id="login-error" class="alert alert-danger {{ request()->boolean('deactivated') ? '' : 'd-none' }}">{{ request()->boolean('deactivated') ? __('auth.deactivated') : '' }}</div>
 
           <form id="formAuthentication" class="mb-4">
             <div class="mb-6">
-              <label for="email" class="form-label">Email</label>
-              <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" autofocus required>
+              <label for="email" class="form-label">{{ __('Email') }}</label>
+              <input type="email" class="form-control" id="email" name="email" placeholder="{{ __('Enter your email') }}" autofocus required>
             </div>
             <div class="mb-6 form-password-toggle">
-              <label class="form-label" for="password">Password</label>
+              <label class="form-label" for="password">{{ __('Password') }}</label>
               <div class="input-group input-group-merge">
                 <input type="password" id="password" class="form-control" name="password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" required />
                 <span class="input-group-text cursor-pointer"><i class="ti ti-eye-off"></i></span>
@@ -54,16 +54,16 @@ $customizerHidden = 'customizer-hide';
                 <div class="form-check mb-0 ms-2">
                   <input class="form-check-input" type="checkbox" id="remember-me" name="remember">
                   <label class="form-check-label" for="remember-me">
-                    Remember Me
+                    {{ __('Remember Me') }}
                   </label>
                 </div>
                 <a href="{{ route('password.request') }}">
-                  <p class="mb-0">Forgot Password?</p>
+                  <p class="mb-0">{{ __('Forgot Password?') }}</p>
                 </a>
               </div>
             </div>
             <div class="mb-6">
-              <button class="btn btn-primary d-grid w-100" type="submit">Login</button>
+              <button class="btn btn-primary d-grid w-100" type="submit">{{ __('Login') }}</button>
             </div>
           </form>
         </div>

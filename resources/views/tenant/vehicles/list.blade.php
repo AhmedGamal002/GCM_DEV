@@ -106,7 +106,7 @@
     <div class="d-flex justify-content-between align-items-center row pt-4 gap-4 gap-md-0">
       <div class="col-md-3 vehicle_category"></div>
       <div class="col-md-3 vehicle_status"></div>
-      <div class="col-md-3 vehicle_affiliation"></div>
+      <div class="col-md-3 vehicle_affiliation @if((auth()->user() instanceof \App\Models\User && auth()->user()->isContractorUser())) d-none @endif"></div>
       <div class="col-md-3 vehicle_documents"></div>
     </div>
   </div>

@@ -4,7 +4,7 @@
 
 نفس الحسابات من ملف الأسبوع 1–2. بعد الـseed فيه مستخدمين متعهد (الباسورد `password`): `contractor.desert@gcm.test` (تابع لـ**Desert Haulage Co.** وهو **ممثل المتعهد** بتاعها) و`contractor.gulf@gcm.test` (تابع لـ**Gulf Logistics**). المتعهد المعطّل **Al Safa Transport** مايظهرش في اختيار المتعهد عند إنشاء مستخدم جديد.
 
-> ملحوظة نطاق: دور "مستخدم متعهد" في الـFRD (§1.4) مراقب بصلاحية **عرض/تصدير** لموارد متعهده فقط (سائقين / مستخدمي المتعهد / مركبات / حاويات / رحلات). صفحات العرض دي بتتبني مع الرحلات في مرحلة لاحقة — دلوقتي الحساب بيتنشأ ويتعدّل ويدخل النظام ويشوف ملفه الشخصي بس، والقائمة الجانبية فاضية له عمدًا.
+> ملحوظة نطاق: دور "مستخدم متعهد" في الـFRD (§1.4) مراقب بصلاحية **عرض/تصدير** لموارد متعهده فقط (سائقين / مستخدمي المتعهد / مركبات / حاويات / رحلات). صفحات المستخدمين والسائقين والمركبات والأصول اتبنت (راجع `week-5-contractor-user-pages.md`)؛ جدول الرحلات بس هو اللي جاي مع الرحلات.
 
 ---
 
@@ -88,6 +88,6 @@
 ### 10. الدخول والملف الشخصي (من غير صلاحيات إدارية)
 - **FRD:** §1.4 (الدور مراقب، عرض/تصدير فقط في أقسام المتعهد، ولا صلاحيات تفاعلية)
 - **الخطوات:** سجّل دخول بـ`contractor.desert@gcm.test`. افتح الملف الشخصي وغيّر كلمة السر والصورة. جرّب تفتح `/app/contractor-user/add`.
-- **المتوقع:** الدخول بيشتغل والقائمة الجانبية من غير أي صفحة إدارة. الملف الشخصي فيه الصورة وكارت "Change Password" (بدون "Signature & Stamp" — ده للعميل). الصفحات والـAPI الإدارية (مستخدمين، متعهدين، مركبات، سائقين، أصول) بترجّع 403.
+- **المتوقع:** الدخول بيشتغل والقائمة الجانبية فيها صفحات **العرض** بس (Users / Drivers / Vehicles / Assets — List فقط، شوف `week-5-contractor-user-pages`)، ومفيش أي صفحة إدارة أو إضافة. الملف الشخصي فيه الصورة وكارت "Change Password" (بدون "Signature & Stamp" — ده لحسابات العميل وموظفي GCM). صفحات الإضافة/التعديل (`/app/contractor-user/add` وغيرها) والـAPI الإدارية بترجّع 403.
 - **يغطيه آليًا:** `Contractors/ContractorUserManagementTest` (`test_a_contractor_user_can_change_their_own_password_but_reach_no_admin_module`, `test_a_contractor_user_changes_their_own_password_and_photo_only`, `test_a_contractor_user_cannot_set_a_signature_or_stamp`, `test_a_contractor_user_cannot_write_to_any_admin_module`, `test_a_contractor_user_is_offered_no_admin_menu_entries`, `test_a_contractor_user_cannot_open_the_account_forms`)
 - **النتيجة:** ⬜

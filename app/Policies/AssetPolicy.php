@@ -20,17 +20,18 @@ class AssetPolicy
 {
     public function viewAny(User $actor): bool
     {
-        return $actor->hasAnyRole(['system_admin', 'data_entry', 'auditor']);
+        return $actor->hasAnyRole(['system_admin', 'data_entry', 'auditor', User::CONTRACTOR_ROLE]);
     }
 
+    /** A contractor's own account (FRD §6.1.2) sees its contractor's assets only — see VisibleToContractorAccount. */
     public function view(User $actor, Asset $asset): bool
     {
-        return $actor->hasAnyRole(['system_admin', 'data_entry', 'auditor']);
+        return $actor->hasAnyRole(['system_admin', 'data_entry', 'auditor', User::CONTRACTOR_ROLE]) && $asset->isVisibleTo($actor);
     }
 
     public function export(User $actor): bool
     {
-        return $actor->hasAnyRole(['system_admin', 'data_entry', 'auditor']);
+        return $actor->hasAnyRole(['system_admin', 'data_entry', 'auditor', User::CONTRACTOR_ROLE]);
     }
 
     public function create(User $actor): bool

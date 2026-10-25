@@ -97,7 +97,7 @@
     <div class="d-flex justify-content-between align-items-center row pt-4 gap-4 gap-md-0">
       <div class="col-md-4 asset_type"></div>
       <div class="col-md-4 asset_status"></div>
-      <div class="col-md-4 asset_affiliation"></div>
+      <div class="col-md-4 asset_affiliation @if((auth()->user() instanceof \App\Models\User && auth()->user()->isContractorUser())) d-none @endif"></div>
     </div>
   </div>
   <div class="card-datatable table-responsive">

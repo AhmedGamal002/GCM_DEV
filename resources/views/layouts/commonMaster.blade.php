@@ -35,7 +35,7 @@ $contentLayout = (isset($container) ? (($container === 'container-xxl') ? "layou
   <link id="gcm-custom-css" rel="stylesheet" href="{{ asset('assets/css/gcm_custom.css') }}?v={{ @filemtime(public_path('assets/css/gcm_custom.css')) }}" />
 </head>
 
-<body @if(auth()->user() instanceof \App\Models\User && auth()->user()->hasRole('auditor') && ! auth()->user()->hasAnyRole(['system_admin', 'data_entry'])) data-gcm-view-only="1" @endif>
+<body @if(auth()->user() instanceof \App\Models\User && auth()->user()->hasAnyRole(['auditor', 'contractor_user']) && ! auth()->user()->hasAnyRole(['system_admin', 'data_entry'])) data-gcm-view-only="1" @endif>
 
   {{-- Page loader: logo + name while the page (and its first data requests) load — hidden by resources/js/page-loader.js --}}
   @include('_partials.page-loader')

@@ -1,0 +1,2649 @@
+{
+  "info": {
+    "name": "GCM Portal — Phase 1",
+    "_postman_id": "b1e9d8b0-6f5a-4b0a-9c1a-gcmportalp1",
+    "description": "GCM Portal API — Phase 1 (Auth, Profile, Roles, Users, Drivers, Vehicles, Assets & capacity categories). Points at https://gcm.digitswat.com.\n\nSet auth_email and auth_password in the environment, then run \"1. Auth → Login\" — its test script stores the Bearer token in auth_token, which every other request sends.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{auth_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://gcm.digitswat.com",
+      "type": "string"
+    },
+    {
+      "key": "api_base",
+      "value": "{{base_url}}/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "auth_email",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "auth_password",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "auth_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "last_user_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "last_driver_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "last_vehicle_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "last_vehicle_document_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "last_asset_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "last_asset_capacity_category_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "last_vehicle_category_id",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{auth_email}}\",\n  \"password\": \"{{auth_password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/auth/login",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Postman is never a SANCTUM_STATEFUL_DOMAINS origin, so this always returns a bearer `token` (the same path a future mobile app would use) instead of a session cookie. The test script below saves it into {{auth_token}}, which every other request in this collection sends via the collection-level Bearer auth."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Login succeeded', () => pm.response.code === 200);",
+                  "if (pm.response.code === 200) {",
+                  "    const body = pm.response.json();",
+                  "    if (body.token) {",
+                  "        pm.collectionVariables.set('auth_token', body.token);",
+                  "        console.log('auth_token saved');",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/auth/logout",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "auth",
+                "logout"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{auth_email}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/auth/forgot-password",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "auth",
+                "forgot-password"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"paste-token-from-email-log-here\",\n  \"email\": \"{{auth_email}}\",\n  \"password\": \"NewPassword123!\",\n  \"password_confirmation\": \"NewPassword123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/auth/reset-password",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "auth",
+                "reset-password"
+              ]
+            },
+            "description": "In local dev, MAIL_MAILER=log — grab the reset token from storage/logs/laravel.log."
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Me / Profile",
+      "item": [
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/me",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "me"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Profile (Photo)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "_method",
+                  "value": "PATCH",
+                  "type": "text"
+                },
+                {
+                  "key": "photo",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{api_base}}/me",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "me"
+              ]
+            },
+            "description": "FRD: the only thing a user changes from their own profile is the photo (multipart, POST + _method=PATCH). Name/email/everything else is admin-managed."
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"current_password\": \"{{auth_password}}\",\n  \"new_password\": \"NewPassword123!\",\n  \"new_password_confirmation\": \"NewPassword123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/me/password",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "me",
+                "password"
+              ]
+            },
+            "description": "403 for GCM staff and drivers (FRD: an admin sets their password via PATCH /users/{id} or /drivers/{id} with password + password_confirmation). Only client/contractor users (Week 4-5) can use this."
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Roles (Read-only)",
+      "item": [
+        {
+          "name": "List Roles",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/roles",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "roles"
+              ]
+            },
+            "description": "Available to every role (e.g. for a role-assignment dropdown). Read-only."
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Users",
+      "item": [
+        {
+          "name": "List Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/users?per_page=15",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "per_page",
+                  "value": "15"
+                },
+                {
+                  "key": "status",
+                  "value": "active",
+                  "disabled": true,
+                  "description": "active | on_vacation | deactivated"
+                },
+                {
+                  "key": "role",
+                  "value": "data_entry",
+                  "disabled": true,
+                  "description": "data_entry | auditor | driver | system_admin"
+                },
+                {
+                  "key": "search",
+                  "value": "ahmed",
+                  "disabled": true,
+                  "description": "matches name, email, or code"
+                },
+                {
+                  "key": "sort_by",
+                  "value": "name",
+                  "disabled": true,
+                  "description": "code | name | status | created_at"
+                },
+                {
+                  "key": "sort_dir",
+                  "value": "asc",
+                  "disabled": true,
+                  "description": "asc | desc"
+                }
+              ]
+            },
+            "description": "system_admin only (UserPolicy::viewAny). Excludes the caller's own row — self is edited via /me. Genuinely paginated server-side (per_page/page/sort_by/sort_dir all real) — see ARCHITECTURE.md's performance section for why that matters at real employee-count scale."
+          }
+        },
+        {
+          "name": "Export Users (Excel)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/users/export?format=xlsx",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "users",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "xlsx"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "role",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Export Users (PDF)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/users/export?format=pdf",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "users",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "pdf"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "role",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "New Data Entry User",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "new.user+{{$timestamp}}@gcm.test",
+                  "type": "text"
+                },
+                {
+                  "key": "phone",
+                  "value": "0100000{{$timestamp}}",
+                  "type": "text"
+                },
+                {
+                  "key": "photo",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "password",
+                  "value": "Password123!",
+                  "type": "text"
+                },
+                {
+                  "key": "password_confirmation",
+                  "value": "Password123!",
+                  "type": "text"
+                },
+                {
+                  "key": "status",
+                  "value": "active",
+                  "type": "text"
+                },
+                {
+                  "key": "additional_data",
+                  "value": "",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "roles[]",
+                  "value": "data_entry",
+                  "type": "text",
+                  "description": "Exactly one of: data_entry | auditor | driver (system_admin is never creatable here)"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{api_base}}/users",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    if (body.data && body.data.id) {",
+                  "        pm.collectionVariables.set('last_user_id', body.data.id);",
+                  "        console.log('last_user_id saved:', body.data.id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Show User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/users/{{last_user_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "users",
+                "{{last_user_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Updated Name",
+                  "type": "text"
+                },
+                {
+                  "key": "phone",
+                  "value": "0100000000",
+                  "type": "text"
+                },
+                {
+                  "key": "photo",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "additional_data",
+                  "value": "",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "roles[]",
+                  "value": "auditor",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{api_base}}/users/{{last_user_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "users",
+                "{{last_user_id}}"
+              ]
+            },
+            "description": "Postman sends real multipart PATCH natively — no _method spoofing needed."
+          }
+        },
+        {
+          "name": "Update User Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"on_vacation\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/users/{{last_user_id}}/status",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "users",
+                "{{last_user_id}}",
+                "status"
+              ]
+            },
+            "description": "status: active | on_vacation | deactivated. Deactivating a system_admin always fails (422) regardless of who asks — see CannotDeactivateSystemAdminException."
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Drivers",
+      "item": [
+        {
+          "name": "List Drivers",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/drivers?per_page=15",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "drivers"
+              ],
+              "query": [
+                {
+                  "key": "per_page",
+                  "value": "15"
+                },
+                {
+                  "key": "status",
+                  "value": "active",
+                  "disabled": true,
+                  "description": "active | on_vacation | deactivated"
+                },
+                {
+                  "key": "affiliation",
+                  "value": "gcm",
+                  "disabled": true,
+                  "description": "gcm | contractor"
+                },
+                {
+                  "key": "search",
+                  "value": "ahmed",
+                  "disabled": true,
+                  "description": "matches name, email, or code"
+                },
+                {
+                  "key": "sort_by",
+                  "value": "name",
+                  "disabled": true,
+                  "description": "code | name | status | created_at"
+                },
+                {
+                  "key": "sort_dir",
+                  "value": "asc",
+                  "disabled": true,
+                  "description": "asc | desc"
+                }
+              ]
+            },
+            "description": "Genuinely paginated server-side, same as /users — see ARCHITECTURE.md's performance section."
+          }
+        },
+        {
+          "name": "Export Drivers (Excel)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/drivers/export?format=xlsx",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "drivers",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "xlsx"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "affiliation",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Export Drivers (PDF)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/drivers/export?format=pdf",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "drivers",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "pdf"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "affiliation",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Driver Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/drivers/stats",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "drivers",
+                "stats"
+              ]
+            },
+            "description": "Counts (available/on_trips/on_vacation/deactivated) computed against the full set in SQL — not from whatever page of the list table happens to be loaded."
+          }
+        },
+        {
+          "name": "Create Driver",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "New Driver",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "new.driver+{{$timestamp}}@gcm.test",
+                  "type": "text"
+                },
+                {
+                  "key": "phone",
+                  "value": "0100001{{$timestamp}}",
+                  "type": "text"
+                },
+                {
+                  "key": "photo",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "password",
+                  "value": "Password123!",
+                  "type": "text"
+                },
+                {
+                  "key": "password_confirmation",
+                  "value": "Password123!",
+                  "type": "text"
+                },
+                {
+                  "key": "status",
+                  "value": "active",
+                  "type": "text"
+                },
+                {
+                  "key": "additional_data",
+                  "value": "",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "vehicle_category_ids[0]",
+                  "value": "1",
+                  "type": "text",
+                  "description": "vehicle_categories.id — see GET /vehicle-categories. At least one required."
+                },
+                {
+                  "key": "default_vehicle_id",
+                  "value": "1",
+                  "type": "text",
+                  "description": "vehicles.id — must belong to one of the selected vehicle_category_ids. See GET /vehicles?category=slug."
+                },
+                {
+                  "key": "residence_number",
+                  "value": "RES-0001",
+                  "type": "text"
+                },
+                {
+                  "key": "residence_valid_to",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "residence_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "license_number",
+                  "value": "LIC-0001",
+                  "type": "text"
+                },
+                {
+                  "key": "license_valid_to",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "license_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "operational_license_number",
+                  "value": "OPL-0001",
+                  "type": "text"
+                },
+                {
+                  "key": "operational_license_valid_to",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "operational_license_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "insurance_number",
+                  "value": "INS-0001",
+                  "type": "text"
+                },
+                {
+                  "key": "insurance_valid_to",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "insurance_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "entry_permits[0][area_name]",
+                  "value": "Cairo Zone A",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "entry_permits[0][permit_number]",
+                  "value": "PERMIT-0001",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "entry_permits[0][valid_to]",
+                  "value": "2027-01-01",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "entry_permits[0][attachment]",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{api_base}}/drivers",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "drivers"
+              ]
+            },
+            "description": "Creates the User (role=driver) + Driver profile + any entry permits in one transaction. entry_permits[*] rows are disabled by default — enable them to test that part. vehicle_category_ids/default_vehicle_id need real ids from your DB — check GET /vehicle-categories and GET /vehicles first."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    if (body.data && body.data.id) {",
+                  "        pm.collectionVariables.set('last_driver_id', body.data.id);",
+                  "        console.log('last_driver_id saved:', body.data.id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Show Driver",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/drivers/{{last_driver_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "drivers",
+                "{{last_driver_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Driver",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Updated Driver Name",
+                  "type": "text"
+                },
+                {
+                  "key": "phone",
+                  "value": "0100000000",
+                  "type": "text"
+                },
+                {
+                  "key": "photo",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "additional_data",
+                  "value": "",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "vehicle_category_ids[0]",
+                  "value": "1",
+                  "type": "text",
+                  "description": "vehicle_categories.id — at least one required."
+                },
+                {
+                  "key": "default_vehicle_id",
+                  "value": "1",
+                  "type": "text",
+                  "description": "vehicles.id — must belong to one of the selected vehicle_category_ids."
+                },
+                {
+                  "key": "residence_number",
+                  "value": "RES-0001",
+                  "type": "text"
+                },
+                {
+                  "key": "residence_valid_to",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "residence_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "license_number",
+                  "value": "LIC-0001",
+                  "type": "text"
+                },
+                {
+                  "key": "license_valid_to",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "license_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "operational_license_number",
+                  "value": "OPL-0001",
+                  "type": "text"
+                },
+                {
+                  "key": "operational_license_valid_to",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "operational_license_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "insurance_number",
+                  "value": "INS-0001",
+                  "type": "text"
+                },
+                {
+                  "key": "insurance_valid_to",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "insurance_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{api_base}}/drivers/{{last_driver_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "drivers",
+                "{{last_driver_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Add Entry Permit",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "area_name",
+                  "value": "Cairo Zone A",
+                  "type": "text"
+                },
+                {
+                  "key": "permit_number",
+                  "value": "PERMIT-0002",
+                  "type": "text"
+                },
+                {
+                  "key": "valid_to",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{api_base}}/drivers/{{last_driver_id}}/entry-permits",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "drivers",
+                "{{last_driver_id}}",
+                "entry-permits"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Download Document (Residence)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/drivers/{{last_driver_id}}/documents/residence",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "drivers",
+                "{{last_driver_id}}",
+                "documents",
+                "residence"
+              ]
+            },
+            "description": "type: residence | license | operational-license | insurance. Served from the private `local` disk via a policy-gated route — never a static URL."
+          }
+        },
+        {
+          "name": "Download Entry Permit Attachment",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/driver-entry-permits/1/attachment",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "driver-entry-permits",
+                "1",
+                "attachment"
+              ]
+            },
+            "description": "Replace the `1` with a real entry_permits.id (from Show Driver's entry_permits[].id, or the response of Add Entry Permit)."
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Vehicles",
+      "item": [
+        {
+          "name": "List Vehicles",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/vehicles?per_page=15",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicles"
+              ],
+              "query": [
+                {
+                  "key": "per_page",
+                  "value": "15"
+                },
+                {
+                  "key": "category",
+                  "value": "hook_lift",
+                  "disabled": true,
+                  "description": "vehicle_categories.slug: hook_lift | compactor | dump_truck | water_tanker | dyna_box | tractor_truck"
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "disabled": true,
+                  "description": "active | on_maintenance | deactivated"
+                },
+                {
+                  "key": "affiliation",
+                  "value": "gcm",
+                  "disabled": true,
+                  "description": "gcm | contractor"
+                },
+                {
+                  "key": "search",
+                  "value": "ABC",
+                  "disabled": true,
+                  "description": "matches plate_letters, plate_numbers, or the combined displayed plate (\"ABC 1234\", with or without the space)"
+                },
+                {
+                  "key": "sort_by",
+                  "value": "plate_letters",
+                  "disabled": true,
+                  "description": "plate_letters | operational_status | created_at"
+                },
+                {
+                  "key": "sort_dir",
+                  "value": "asc",
+                  "disabled": true,
+                  "description": "asc | desc"
+                }
+              ]
+            },
+            "description": "system_admin / data_entry / auditor (VehiclePolicy::viewAny). Genuinely paginated server-side, same as /users and /drivers — see ARCHITECTURE.md's performance section."
+          }
+        },
+        {
+          "name": "Export Vehicles (Excel)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/vehicles/export?format=xlsx",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicles",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "xlsx"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "category",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "operational_status",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "affiliation",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Export Vehicles (PDF)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/vehicles/export?format=pdf",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicles",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "pdf"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "category",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "operational_status",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "affiliation",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Vehicle Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/vehicles/stats",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicles",
+                "stats"
+              ]
+            },
+            "description": "Counts for the list page cards: by_category (an ARRAY of {id, slug, name, count} — one entry per category, zero-count ones included) + availability (available/on_trip/on_maintenance/deactivated), computed in SQL against the full set. on_trip is always 0 until the Trips module (Week 7)."
+          }
+        },
+        {
+          "name": "Reference — Vehicle Categories",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/vehicle-categories",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicle-categories"
+              ]
+            },
+            "description": "Plain list of the vehicle categories (starts as the six defaults; the system_admin can add/rename/delete — see the Vehicle Categories requests below). Readable by EVERY role (form dropdowns). Use the ids/slugs here for vehicle_category_id on Create/Update Vehicle and for a driver's vehicle_category_ids[]. Add ?per_page=10&search=&sort_by=&sort_dir= for the paginated management list (includes vehicles_count/drivers_count/assets_count/in_use)."
+          }
+        },
+        {
+          "name": "Create Vehicle Category",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name_en\": \"Crane truck\",\n  \"name_ar\": \"مركبات رافعة\",\n  \"default_has_embedded_container\": false,\n  \"default_embedded_container_type\": null,\n  \"default_embedded_asset_capacity_category_id\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/vehicle-categories",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicle-categories"
+              ]
+            },
+            "description": "system_admin ONLY (403 for everyone else). name_en + name_ar required, each unique among all of them. OPTIONAL embedded-container defaults that the create-vehicle form pre-fills when this category is picked (still editable per vehicle): default_has_embedded_container (bool, default false), default_embedded_container_type (container|tank, required when has=true), default_embedded_asset_capacity_category_id (optional; must exist in your tenant and fit the type, see GET /asset-capacity-categories?for_type=). The slug is generated from name_en once and never changes on rename. Saves last_vehicle_category_id."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    pm.collectionVariables.set('last_vehicle_category_id', body.data.id);",
+                  "    console.log('last_vehicle_category_id saved:', body.data.id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Show Vehicle Category",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/vehicle-categories/{{last_vehicle_category_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicle-categories",
+                "{{last_vehicle_category_id}}"
+              ]
+            },
+            "description": "system_admin only. Includes vehicles_count / drivers_count / assets_count / in_use."
+          }
+        },
+        {
+          "name": "Update Vehicle Category",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name_en\": \"Crane truck (renamed)\",\n  \"name_ar\": \"مركبات رافعة\",\n  \"default_has_embedded_container\": true,\n  \"default_embedded_container_type\": \"container\",\n  \"default_embedded_asset_capacity_category_id\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/vehicle-categories/{{last_vehicle_category_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicle-categories",
+                "{{last_vehicle_category_id}}"
+              ]
+            },
+            "description": "system_admin only. Names + the embedded-container defaults (omit the default_* fields to leave them as they are; default_has_embedded_container=false clears the type and capacity). The slug is stable. Changing the defaults never touches existing vehicles."
+          }
+        },
+        {
+          "name": "Delete Vehicle Category",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/vehicle-categories/{{last_vehicle_category_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicle-categories",
+                "{{last_vehicle_category_id}}"
+              ]
+            },
+            "description": "system_admin only. 204 on success. 422 (\"This is a primary category and can't be deleted.\") for the six primary categories (the FRD five + Tractor truck) even when unused. 422 with a clear message if a custom category is still used by vehicles, drivers' qualified categories or assets' compatible categories (e.g. \"in use by 3 vehicles, 1 asset\")."
+          }
+        },
+        {
+          "name": "Export Vehicle Categories (Excel)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/vehicle-categories/export?format=xlsx",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicle-categories",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "xlsx"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "system_admin only. Honours the same `search` (name EN/AR) as the list."
+          }
+        },
+        {
+          "name": "Export Vehicle Categories (PDF)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/vehicle-categories/export?format=pdf",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicle-categories",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "pdf"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "system_admin only. Arabic names render joined/RTL via ArabicText."
+          }
+        },
+        {
+          "name": "Reference — Asset Capacity Categories",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/asset-capacity-categories",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "asset-capacity-categories"
+              ]
+            },
+            "description": "capacity list for the embedded-container dropdown. Read-only for now — full CRUD lands with the Assets module."
+          }
+        },
+        {
+          "name": "Create Vehicle",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "plate_letters",
+                  "value": "ABC",
+                  "type": "text"
+                },
+                {
+                  "key": "plate_numbers",
+                  "value": "1234",
+                  "type": "text",
+                  "description": "digits only"
+                },
+                {
+                  "key": "vehicle_category_id",
+                  "value": "1",
+                  "type": "text",
+                  "description": "vehicle_categories.id — see Reference — Vehicle Categories"
+                },
+                {
+                  "key": "has_embedded_container",
+                  "value": "1",
+                  "type": "text",
+                  "description": "1 | 0"
+                },
+                {
+                  "key": "embedded_container_type",
+                  "value": "container",
+                  "type": "text",
+                  "description": "container | tank — required when has_embedded_container=1"
+                },
+                {
+                  "key": "embedded_asset_capacity_category_id",
+                  "value": "1",
+                  "type": "text",
+                  "description": "asset_capacity_categories.id — required when has_embedded_container=1"
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "type": "text",
+                  "description": "active | on_maintenance | deactivated (deactivated is system_admin only)"
+                },
+                {
+                  "key": "affiliation",
+                  "value": "gcm",
+                  "type": "text",
+                  "description": "gcm | contractor (contractor deferred to Week 5)"
+                },
+                {
+                  "key": "additional_data",
+                  "value": "<p>notes</p>",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "photo_front",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "photo_back",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "documents[registration_card][number]",
+                  "value": "1001",
+                  "type": "text",
+                  "description": "digits only"
+                },
+                {
+                  "key": "documents[registration_card][valid_to]",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "documents[registration_card][attachment]",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "documents[fitness_document][number]",
+                  "value": "1002",
+                  "type": "text"
+                },
+                {
+                  "key": "documents[fitness_document][valid_to]",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "documents[fitness_document][attachment]",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "documents[inspection_certificate][number]",
+                  "value": "1003",
+                  "type": "text"
+                },
+                {
+                  "key": "documents[inspection_certificate][valid_to]",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "documents[inspection_certificate][attachment]",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "documents[insurance][number]",
+                  "value": "1004",
+                  "type": "text"
+                },
+                {
+                  "key": "documents[insurance][valid_to]",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "documents[insurance][attachment]",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "entry_permits[0][area_name]",
+                  "value": "Riyadh",
+                  "type": "text"
+                },
+                {
+                  "key": "entry_permits[0][permit_number]",
+                  "value": "2001",
+                  "type": "text",
+                  "description": "digits only"
+                },
+                {
+                  "key": "entry_permits[0][valid_to]",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "entry_permits[0][attachment]",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{api_base}}/vehicles",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicles"
+              ]
+            },
+            "description": "Creates the vehicle + its 4 single documents + any entry permits in one transaction. All *_number fields are digits-only. File fields are disabled by default — enable and pick a file to test uploads."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    if (body.data && body.data.id) {",
+                  "        pm.collectionVariables.set('last_vehicle_id', body.data.id);",
+                  "        console.log('last_vehicle_id saved:', body.data.id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Show Vehicle",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/vehicles/{{last_vehicle_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicles",
+                "{{last_vehicle_id}}"
+              ]
+            },
+            "description": "Includes documents[] — grab a documents[].id for {{last_vehicle_document_id}} to test Download Document."
+          }
+        },
+        {
+          "name": "Update Vehicle",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "plate_letters",
+                  "value": "XYZ",
+                  "type": "text"
+                },
+                {
+                  "key": "plate_numbers",
+                  "value": "9999",
+                  "type": "text"
+                },
+                {
+                  "key": "vehicle_category_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "has_embedded_container",
+                  "value": "0",
+                  "type": "text"
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "type": "text"
+                },
+                {
+                  "key": "affiliation",
+                  "value": "gcm",
+                  "type": "text"
+                },
+                {
+                  "key": "additional_data",
+                  "value": "<p>updated</p>",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "photo_front",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "photo_back",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "documents[registration_card][number]",
+                  "value": "1001",
+                  "type": "text"
+                },
+                {
+                  "key": "documents[registration_card][valid_to]",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "documents[fitness_document][number]",
+                  "value": "1002",
+                  "type": "text"
+                },
+                {
+                  "key": "documents[fitness_document][valid_to]",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "documents[inspection_certificate][number]",
+                  "value": "1003",
+                  "type": "text"
+                },
+                {
+                  "key": "documents[inspection_certificate][valid_to]",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "documents[insurance][number]",
+                  "value": "1004",
+                  "type": "text"
+                },
+                {
+                  "key": "documents[insurance][valid_to]",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "entry_permits[0][id]",
+                  "value": "",
+                  "type": "text",
+                  "description": "existing entry_permits.id — keeps its attachment. Blank = new row. Omit a row entirely to delete it."
+                },
+                {
+                  "key": "entry_permits[0][area_name]",
+                  "value": "Jeddah",
+                  "type": "text"
+                },
+                {
+                  "key": "entry_permits[0][permit_number]",
+                  "value": "2002",
+                  "type": "text"
+                },
+                {
+                  "key": "entry_permits[0][valid_to]",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "entry_permits[0][attachment]",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{api_base}}/vehicles/{{last_vehicle_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicles",
+                "{{last_vehicle_id}}"
+              ]
+            },
+            "description": "Postman sends real multipart PATCH natively — no _method spoofing needed. Everything except operational_status is editable here; status changes go through Change Operational Status."
+          }
+        },
+        {
+          "name": "Change Operational Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"on_maintenance\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/vehicles/{{last_vehicle_id}}/status",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicles",
+                "{{last_vehicle_id}}",
+                "status"
+              ]
+            },
+            "description": "status: active | on_maintenance | deactivated. Setting or clearing `deactivated` is System Admin only (422 otherwise) — see CannotDeactivateVehicleException."
+          }
+        },
+        {
+          "name": "Download Document",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/vehicles/{{last_vehicle_id}}/documents/{{last_vehicle_document_id}}/download",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicles",
+                "{{last_vehicle_id}}",
+                "documents",
+                "{{last_vehicle_document_id}}",
+                "download"
+              ]
+            },
+            "description": "Set {{last_vehicle_document_id}} from Show Vehicle's documents[].id. Served from the private `local` disk via a policy-gated route; 404 if that document row has no uploaded file."
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Assets",
+      "item": [
+        {
+          "name": "List Assets",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/assets?per_page=15",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "assets"
+              ],
+              "query": [
+                {
+                  "key": "per_page",
+                  "value": "15"
+                },
+                {
+                  "key": "asset_type",
+                  "value": "container",
+                  "disabled": true,
+                  "description": "container | tank"
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "disabled": true,
+                  "description": "active | on_maintenance | deactivated"
+                },
+                {
+                  "key": "affiliation",
+                  "value": "gcm",
+                  "disabled": true,
+                  "description": "gcm | contractor"
+                },
+                {
+                  "key": "search",
+                  "value": "Container",
+                  "disabled": true,
+                  "description": "matches the asset name"
+                },
+                {
+                  "key": "sort_by",
+                  "value": "name",
+                  "disabled": true,
+                  "description": "name | asset_type | operational_status | created_at"
+                },
+                {
+                  "key": "sort_dir",
+                  "value": "asc",
+                  "disabled": true,
+                  "description": "asc | desc"
+                }
+              ]
+            },
+            "description": "system_admin / data_entry / auditor (AssetPolicy::viewAny). Genuinely paginated server-side, same as /vehicles."
+          }
+        },
+        {
+          "name": "Export Assets (Excel)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/assets/export?format=xlsx",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "assets",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "xlsx"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "asset_type",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "operational_status",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "affiliation",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Export Assets (PDF)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/assets/export?format=pdf",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "assets",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "pdf"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "asset_type",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "operational_status",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "affiliation",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Asset Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/assets/stats",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "assets",
+                "stats"
+              ]
+            },
+            "description": "Containers and tanks counted separately (available / in_projects / on_maintenance / deactivated)."
+          }
+        },
+        {
+          "name": "Reference — Capacity Categories",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/asset-capacity-categories",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "asset-capacity-categories"
+              ],
+              "query": [
+                {
+                  "key": "for_type",
+                  "value": "container",
+                  "disabled": true,
+                  "description": "container | tank — returns capacities that fit that type (applies_to matches, or 'both')"
+                },
+                {
+                  "key": "applies_to",
+                  "value": "both",
+                  "disabled": true,
+                  "description": "container | tank | both — exact match"
+                },
+                {
+                  "key": "vehicle_category_id",
+                  "value": "1",
+                  "disabled": true,
+                  "description": "with asset_type — the vehicle form's embedded-container list: only capacities the fleet can field for that vehicle category + kind, derived from the asset pool. Both params required together."
+                },
+                {
+                  "key": "asset_type",
+                  "value": "container",
+                  "disabled": true,
+                  "description": "container | tank — pair with vehicle_category_id"
+                },
+                {
+                  "key": "search",
+                  "value": "skip",
+                  "disabled": true,
+                  "description": "matches the capacity name"
+                },
+                {
+                  "key": "sort_by",
+                  "value": "name",
+                  "disabled": true,
+                  "description": "name | applies_to | capacity_cbm | capacity_ton | assets_count | created_at"
+                },
+                {
+                  "key": "sort_dir",
+                  "value": "asc",
+                  "disabled": true,
+                  "description": "asc | desc"
+                },
+                {
+                  "key": "per_page",
+                  "value": "15",
+                  "disabled": true,
+                  "description": "SEND this to get a paginated {data, meta} response (the management list page does). Omit it entirely — as the form dropdowns do — to get the full unpaginated array."
+                }
+              ]
+            },
+            "description": "Open reference list (any role). Without per_page it returns the full unpaginated array — that's what the vehicle & asset form dropdowns use. With per_page it's genuinely server-side paged/sorted/searched, same as /vehicles (the management list page). With vehicle_category_id + asset_type it returns only the capacities usable as that vehicle category's embedded container (see EmbeddedCapacityFitsVehicleRule)."
+          }
+        },
+        {
+          "name": "Create Capacity Category",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Roll-on/off {{$timestamp}}\",\n  \"applies_to\": \"container\",\n  \"capacity_cbm\": 20,\n  \"capacity_ton\": 8,\n  \"additional_data\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/asset-capacity-categories",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "asset-capacity-categories"
+              ]
+            },
+            "description": "system_admin / data_entry. `applies_to`: container | tank | both. Both CBM and TON are required."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    if (body.data && body.data.id) {",
+                  "        pm.collectionVariables.set('last_asset_capacity_category_id', body.data.id);",
+                  "        console.log('last_asset_capacity_category_id saved:', body.data.id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Show Capacity Category",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/asset-capacity-categories/{{last_asset_capacity_category_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "asset-capacity-categories",
+                "{{last_asset_capacity_category_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Capacity Category (name only)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Roll-on/off (renamed)\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/asset-capacity-categories/{{last_asset_capacity_category_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "asset-capacity-categories",
+                "{{last_asset_capacity_category_id}}"
+              ]
+            },
+            "description": "FRD §1.7.2 — only the name is editable. `applies_to` and the capacities are locked after creation (any other keys sent are ignored). No delete route."
+          }
+        },
+        {
+          "name": "Export Capacity Categories (Excel)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/asset-capacity-categories/export?format=xlsx",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "asset-capacity-categories",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "xlsx"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "applies_to",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Export Capacity Categories (PDF)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/asset-capacity-categories/export?format=pdf",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "asset-capacity-categories",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "pdf"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "applies_to",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Asset",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Container A-{{$timestamp}}\",\n  \"asset_type\": \"container\",\n  \"asset_capacity_category_id\": 1,\n  \"compatible_vehicle_category_ids\": [1],\n  \"operational_status\": \"active\",\n  \"affiliation\": \"gcm\",\n  \"purchase_date\": \"2024-01-01\",\n  \"additional_data\": \"<p>notes</p>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/assets",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "assets"
+              ]
+            },
+            "description": "asset_capacity_category_id must fit asset_type (its applies_to is that type or 'both'). compatible_vehicle_category_ids: vehicle_categories.id — at least one required (see Reference — Vehicle Categories in the Vehicles folder). deactivated status is System Admin only. contractor affiliation is rejected until Week 5."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    if (body.data && body.data.id) {",
+                  "        pm.collectionVariables.set('last_asset_id', body.data.id);",
+                  "        console.log('last_asset_id saved:', body.data.id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Show Asset",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/assets/{{last_asset_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "assets",
+                "{{last_asset_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Asset (name only)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Container A-01 (renamed)\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/assets/{{last_asset_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "assets",
+                "{{last_asset_id}}"
+              ]
+            },
+            "description": "FRD §1.7.3 — the name is the ONLY editable field. Type, capacity, affiliation, purchase date, notes and compatible vehicle categories are all locked (any other keys sent are ignored). operational_status changes via Change Operational Status."
+          }
+        },
+        {
+          "name": "Change Operational Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"on_maintenance\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/assets/{{last_asset_id}}/status",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "assets",
+                "{{last_asset_id}}",
+                "status"
+              ]
+            },
+            "description": "status: active | on_maintenance | deactivated. Setting or clearing `deactivated` is System Admin only (422 otherwise) — see CannotDeactivateAssetException."
+          }
+        }
+      ]
+    }
+  ]
+}

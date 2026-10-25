@@ -86,6 +86,10 @@
   "Verify Email": "التحقق من البريد الإلكتروني",
   "Reset Password": "إعادة تعيين كلمة المرور",
   "Forgot Password": "نسيت كلمة المرور",
+  "Please sign-in to your account and start the adventure": "سجّل الدخول إلى حسابك لتبدأ",
+  "Enter your email": "أدخل بريدك الإلكتروني",
+  "Remember Me": "تذكّرني",
+  "Forgot Password?": "نسيت كلمة المرور؟",
   "Two Steps": "خطوتين",
   "Basic": "أساسي",
   "Cover": "الغلاف",
@@ -516,6 +520,7 @@
   "Clients & Projects": "العملاء والمشروعات",
   "GLOBAL CLEAR MISSION": "الرسالة الواضحة العالمية",
   "Welcome to :name": "أهلًا بك في :name",
+  "Welcome": "أهلًا بك",
   "Change Password": "تغيير كلمة المرور",
   "Current Password": "كلمة المرور الحالية",
   "Confirm New Password": "تأكيد كلمة المرور الجديدة",
@@ -800,5 +805,6 @@
   "Search main service": "ابحث عن خدمة أساسية",
   "Intermediate facilities": "المنشآت الوسيطة",
   "Default embedded container": "الحاوية المدمجة الافتراضية",
-  "Pre-filled when a vehicle of this category is created. They can still be changed for each vehicle.": "تُملأ تلقائيًا عند إضافة مركبة من هذا التصنيف، ويمكن تعديلها لكل مركبة على حدة."
+  "Pre-filled when a vehicle of this category is created. They can still be changed for each vehicle.": "تُملأ تلقائيًا عند إضافة مركبة من هذا التصنيف، ويمكن تعديلها لكل مركبة على حدة.",
+  "Project location map": "خريطة موقع المشروع"
 }

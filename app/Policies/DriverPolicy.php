@@ -19,12 +19,13 @@ class DriverPolicy
 {
     public function viewAny(User $actor): bool
     {
-        return $actor->hasAnyRole(['system_admin', 'data_entry', 'auditor']);
+        return $actor->hasAnyRole(['system_admin', 'data_entry', 'auditor', User::CONTRACTOR_ROLE]);
     }
 
+    /** A contractor's own account (FRD §6.1.1) sees its own drivers only — see VisibleToContractorAccount. */
     public function view(User $actor, Driver $target): bool
     {
-        return $actor->hasAnyRole(['system_admin', 'data_entry', 'auditor']);
+        return $actor->hasAnyRole(['system_admin', 'data_entry', 'auditor', User::CONTRACTOR_ROLE]) && $target->isVisibleTo($actor);
     }
 
     public function create(User $actor): bool

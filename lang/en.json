@@ -87,6 +87,10 @@
   "Verify Email": "Verify Email",
   "Reset Password": "Reset Password",
   "Forgot Password": "Forgot Password",
+  "Please sign-in to your account and start the adventure": "Please sign-in to your account and start the adventure",
+  "Enter your email": "Enter your email",
+  "Remember Me": "Remember Me",
+  "Forgot Password?": "Forgot Password?",
   "Two Steps": "Two Steps",
   "Basic": "Basic",
   "Cover": "Cover",
@@ -516,6 +520,7 @@
   "Clients & Projects": "Clients & Projects",
   "GLOBAL CLEAR MISSION": "GLOBAL CLEAR MISSION",
   "Welcome to :name": "Welcome to :name",
+  "Welcome": "Welcome",
   "Change Password": "Change Password",
   "Current Password": "Current Password",
   "Confirm New Password": "Confirm New Password",
@@ -800,5 +805,6 @@
   "Search main service": "Search main service",
   "Intermediate facilities": "Intermediate facilities",
   "Default embedded container": "Default embedded container",
-  "Pre-filled when a vehicle of this category is created. They can still be changed for each vehicle.": "Pre-filled when a vehicle of this category is created. They can still be changed for each vehicle."
+  "Pre-filled when a vehicle of this category is created. They can still be changed for each vehicle.": "Pre-filled when a vehicle of this category is created. They can still be changed for each vehicle.",
+  "Project location map": "Project location map"
 }
