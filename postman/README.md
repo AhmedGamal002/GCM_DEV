@@ -4,7 +4,7 @@
 
 ## الملفات
 
-- `GCM-Portal.postman_collection.json` — المجموعة نفسها (15 مجلد).
+- `GCM-Portal.postman_collection.json` — المجموعة نفسها (17 مجلد).
 - `GCM-Portal-Local.postman_environment.json` — إعدادات بيئة التطوير المحلي (بيانات الدخول الافتراضية من الـ seeders).
 
 ## الاستيراد
@@ -55,3 +55,9 @@
 
 - **`GCM-Portal-Phase1.postman_collection.json`** — المرحلة الأولى بس: Auth / Profile / Roles / Users / Drivers / Vehicles / Assets (مجلدات 1-7). **من غير أي حاجة تخص الـPlatform أو تعدد الشركات (multi-tenant)** ومن غير المنشآت الوسيطة وشركات العملاء والمشروعات، وأسماء المتغيرات والأوصاف اتنضّفت من أي إشارة ليهم. متولّدة من الـcollection الكاملة، فلو اتغيّرت حاجة في المرحلة الأولى حدّث الاتنين.
 - **`GCM-Portal-Phase1-digitswat.postman_environment.json`** — `base_url` = `https://gcm.digitswat.com`، و`auth_email`/`auth_password` **فاضيين عمدًا** — املاهم من Postman بعد الـimport ومتحطهمش في الملف قبل ما تعمل commit. شغّل "1. Auth ← Login" الأول (بيحفظ `auth_token` تلقائي).
+
+## نسخة العميل — المرحلتين مع بعض، من غير الـPlatform
+
+- **`GCM-Portal-Client.postman_collection.json`** — كل الـ endpoints التينانتية (مجلدات 1-13: Auth / Me / Roles / Users / Drivers / Vehicles / Assets / Intermediate Facilities / Services / Contractors / Client Companies / Client Projects / General Settings) — **من غير مجلدات الـPlatform (Super Admin) خالص ومن غير أي إشارة لتعدد الشركات (tenant)**. أسماء المتغيرات `auth_email` / `auth_password` / `auth_token` (زي نسخة المرحلة الأولى)، وأمثلة الإيميلات على `example.com`، والأوصاف اتنضّفت من أسماء الكلاسات والمراجع الداخلية ومن أي إشارة لأسبوع/مرحلة/إصدار FRD.
+- **`GCM-Portal-Client-digitswat.postman_environment.json`** — `base_url` = `https://gcm.digitswat.com`، و`auth_email`/`auth_password` **فاضيين عمدًا** — العميل بيملاهم بنفسه بعد الـimport. شغّل "1. Auth ← Login" الأول (بيحفظ `auth_token` تلقائي).
+- **النسخة دي مشتقة من `GCM-Portal.postman_collection.json` بسكريبت** (`build-client-collection.php`، محفوظ برّه الريبو في `D:\personal\GCM\dev-tools\postman\` — مش جوه المشروع). أي endpoint أو وصف يتغيّر في الكاملة اعمل الـbuild تاني بدل التعديل اليدوي، وبعدها اتأكد إن مفيش كلمات tenant/platform/super/FRD V0 اتسربت (السكريبت بيطبع مراجعة قبل/بعد للأوصاف اللي اتعدّلت).

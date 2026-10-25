@@ -1,0 +1,5634 @@
+{
+  "info": {
+    "name": "GCM Portal API",
+    "_postman_id": "b1e9d8b0-6f5a-4b0a-9c1a-gcmportalclnt1",
+    "description": "GCM Portal API — authentication, profile, roles, users, drivers, vehicles, assets, intermediate facilities, services, contractors, client companies, client projects and general settings.\n\nSet auth_email and auth_password in the environment, then run \"1. Auth → Login\" — its test script stores the Bearer token in auth_token, which every other request sends.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{auth_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://gcm.digitswat.com",
+      "type": "string"
+    },
+    {
+      "key": "api_base",
+      "value": "{{base_url}}/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "auth_email",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "auth_password",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "auth_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "last_user_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "last_driver_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "last_vehicle_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "last_vehicle_document_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "last_asset_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "last_asset_capacity_category_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "last_vehicle_category_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "last_facility_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "last_main_service_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "last_sub_service_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "last_contractor_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "last_company_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "last_project_id",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{auth_email}}\",\n  \"password\": \"{{auth_password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/auth/login",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Returns a bearer `token` (the same flow a mobile app uses) instead of a session cookie. The test script below saves it into {{auth_token}}, which every other request in this collection sends via the collection-level Bearer auth."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Login succeeded', () => pm.response.code === 200);",
+                  "if (pm.response.code === 200) {",
+                  "    const body = pm.response.json();",
+                  "    if (body.token) {",
+                  "        pm.collectionVariables.set('auth_token', body.token);",
+                  "        console.log('auth_token saved');",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/auth/logout",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "auth",
+                "logout"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{auth_email}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/auth/forgot-password",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "auth",
+                "forgot-password"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"paste-token-from-the-reset-email-here\",\n  \"email\": \"{{auth_email}}\",\n  \"password\": \"NewPassword123!\",\n  \"password_confirmation\": \"NewPassword123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/auth/reset-password",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "auth",
+                "reset-password"
+              ]
+            },
+            "description": "The reset token comes from the link in the email sent by Forgot Password."
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Me / Profile",
+      "item": [
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/me",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "me"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Profile (Photo)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "_method",
+                  "value": "PATCH",
+                  "type": "text"
+                },
+                {
+                  "key": "photo",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{api_base}}/me",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "me"
+              ]
+            },
+            "description": "FRD: the only thing a user changes from their own profile is the photo (multipart, POST + _method=PATCH). Name/email/everything else is admin-managed."
+          }
+        },
+        {
+          "name": "Update Profile (Signature & Stamp — client accounts + GCM staff)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "_method",
+                  "value": "PATCH",
+                  "type": "text"
+                },
+                {
+                  "key": "signature",
+                  "type": "file",
+                  "src": [],
+                  "description": "Client accounts and GCM staff (system_admin / data_entry / auditor) — 422 for drivers and contractor users. Either one alone is enough; the other is kept."
+                },
+                {
+                  "key": "stamp",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{api_base}}/me",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "me"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"current_password\": \"{{auth_password}}\",\n  \"new_password\": \"NewPassword123!\",\n  \"new_password_confirmation\": \"NewPassword123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/me/password",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "me",
+                "password"
+              ]
+            },
+            "description": "Available to every signed-in role. Send the current password plus the new password and its confirmation."
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Roles (Read-only)",
+      "item": [
+        {
+          "name": "List Roles",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/roles",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "roles"
+              ]
+            },
+            "description": "Available to every role (e.g. for a role-assignment dropdown). Read-only."
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Users",
+      "item": [
+        {
+          "name": "List Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/users?per_page=15",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "per_page",
+                  "value": "15"
+                },
+                {
+                  "key": "status",
+                  "value": "active",
+                  "disabled": true,
+                  "description": "active | on_vacation | deactivated"
+                },
+                {
+                  "key": "role",
+                  "value": "data_entry",
+                  "disabled": true,
+                  "description": "data_entry | auditor | client_project_manager | client_project_auditor | driver | system_admin"
+                },
+                {
+                  "key": "search",
+                  "value": "ahmed",
+                  "disabled": true,
+                  "description": "matches name, email, or code"
+                },
+                {
+                  "key": "sort_by",
+                  "value": "name",
+                  "disabled": true,
+                  "description": "code | name | status | created_at"
+                },
+                {
+                  "key": "sort_dir",
+                  "value": "asc",
+                  "disabled": true,
+                  "description": "asc | desc"
+                },
+                {
+                  "key": "affiliation",
+                  "value": "client",
+                  "disabled": true,
+                  "description": "gcm | client"
+                },
+                {
+                  "key": "company_id",
+                  "value": "{{last_company_id}}",
+                  "disabled": true,
+                  "description": "client accounts of one company"
+                },
+                {
+                  "key": "project_id",
+                  "value": "{{last_project_id}}",
+                  "disabled": true,
+                  "description": "accounts that can see one project (all-projects holders + assigned) — feeds the project representative picker"
+                }
+              ]
+            },
+            "description": "system_admin only. Excludes the caller's own row — self is edited via /me. Paginated server-side (per_page / page / sort_by / sort_dir)."
+          }
+        },
+        {
+          "name": "Export Users (Excel)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/users/export?format=xlsx",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "users",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "xlsx"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "role",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Export Users (PDF)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/users/export?format=pdf",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "users",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "pdf"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "role",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "New Data Entry User",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "new.user+{{$timestamp}}@example.com",
+                  "type": "text"
+                },
+                {
+                  "key": "phone",
+                  "value": "0100000{{$timestamp}}",
+                  "type": "text"
+                },
+                {
+                  "key": "photo",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "signature",
+                  "type": "file",
+                  "src": [],
+                  "description": "Optional private image (PNG/JPG, max 2 MB). GCM staff carry a signature + stamp like client accounts.",
+                  "disabled": true
+                },
+                {
+                  "key": "stamp",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "password",
+                  "value": "Password123!",
+                  "type": "text"
+                },
+                {
+                  "key": "password_confirmation",
+                  "value": "Password123!",
+                  "type": "text"
+                },
+                {
+                  "key": "status",
+                  "value": "active",
+                  "type": "text"
+                },
+                {
+                  "key": "additional_data",
+                  "value": "",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "roles[]",
+                  "value": "data_entry",
+                  "type": "text",
+                  "description": "Exactly one of: data_entry | auditor | driver (system_admin is never creatable here)"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{api_base}}/users",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    if (body.data && body.data.id) {",
+                  "        pm.collectionVariables.set('last_user_id', body.data.id);",
+                  "        console.log('last_user_id saved:', body.data.id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Show User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/users/{{last_user_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "users",
+                "{{last_user_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Updated Name",
+                  "type": "text"
+                },
+                {
+                  "key": "phone",
+                  "value": "0100000000",
+                  "type": "text"
+                },
+                {
+                  "key": "photo",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "signature",
+                  "type": "file",
+                  "src": [],
+                  "description": "Optional — leave out to keep the current file.",
+                  "disabled": true
+                },
+                {
+                  "key": "stamp",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "additional_data",
+                  "value": "",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "roles[]",
+                  "value": "auditor",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{api_base}}/users/{{last_user_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "users",
+                "{{last_user_id}}"
+              ]
+            },
+            "description": "Postman sends real multipart PATCH natively — no _method spoofing needed."
+          }
+        },
+        {
+          "name": "Update User Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"on_vacation\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/users/{{last_user_id}}/status",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "users",
+                "{{last_user_id}}",
+                "status"
+              ]
+            },
+            "description": "status: active | on_vacation | deactivated. Deactivating a system_admin always fails (422) regardless of who asks — see CannotDeactivateSystemAdminException."
+          }
+        },
+        {
+          "name": "Create Client Account",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Client Project Manager",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "client.pm+{{$timestamp}}@example.com",
+                  "type": "text"
+                },
+                {
+                  "key": "phone",
+                  "value": "0100000{{$timestamp}}",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "Password123!",
+                  "type": "text"
+                },
+                {
+                  "key": "password_confirmation",
+                  "value": "Password123!",
+                  "type": "text"
+                },
+                {
+                  "key": "company_id",
+                  "value": "{{last_company_id}}",
+                  "type": "text",
+                  "description": "An ACTIVE client company"
+                },
+                {
+                  "key": "role",
+                  "value": "client_project_manager",
+                  "type": "text",
+                  "description": "client_project_manager | client_project_auditor"
+                },
+                {
+                  "key": "projects_scope",
+                  "value": "all",
+                  "type": "text",
+                  "description": "all = every project of the company (current and future) | specific = only project_ids[]"
+                },
+                {
+                  "key": "project_ids[]",
+                  "value": "{{last_project_id}}",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "Required when projects_scope=specific; active projects of the chosen company"
+                },
+                {
+                  "key": "status",
+                  "value": "active",
+                  "type": "text",
+                  "description": "active | on_vacation | deactivated"
+                },
+                {
+                  "key": "photo",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "signature",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true,
+                  "description": "Image, max 2 MB — stored privately"
+                },
+                {
+                  "key": "stamp",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true,
+                  "description": "Operational stamp image, max 2 MB — stored privately"
+                },
+                {
+                  "key": "additional_data",
+                  "value": "",
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{api_base}}/client-users",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "client-users"
+              ]
+            },
+            "description": "FRD §1.4. Client accounts are created ONLY here (POST /users refuses client roles). Saves last_user_id."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    if (body.data && body.data.id) {",
+                  "        pm.collectionVariables.set('last_user_id', body.data.id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Client Account",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Client Project Manager (edited)\",\n  \"phone\": \"0100000000\",\n  \"role\": \"client_project_manager\",\n  \"company_id\": {{last_company_id}},\n  \"projects_scope\": \"all\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/client-users/{{last_user_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "client-users",
+                "{{last_user_id}}"
+              ]
+            },
+            "description": "Every field except the email. Omit password to keep the current one. Status goes through \"Update User Status\". To replace the signature/stamp send multipart (POST with _method=PATCH) with signature/stamp files. 403 for a non-client account."
+          }
+        },
+        {
+          "name": "Create Contractor User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Contractor User",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "contractor.user+{{$timestamp}}@example.com",
+                  "type": "text"
+                },
+                {
+                  "key": "phone",
+                  "value": "0100000{{$timestamp}}",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "Password123!",
+                  "type": "text"
+                },
+                {
+                  "key": "password_confirmation",
+                  "value": "Password123!",
+                  "type": "text"
+                },
+                {
+                  "key": "contractor_id",
+                  "value": "{{last_contractor_id}}",
+                  "type": "text",
+                  "description": "An ACTIVE contractor"
+                },
+                {
+                  "key": "status",
+                  "value": "active",
+                  "type": "text",
+                  "description": "active | on_vacation | deactivated"
+                },
+                {
+                  "key": "photo",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "additional_data",
+                  "value": "",
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{api_base}}/contractor-users",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "contractor-users"
+              ]
+            },
+            "description": "FRD §1.4. Contractor users (role contractor_user, fixed) are created ONLY here (POST /users refuses the role). Saves last_user_id."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    if (body.data && body.data.id) {",
+                  "        pm.collectionVariables.set('last_user_id', body.data.id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Contractor User",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Contractor User (edited)\",\n  \"phone\": \"0100000000\",\n  \"contractor_id\": {{last_contractor_id}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/contractor-users/{{last_user_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "contractor-users",
+                "{{last_user_id}}"
+              ]
+            },
+            "description": "Every field (email and contractor included; send `email` to change it — unique across the system). Omit password to keep the current one. Status goes through \"Update User Status\". To replace the photo send multipart (POST with _method=PATCH). 403 for a non-contractor-user account. Moving the user to another contractor clears it as the old contractor's representative."
+          }
+        },
+        {
+          "name": "Download Signature / Stamp",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/users/{{last_user_id}}/images/signature",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "users",
+                "{{last_user_id}}",
+                "images",
+                "signature"
+              ]
+            },
+            "description": "signature | stamp — private disk, served only through this Gate-checked route (the account itself, system_admin, data_entry, auditor). 404 if none uploaded."
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Drivers",
+      "item": [
+        {
+          "name": "List Drivers",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/drivers?per_page=15",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "drivers"
+              ],
+              "query": [
+                {
+                  "key": "per_page",
+                  "value": "15"
+                },
+                {
+                  "key": "status",
+                  "value": "active",
+                  "disabled": true,
+                  "description": "active | on_vacation | deactivated"
+                },
+                {
+                  "key": "affiliation",
+                  "value": "gcm",
+                  "disabled": true,
+                  "description": "gcm | contractor"
+                },
+                {
+                  "key": "search",
+                  "value": "ahmed",
+                  "disabled": true,
+                  "description": "matches name, email, or code"
+                },
+                {
+                  "key": "sort_by",
+                  "value": "name",
+                  "disabled": true,
+                  "description": "code | name | status | created_at"
+                },
+                {
+                  "key": "sort_dir",
+                  "value": "asc",
+                  "disabled": true,
+                  "description": "asc | desc"
+                }
+              ]
+            },
+            "description": "Paginated server-side, same as /users."
+          }
+        },
+        {
+          "name": "Export Drivers (Excel)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/drivers/export?format=xlsx",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "drivers",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "xlsx"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "affiliation",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Export Drivers (PDF)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/drivers/export?format=pdf",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "drivers",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "pdf"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "affiliation",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Driver Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/drivers/stats",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "drivers",
+                "stats"
+              ]
+            },
+            "description": "Counts (available/on_trips/on_vacation/deactivated) computed against the full set — not just the page of the list that is loaded."
+          }
+        },
+        {
+          "name": "Create Driver",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "New Driver",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "new.driver+{{$timestamp}}@example.com",
+                  "type": "text"
+                },
+                {
+                  "key": "phone",
+                  "value": "0100001{{$timestamp}}",
+                  "type": "text"
+                },
+                {
+                  "key": "photo",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "password",
+                  "value": "Password123!",
+                  "type": "text"
+                },
+                {
+                  "key": "password_confirmation",
+                  "value": "Password123!",
+                  "type": "text"
+                },
+                {
+                  "key": "status",
+                  "value": "active",
+                  "type": "text"
+                },
+                {
+                  "key": "additional_data",
+                  "value": "",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "vehicle_category_ids[0]",
+                  "value": "1",
+                  "type": "text",
+                  "description": "vehicle_categories.id — see GET /vehicle-categories. At least one required."
+                },
+                {
+                  "key": "default_vehicle_id",
+                  "value": "1",
+                  "type": "text",
+                  "description": "vehicles.id — must belong to one of the selected vehicle_category_ids. See GET /vehicles?category=slug."
+                },
+                {
+                  "key": "residence_number",
+                  "value": "RES-0001",
+                  "type": "text"
+                },
+                {
+                  "key": "residence_valid_to",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "residence_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "license_number",
+                  "value": "LIC-0001",
+                  "type": "text"
+                },
+                {
+                  "key": "license_valid_to",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "license_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "operational_license_number",
+                  "value": "OPL-0001",
+                  "type": "text"
+                },
+                {
+                  "key": "operational_license_valid_to",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "operational_license_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "insurance_number",
+                  "value": "INS-0001",
+                  "type": "text"
+                },
+                {
+                  "key": "insurance_valid_to",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "insurance_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "entry_permits[0][area_name]",
+                  "value": "Cairo Zone A",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "entry_permits[0][permit_number]",
+                  "value": "PERMIT-0001",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "entry_permits[0][valid_to]",
+                  "value": "2027-01-01",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "entry_permits[0][attachment]",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{api_base}}/drivers",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "drivers"
+              ]
+            },
+            "description": "Creates the User (role=driver) + Driver profile + any entry permits in one transaction. entry_permits[*] rows are disabled by default — enable them to test that part. vehicle_category_ids/default_vehicle_id need real ids from your data — check GET /vehicle-categories and GET /vehicles first. Affiliation is editable on update (FRD §1.3: every field). The account and the driver profile are kept in step. affiliation: gcm | contractor (required on create). contractor_id is required when affiliation=contractor and must be one of the ACTIVE contractors; it is ignored (stored as null) for gcm."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    if (body.data && body.data.id) {",
+                  "        pm.collectionVariables.set('last_driver_id', body.data.id);",
+                  "        console.log('last_driver_id saved:', body.data.id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Show Driver",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/drivers/{{last_driver_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "drivers",
+                "{{last_driver_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Driver",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Updated Driver Name",
+                  "type": "text"
+                },
+                {
+                  "key": "phone",
+                  "value": "0100000000",
+                  "type": "text"
+                },
+                {
+                  "key": "photo",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "additional_data",
+                  "value": "",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "vehicle_category_ids[0]",
+                  "value": "1",
+                  "type": "text",
+                  "description": "vehicle_categories.id — at least one required."
+                },
+                {
+                  "key": "default_vehicle_id",
+                  "value": "1",
+                  "type": "text",
+                  "description": "vehicles.id — must belong to one of the selected vehicle_category_ids."
+                },
+                {
+                  "key": "residence_number",
+                  "value": "RES-0001",
+                  "type": "text"
+                },
+                {
+                  "key": "residence_valid_to",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "residence_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "license_number",
+                  "value": "LIC-0001",
+                  "type": "text"
+                },
+                {
+                  "key": "license_valid_to",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "license_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "operational_license_number",
+                  "value": "OPL-0001",
+                  "type": "text"
+                },
+                {
+                  "key": "operational_license_valid_to",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "operational_license_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "insurance_number",
+                  "value": "INS-0001",
+                  "type": "text"
+                },
+                {
+                  "key": "insurance_valid_to",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "insurance_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "sync_entry_permits",
+                  "value": "1",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "Send 1 to REPLACE the driver's entry permits with the entry_permits[] list below (a permit not in the list is removed, with its file). Send neither this nor entry_permits[] = permits are left untouched. Needed to remove ALL permits."
+                },
+                {
+                  "key": "entry_permits[0][id]",
+                  "value": "1",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "Existing permit id = update it (no file = keep its file); omit for a new permit"
+                },
+                {
+                  "key": "entry_permits[0][area_name]",
+                  "value": "Port",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "entry_permits[0][permit_number]",
+                  "value": "1234",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "entry_permits[0][valid_to]",
+                  "value": "2030-06-01",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "entry_permits[0][attachment]",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true,
+                  "description": "pdf/jpg/png, max 5 MB — replaces the permit's current file"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{api_base}}/drivers/{{last_driver_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "drivers",
+                "{{last_driver_id}}"
+              ]
+            },
+            "description": "Affiliation is editable on update (FRD §1.3: every field). The account and the driver profile are kept in step. affiliation: gcm | contractor (required on create). contractor_id is required when affiliation=contractor and must be one of the ACTIVE contractors; it is ignored (stored as null) for gcm."
+          }
+        },
+        {
+          "name": "Add Entry Permit",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "area_name",
+                  "value": "Cairo Zone A",
+                  "type": "text"
+                },
+                {
+                  "key": "permit_number",
+                  "value": "PERMIT-0002",
+                  "type": "text"
+                },
+                {
+                  "key": "valid_to",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{api_base}}/drivers/{{last_driver_id}}/entry-permits",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "drivers",
+                "{{last_driver_id}}",
+                "entry-permits"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Download Document (Residence)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/drivers/{{last_driver_id}}/documents/residence",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "drivers",
+                "{{last_driver_id}}",
+                "documents",
+                "residence"
+              ]
+            },
+            "description": "type: residence | license | operational-license | insurance. Served through an authenticated download route — never a static URL."
+          }
+        },
+        {
+          "name": "Download Entry Permit Attachment",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/driver-entry-permits/1/attachment",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "driver-entry-permits",
+                "1",
+                "attachment"
+              ]
+            },
+            "description": "Replace the `1` with a real entry_permits.id (from Show Driver's entry_permits[].id, or the response of Add Entry Permit)."
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Vehicles",
+      "item": [
+        {
+          "name": "List Vehicles",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/vehicles?per_page=15",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicles"
+              ],
+              "query": [
+                {
+                  "key": "per_page",
+                  "value": "15"
+                },
+                {
+                  "key": "category",
+                  "value": "hook_lift",
+                  "disabled": true,
+                  "description": "vehicle_categories.slug: hook_lift | compactor | dump_truck | water_tanker | dyna_box | tractor_truck"
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "disabled": true,
+                  "description": "active | on_maintenance | deactivated"
+                },
+                {
+                  "key": "affiliation",
+                  "value": "gcm",
+                  "disabled": true,
+                  "description": "gcm | contractor"
+                },
+                {
+                  "key": "search",
+                  "value": "ABC",
+                  "disabled": true,
+                  "description": "matches plate_letters, plate_numbers, or the combined displayed plate (\"ABC 1234\", with or without the space)"
+                },
+                {
+                  "key": "sort_by",
+                  "value": "plate_letters",
+                  "disabled": true,
+                  "description": "plate_letters | operational_status | created_at"
+                },
+                {
+                  "key": "sort_dir",
+                  "value": "asc",
+                  "disabled": true,
+                  "description": "asc | desc"
+                }
+              ]
+            },
+            "description": "system_admin / data_entry / auditor. Paginated server-side, same as /users and /drivers."
+          }
+        },
+        {
+          "name": "Export Vehicles (Excel)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/vehicles/export?format=xlsx",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicles",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "xlsx"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "category",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "operational_status",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "affiliation",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Export Vehicles (PDF)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/vehicles/export?format=pdf",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicles",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "pdf"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "category",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "operational_status",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "affiliation",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Vehicle Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/vehicles/stats",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicles",
+                "stats"
+              ]
+            },
+            "description": "Counts for the list page cards: by_category (an ARRAY of {id, slug, name, count} — one entry per category, zero-count ones included) + availability (available/on_maintenance/deactivated), computed against the full set. There is no on-a-trip card."
+          }
+        },
+        {
+          "name": "Reference — Vehicle Categories",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/vehicle-categories",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicle-categories"
+              ]
+            },
+            "description": "Plain list of the vehicle categories (starts as the six defaults; the system_admin can add/rename/delete — see the Vehicle Categories requests below). Readable by every role (form dropdowns). Use the ids/slugs here for vehicle_category_id on Create/Update Vehicle and for a driver's vehicle_category_ids[]. Add ?per_page=10&search=&sort_by=&sort_dir= for the paginated management list (includes vehicles_count/drivers_count/assets_count/in_use)."
+          }
+        },
+        {
+          "name": "Create Vehicle Category",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name_en\": \"Crane truck\",\n  \"name_ar\": \"مركبات رافعة\",\n  \"default_has_embedded_container\": false,\n  \"default_embedded_container_type\": null,\n  \"default_embedded_asset_capacity_category_id\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/vehicle-categories",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicle-categories"
+              ]
+            },
+            "description": "system_admin ONLY (403 for everyone else). name_en + name_ar required, each unique. OPTIONAL embedded-container defaults that the create-vehicle form pre-fills when this category is picked (still editable per vehicle): default_has_embedded_container (bool, default false), default_embedded_container_type (container|tank, required when has=true), default_embedded_asset_capacity_category_id (optional; must exist and fit the type, see GET /asset-capacity-categories?for_type=). The slug is generated from name_en once and never changes on rename. Saves last_vehicle_category_id."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    pm.collectionVariables.set('last_vehicle_category_id', body.data.id);",
+                  "    console.log('last_vehicle_category_id saved:', body.data.id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Show Vehicle Category",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/vehicle-categories/{{last_vehicle_category_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicle-categories",
+                "{{last_vehicle_category_id}}"
+              ]
+            },
+            "description": "system_admin only. Includes vehicles_count / drivers_count / assets_count / in_use."
+          }
+        },
+        {
+          "name": "Update Vehicle Category",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name_en\": \"Crane truck (renamed)\",\n  \"name_ar\": \"مركبات رافعة\",\n  \"default_has_embedded_container\": true,\n  \"default_embedded_container_type\": \"container\",\n  \"default_embedded_asset_capacity_category_id\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/vehicle-categories/{{last_vehicle_category_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicle-categories",
+                "{{last_vehicle_category_id}}"
+              ]
+            },
+            "description": "system_admin only. Names + the embedded-container defaults (omit the default_* fields to leave them as they are; default_has_embedded_container=false clears the type and capacity). The slug is stable. Changing the defaults never touches existing vehicles."
+          }
+        },
+        {
+          "name": "Delete Vehicle Category",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/vehicle-categories/{{last_vehicle_category_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicle-categories",
+                "{{last_vehicle_category_id}}"
+              ]
+            },
+            "description": "system_admin only. 204 on success. 422 (\"This is a primary category and can't be deleted.\") for the six primary categories (the FRD five + Tractor truck) even when unused. 422 with a clear message if a custom category is still used by vehicles, drivers' qualified categories or assets' compatible categories (e.g. \"in use by 3 vehicles, 1 asset\")."
+          }
+        },
+        {
+          "name": "Export Vehicle Categories (Excel)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/vehicle-categories/export?format=xlsx",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicle-categories",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "xlsx"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "system_admin only. Honours the same `search` (name EN/AR) as the list."
+          }
+        },
+        {
+          "name": "Export Vehicle Categories (PDF)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/vehicle-categories/export?format=pdf",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicle-categories",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "pdf"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "system_admin only. Arabic names render joined/RTL via ArabicText."
+          }
+        },
+        {
+          "name": "Reference — Asset Capacity Categories",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/asset-capacity-categories",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "asset-capacity-categories"
+              ]
+            },
+            "description": "Capacity list for the embedded-container dropdown. Read-only here — capacities are managed under 7. Assets."
+          }
+        },
+        {
+          "name": "Create Vehicle",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "plate_letters",
+                  "value": "ABC",
+                  "type": "text"
+                },
+                {
+                  "key": "plate_numbers",
+                  "value": "1234",
+                  "type": "text",
+                  "description": "digits only"
+                },
+                {
+                  "key": "vehicle_category_id",
+                  "value": "1",
+                  "type": "text",
+                  "description": "vehicle_categories.id — see Reference — Vehicle Categories"
+                },
+                {
+                  "key": "has_embedded_container",
+                  "value": "1",
+                  "type": "text",
+                  "description": "1 | 0"
+                },
+                {
+                  "key": "embedded_container_type",
+                  "value": "container",
+                  "type": "text",
+                  "description": "container | tank — required when has_embedded_container=1"
+                },
+                {
+                  "key": "embedded_asset_capacity_category_id",
+                  "value": "1",
+                  "type": "text",
+                  "description": "asset_capacity_categories.id — required when has_embedded_container=1"
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "type": "text",
+                  "description": "active | on_maintenance | deactivated (deactivated is system_admin only)"
+                },
+                {
+                  "key": "affiliation",
+                  "value": "gcm",
+                  "type": "text",
+                  "description": "affiliation: gcm | contractor (required on create). contractor_id is required when affiliation=contractor and must be one of the ACTIVE contractors; it is ignored (stored as null) for gcm."
+                },
+                {
+                  "key": "contractor_id",
+                  "value": "{{last_contractor_id}}",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "required when affiliation=contractor"
+                },
+                {
+                  "key": "additional_data",
+                  "value": "<p>notes</p>",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "photo_front",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "photo_back",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "documents[registration_card][number]",
+                  "value": "1001",
+                  "type": "text",
+                  "description": "digits only"
+                },
+                {
+                  "key": "documents[registration_card][valid_to]",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "documents[registration_card][attachment]",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "documents[fitness_document][number]",
+                  "value": "1002",
+                  "type": "text"
+                },
+                {
+                  "key": "documents[fitness_document][valid_to]",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "documents[fitness_document][attachment]",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "documents[inspection_certificate][number]",
+                  "value": "1003",
+                  "type": "text"
+                },
+                {
+                  "key": "documents[inspection_certificate][valid_to]",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "documents[inspection_certificate][attachment]",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "documents[insurance][number]",
+                  "value": "1004",
+                  "type": "text"
+                },
+                {
+                  "key": "documents[insurance][valid_to]",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "documents[insurance][attachment]",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "entry_permits[0][area_name]",
+                  "value": "Riyadh",
+                  "type": "text"
+                },
+                {
+                  "key": "entry_permits[0][permit_number]",
+                  "value": "2001",
+                  "type": "text",
+                  "description": "digits only"
+                },
+                {
+                  "key": "entry_permits[0][valid_to]",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "entry_permits[0][attachment]",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{api_base}}/vehicles",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicles"
+              ]
+            },
+            "description": "Creates the vehicle + its 4 single documents + any entry permits in one transaction. All *_number fields are digits-only. File fields are disabled by default — enable and pick a file to test uploads. Affiliation is editable on update (FRD §1.5: every field). affiliation: gcm | contractor (required on create). contractor_id is required when affiliation=contractor and must be one of the ACTIVE contractors; it is ignored (stored as null) for gcm."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    if (body.data && body.data.id) {",
+                  "        pm.collectionVariables.set('last_vehicle_id', body.data.id);",
+                  "        console.log('last_vehicle_id saved:', body.data.id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Show Vehicle",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/vehicles/{{last_vehicle_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicles",
+                "{{last_vehicle_id}}"
+              ]
+            },
+            "description": "Includes documents[] — grab a documents[].id for {{last_vehicle_document_id}} to test Download Document."
+          }
+        },
+        {
+          "name": "Update Vehicle",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "plate_letters",
+                  "value": "XYZ",
+                  "type": "text"
+                },
+                {
+                  "key": "plate_numbers",
+                  "value": "9999",
+                  "type": "text"
+                },
+                {
+                  "key": "vehicle_category_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "has_embedded_container",
+                  "value": "0",
+                  "type": "text"
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "type": "text"
+                },
+                {
+                  "key": "affiliation",
+                  "value": "gcm",
+                  "type": "text",
+                  "description": "affiliation: gcm | contractor (required on create). contractor_id is required when affiliation=contractor and must be one of the ACTIVE contractors; it is ignored (stored as null) for gcm."
+                },
+                {
+                  "key": "contractor_id",
+                  "value": "{{last_contractor_id}}",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "required when affiliation=contractor"
+                },
+                {
+                  "key": "additional_data",
+                  "value": "<p>updated</p>",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "photo_front",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "photo_back",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "documents[registration_card][number]",
+                  "value": "1001",
+                  "type": "text"
+                },
+                {
+                  "key": "documents[registration_card][valid_to]",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "documents[fitness_document][number]",
+                  "value": "1002",
+                  "type": "text"
+                },
+                {
+                  "key": "documents[fitness_document][valid_to]",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "documents[inspection_certificate][number]",
+                  "value": "1003",
+                  "type": "text"
+                },
+                {
+                  "key": "documents[inspection_certificate][valid_to]",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "documents[insurance][number]",
+                  "value": "1004",
+                  "type": "text"
+                },
+                {
+                  "key": "documents[insurance][valid_to]",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "entry_permits[0][id]",
+                  "value": "",
+                  "type": "text",
+                  "description": "existing entry_permits.id — keeps its attachment. Blank = new row. Omit a row entirely to delete it."
+                },
+                {
+                  "key": "entry_permits[0][area_name]",
+                  "value": "Jeddah",
+                  "type": "text"
+                },
+                {
+                  "key": "entry_permits[0][permit_number]",
+                  "value": "2002",
+                  "type": "text"
+                },
+                {
+                  "key": "entry_permits[0][valid_to]",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "entry_permits[0][attachment]",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{api_base}}/vehicles/{{last_vehicle_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicles",
+                "{{last_vehicle_id}}"
+              ]
+            },
+            "description": "Postman sends real multipart PATCH natively — no _method spoofing needed. Everything except operational_status is editable here; status changes go through Change Operational Status. Affiliation is editable on update (FRD §1.5: every field). affiliation: gcm | contractor (required on create). contractor_id is required when affiliation=contractor and must be one of the ACTIVE contractors; it is ignored (stored as null) for gcm."
+          }
+        },
+        {
+          "name": "Change Operational Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"on_maintenance\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/vehicles/{{last_vehicle_id}}/status",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicles",
+                "{{last_vehicle_id}}",
+                "status"
+              ]
+            },
+            "description": "status: active | on_maintenance | deactivated. Setting or clearing `deactivated` is System Admin only (422 otherwise) — see CannotDeactivateVehicleException."
+          }
+        },
+        {
+          "name": "Download Document",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/vehicles/{{last_vehicle_id}}/documents/{{last_vehicle_document_id}}/download",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "vehicles",
+                "{{last_vehicle_id}}",
+                "documents",
+                "{{last_vehicle_document_id}}",
+                "download"
+              ]
+            },
+            "description": "Set {{last_vehicle_document_id}} from Show Vehicle's documents[].id. Served through an authenticated download route; 404 if that document row has no uploaded file."
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Assets",
+      "item": [
+        {
+          "name": "List Assets",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/assets?per_page=15",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "assets"
+              ],
+              "query": [
+                {
+                  "key": "per_page",
+                  "value": "15"
+                },
+                {
+                  "key": "asset_type",
+                  "value": "container",
+                  "disabled": true,
+                  "description": "container | tank"
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "disabled": true,
+                  "description": "active (= available: not in a project) | in_project | on_maintenance | deactivated"
+                },
+                {
+                  "key": "affiliation",
+                  "value": "gcm",
+                  "disabled": true,
+                  "description": "gcm | contractor"
+                },
+                {
+                  "key": "project_id",
+                  "value": "{{last_project_id}}",
+                  "disabled": true,
+                  "description": "only the assets inserted into this project"
+                },
+                {
+                  "key": "search",
+                  "value": "Container",
+                  "disabled": true,
+                  "description": "matches the asset name"
+                },
+                {
+                  "key": "sort_by",
+                  "value": "name",
+                  "disabled": true,
+                  "description": "name | asset_type | operational_status | created_at"
+                },
+                {
+                  "key": "sort_dir",
+                  "value": "asc",
+                  "disabled": true,
+                  "description": "asc | desc"
+                }
+              ]
+            },
+            "description": "system_admin / data_entry / auditor. Paginated server-side, same as /vehicles."
+          }
+        },
+        {
+          "name": "Export Assets (Excel)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/assets/export?format=xlsx",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "assets",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "xlsx"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "asset_type",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "operational_status",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "affiliation",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Export Assets (PDF)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/assets/export?format=pdf",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "assets",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "pdf"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "asset_type",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "operational_status",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "affiliation",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Asset Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/assets/stats",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "assets",
+                "stats"
+              ]
+            },
+            "description": "Containers and tanks counted separately (available / in_projects / on_maintenance / deactivated). in_projects counts active assets that are inserted into a project."
+          }
+        },
+        {
+          "name": "Reference — Capacity Categories",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/asset-capacity-categories",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "asset-capacity-categories"
+              ],
+              "query": [
+                {
+                  "key": "for_type",
+                  "value": "container",
+                  "disabled": true,
+                  "description": "container | tank — returns capacities that fit that type (applies_to matches, or 'both'). Used by the asset form AND by the vehicle form's embedded-container capacity list."
+                },
+                {
+                  "key": "applies_to",
+                  "value": "both",
+                  "disabled": true,
+                  "description": "container | tank | both — exact match"
+                },
+                {
+                  "key": "search",
+                  "value": "skip",
+                  "disabled": true,
+                  "description": "matches the capacity name"
+                },
+                {
+                  "key": "sort_by",
+                  "value": "name",
+                  "disabled": true,
+                  "description": "name | applies_to | capacity_cbm | capacity_ton | assets_count | created_at"
+                },
+                {
+                  "key": "sort_dir",
+                  "value": "asc",
+                  "disabled": true,
+                  "description": "asc | desc"
+                },
+                {
+                  "key": "per_page",
+                  "value": "15",
+                  "disabled": true,
+                  "description": "SEND this to get a paginated {data, meta} response (the management list page does). Omit it entirely — as the form dropdowns do — to get the full unpaginated array."
+                }
+              ]
+            },
+            "description": "Open reference list (any role). Without per_page it returns the full unpaginated array — that's what the vehicle & asset form dropdowns use. With per_page it's genuinely server-side paged/sorted/searched, same as /vehicles (the management list page). With for_type=container|tank it returns the capacities that fit that type — what the asset form and the vehicle form's embedded-container list ask for."
+          }
+        },
+        {
+          "name": "Create Capacity Category",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Roll-on/off {{$timestamp}}\",\n  \"applies_to\": \"container\",\n  \"capacity_cbm\": 20,\n  \"capacity_ton\": 8,\n  \"additional_data\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/asset-capacity-categories",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "asset-capacity-categories"
+              ]
+            },
+            "description": "system_admin / data_entry. `applies_to`: container | tank | both. Both CBM and TON are required."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    if (body.data && body.data.id) {",
+                  "        pm.collectionVariables.set('last_asset_capacity_category_id', body.data.id);",
+                  "        console.log('last_asset_capacity_category_id saved:', body.data.id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Show Capacity Category",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/asset-capacity-categories/{{last_asset_capacity_category_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "asset-capacity-categories",
+                "{{last_asset_capacity_category_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Capacity Category (name + notes)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Roll-on/off (renamed)\",\n  \"additional_data\": \"<p>Optional notes</p>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/asset-capacity-categories/{{last_asset_capacity_category_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "asset-capacity-categories",
+                "{{last_asset_capacity_category_id}}"
+              ]
+            },
+            "description": "FRD §1.7.2 — the FRD lets only the name change; the client also kept the additional data editable (omit it to leave the notes untouched, send null/an empty editor to clear them). `applies_to` and the capacities are locked after creation (any other keys sent are ignored). No delete route."
+          }
+        },
+        {
+          "name": "Export Capacity Categories (Excel)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/asset-capacity-categories/export?format=xlsx",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "asset-capacity-categories",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "xlsx"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "applies_to",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Export Capacity Categories (PDF)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/asset-capacity-categories/export?format=pdf",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "asset-capacity-categories",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "pdf"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "applies_to",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Asset",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Container A-{{$timestamp}}\",\n  \"asset_type\": \"container\",\n  \"asset_capacity_category_id\": 1,\n  \"compatible_vehicle_category_ids\": [\n    1\n  ],\n  \"operational_status\": \"active\",\n  \"affiliation\": \"gcm\",\n  \"purchase_date\": \"2024-01-01\",\n  \"additional_data\": \"<p>notes</p>\",\n  \"contractor_id\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/assets",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "assets"
+              ]
+            },
+            "description": "asset_capacity_category_id must fit asset_type (its applies_to is that type or 'both'). compatible_vehicle_category_ids: vehicle_categories.id — at least one required (see Reference — Vehicle Categories in the Vehicles folder). deactivated status is System Admin only. The affiliation is locked after creation (only the name is editable, FRD §1.7.4). affiliation: gcm | contractor (required on create). contractor_id is required when affiliation=contractor and must be one of the ACTIVE contractors; it is ignored (stored as null) for gcm."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    if (body.data && body.data.id) {",
+                  "        pm.collectionVariables.set('last_asset_id', body.data.id);",
+                  "        console.log('last_asset_id saved:', body.data.id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Show Asset",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/assets/{{last_asset_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "assets",
+                "{{last_asset_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Asset (name + notes)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Container A-01 (renamed)\",\n  \"additional_data\": \"<p>Optional notes</p>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/assets/{{last_asset_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "assets",
+                "{{last_asset_id}}"
+              ]
+            },
+            "description": "FRD §1.7.3 — the FRD lets only the name change; the client also kept the additional data editable (omit it to leave the notes untouched, send null/an empty editor to clear them). Type, capacity, affiliation, purchase date and compatible vehicle categories are locked (any other keys sent are ignored). operational_status changes via Change Operational Status."
+          }
+        },
+        {
+          "name": "Change Operational Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"on_maintenance\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/assets/{{last_asset_id}}/status",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "assets",
+                "{{last_asset_id}}",
+                "status"
+              ]
+            },
+            "description": "status: active | on_maintenance | deactivated. Setting or clearing `deactivated` is System Admin only (422 otherwise) — see CannotDeactivateAssetException."
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. Intermediate Facilities",
+      "item": [
+        {
+          "name": "List Facilities",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/facilities?per_page=15",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "facilities"
+              ],
+              "query": [
+                {
+                  "key": "per_page",
+                  "value": "15"
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "environmental_service",
+                  "value": "recycle",
+                  "disabled": true
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "disabled": true
+                },
+                {
+                  "key": "sort_by",
+                  "value": "name",
+                  "disabled": true
+                },
+                {
+                  "key": "sort_dir",
+                  "value": "asc",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "FRD §1.8. System Admin / Data Entry / Auditor. search matches the name and the 3-letter prefix. environmental_service: disposal | sewage_treatment | recycle. operational_status: active | deactivated. sort_by: name | environmental_service | operational_status | created_at."
+          }
+        },
+        {
+          "name": "Facility Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/facilities/stats",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "facilities",
+                "stats"
+              ]
+            },
+            "description": "Cards on the list page: for each environmental service, how many facilities offer it (`total`) and how many of those are `active`."
+          }
+        },
+        {
+          "name": "Create Facility",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Green Loop Recycling {{$timestamp}}",
+                  "type": "text"
+                },
+                {
+                  "key": "prefix",
+                  "value": "GLR",
+                  "type": "text",
+                  "description": "Exactly 3 English letters, unique per company (stored upper-case). Change it on every re-run — it is locked after creation."
+                },
+                {
+                  "key": "environmental_service",
+                  "value": "recycle",
+                  "type": "text",
+                  "description": "disposal | sewage_treatment | recycle"
+                },
+                {
+                  "key": "recycling_efficiency",
+                  "value": "72.5",
+                  "type": "text",
+                  "description": "Required for `recycle` (0–100), rejected for the other services."
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "type": "text",
+                  "description": "active | deactivated"
+                },
+                {
+                  "key": "address",
+                  "value": "Abu Dhabi, ICAD",
+                  "type": "text"
+                },
+                {
+                  "key": "location_url",
+                  "value": "https://maps.google.com/?q=24.4,54.5",
+                  "type": "text"
+                },
+                {
+                  "key": "contract_number",
+                  "value": "1001",
+                  "type": "text",
+                  "description": "digits only (max 50)"
+                },
+                {
+                  "key": "contract_start",
+                  "value": "2026-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "contract_end",
+                  "value": "2026-12-31",
+                  "type": "text"
+                },
+                {
+                  "key": "additional_data",
+                  "value": "<p>notes</p>",
+                  "type": "text"
+                },
+                {
+                  "key": "logo",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true,
+                  "description": "Image, max 2 MB."
+                },
+                {
+                  "key": "contract_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true,
+                  "description": "pdf / jpg / png, max 4 MB. Private — served only through Download Contract."
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{api_base}}/facilities",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "facilities"
+              ]
+            },
+            "description": "System Admin / Data Entry. Multipart form (the two files are optional — enable them and pick a file)."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    if (body.data && body.data.id) {",
+                  "        pm.collectionVariables.set('last_facility_id', body.data.id);",
+                  "        console.log('last_facility_id saved:', body.data.id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Show Facility",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/facilities/{{last_facility_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "facilities",
+                "{{last_facility_id}}"
+              ]
+            },
+            "description": "`supported_sub_services` lists the sub-services that offer this facility."
+          }
+        },
+        {
+          "name": "Update Facility",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "_method",
+                  "value": "PATCH",
+                  "type": "text",
+                  "description": "Send _method=PATCH with this POST — a multipart body is sent as POST."
+                },
+                {
+                  "key": "name",
+                  "value": "Green Loop Recycling (renamed)",
+                  "type": "text"
+                },
+                {
+                  "key": "address",
+                  "value": "New address",
+                  "type": "text"
+                },
+                {
+                  "key": "location_url",
+                  "value": "",
+                  "type": "text"
+                },
+                {
+                  "key": "contract_number",
+                  "value": "C-1002",
+                  "type": "text"
+                },
+                {
+                  "key": "contract_start",
+                  "value": "2026-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "contract_end",
+                  "value": "2027-01-01",
+                  "type": "text"
+                },
+                {
+                  "key": "additional_data",
+                  "value": "<p>updated</p>",
+                  "type": "text"
+                },
+                {
+                  "key": "environmental_service",
+                  "value": "recycle",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "Ignored on update — the environmental service is fixed at creation (FRD §1.8: edit = name + optional data only)."
+                },
+                {
+                  "key": "recycling_efficiency",
+                  "value": "80",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "Ignored on update — fixed at creation, like the environmental service."
+                },
+                {
+                  "key": "logo",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "contract_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{api_base}}/facilities/{{last_facility_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "facilities",
+                "{{last_facility_id}}"
+              ]
+            },
+            "description": "System Admin / Data Entry. The name and the optional data are always editable (a new logo / contract attachment replaces the old file). The prefix is never editable (ignored if sent). operational_status changes via Change Operational Status. A JSON PATCH without files works too."
+          }
+        },
+        {
+          "name": "Change Operational Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"deactivated\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/facilities/{{last_facility_id}}/status",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "facilities",
+                "{{last_facility_id}}",
+                "status"
+              ]
+            },
+            "description": "status: active | deactivated. System Admin / Data Entry. No delete route — facilities are deactivated, never removed."
+          }
+        },
+        {
+          "name": "Download Contract Attachment",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/facilities/{{last_facility_id}}/contract",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "facilities",
+                "{{last_facility_id}}",
+                "contract"
+              ]
+            },
+            "description": "Private file (disk `local`). 404 if the facility has no attachment. System Admin / Data Entry / Auditor."
+          }
+        },
+        {
+          "name": "Export Facilities (Excel)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/facilities/export?format=xlsx",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "facilities",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "xlsx"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "environmental_service",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "operational_status",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Same filters and search as the list — the file holds exactly the rows the list shows."
+          }
+        },
+        {
+          "name": "Export Facilities (PDF)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/facilities/export?format=pdf",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "facilities",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "pdf"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "environmental_service",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "operational_status",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "9. Services",
+      "description": "FRD §1.9 — main services (a category: non_hazardous | hazardous | supplying, with its supported vehicle categories) and sub-services (asset type, compatible capacities, intermediate facilities, recycle-receipt flag, skip colour). System Admin / Data Entry manage; Auditor views/exports; Driver 403. JSON bodies (no files). No delete routes — deactivate instead.",
+      "item": [
+        {
+          "name": "List Main Services",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/main-services?per_page=15",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "main-services"
+              ],
+              "query": [
+                {
+                  "key": "per_page",
+                  "value": "15"
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "service_type",
+                  "value": "hazardous",
+                  "disabled": true
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "disabled": true
+                },
+                {
+                  "key": "sort_by",
+                  "value": "name",
+                  "disabled": true
+                },
+                {
+                  "key": "sort_dir",
+                  "value": "asc",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "search matches the main service name AND its sub-services' names (both columns are on screen). service_type: non_hazardous | hazardous | supplying. operational_status: active | deactivated. sort_by: name | service_type | operational_status | created_at. Each row carries sub_services [{id,name,operational_status,asset_type,requires_recycle_receipt,skip_color_code,skip_color_label,skip_color_hex}] and vehicle_categories. The Sub Services accordion page uses this endpoint with per_page/page (10 mains per page by default) + the same search/service_type/operational_status filters. subs_limit=N (max 50) returns only the first N sub-services of each row plus the true sub_services_count (omit it to get all of them); subs_match=1 together with search narrows both to the matching sub-services unless the main service itself matched. search_in = all (default) | main (the main service name only) | sub (its sub-services' names only) limits what search looks at."
+          }
+        },
+        {
+          "name": "Create Main Service",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Solid Waste Transport {{$timestamp}}\",\n  \"service_type\": \"non_hazardous\",\n  \"vehicle_category_ids\": [\n    1,\n    2\n  ],\n  \"operational_status\": \"active\",\n  \"additional_data\": \"<p>notes</p>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/main-services",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "main-services"
+              ]
+            },
+            "description": "vehicle_category_ids: at least one, from GET /vehicle-categories. service_type is locked after creation. operational_status: active | deactivated."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    if (body.data && body.data.id) {",
+                  "        pm.collectionVariables.set('last_main_service_id', body.data.id);",
+                  "        console.log('last_main_service_id saved:', body.data.id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Show Main Service",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/main-services/{{last_main_service_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "main-services",
+                "{{last_main_service_id}}"
+              ]
+            },
+            "description": "Includes vehicle_categories, sub_services, in_use (true once a PO includes it — always false until POs exist), stats (zeros until trips/POs exist) and meta.embedded_capacities: the embedded containers of vehicles in the supported categories (shown as information on the sub-service form)."
+          }
+        },
+        {
+          "name": "Update Main Service",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Solid Waste Transport (renamed)\",\n  \"additional_data\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/main-services/{{last_main_service_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "main-services",
+                "{{last_main_service_id}}"
+              ]
+            },
+            "description": "FRD §1.9.1: name + additional_data only. service_type, vehicle_category_ids and operational_status are fixed at creation / have their own endpoint — they are ignored here. 422 when the service is in a PO."
+          }
+        },
+        {
+          "name": "Change Main Service Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"deactivated\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/main-services/{{last_main_service_id}}/status",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "main-services",
+                "{{last_main_service_id}}",
+                "status"
+              ]
+            },
+            "description": "status: active | deactivated. Deactivating also deactivates every sub-service under it; reactivating does NOT reactivate them. 422 when the service is in a PO."
+          }
+        },
+        {
+          "name": "Export Main Services (Excel)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/main-services/export?format=xlsx",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "main-services",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "xlsx"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "service_type",
+                  "value": "hazardous",
+                  "disabled": true
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Same filters as the list (one filteredQuery). Use \"Send and Download\"."
+          }
+        },
+        {
+          "name": "Export Main Services (PDF)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/main-services/export?format=pdf",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "main-services",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "pdf"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "service_type",
+                  "value": "hazardous",
+                  "disabled": true
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Same filters as the list. Use \"Send and Download\"."
+          }
+        },
+        {
+          "name": "List Sub-services",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/sub-services?per_page=15",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "sub-services"
+              ],
+              "query": [
+                {
+                  "key": "per_page",
+                  "value": "15"
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "main_service_id",
+                  "value": "{{last_main_service_id}}",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "asset_type",
+                  "value": "container",
+                  "disabled": true
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "disabled": true
+                },
+                {
+                  "key": "sort_by",
+                  "value": "name",
+                  "disabled": true
+                },
+                {
+                  "key": "sort_dir",
+                  "value": "asc",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "search matches the sub-service name and its main service name. asset_type: container | tank. sort_by: name | asset_type | operational_status | created_at. No export — the FRD sub-services page (accordion) has none."
+          }
+        },
+        {
+          "name": "Create Sub-service",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Construction debris {{$timestamp}}\",\n  \"main_service_id\": \"{{last_main_service_id}}\",\n  \"asset_type\": \"container\",\n  \"capacity_ids\": [\n    1\n  ],\n  \"facility_ids\": [\n    \"{{last_facility_id}}\"\n  ],\n  \"requires_recycle_receipt\": true,\n  \"skip_color_code\": \"light_concrete\",\n  \"operational_status\": \"active\",\n  \"additional_data\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/sub-services",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "sub-services"
+              ]
+            },
+            "description": "main_service_id must be ACTIVE and is locked after creation. capacity_ids (GET /asset-capacity-categories) must fit asset_type (applies_to container/tank/both). facility_ids: active facilities, required unless the main service is `supplying`. skip_color_code (optional): designated_yard | white_paper | brown_cardboard | light_blue_wood | gray_plastic | red_metal_scrap | black_hazardous | green_general | yellow_food | light_concrete | green_glass."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    if (body.data && body.data.id) {",
+                  "        pm.collectionVariables.set('last_sub_service_id', body.data.id);",
+                  "        console.log('last_sub_service_id saved:', body.data.id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Show Sub-service",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/sub-services/{{last_sub_service_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "sub-services",
+                "{{last_sub_service_id}}"
+              ]
+            },
+            "description": "Includes main_service (with its vehicle_categories — inherited), capacities, facilities, locked (ongoing trip / main in a PO — always false until trips/POs exist), stats (zeros)."
+          }
+        },
+        {
+          "name": "Update Sub-service",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Construction debris (renamed)\",\n  \"skip_color_code\": null,\n  \"additional_data\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/sub-services/{{last_sub_service_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "sub-services",
+                "{{last_sub_service_id}}"
+              ]
+            },
+            "description": "FRD §1.9.2: name + skip_color_code + additional_data only (an omitted field keeps its value). main_service_id, asset_type, capacity_ids, facility_ids, requires_recycle_receipt and operational_status are ignored here. 422 when locked."
+          }
+        },
+        {
+          "name": "Change Sub-service Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"deactivated\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/sub-services/{{last_sub_service_id}}/status",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "sub-services",
+                "{{last_sub_service_id}}",
+                "status"
+              ]
+            },
+            "description": "status: active | deactivated. Reactivating is refused (422) while the main service is deactivated; deactivating is refused while locked."
+          }
+        },
+        {
+          "name": "Export Sub-services (Excel)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/sub-services/export?format=xlsx",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "sub-services",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "xlsx"
+                },
+                {
+                  "key": "main_service_id",
+                  "value": "{{last_main_service_id}}",
+                  "disabled": true
+                },
+                {
+                  "key": "asset_type",
+                  "value": "tank",
+                  "disabled": true
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "The sub-services table of a main service's details page — same filters and search as GET /sub-services (main_service_id, asset_type container|tank, operational_status, search), so the file holds exactly the rows on screen. system_admin / data_entry / auditor; driver 403. Use \"Send and Download\"."
+          }
+        },
+        {
+          "name": "Export Sub-services (PDF)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/sub-services/export?format=pdf",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "sub-services",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "pdf"
+                },
+                {
+                  "key": "main_service_id",
+                  "value": "{{last_main_service_id}}",
+                  "disabled": true
+                },
+                {
+                  "key": "asset_type",
+                  "value": "tank",
+                  "disabled": true
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "The sub-services table of a main service's details page — same filters and search as GET /sub-services (main_service_id, asset_type container|tank, operational_status, search), so the file holds exactly the rows on screen. system_admin / data_entry / auditor; driver 403. Use \"Send and Download\"."
+          }
+        }
+      ]
+    },
+    {
+      "name": "10. Contractors",
+      "description": "FRD §1.10. system_admin / data_entry create, edit and (de)activate; auditor views and exports; driver has no access. No hard delete. The contractor ID is the short name + \"C\" + a running number (e.g. ALN-C0001), so it never clashes with a client company ID. Deactivating a contractor does not touch its drivers / vehicles / assets. A driver, vehicle or asset belongs to a contractor through affiliation=contractor + contractor_id (see those folders).",
+      "item": [
+        {
+          "name": "List Contractors",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/contractors?per_page=15",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "contractors"
+              ],
+              "query": [
+                {
+                  "key": "per_page",
+                  "value": "15"
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "disabled": true,
+                  "description": "active | deactivated"
+                },
+                {
+                  "key": "search",
+                  "value": "Noor",
+                  "disabled": true,
+                  "description": "matches the name, trading name, short name (prefix) or the ID (code)"
+                },
+                {
+                  "key": "sort_by",
+                  "value": "name",
+                  "disabled": true,
+                  "description": "code | name | operational_status | created_at"
+                },
+                {
+                  "key": "sort_dir",
+                  "value": "asc",
+                  "disabled": true,
+                  "description": "asc | desc"
+                }
+              ]
+            },
+            "description": "system_admin / data_entry / auditor. Paginated server-side. Each row carries drivers_count / vehicles_count / containers_count / tanks_count and the certified_services."
+          }
+        },
+        {
+          "name": "Contractor Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/contractors/stats",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "contractors",
+                "stats"
+              ]
+            },
+            "description": "The four cards on top of the list: contractors {total, active, deactivated}, vehicles, assets {container, tank} and drivers — the last three count only what contractors supply (contractor_id set). system_admin / data_entry / auditor."
+          }
+        },
+        {
+          "name": "Create Contractor",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Contractor Co {{$timestamp}}",
+                  "type": "text"
+                },
+                {
+                  "key": "prefix",
+                  "value": "CXC",
+                  "type": "text",
+                  "description": "3 English letters, unique, stored upper-case. The contractor ID is built from it (e.g. ALN-0001), so it cannot be changed after creation."
+                },
+                {
+                  "key": "trading_name",
+                  "value": "Desert Trucks",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "الاسم التجاري (الشهرة) — optional"
+                },
+                {
+                  "key": "logo",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true,
+                  "description": "image, max 2MB"
+                },
+                {
+                  "key": "phone",
+                  "value": "+966500000000",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "main_service_ids[]",
+                  "value": "{{last_main_service_id}}",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "Certified services — one entry per main service the contractor supports. Leave out (or send an empty main_service_ids) = supports every service. On update the list is REPLACED by whatever is sent."
+                },
+                {
+                  "key": "address",
+                  "value": "Riyadh",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "location_url",
+                  "value": "https://maps.google.com/?q=riyadh",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "http/https only"
+                },
+                {
+                  "key": "contract_number",
+                  "value": "1001",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "digits only"
+                },
+                {
+                  "key": "contract_start_date",
+                  "value": "2026-01-01",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "contract_end_date",
+                  "value": "2026-12-31",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "on/after contract_start_date"
+                },
+                {
+                  "key": "contract_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true,
+                  "description": "pdf/jpg/png, max 4MB — private, downloadable only through the download endpoint"
+                },
+                {
+                  "key": "cr_number",
+                  "value": "2002",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "digits only"
+                },
+                {
+                  "key": "cr_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "tax_number",
+                  "value": "3003",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "digits only"
+                },
+                {
+                  "key": "tax_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "additional_data",
+                  "value": "<p>notes</p>",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "type": "text",
+                  "description": "active | deactivated"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{api_base}}/contractors",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "contractors"
+              ]
+            },
+            "description": "name, prefix and operational_status are required. multipart/form-data. The prefix must be exactly 3 English letters and unique among contractors — change it if you re-send this request. The response returns the generated contractor ID (prefix + \"C\" + running number, e.g. DSH-C0001). main_service_ids[] = the certified services (none = all)."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    if (body.data && body.data.id) {",
+                  "        pm.collectionVariables.set('last_contractor_id', body.data.id);",
+                  "        console.log('last_contractor_id saved:', body.data.id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Show Contractor",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/contractors/{{last_contractor_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "contractors",
+                "{{last_contractor_id}}"
+              ]
+            },
+            "description": "Returns the contractor with its certified_services (+ supports_all_services), its contract / commercial-registration / tax-registration blocks (each with a download_url when a file was uploaded) and the drivers / vehicles / containers / tanks it supplies."
+          }
+        },
+        {
+          "name": "Update Contractor",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "_method",
+                  "value": "PATCH",
+                  "type": "text",
+                  "description": "Send _method=PATCH with this POST."
+                },
+                {
+                  "key": "name",
+                  "value": "Contractor Co {{$timestamp}}",
+                  "type": "text"
+                },
+                {
+                  "key": "prefix",
+                  "value": "TCX",
+                  "type": "text",
+                  "description": "LOCKED after creation — any value sent here is ignored (the contractor ID ALN-0001 is built from it)."
+                },
+                {
+                  "key": "trading_name",
+                  "value": "Desert Trucks",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "الاسم التجاري (الشهرة) — optional"
+                },
+                {
+                  "key": "representative_id",
+                  "value": "{{last_user_id}}",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "Contractor representative account (FRD §1.10.2) — an ACTIVE contractor user of THIS contractor. Edit only (not accepted on create). Omit = unchanged; send empty = clear."
+                },
+                {
+                  "key": "logo",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true,
+                  "description": "image, max 2MB"
+                },
+                {
+                  "key": "phone",
+                  "value": "+966500000000",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "main_service_ids[]",
+                  "value": "{{last_main_service_id}}",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "Certified services — one entry per main service the contractor supports. Leave out (or send an empty main_service_ids) = supports every service. On update the list is REPLACED by whatever is sent."
+                },
+                {
+                  "key": "address",
+                  "value": "Riyadh",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "location_url",
+                  "value": "https://maps.google.com/?q=riyadh",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "http/https only"
+                },
+                {
+                  "key": "contract_number",
+                  "value": "1001",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "digits only"
+                },
+                {
+                  "key": "contract_start_date",
+                  "value": "2026-01-01",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "contract_end_date",
+                  "value": "2026-12-31",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "on/after contract_start_date"
+                },
+                {
+                  "key": "contract_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true,
+                  "description": "pdf/jpg/png, max 4MB — private, downloadable only through the download endpoint"
+                },
+                {
+                  "key": "cr_number",
+                  "value": "2002",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "digits only"
+                },
+                {
+                  "key": "cr_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "tax_number",
+                  "value": "3003",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "digits only"
+                },
+                {
+                  "key": "tax_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "additional_data",
+                  "value": "<p>notes</p>",
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{api_base}}/contractors/{{last_contractor_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "contractors",
+                "{{last_contractor_id}}"
+              ]
+            },
+            "description": "Every field is editable (FRD §1.10.4) except the status, which has its own endpoint. Re-send the full form; a file field left out keeps the stored file, a new file replaces it. The short name (prefix) is locked after creation: it is ignored on update and the contractor ID never changes. main_service_ids[] REPLACES the certified services; send main_service_ids= (empty) to go back to \"supports everything\"."
+          }
+        },
+        {
+          "name": "Change Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"deactivated\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/contractors/{{last_contractor_id}}/status",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "contractors",
+                "{{last_contractor_id}}",
+                "status"
+              ]
+            },
+            "description": "status: active | deactivated. system_admin / data_entry. Nothing cascades — the FRD does not say a contractor status affects its drivers, vehicles or assets."
+          }
+        },
+        {
+          "name": "Download Document",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/contractors/{{last_contractor_id}}/documents/contract",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "contractors",
+                "{{last_contractor_id}}",
+                "documents",
+                "contract"
+              ]
+            },
+            "description": "Change the last path segment: contract | cr | tax. Private file — 404 when nothing was uploaded for that type, 403 without view access."
+          }
+        },
+        {
+          "name": "Export Contractors (Excel)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/contractors/export?format=xlsx",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "contractors",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "xlsx"
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "Noor",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Same filters and search as the list — the file holds exactly the rows the list shows."
+          }
+        },
+        {
+          "name": "Export Contractors (PDF)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/contractors/export?format=pdf",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "contractors",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "pdf"
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "Noor",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Arabic output follows the session locale, like the other exports."
+          }
+        }
+      ]
+    },
+    {
+      "name": "11. Client Companies",
+      "description": "FRD §1.11. system_admin / data_entry create, edit and (de)activate; auditor views and exports; driver has no access. No hard delete. The projects and users counts are real; the contracts count is 0 until contracts exist.",
+      "item": [
+        {
+          "name": "List Client Companies",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/companies?per_page=15",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "companies"
+              ],
+              "query": [
+                {
+                  "key": "per_page",
+                  "value": "15"
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "disabled": true,
+                  "description": "active | deactivated"
+                },
+                {
+                  "key": "search",
+                  "value": "Noor",
+                  "disabled": true,
+                  "description": "matches the name, short name (prefix) or the ID (code)"
+                },
+                {
+                  "key": "sort_by",
+                  "value": "name",
+                  "disabled": true,
+                  "description": "code | name | operational_status | created_at"
+                },
+                {
+                  "key": "sort_dir",
+                  "value": "asc",
+                  "disabled": true,
+                  "description": "asc | desc"
+                }
+              ]
+            },
+            "description": "system_admin / data_entry / auditor. Paginated server-side."
+          }
+        },
+        {
+          "name": "Create Client Company",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Client Co {{$timestamp}}",
+                  "type": "text"
+                },
+                {
+                  "key": "prefix",
+                  "value": "CXA",
+                  "type": "text",
+                  "description": "3 English letters, unique, stored upper-case. The company ID is built from it (e.g. ALN-0001), so it cannot be changed after creation."
+                },
+                {
+                  "key": "business_sector",
+                  "value": "Construction",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "logo",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true,
+                  "description": "image, max 2MB"
+                },
+                {
+                  "key": "phone",
+                  "value": "+966500000000",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "email",
+                  "value": "info@example.com",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "address",
+                  "value": "Riyadh",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "location_url",
+                  "value": "https://maps.google.com/?q=riyadh",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "http/https only"
+                },
+                {
+                  "key": "contract_number",
+                  "value": "1001",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "digits only"
+                },
+                {
+                  "key": "contract_start_date",
+                  "value": "2026-01-01",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "contract_end_date",
+                  "value": "2026-12-31",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "on/after contract_start_date"
+                },
+                {
+                  "key": "contract_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true,
+                  "description": "pdf/jpg/png, max 4MB — private, downloadable only through the download endpoint"
+                },
+                {
+                  "key": "cr_number",
+                  "value": "2002",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "digits only"
+                },
+                {
+                  "key": "cr_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "tax_number",
+                  "value": "3003",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "digits only"
+                },
+                {
+                  "key": "tax_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "additional_data",
+                  "value": "<p>notes</p>",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "type": "text",
+                  "description": "active | deactivated"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{api_base}}/companies",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "companies"
+              ]
+            },
+            "description": "name, prefix and operational_status are required. multipart/form-data. The prefix must be exactly 3 English letters and unique among companies — change it if you re-send this request. The response returns the generated company ID (prefix + running number, e.g. ALN-0001)."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    if (body.data && body.data.id) {",
+                  "        pm.collectionVariables.set('last_company_id', body.data.id);",
+                  "        console.log('last_company_id saved:', body.data.id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Show Client Company",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/companies/{{last_company_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "companies",
+                "{{last_company_id}}"
+              ]
+            },
+            "description": "Returns the company with its contract / commercial-registration / tax-registration blocks (each with a download_url when a file was uploaded) and the placeholder stats."
+          }
+        },
+        {
+          "name": "Update Client Company",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "_method",
+                  "value": "PATCH",
+                  "type": "text",
+                  "description": "Send _method=PATCH with this POST."
+                },
+                {
+                  "key": "name",
+                  "value": "Client Co {{$timestamp}}",
+                  "type": "text"
+                },
+                {
+                  "key": "prefix",
+                  "value": "TCX",
+                  "type": "text",
+                  "description": "LOCKED after creation — any value sent here is ignored (the company ID ALN-0001 is built from it)."
+                },
+                {
+                  "key": "business_sector",
+                  "value": "Construction",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "logo",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true,
+                  "description": "image, max 2MB"
+                },
+                {
+                  "key": "phone",
+                  "value": "+966500000000",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "email",
+                  "value": "info@example.com",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "address",
+                  "value": "Riyadh",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "location_url",
+                  "value": "https://maps.google.com/?q=riyadh",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "http/https only"
+                },
+                {
+                  "key": "contract_number",
+                  "value": "1001",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "digits only"
+                },
+                {
+                  "key": "contract_start_date",
+                  "value": "2026-01-01",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "contract_end_date",
+                  "value": "2026-12-31",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "on/after contract_start_date"
+                },
+                {
+                  "key": "contract_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true,
+                  "description": "pdf/jpg/png, max 4MB — private, downloadable only through the download endpoint"
+                },
+                {
+                  "key": "cr_number",
+                  "value": "2002",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "digits only"
+                },
+                {
+                  "key": "cr_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "tax_number",
+                  "value": "3003",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "digits only"
+                },
+                {
+                  "key": "tax_attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                },
+                {
+                  "key": "additional_data",
+                  "value": "<p>notes</p>",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "representative_id",
+                  "value": "{{last_user_id}}",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "Optional. An active client_project_manager of THIS company (offered on edit only — a new company has no accounts yet). Empty = none."
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{api_base}}/companies/{{last_company_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "companies",
+                "{{last_company_id}}"
+              ]
+            },
+            "description": "Every field is editable (FRD §1.11.4) except the status, which has its own endpoint. Re-send the full form; a file field left out keeps the stored file, a new file replaces it. The short name (prefix) is locked after creation: it is ignored on update and the company ID (prefix + number) never changes."
+          }
+        },
+        {
+          "name": "Change Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"deactivated\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/companies/{{last_company_id}}/status",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "companies",
+                "{{last_company_id}}",
+                "status"
+              ]
+            },
+            "description": "status: active | deactivated. system_admin / data_entry. Nothing cascades — the FRD does not say a company status affects its projects."
+          }
+        },
+        {
+          "name": "Download Document",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/companies/{{last_company_id}}/documents/contract",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "companies",
+                "{{last_company_id}}",
+                "documents",
+                "contract"
+              ]
+            },
+            "description": "Change the last path segment: contract | cr | tax. Private file — 404 when nothing was uploaded for that type, 403 without view access."
+          }
+        },
+        {
+          "name": "Export Client Companies (Excel)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/companies/export?format=xlsx",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "companies",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "xlsx"
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "Noor",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Same filters and search as the list — the file holds exactly the rows the list shows."
+          }
+        },
+        {
+          "name": "Export Client Companies (PDF)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/companies/export?format=pdf",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "companies",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "pdf"
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "Noor",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Arabic output follows the session locale, like the other exports."
+          }
+        }
+      ]
+    },
+    {
+      "name": "12. Client Projects",
+      "description": "FRD §1.12 — client projects, plus inserting an asset into a project (§1.7.3). system_admin / data_entry manage; auditor views and exports; driver has no access.",
+      "item": [
+        {
+          "name": "List Client Projects",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/projects?per_page=15",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "projects"
+              ],
+              "query": [
+                {
+                  "key": "per_page",
+                  "value": "15"
+                },
+                {
+                  "key": "company_id",
+                  "value": "{{last_company_id}}",
+                  "disabled": true,
+                  "description": "only this company's projects"
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "disabled": true,
+                  "description": "active | deactivated"
+                },
+                {
+                  "key": "search",
+                  "value": "Tower",
+                  "disabled": true,
+                  "description": "matches the project name, its ID (code, e.g. ALN-P0001) or the company name"
+                },
+                {
+                  "key": "sort_by",
+                  "value": "name",
+                  "disabled": true,
+                  "description": "code | name | operational_status | created_at"
+                },
+                {
+                  "key": "sort_dir",
+                  "value": "asc",
+                  "disabled": true,
+                  "description": "asc | desc"
+                }
+              ]
+            },
+            "description": "system_admin / data_entry / auditor. Paginated server-side. `company_id` also feeds the projects section of a company page."
+          }
+        },
+        {
+          "name": "Create Client Project",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    if (body.data && body.data.id) {",
+                  "        pm.collectionVariables.set('last_project_id', body.data.id);",
+                  "        console.log('last_project_id saved:', body.data.id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Project {{$timestamp}}\",\n  \"company_id\": \"{{last_company_id}}\",\n  \"operational_status\": \"active\",\n  \"operational_region\": \"Riyadh\",\n  \"phone\": \"+966500000000\",\n  \"email\": \"site@example.com\",\n  \"address\": \"Riyadh\",\n  \"location_url\": \"https://maps.google.com/?q=riyadh\",\n  \"additional_data\": \"<p>Notes</p>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/projects",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "projects"
+              ]
+            },
+            "description": "name + company_id + operational_status are required. company_id must be one of the ACTIVE client companies. The project ID (code) is generated: the company short name + \"P\" + a running number per company, e.g. ALN-P0001. The company cannot be changed after creation. location_url is http/https only. Optional \"representative_id\": an active client account that can see the project (on create: the company's all-projects accounts only)."
+          }
+        },
+        {
+          "name": "Show Client Project",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/projects/{{last_project_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "projects",
+                "{{last_project_id}}"
+              ]
+            },
+            "description": "Returns the project with its company block and the placeholder stats (contracts / trips / waste are 0 until those modules exist)."
+          }
+        },
+        {
+          "name": "Update Client Project",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Project renamed\",\n  \"operational_region\": \"Jeddah\",\n  \"phone\": \"+966500000001\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/projects/{{last_project_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "projects",
+                "{{last_project_id}}"
+              ]
+            },
+            "description": "Every field is editable except the company (locked — the project ID is built from it) and the status (own endpoint). A company_id in the payload is ignored. Optional \"representative_id\": an active client account that can see the project (on create: the company's all-projects accounts only)."
+          }
+        },
+        {
+          "name": "Change Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"deactivated\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/projects/{{last_project_id}}/status",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "projects",
+                "{{last_project_id}}",
+                "status"
+              ]
+            },
+            "description": "status: active | deactivated. system_admin / data_entry. Nothing cascades: not to the company, not to the assets already in the project. A deactivated project cannot receive new assets."
+          }
+        },
+        {
+          "name": "Insert Asset Into Project",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"asset_id\": \"{{last_asset_id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/projects/{{last_project_id}}/assets",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "projects",
+                "{{last_project_id}}",
+                "assets"
+              ]
+            },
+            "description": "FRD §1.7.3 \"Insert an asset into a project\". system_admin / data_entry (403 otherwise). 201 returns the asset with availability \"in_project\" and its project. 422 when the asset is not available (in maintenance / deactivated / already in a project — error on asset_id) or the project is deactivated (error on project). 404 for an unknown project. There is no endpoint to take an asset back out (not defined by the FRD yet)."
+          }
+        },
+        {
+          "name": "List Assets In A Project",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/assets?project_id={{last_project_id}}&per_page=15",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "assets"
+              ],
+              "query": [
+                {
+                  "key": "project_id",
+                  "value": "{{last_project_id}}"
+                },
+                {
+                  "key": "asset_type",
+                  "value": "container",
+                  "disabled": true,
+                  "description": "container | tank"
+                },
+                {
+                  "key": "per_page",
+                  "value": "15"
+                }
+              ]
+            },
+            "description": "The project details page's assets table — the normal assets list filtered by project_id."
+          }
+        },
+        {
+          "name": "Export Client Projects (Excel)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/projects/export?format=xlsx",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "projects",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "xlsx"
+                },
+                {
+                  "key": "company_id",
+                  "value": "{{last_company_id}}",
+                  "disabled": true
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "Tower",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Same filters and search as the list — the file holds exactly the rows the list shows."
+          }
+        },
+        {
+          "name": "Export Client Projects (PDF)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/projects/export?format=pdf",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "projects",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "pdf"
+                },
+                {
+                  "key": "company_id",
+                  "value": "{{last_company_id}}",
+                  "disabled": true
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "Tower",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Same filters and search as the list. Arabic text is rendered correctly."
+          }
+        }
+      ]
+    },
+    {
+      "name": "13. General Settings (System Admin only)",
+      "item": [
+        {
+          "name": "Get Document Expiry Settings",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/settings/document-expiry",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "settings",
+                "document-expiry"
+              ]
+            },
+            "description": "system_admin only — 403 for every other role. Returns how many days before a driver / vehicle document end date it is flagged as needing review (default 30 each)."
+          }
+        },
+        {
+          "name": "Update Document Expiry Settings",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"driver_expiry_warning_days\": 45,\n  \"vehicle_expiry_warning_days\": 30\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/settings/document-expiry",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "settings",
+                "document-expiry"
+              ]
+            },
+            "description": "system_admin only. Both fields required, whole numbers 1–365. driver_expiry_warning_days covers the residence, licenses, insurance and entry permits of every driver; vehicle_expiry_warning_days covers every vehicle document and entry permit. The driver / vehicle records then carry `expiry` ({status: ok|warning|expired, percent, days_remaining, label}) next to every valid_to."
+          }
+        }
+      ]
+    }
+  ]
+}
