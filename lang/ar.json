@@ -481,6 +481,8 @@
   "active": "نشطة",
   "__companies_module__": "── Client Companies module ── keys below belong to resources/views/tenant/companies/* and app/Http/Requests/Companies/*.",
   "The short name must be exactly 3 English letters.": "يجب أن يتكون الاسم المختصر من 3 أحرف إنجليزية بالضبط.",
+  "This short name is already in use.": "هذا الاسم المختصر مستخدم من قبل.",
+  "This prefix is already in use.": "هذا الاسم المختصر مستخدم من قبل.",
   "This short name is already used by another company.": "هذا الاسم المختصر مستخدم لشركة أخرى.",
   "The number must contain digits only.": "يجب أن يتكون الرقم من أرقام فقط.",
   "Create New Client Company": "إنشاء شركة عميل جديدة",

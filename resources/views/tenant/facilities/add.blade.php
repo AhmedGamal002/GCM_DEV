@@ -22,6 +22,7 @@
     required: @json(__('This field is required.')),
     digits_only: @json(__('The number must contain digits only.')),
     prefix_format: @json(__('The prefix must be exactly 3 English letters.')),
+    prefix_taken: @json(__('This prefix is already in use.')),
     efficiency_range: @json(__('Enter a percentage between 0 and 100.')),
     date_order: @json(__('The end date can\'t be before the start date.')),
     list_url: @json(route('app-facility-list'))

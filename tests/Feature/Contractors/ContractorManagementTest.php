@@ -66,6 +66,42 @@ class ContractorManagementTest extends TestCase
         return $service;
     }
 
+    public function test_the_prefix_check_says_whether_the_short_name_is_taken(): void
+    {
+        $this->actingAs($this->admin, 'web')->postJson('/api/v1/contractors', $this->payload())->assertCreated();
+
+        // Taken — however it is typed.
+        $this->actingAs($this->admin, 'web')
+            ->getJson('/api/v1/contractors/prefix-available?prefix=dsh')
+            ->assertOk()
+            ->assertExactJson(['available' => false]);
+
+        $this->actingAs($this->admin, 'web')
+            ->getJson('/api/v1/contractors/prefix-available?prefix=ZZZ')
+            ->assertOk()
+            ->assertExactJson(['available' => true]);
+    }
+
+    public function test_the_prefix_check_ignores_other_tenants(): void
+    {
+        $other = Tenant::create(['name' => 'Other', 'slug' => 'other', 'status' => 'active']);
+        app()->instance('tenant', $other);
+        \App\Models\Contractor::factory()->create(['prefix' => 'DSH']);
+        app()->instance('tenant', $this->tenant);
+
+        $this->actingAs($this->admin, 'web')
+            ->getJson('/api/v1/contractors/prefix-available?prefix=DSH')
+            ->assertOk()
+            ->assertExactJson(['available' => true]);
+    }
+
+    public function test_the_prefix_check_is_closed_to_those_who_cannot_create(): void
+    {
+        $this->actingAs($this->auditor, 'web')
+            ->getJson('/api/v1/contractors/prefix-available?prefix=ZZZ')
+            ->assertForbidden();
+    }
+
     public function test_system_admin_creates_a_contractor_with_only_the_required_fields(): void
     {
         $response = $this->actingAs($this->admin, 'web')

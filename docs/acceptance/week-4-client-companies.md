@@ -55,8 +55,8 @@
   - في فورم الإضافة، اكتب في الاسم المختصر حروف عربي أو أرقام أو أكتر من 3 حروف أو أقل من 3 — لاحظ إن الخانة بتقبل حروف إنجليزية بس وبتحوّلها لحروف كبيرة.
   - اكتب اسم مختصر مستخدم لشركة تانية (زي `ALN`) واحفظ.
   - افتح تعديل أي شركة وبصّ على خانة الاسم المختصر.
-- **المتوقع:** رسالة خطأ تحت الخانة ("الاسم المختصر لازم يكون 3 حروف إنجليزية" أو "مستخدم لشركة تانية")، والشركة ماتتحفظش. في صفحة التعديل الخانة **مقفولة** والرقم التعريفي ظاهر فوق الفورم — لأن الرقم مبني على الاسم المختصر فمينفعش يتغيّر بعد الإنشاء.
-- **يغطيه آليًا:** `Companies/CompanyManagementTest::test_a_prefix_that_is_not_three_english_letters_is_rejected`, `test_the_prefix_must_be_unique_within_the_tenant`, `test_the_prefix_is_locked_after_creation`, `test_the_model_refuses_to_change_a_saved_prefix_from_any_code_path`
+- **المتوقع:** رسالة خطأ تحت الخانة ("الاسم المختصر لازم يكون 3 حروف إنجليزية" أو "This short name is already in use.")، والشركة ماتتحفظش. **الرسالة بتظهر لحظيًا** أول ما تكمّل 3 حروف مستخدمة (ومع الخروج من الخانة) من غير ما تدوس Submit، والزرار بيرفض برضو لو اتجاهلتها. في صفحة التعديل الخانة **مقفولة** والرقم التعريفي ظاهر فوق الفورم — لأن الرقم مبني على الاسم المختصر فمينفعش يتغيّر بعد الإنشاء.
+- **يغطيه آليًا:** `Companies/CompanyManagementTest::test_a_prefix_that_is_not_three_english_letters_is_rejected`, `test_the_prefix_must_be_unique_within_the_tenant`, `test_the_prefix_is_locked_after_creation`, `test_the_model_refuses_to_change_a_saved_prefix_from_any_code_path`, `test_the_prefix_check_*`
 - **النتيجة:** ⬜
 
 ### 5. التحقق من باقي الحقول

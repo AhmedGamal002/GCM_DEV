@@ -49,6 +49,35 @@ class CompanyManagementTest extends TestCase
         ], $overrides);
     }
 
+    public function test_the_prefix_check_says_whether_the_short_name_is_taken(): void
+    {
+        $this->actingAs($this->admin, 'web')->postJson('/api/v1/companies', $this->payload())->assertCreated();
+
+        // Taken — however it is typed.
+        $this->actingAs($this->admin, 'web')
+            ->getJson('/api/v1/companies/prefix-available?prefix=aln')
+            ->assertOk()
+            ->assertExactJson(['available' => false]);
+
+        $this->actingAs($this->admin, 'web')
+            ->getJson('/api/v1/companies/prefix-available?prefix=ZZZ')
+            ->assertOk()
+            ->assertExactJson(['available' => true]);
+    }
+
+    public function test_the_prefix_check_ignores_other_tenants(): void
+    {
+        $other = Tenant::create(['name' => 'Other', 'slug' => 'other', 'status' => 'active']);
+        app()->instance('tenant', $other);
+        \App\Models\Company::factory()->create(['prefix' => 'ALN']);
+        app()->instance('tenant', $this->tenant);
+
+        $this->actingAs($this->admin, 'web')
+            ->getJson('/api/v1/companies/prefix-available?prefix=ALN')
+            ->assertOk()
+            ->assertExactJson(['available' => true]);
+    }
+
     public function test_system_admin_creates_a_company_with_only_the_required_fields(): void
     {
         $response = $this->actingAs($this->admin, 'web')
