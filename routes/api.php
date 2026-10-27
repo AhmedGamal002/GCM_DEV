@@ -114,6 +114,7 @@ Route::prefix('v1')->group(function () {
         // /facilities/stats MUST come before /facilities/{facility}, same
         // raw-int-param reasoning as /vehicles above.
         Route::get('/facilities/export', [FacilityController::class, 'export']);
+        Route::get('/facilities/prefix-available', [FacilityController::class, 'prefixAvailable']);
         Route::get('/facilities/stats', [FacilityController::class, 'stats']);
         Route::get('/facilities', [FacilityController::class, 'index']);
         Route::post('/facilities', [FacilityController::class, 'store']);
@@ -141,6 +142,7 @@ Route::prefix('v1')->group(function () {
         // Client companies (Part 4 of Phase 2, FRD V01.14 §1.11). /companies/export
         // MUST come before /companies/{company} — same reasoning as /vehicles above.
         Route::get('/companies/export', [CompanyController::class, 'export']);
+        Route::get('/companies/prefix-available', [CompanyController::class, 'prefixAvailable']);
         Route::get('/companies', [CompanyController::class, 'index']);
         Route::post('/companies', [CompanyController::class, 'store']);
         Route::get('/companies/{company}', [CompanyController::class, 'show'])->whereNumber('company');
@@ -153,6 +155,7 @@ Route::prefix('v1')->group(function () {
         // Contractors (Part 3 of Phase 2, FRD V01.14 §1.10). /contractors/export and
         // /contractors/stats MUST come before /contractors/{contractor}.
         Route::get('/contractors/export', [ContractorController::class, 'export']);
+        Route::get('/contractors/prefix-available', [ContractorController::class, 'prefixAvailable']);
         Route::get('/contractors/stats', [ContractorController::class, 'stats']);
         Route::get('/contractors', [ContractorController::class, 'index']);
         Route::post('/contractors', [ContractorController::class, 'store']);

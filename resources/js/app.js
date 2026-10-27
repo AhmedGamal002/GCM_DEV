@@ -8,6 +8,7 @@ import './gcm-select2';
 import './gcm-fetch-all';
 import './gcm-map-embed';
 import './gcm-affiliation';
+import './gcm-prefix-check';
 import './expiry-bar';
 import './gcm-attachment';
 /*

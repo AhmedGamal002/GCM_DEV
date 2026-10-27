@@ -107,6 +107,8 @@ export function initFacilityForm(opts) {
       prefixInput.value = prefixInput.value.toUpperCase().replace(/[^A-Z]/g, '');
     });
   }
+  // Say so on the spot when the prefix is already taken (not only after Submit).
+  const prefixCheck = prefixInput ? window.gcmPrefixCheck(prefixInput, { url: '/api/v1/facilities/prefix-available', message: t.prefix_taken }) : { isTaken: () => false };
 
   // ----------------------------------------------------- client validation
   function validate() {
@@ -132,6 +134,8 @@ export function initFacilityForm(opts) {
 
     if (prefixInput && !prefixInput.disabled && !prefixInput.readOnly && prefixInput.value && !/^[A-Z]{3}$/.test(prefixInput.value)) {
       fail(prefixInput, t.prefix_format || 'The prefix must be exactly 3 English letters.');
+    } else if (prefixCheck.isTaken()) {
+      fail(prefixInput, t.prefix_taken);
     }
 
     if (!efficiencyInput.disabled && !efficiencyGroup.classList.contains('d-none') && efficiencyInput.value !== '') {

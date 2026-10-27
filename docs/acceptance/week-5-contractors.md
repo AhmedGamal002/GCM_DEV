@@ -43,8 +43,8 @@
 ### 5. الاسم المختصر: 3 حروف مميزة + الرقم التعريفي بحرف C + القفل بعد الإنشاء
 - **FRD:** §1.10.2 / §1.10.4 (الاسم المختصر — 3 حروف إنجليزية مميزة وغير متكررة)
 - **الخطوات:** حاول تنشئ متعهد باسم مختصر `AB` ثم `A1B` ثم `DSH` (مستخدم). بعدين افتح تعديل أي متعهد.
-- **المتوقع:** الحالات الثلاثة بتترفض برسالة واضحة. الرقم التعريفي بالشكل `ABC-C0001` — فمستحيل يتطابق مع رقم شركة عميل (`ABC-0001`) حتى لو الحروف نفسها (الاسم المختصر لازم يبقى مميز بين المتعهدين بس). في صفحة التعديل حقل الاسم المختصر معطّل، وأي قيمة تتبعت له بالـAPI بتتجاهل.
-- **يغطيه آليًا:** `Contractors/ContractorManagementTest` (`test_a_prefix_that_is_not_three_english_letters_is_rejected`, `test_the_prefix_must_be_unique_*`, `test_the_contractor_id_is_the_prefix_a_c_*`, `test_a_contractor_and_a_client_company_can_share_the_same_letters`, `test_the_prefix_is_locked_after_creation`)
+- **المتوقع:** الحالات الثلاثة بتترفض برسالة واضحة. **الرسالة بتظهر لحظيًا** أول ما تكمّل 3 حروف مستخدمة (ومع الخروج من الخانة) من غير ما تدوس Submit، والزرار بيرفض برضو لو اتجاهلتها. الرقم التعريفي بالشكل `ABC-C0001` — فمستحيل يتطابق مع رقم شركة عميل (`ABC-0001`) حتى لو الحروف نفسها (الاسم المختصر لازم يبقى مميز بين المتعهدين بس). في صفحة التعديل حقل الاسم المختصر معطّل، وأي قيمة تتبعت له بالـAPI بتتجاهل.
+- **يغطيه آليًا:** `Contractors/ContractorManagementTest` (`test_a_prefix_that_is_not_three_english_letters_is_rejected`, `test_the_prefix_must_be_unique_*`, `test_the_contractor_id_is_the_prefix_a_c_*`, `test_a_contractor_and_a_client_company_can_share_the_same_letters`, `test_the_prefix_is_locked_after_creation`, `test_the_prefix_check_*`)
 - **النتيجة:** ⬜
 
 ### 6. الخدمات المعتمدة (ولا واحدة = الكل)

@@ -23,6 +23,7 @@
     generic_error: @json(__('Something went wrong. Please try again.')),
     required: @json(__('This field is required.')),
     prefix_format: @json(__('The short name must be exactly 3 English letters.')),
+    prefix_taken: @json(__('This short name is already in use.')),
     digits_only: @json(__('The number must contain digits only.')),
     no_services: @json(__('No main services are available yet.')),
     cancel: @json(__('Cancel')),

@@ -152,6 +152,35 @@ class FacilityManagementTest extends TestCase
         $this->assertSame(2, IntermediateFacility::withoutGlobalScopes()->where('prefix', 'ALF')->count());
     }
 
+    public function test_the_prefix_check_says_whether_the_short_name_is_taken(): void
+    {
+        $this->actingAs($this->admin, 'web')->postJson('/api/v1/facilities', $this->payload())->assertCreated();
+
+        // Taken — however it is typed.
+        $this->actingAs($this->admin, 'web')
+            ->getJson('/api/v1/facilities/prefix-available?prefix=alf')
+            ->assertOk()
+            ->assertExactJson(['available' => false]);
+
+        $this->actingAs($this->admin, 'web')
+            ->getJson('/api/v1/facilities/prefix-available?prefix=ZZZ')
+            ->assertOk()
+            ->assertExactJson(['available' => true]);
+    }
+
+    public function test_the_prefix_check_ignores_other_tenants(): void
+    {
+        $other = Tenant::create(['name' => 'Other', 'slug' => 'other', 'status' => 'active']);
+        app()->instance('tenant', $other);
+        \App\Models\IntermediateFacility::factory()->create(['prefix' => 'ALF']);
+        app()->instance('tenant', $this->tenant);
+
+        $this->actingAs($this->admin, 'web')
+            ->getJson('/api/v1/facilities/prefix-available?prefix=ALF')
+            ->assertOk()
+            ->assertExactJson(['available' => true]);
+    }
+
     public function test_required_fields_are_validated(): void
     {
         $this->actingAs($this->admin, 'web')

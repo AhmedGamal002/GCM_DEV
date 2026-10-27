@@ -89,6 +89,8 @@ export function initContractorForm(opts) {
   prefixInput.addEventListener('input', () => {
     prefixInput.value = prefixInput.value.replace(/[^A-Za-z]/g, '').toUpperCase();
   });
+  // Say so on the spot when the short name is already taken (not only after Submit).
+  const prefixCheck = window.gcmPrefixCheck(prefixInput, { url: '/api/v1/contractors/prefix-available', message: t.prefix_taken });
 
   // ----------------------------------------------------- client validation
   function validate() {
@@ -113,6 +115,7 @@ export function initContractorForm(opts) {
     });
 
     if (prefixInput.value && !/^[A-Z]{3}$/.test(prefixInput.value)) fail(prefixInput, t.prefix_format || PREFIX_MSG);
+    else if (prefixCheck.isTaken()) fail(prefixInput, t.prefix_taken);
 
     ['contract_number', 'cr_number', 'tax_number'].forEach((name) => {
       const el = form.querySelector(`#${name}`);

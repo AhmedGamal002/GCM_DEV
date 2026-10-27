@@ -142,6 +142,22 @@ class ContractorController extends Controller
         return Storage::disk('local')->download($path);
     }
 
+    /**
+     * Live check behind the create form's short-name field: is this prefix
+     * still free? The store request stays the real gatekeeper — this only
+     * lets the form say so before "Submit".
+     */
+    public function prefixAvailable(Request $request)
+    {
+        Gate::authorize('create', Contractor::class);
+
+        $prefix = strtoupper(trim($request->string('prefix')->toString()));
+
+        return response()->json([
+            'available' => ! Contractor::query()->where('prefix', $prefix)->exists(),
+        ]);
+    }
+
     public function export(Request $request)
     {
         Gate::authorize('export', Contractor::class);

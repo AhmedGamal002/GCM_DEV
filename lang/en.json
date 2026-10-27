@@ -481,6 +481,8 @@
   "active": "active",
   "__companies_module__": "── Client Companies module ── keys below belong to resources/views/tenant/companies/* and app/Http/Requests/Companies/*.",
   "The short name must be exactly 3 English letters.": "The short name must be exactly 3 English letters.",
+  "This short name is already in use.": "This short name is already in use.",
+  "This prefix is already in use.": "This prefix is already in use.",
   "This short name is already used by another company.": "This short name is already used by another company.",
   "The number must contain digits only.": "The number must contain digits only.",
   "Create New Client Company": "Create New Client Company",

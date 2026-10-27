@@ -111,6 +111,22 @@ class FacilityController extends Controller
         return response()->json(['data' => $data]);
     }
 
+    /**
+     * Live check behind the create form's short-name field: is this prefix
+     * still free? The store request stays the real gatekeeper — this only
+     * lets the form say so before "Submit".
+     */
+    public function prefixAvailable(Request $request)
+    {
+        Gate::authorize('create', IntermediateFacility::class);
+
+        $prefix = strtoupper(trim($request->string('prefix')->toString()));
+
+        return response()->json([
+            'available' => ! IntermediateFacility::query()->where('prefix', $prefix)->exists(),
+        ]);
+    }
+
     public function export(Request $request)
     {
         Gate::authorize('export', IntermediateFacility::class);
