@@ -23,6 +23,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * Same "no implicit route-model binding" reasoning as UserController:
@@ -178,7 +179,12 @@ class VehicleController extends Controller
         return Excel::download(new VehiclesExport($query->get()), 'vehicles.xlsx');
     }
 
-    public function downloadDocument(int $vehicle, int $document)
+    /**
+     * A document's / entry permit's file, shown inline (same as the driver's documents): the pages open it
+     * in a new tab for the browser's viewer, which has its own download button. Only pdf/jpg/png can be
+     * uploaded, so inline is safe (and the nosniff header keeps it from being read as anything else).
+     */
+    public function downloadDocument(int $vehicle, int $document): StreamedResponse
     {
         $vehicle = Vehicle::findOrFail($vehicle);
 
@@ -187,9 +193,9 @@ class VehicleController extends Controller
         /** @var VehicleDocument $doc */
         $doc = $vehicle->documents()->findOrFail($document);
 
-        abort_if($doc->attachment_path === null, 404);
+        abort_if($doc->attachment_path === null || ! Storage::disk('local')->exists($doc->attachment_path), 404);
 
-        return Storage::disk('local')->download($doc->attachment_path);
+        return Storage::disk('local')->response($doc->attachment_path);
     }
 
     /**

@@ -103,10 +103,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('vv-edit-link').href = (t.edit_url_base || '/app/vehicle/edit') + '/' + v.id;
 
     // Documents and truck entry permits — two separate sections.
-    const attachmentCell = (d) =>
-      d.has_attachment
-        ? '<a href="' + d.download_url + '" class="btn btn-sm btn-text-primary"><i class="ti ti-download"></i></a>'
-        : '—';
+    const attachmentCell = (d) => (d.has_attachment ? window.gcmViewAttachment(d.download_url) : '—');
 
     const allDocs = v.documents || [];
     const documents = allDocs.filter((d) => d.type !== 'entry_permit');

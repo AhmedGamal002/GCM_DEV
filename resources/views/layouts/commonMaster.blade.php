@@ -54,7 +54,8 @@ $contentLayout = (isset($container) ? (($container === 'container-xxl') ? "layou
       server: @json(__('The server ran into a problem (error :code). Try again in a moment; if it keeps happening, contact support and mention this code.')),
       unknown: @json(__('The request could not be completed. Please try again.')),
       unknown_status: @json(__('The request could not be completed (error :code). Please try again.')),
-      required_hint: @json(__('Fields marked with * are required.'))
+      required_hint: @json(__('Fields marked with * are required.')),
+      view: @json(__('View'))
     };
   </script>
 

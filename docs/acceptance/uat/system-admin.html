@@ -112,7 +112,7 @@
       <span>تم: <b id="s-pass">0</b></span>
       <span>فشل: <b id="s-fail" style="color:var(--bad)">0</b></span>
       <span>متبقي: <b id="s-left">0</b></span>
-      <span>من <b>138</b> بند</span>
+      <span>من <b>139</b> بند</span>
     </div>
     <div class="prog"><i class="p" id="b-pass"></i><i class="f" id="b-fail"></i></div>
     <div class="tools">
@@ -1329,7 +1329,7 @@
         <h3>تعديل السائق — الملفات الحالية وتصاريح الدخول</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.3 (تعديل حساب سائق — كل البيانات قابلة للتعديل، وتصاريح الدخول من بياناته)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح تعديل سائق عنده مرفقات وتصريح دخول (من بيانات التجربة أو بعد إنشاء واحد).</li><li>بص على الصورة وكل مرفق (إقامة / رخصة / رخصة تشغيلية / تأمين) وكارت &quot;Truck Entry Permits&quot;.</li><li>عدّل منطقة تصريح موجود واضغط &quot;Add Permit&quot; وأضف تصريح جديد، واحفظ.</li><li>ارجع للتعديل وشيل كل التصاريح واحفظ.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>جنب كل مرفق موجود أيقونة تنزيل (والصورة باسم الملف)، ومفيهاش حاجة للمرفق الفاضي. كارت التصاريح بيعرض كل تصريح بمرفقه الحالي. التعديل بيحفظ في نفس التصريح (مش بيعمل نسخة)، والتصريح الجديد بيتضاف، وبعد الحذف الكامل التفاصيل بتقول إن مفيش تصاريح. ترك خانة الملف فاضية بيحافظ على المرفق، ورفع جديد بيبدّله.</dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.3 (تعديل حساب سائق — كل البيانات قابلة للتعديل، وتصاريح الدخول من بياناته)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح تعديل سائق عنده مرفقات وتصريح دخول (من بيانات التجربة أو بعد إنشاء واحد).</li><li>بص على الصورة وكل مرفق (إقامة / رخصة / رخصة تشغيلية / تأمين) وكارت &quot;Truck Entry Permits&quot;.</li><li>عدّل منطقة تصريح موجود واضغط &quot;Add Permit&quot; وأضف تصريح جديد، واحفظ.</li><li>ارجع للتعديل وشيل كل التصاريح واحفظ.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>جنب كل مرفق موجود أيقونة عين &quot;View&quot; بتفتحه في تبويب جديد (والصورة باسم الملف)، ومفيهاش حاجة للمرفق الفاضي. كارت التصاريح بيعرض كل تصريح بمرفقه الحالي. التعديل بيحفظ في نفس التصريح (مش بيعمل نسخة)، والتصريح الجديد بيتضاف، وبعد الحذف الكامل التفاصيل بتقول إن مفيش تصاريح. ترك خانة الملف فاضية بيحافظ على المرفق، ورفع جديد بيبدّله.</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-vehicles-drivers-assets#18" data-title="تعديل الأصل — الاسم والبيانات الإضافية فقط">
@@ -1426,6 +1426,16 @@
       <dl><div class="row"><dt>الخطوات</dt><dd>جهّز 4 سائقين (أو 4 مركبات): (أ) كل وثائقه وتصاريحه بعد أكتر من 30 يوم. (ب) وثيقة واحدة بعد 10 أيام والباقي بعيد. (ج) كل وثائقه منتهية. (د) وثيقة منتهية والباقي بعيد، من غير أي واحدة في الأصفر. افتح <strong>Drivers</strong> ثم <strong>Vehicles</strong> وبص على عمود &quot;Documents Status&quot;.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>(أ) <strong>Valid</strong> أخضر. (ب) <strong>Need review</strong> أصفر. (ج) <strong>Expired</strong> أحمر. (د) <strong>Need review</strong> أصفر (وثيقة منتهية جنب وثائق سارية تحتاج مراجعة، مش &quot;Valid&quot;). الحساب بيشمل <strong>تصاريح الدخول كمان</strong> — سائق كل وثائقه بعيدة وتصريحه بعد 7 أيام يطلع <strong>Need review</strong>. العمود مش بيتفرز، وبيتغيّر مع مدة التنبيه في الإعدادات العامة. <strong>فلتر &quot;Documents Status&quot;</strong> في أعلى القايمتين (كل حالات الوثائق / Valid / Need review / Expired) بيرجّع نفس الصفوف اللي تاجها كده بالظبط (بما فيها حدود 30 يوم / 31 يوم / النهارده)، ونفس الفلتر بيطبّق على تصدير Excel/PDF. نفس العمود في التصدير بعنوان &quot;Documents Status&quot;.</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
+    <article class="item" data-id="week-5-document-expiry#7" data-title="فتح مرفقات السائق والمركبة بأيقونة العين">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">123</span></label>
+        <h3>فتح مرفقات السائق والمركبة بأيقونة العين</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح صفحة عرض سائق ومركبة ليهم مرفقات، ومرّر الماوس على أيقونة المرفق في جدولَي الوثائق والتصاريح، واضغط عليها.</li><li>افتح صفحة تعديل السائق والمركبة، واضغط على المرفق الحالي جنب أي وثيقة أو تصريح.</li><li>بدّل اللغة للعربي وكرّر.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>مفيش أي أيقونة تنزيل؛ مكانها <strong>أيقونة عين</strong> وتلميح &quot;View&quot; (بالعربي &quot;عرض&quot;)، والضغط عليها بيفتح الملف في <strong>تبويب جديد</strong> بعارض المتصفح من غير ما يتنزّل لوحده — في السائق والمركبة بنفس الشكل، وفي صفحتَي العرض والتعديل. لو عايز تحمّله، تحمّله من زر التنزيل في عارض المتصفح نفسه. الخانة اللي مالهاش مرفق مفيهاش أيقونة.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
     </details>
     <details open class="group">
       <summary>حالة الحساب (تعطيل فوري / إجازة) <span class="count"></span></summary>
@@ -1433,7 +1443,7 @@
     <article class="item" data-id="week-5-account-status#2" data-title="مفيش تغيير حالة للحساب الشخصي">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">123</span></label>
+          <span class="num">124</span></label>
         <h3>مفيش تغيير حالة للحساب الشخصي</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1443,7 +1453,7 @@
     <article class="item" data-id="week-5-account-status#3" data-title="مستخدم متسجّل دخول واتعطّل">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">124</span></label>
+          <span class="num">125</span></label>
         <h3>مستخدم متسجّل دخول واتعطّل</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1453,7 +1463,7 @@
     <article class="item" data-id="week-5-account-status#4" data-title="رسالة واضحة في كل الصفحات + أزرار مقفولة من الأول">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">125</span></label>
+          <span class="num">126</span></label>
         <h3>رسالة واضحة في كل الصفحات + أزرار مقفولة من الأول</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1467,7 +1477,7 @@
     <article class="item" data-id="week-1-2-auth-users-roles#22" data-title="توقيع وختم موظفي GCM (اختياري)">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">126</span></label>
+          <span class="num">127</span></label>
         <h3>توقيع وختم موظفي GCM (اختياري)</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1477,7 +1487,7 @@
     <article class="item" data-id="week-5-export-header-and-category-defaults#5" data-title="تعديل كل بيانات أي حساب بما فيها البريد وحسابك أنت">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">127</span></label>
+          <span class="num">128</span></label>
         <h3>تعديل كل بيانات أي حساب بما فيها البريد وحسابك أنت</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1491,7 +1501,7 @@
     <article class="item" data-id="week-3-frd-gap-review#23" data-title="التصدير (خصوصًا PDF) بيوضّح إنه شغّال">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">128</span></label>
+          <span class="num">129</span></label>
         <h3>التصدير (خصوصًا PDF) بيوضّح إنه شغّال</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1501,7 +1511,7 @@
     <article class="item" data-id="week-3-frd-gap-review#24" data-title="تصدير PDF بالعربي">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">129</span></label>
+          <span class="num">130</span></label>
         <h3>تصدير PDF بالعربي</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1511,7 +1521,7 @@
     <article class="item" data-id="week-3-frd-gap-review#25" data-title="التصدير بيطابق الفلاتر والبحث اللي على الشاشة">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">130</span></label>
+          <span class="num">131</span></label>
         <h3>التصدير بيطابق الفلاتر والبحث اللي على الشاشة</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1521,7 +1531,7 @@
     <article class="item" data-id="week-5-export-header-and-category-defaults#1" data-title="ملف Excel بيفتح بلوجو GCM و&quot;صدّر بواسطة&quot; والتاريخ والوقت">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">131</span></label>
+          <span class="num">132</span></label>
         <h3>ملف Excel بيفتح بلوجو GCM و&quot;صدّر بواسطة&quot; والتاريخ والوقت</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1531,7 +1541,7 @@
     <article class="item" data-id="week-5-export-header-and-category-defaults#2" data-title="ملف PDF بنفس الرأس">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">132</span></label>
+          <span class="num">133</span></label>
         <h3>ملف PDF بنفس الرأس</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1545,7 +1555,7 @@
     <article class="item" data-id="week-3-frd-gap-review#21" data-title="الحفظ البطيء بملفات كبيرة مش شكله معلّق">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">133</span></label>
+          <span class="num">134</span></label>
         <h3>الحفظ البطيء بملفات كبيرة مش شكله معلّق</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1555,7 +1565,7 @@
     <article class="item" data-id="week-3-frd-gap-review#22" data-title="ملف أكبر من الحد يترفض فورًا من غير رفع">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">134</span></label>
+          <span class="num">135</span></label>
         <h3>ملف أكبر من الحد يترفض فورًا من غير رفع</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1565,7 +1575,7 @@
     <article class="item" data-id="week-3-frd-gap-review#29" data-title="نفس شاشة &quot;جاري الحفظ&quot; في كل صفحات الإنشاء والتعديل">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">135</span></label>
+          <span class="num">136</span></label>
         <h3>نفس شاشة &quot;جاري الحفظ&quot; في كل صفحات الإنشاء والتعديل</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1575,7 +1585,7 @@
     <article class="item" data-id="week-3-frd-gap-review#30" data-title="شاشة التحميل واللوجو والاسم">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">136</span></label>
+          <span class="num">137</span></label>
         <h3>شاشة التحميل واللوجو والاسم</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1589,7 +1599,7 @@
     <article class="item" data-id="week-3-vehicles-drivers-assets#22" data-title="تبديل اللغة يترجم كل الصفحات">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">137</span></label>
+          <span class="num">138</span></label>
         <h3>تبديل اللغة يترجم كل الصفحات</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1599,7 +1609,7 @@
     <article class="item" data-id="week-3-frd-gap-review#20" data-title="المحتوى بعرض الشاشة كله (Wide) كوضع افتراضي">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">138</span></label>
+          <span class="num">139</span></label>
         <h3>المحتوى بعرض الشاشة كله (Wide) كوضع افتراضي</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>

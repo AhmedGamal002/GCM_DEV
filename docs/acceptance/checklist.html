@@ -102,7 +102,7 @@
       <span>تم: <b id="s-pass">0</b></span>
       <span>فشل: <b id="s-fail" style="color:var(--bad)">0</b></span>
       <span>متبقي: <b id="s-left">0</b></span>
-      <span>من <b>221</b> بند</span>
+      <span>من <b>222</b> بند</span>
     </div>
     <div class="prog"><i class="p" id="b-pass"></i><i class="f" id="b-fail"></i></div>
     <div class="tools">
@@ -855,7 +855,7 @@
         <h3>مستندات السائق خاصة</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§3.10 (مستندات رسمية حساسة، رابط محمي)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>بعد إنشاء سائق بمرفقات، من صفحة تفاصيله نزّل مستند (رخصة مثلًا).</li><li>جرّب تخمّن رابط عام مباشر للملف.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>التحميل يشتغل بس من الرابط المحمي (بيتحقق من الصلاحية)؛ مفيش رابط عام يشتغل.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Drivers/DriverDocumentAccessTest</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§3.10 (مستندات رسمية حساسة، رابط محمي)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>بعد إنشاء سائق بمرفقات، من صفحة تفاصيله افتح مستند (رخصة مثلًا) بأيقونة العين.</li><li>جرّب تخمّن رابط عام مباشر للملف.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>فتح الملف يشتغل بس من الرابط المحمي (بيتحقق من الصلاحية)؛ مفيش رابط عام يشتغل.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Drivers/DriverDocumentAccessTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-3-vehicles-drivers-assets#15" data-title="جدول السائقين — 5 أعمدة + 4 كروت">
@@ -1007,7 +1007,7 @@
         <h3>تعديل السائق — الملفات الحالية وتصاريح الدخول</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.3 (تعديل حساب سائق — كل البيانات قابلة للتعديل، وتصاريح الدخول من بياناته)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح تعديل سائق عنده مرفقات وتصريح دخول (من بيانات التجربة أو بعد إنشاء واحد).</li><li>بص على الصورة وكل مرفق (إقامة / رخصة / رخصة تشغيلية / تأمين) وكارت &quot;Truck Entry Permits&quot;.</li><li>عدّل منطقة تصريح موجود واضغط &quot;Add Permit&quot; وأضف تصريح جديد، واحفظ.</li><li>ارجع للتعديل وشيل كل التصاريح واحفظ.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>جنب كل مرفق موجود أيقونة تنزيل (والصورة باسم الملف)، ومفيهاش حاجة للمرفق الفاضي. كارت التصاريح بيعرض كل تصريح بمرفقه الحالي. التعديل بيحفظ في نفس التصريح (مش بيعمل نسخة)، والتصريح الجديد بيتضاف، وبعد الحذف الكامل التفاصيل بتقول إن مفيش تصاريح. ترك خانة الملف فاضية بيحافظ على المرفق، ورفع جديد بيبدّله.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Drivers/DriverEntryPermitsEditTest</code>, <code>Drivers/DriverEditCurrentFilesTest</code></dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.3 (تعديل حساب سائق — كل البيانات قابلة للتعديل، وتصاريح الدخول من بياناته)</dd></div><div class="row"><dt>الخطوات</dt><dd><ul><li>افتح تعديل سائق عنده مرفقات وتصريح دخول (من بيانات التجربة أو بعد إنشاء واحد).</li><li>بص على الصورة وكل مرفق (إقامة / رخصة / رخصة تشغيلية / تأمين) وكارت &quot;Truck Entry Permits&quot;.</li><li>عدّل منطقة تصريح موجود واضغط &quot;Add Permit&quot; وأضف تصريح جديد، واحفظ.</li><li>ارجع للتعديل وشيل كل التصاريح واحفظ.</li></ul></dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>جنب كل مرفق موجود أيقونة عين &quot;View&quot; بتفتحه في تبويب جديد (والصورة باسم الملف)، ومفيهاش حاجة للمرفق الفاضي. كارت التصاريح بيعرض كل تصريح بمرفقه الحالي. التعديل بيحفظ في نفس التصريح (مش بيعمل نسخة)، والتصريح الجديد بيتضاف، وبعد الحذف الكامل التفاصيل بتقول إن مفيش تصاريح. ترك خانة الملف فاضية بيحافظ على المرفق، ورفع جديد بيبدّله.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Drivers/DriverEntryPermitsEditTest</code>, <code>Drivers/DriverEditCurrentFilesTest</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     </details>
@@ -1939,6 +1939,20 @@
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     </details>
+    <details open class="group">
+      <summary>د) فتح مرفقات السائق والمركبة (أيقونة العين) <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-5-document-expiry#7" data-title="أيقونة &quot;عرض&quot; بدل زر التحميل — صفحتَي العرض والتعديل">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">7</span></label>
+        <h3>أيقونة &quot;عرض&quot; بدل زر التحميل — صفحتَي العرض والتعديل</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>الدور</dt><dd>مدير النظام (وكل دور يشوف صفحة السائق / المركبة)</dd></div><div class="row"><dt>الخطوات</dt><dd>جهّز سائق ومركبة ليهم مرفقات (وثائق + تصريح دخول، PDF وصورة). افتح <strong>عرض</strong> السائق ثم <strong>عرض</strong> المركبة، ومرّر الماوس على أيقونة المرفق في عمود Attachment في جدولَي الوثائق والتصاريح، واضغط عليها. بعدين افتح <strong>تعديل</strong> السائق ثم <strong>تعديل</strong> المركبة وبصّ على المرفق الحالي جنب كل وثيقة وتصريح، واضغط عليه. بدّل اللغة للعربي وكرّر.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>مفيش أي أيقونة تنزيل. مكانها <strong>أيقونة عين</strong> وتلميح &quot;View&quot; (بالعربي &quot;عرض&quot;)، والضغط عليها بيفتح الملف في <strong>تبويب جديد</strong> بعارض المتصفح (PDF أو صورة) من غير ما يتنزّل لوحده، <strong>في السائق والمركبة بنفس الشكل</strong>، وصفحة التفاصيل أو التعديل بتفضل مفتوحة مكانها. لو عايز تحمّل الملف تحمّله من زر التنزيل في عارض المتصفح نفسه. الخانة اللي مالهاش مرفق بتعرض &quot;—&quot; في جدول العرض ومفيهاش أيقونة في التعديل. مستخدم معندوش صلاحية يشوف السائق / المركبة بياخد 403 لو فتح رابط المرفق. ومرفق اتمسح ملفه من التخزين بيرجّع 404 مش خطأ سيرفر.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Vehicles/VehicleManagementTest::test_the_document_opens_inline_in_the_browser_not_as_a_forced_download</code> و<code>test_a_document_without_a_file_on_disk_is_a_404_not_a_server_error</code> و<code>test_document_download_streams_the_private_file</code>، <code>Drivers/DriverDocumentAccessTest</code>، <code>Contractors/ContractorUserResourcePagesTest::test_a_document_download_re_checks_the_same_rule</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
   </section>
 
   <section class="doc" data-doc="week-5-export-header-and-category-defaults">
@@ -2700,7 +2714,7 @@
     </article>
     </details>
   </section>
-  <p class="foot">اتولّد تلقائيًا من ملفات <code>docs/acceptance/week-*.md</code> بتاريخ 2026-10-19 — للتحديث: <code>node docs/acceptance/build-checklist.mjs</code>. متعدّلش الملف ده بإيدك.</p>
+  <p class="foot">اتولّد تلقائيًا من ملفات <code>docs/acceptance/week-*.md</code> بتاريخ 2026-10-27 — للتحديث: <code>node docs/acceptance/build-checklist.mjs</code>. متعدّلش الملف ده بإيدك.</p>
 </div>
 
 <script>

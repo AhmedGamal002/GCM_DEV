@@ -393,7 +393,7 @@ const CLIENT_GROUPS = [
   { title: 'مستخدمو المتعهدين', ids: ['week-5-contractor-users#1', 'week-5-contractor-users#2', 'week-5-contractor-users#3', 'week-5-contractor-users#4', 'week-5-contractor-users#5', 'week-5-contractor-users#6', 'week-5-contractor-users#7', 'week-5-contractor-users#8', 'week-5-contractor-users#9'] },
   { title: 'شركات العملاء', ids: ['week-4-client-companies#1', 'week-4-client-companies#2', 'week-4-client-companies#3', 'week-4-client-companies#4', 'week-4-client-companies#5', 'week-4-client-companies#6', 'week-4-client-companies#7', 'week-4-client-companies#8', 'week-4-client-companies#9'] },
   { title: 'المشروعات', ids: ['week-5-projects#2', 'week-5-projects#3', 'week-5-projects#4', 'week-5-projects#5', 'week-5-projects#6', 'week-5-projects#7', 'week-5-projects#9', 'week-5-projects#10', 'week-5-projects#11', 'week-5-projects#12', 'week-5-projects#13', 'week-5-projects#15', 'week-5-projects#16', 'week-5-projects#17', 'week-5-projects#21'] },
-  { title: 'الإعدادات العامة وتنبيهات الوثائق', ids: ['week-5-document-expiry#1', 'week-5-document-expiry#2', 'week-5-document-expiry#3', 'week-5-document-expiry#4', 'week-5-document-expiry#6'] },
+  { title: 'الإعدادات العامة وتنبيهات الوثائق', ids: ['week-5-document-expiry#1', 'week-5-document-expiry#2', 'week-5-document-expiry#3', 'week-5-document-expiry#4', 'week-5-document-expiry#6', 'week-5-document-expiry#7'] },
   { title: 'الملف الشخصي', ids: ['week-1-2-auth-users-roles#2', 'week-3-frd-gap-review#4'] },
   { title: 'قواعد عامة عبر الموديولات', ids: ['week-3-frd-gap-review#5', 'week-3-frd-gap-review#6', 'week-3-frd-gap-review#7'] },
   { title: 'الواجهة والتنقل', ids: ['week-1-2-auth-users-roles#1', 'week-1-2-auth-users-roles#17', 'week-1-2-auth-users-roles#18', 'week-3-frd-gap-review#1', 'week-3-frd-gap-review#2', 'week-3-vehicles-drivers-assets#22', 'week-3-frd-gap-review#30'] },
@@ -401,6 +401,16 @@ const CLIENT_GROUPS = [
 ];
 
 const CLIENT_OVERRIDES = {
+  'week-5-document-expiry#7': {
+    title: 'فتح مرفقات السائق والمركبة بأيقونة العين',
+    stepsList: [
+      'افتح صفحة عرض سائق ومركبة ليهم مرفقات، ومرّر الماوس على أيقونة المرفق في جدولَي الوثائق والتصاريح، واضغط عليها.',
+      'افتح صفحة تعديل السائق والمركبة، واضغط على المرفق الحالي جنب أي وثيقة أو تصريح.',
+      'بدّل اللغة للعربي وكرّر.',
+    ],
+    expected:
+      'مفيش أي أيقونة تنزيل؛ مكانها **أيقونة عين** وتلميح "View" (بالعربي "عرض")، والضغط عليها بيفتح الملف في **تبويب جديد** بعارض المتصفح من غير ما يتنزّل لوحده — في السائق والمركبة بنفس الشكل، وفي صفحتَي العرض والتعديل. لو عايز تحمّله، تحمّله من زر التنزيل في عارض المتصفح نفسه. الخانة اللي مالهاش مرفق مفيهاش أيقونة.',
+  },
   'week-5-contractor-users#3': {
     stepsList: ['حاول تنشئ مستخدم متعهد ببريد مستخدم بالفعل (مثلًا `admin@gcm.test`).'],
     expected: 'البريد المكرر بيترفض برسالة واضحة تحت الحقل ومفيش حساب بيتنشأ.',

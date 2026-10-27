@@ -50,6 +50,8 @@
 
 ## اتفاقيات ثابتة — لازم تتطبق على أي صفحة جديدة
 
+- **مرفقات السائق والمركبة (وثائق + تصاريح دخول) = أيقونة عين "View" بتفتح الملف في تبويب جديد، مفيش زر تنزيل** (طلب العميل — في صفحتَي العرض والتعديل للاتنين بنفس الشكل). الأيقونة من `window.gcmViewAttachment(url)` (`resources/js/gcm-attachment.js`، التلميح من `window.gcmI18n.view`) — **استخدمها لأي مرفق جديد من النوع ده ومتكتبش `<a><i class="ti ti-download">` يدوي**. والراوتات (`GET /drivers/{id}/documents/{type}`، `/driver-entry-permits/{id}/attachment`، `/vehicles/{id}/documents/{doc}/download`) بترجّع الملف **inline** (`Storage::response()` مش `download()`) عشان عارض المتصفح يعرضه ومنه يتنزّل — **آمن لإن الرفع `mimes:pdf,jpg,jpeg,png` بس** (لو اتسمح بأي نوع تاني زي HTML/SVG لازم ترجع لـ attachment). اسم الراوت `…/download` لسه زي ما هو عشان Postman. اتجرّب إن عارض PDF في Chrome بيشتغل مع `object-src 'none'` اللي في `SecurityHeaders`. **مرفقات الشركة/المتعهد/المنشأة لسه "Download"** (الطلب كان للسائق والمركبة بس).
+
 - **أي `<select>` حقيقي (له خيارات فعلية يختار منها المستخدم) في فورم إنشاء أو تعديل لازم يكون Select2 بحث حي** (طلب العميل — قاعدة عامة، زي `/forms/selects` في سقالة الديمو بالظبط: `select2` + `form-select`). الأداة المشتركة `resources/js/gcm-select2.js` (معمولة global زي `gcmBusy`) فيها دالتين بس:
   - `window.initGcmSelects(root)` — لأي `<select>` خياراته ثابتة من الـBlade من الأول (مرة واحدة بعد ما تجيب الـform).
   - `window.refreshGcmSelect(select)` — لأي `<select>` بيتغيّر بـJS (داتا مرجعية بتوصل بعد fetch، أو خيارات بتتغيّر حسب حقل تاني) — **بعد كل مرة الـ`<option>`s بتتبني من جديد**، لازم يتنادى في آخر السطر (Select2 بياخد نسخة من الخيارات وقت التهيئة بس، إضافة `<option>` من غير ما تعمل refresh مش هتظهر في البحث).

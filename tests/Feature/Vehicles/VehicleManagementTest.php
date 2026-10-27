@@ -350,6 +350,42 @@ class VehicleManagementTest extends TestCase
     }
 
     /**
+     * The details / edit pages show an eye ("View") that opens the file in a new tab — like the driver's
+     * documents — so it must come back inline for the browser's viewer, not as a forced download.
+     */
+    public function test_the_document_opens_inline_in_the_browser_not_as_a_forced_download(): void
+    {
+        $this->actingAs($this->admin, 'web')
+            ->post('/api/v1/vehicles', $this->validPayload(), ['Accept' => 'application/json'])->assertCreated();
+
+        $vehicle = Vehicle::firstOrFail();
+        $doc = $vehicle->documents()->where('type', 'registration_card')->firstOrFail();
+
+        $response = $this->actingAs($this->admin, 'web')
+            ->get("/api/v1/vehicles/{$vehicle->id}/documents/{$doc->id}/download")
+            ->assertOk();
+
+        $this->assertStringStartsWith('inline', $response->headers->get('Content-Disposition'));
+        $this->assertSame('application/pdf', $response->headers->get('Content-Type'));
+        $this->assertSame('nosniff', $response->headers->get('X-Content-Type-Options'));
+    }
+
+    public function test_a_document_without_a_file_on_disk_is_a_404_not_a_server_error(): void
+    {
+        $this->actingAs($this->admin, 'web')
+            ->post('/api/v1/vehicles', $this->validPayload(), ['Accept' => 'application/json'])->assertCreated();
+
+        $vehicle = Vehicle::firstOrFail();
+        $doc = $vehicle->documents()->where('type', 'registration_card')->firstOrFail();
+
+        Storage::disk('local')->delete($doc->attachment_path);
+
+        $this->actingAs($this->admin, 'web')
+            ->get("/api/v1/vehicles/{$vehicle->id}/documents/{$doc->id}/download")
+            ->assertNotFound();
+    }
+
+    /**
      * An untouched/cleared Quill editor submits `<p><br></p>`, not an
      * empty string — `nullable|string`-valid, so it always got saved and
      * always showed the "Additional Data" section with a heading over

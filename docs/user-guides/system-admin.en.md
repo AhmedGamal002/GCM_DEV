@@ -126,7 +126,7 @@ System Admin only. **Drivers are created and edited exclusively here** — not f
 
 ### View / edit driver
 - Details page with a card per document + "Default Vehicle".
-- Edit page with the same sections, **entry permits included**: each permit is a row (area / number / valid to / attachment) you can edit, add with "Add Permit", or remove with the trash icon. A permit's current attachment shows a download icon next to it; leaving the file input empty keeps it and a new file replaces it. A permit removed from the list is deleted with its file on save. The residence / license / insurance documents and the photo show a link to their current file too.
+- Edit page with the same sections, **entry permits included**: each permit is a row (area / number / valid to / attachment) you can edit, add with "Add Permit", or remove with the trash icon. A permit's current attachment shows an eye icon ("View") next to it that opens the file in a new tab; leaving the file input empty keeps it and a new file replaces it. A permit removed from the list is deleted with its file on save. The residence / license / insurance documents show the same eye icon for their current file, and the photo shows a link to it. On the details pages the Attachment column of every documents / permits table (drivers and vehicles alike) has the same eye icon; the file opens in the browser's own viewer, which has its download button.
 
 ## 7. Asset management — `/app/asset/list`
 

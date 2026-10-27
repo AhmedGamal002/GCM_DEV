@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
       root.querySelector('.entry-valid-to').value = permit.valid_to || '';
       if (permit.has_attachment) {
         const hint = root.querySelector('.entry-current');
-        hint.innerHTML = '<a href="/api/v1/driver-entry-permits/' + permit.id + '/attachment" target="_blank"><i class="ti ti-download"></i></a>';
+        hint.innerHTML = window.gcmViewAttachment('/api/v1/driver-entry-permits/' + permit.id + '/attachment');
         hint.classList.remove('d-none');
       }
     }
@@ -193,7 +193,7 @@ document.addEventListener('DOMContentLoaded', function () {
       ].forEach(function (doc) {
         if (!doc[1] || !doc[1].has_attachment) return;
         const el = document.getElementById(doc[0] + '_current');
-        el.innerHTML = '<a href="/api/v1/drivers/' + id + '/documents/' + doc[2] + '" target="_blank"><i class="ti ti-download"></i></a>';
+        el.innerHTML = window.gcmViewAttachment('/api/v1/drivers/' + id + '/documents/' + doc[2]);
         el.classList.remove('d-none');
       });
 

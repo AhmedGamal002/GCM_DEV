@@ -325,7 +325,7 @@ export function initVehicleForm(opts) {
     if (permit && permit.has_attachment) {
       const hint = node.querySelector('[data-permit-current]');
       if (hint) {
-        hint.innerHTML = '<a href="' + permit.download_url + '" target="_blank"><i class="ti ti-download"></i></a>';
+        hint.innerHTML = window.gcmViewAttachment(permit.download_url);
         hint.classList.remove('d-none');
       }
     }
@@ -442,7 +442,7 @@ export function initVehicleForm(opts) {
       if (d.has_attachment) {
         const hint = form.querySelector(`[data-doc-current="${d.type}"]`);
         if (hint) {
-          hint.innerHTML = `<a href="${d.download_url}" target="_blank"><i class="ti ti-download"></i></a>`;
+          hint.innerHTML = window.gcmViewAttachment(d.download_url);
           hint.classList.remove('d-none');
         }
       }

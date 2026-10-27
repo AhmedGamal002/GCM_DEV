@@ -9,6 +9,7 @@ import './gcm-fetch-all';
 import './gcm-map-embed';
 import './gcm-affiliation';
 import './expiry-bar';
+import './gcm-attachment';
 /*
   Add custom scripts here
 */

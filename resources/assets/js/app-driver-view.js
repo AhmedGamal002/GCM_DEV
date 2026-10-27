@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // One table for the four dated documents, like the vehicle page: number, end date, the bar with the days
     // left, the Valid / Need review / Expired tag and the attachment.
     const attachmentCell = function (url) {
-      return url ? '<a href="' + url + '" target="_blank" class="btn btn-sm btn-text-primary"><i class="ti ti-download"></i></a>' : '—';
+      return url ? window.gcmViewAttachment(url) : '—';
     };
     const docRows = [
       ['residence', d.residence, 'residence'],
