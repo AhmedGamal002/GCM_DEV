@@ -12,7 +12,8 @@ use Illuminate\Support\Facades\Route;
 // `then:` closure (session + CSRF, same as routes/web.php).
 Route::middleware('guest:platform')->group(function () {
     Route::get('/platform/login', [AuthenticatedSessionController::class, 'create'])->name('platform.login');
-    Route::post('/platform/login', [AuthenticatedSessionController::class, 'store']);
+    // Rate-limited like the tenant login (5/min per email+IP, 30/min per IP) — it had no limit before.
+    Route::post('/platform/login', [AuthenticatedSessionController::class, 'store'])->middleware('throttle:platform-login');
 });
 
 Route::post('/platform/logout', [AuthenticatedSessionController::class, 'destroy'])

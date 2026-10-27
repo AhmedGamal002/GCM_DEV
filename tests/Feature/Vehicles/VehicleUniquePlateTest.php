@@ -79,6 +79,9 @@ class VehicleUniquePlateTest extends TestCase
         $adminB = $this->adminFor($this->tenantB);
         app()->instance('tenant', $this->tenantB);
         $payloadB = $this->payload();
+        // payload() binds tenant A, so look the category up AFTER switching back to B. This test used to send A's category
+        // for B's vehicle, which only passed because the rule accepted another company's category (now rejected).
+        app()->instance('tenant', $this->tenantB);
         $payloadB['vehicle_category_id'] = VehicleCategory::where('slug', 'hook_lift')->value('id');
 
         $this->actingAs($adminB, 'web')->post('/api/v1/vehicles', $payloadB, ['Accept' => 'application/json'])->assertCreated();

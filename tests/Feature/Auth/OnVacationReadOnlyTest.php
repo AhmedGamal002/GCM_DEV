@@ -116,6 +116,9 @@ class OnVacationReadOnlyTest extends TestCase
 
     public function test_an_on_vacation_account_cannot_export_anything_in_any_format(): void
     {
+        // 24 export calls in one go — more than the per-minute export ceiling (RateLimitingTest covers that one).
+        config(['app.export_rate_limit' => 1000]);
+
         $user = $this->userWithStatus('on_vacation');
 
         foreach (self::EXPORTS as $module) {

@@ -45,7 +45,7 @@ class StoreAssetRequest extends FormRequest
             ],
 
             'compatible_vehicle_category_ids' => ['required', 'array', 'min:1'],
-            'compatible_vehicle_category_ids.*' => ['integer', 'exists:vehicle_categories,id'],
+            'compatible_vehicle_category_ids.*' => ['integer', Rule::exists('vehicle_categories', 'id')->where('tenant_id', $tenantId)],
 
             'operational_status' => ['required', Rule::in(['active', 'on_maintenance', 'deactivated'])],
 

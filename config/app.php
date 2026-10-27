@@ -56,6 +56,34 @@ return [
 
   /*
   |--------------------------------------------------------------------------
+  | Trusted Hosts
+  |--------------------------------------------------------------------------
+  |
+  | The Host header is client-controlled, and Laravel builds absolute URLs from it — including the link in a
+  | password-reset email. Outside local development (see bootstrap/app.php) only APP_URL's host, its subdomains and
+  | the hosts listed here are accepted; any other Host gets a 400. List a tenant's own domain here (comma separated,
+  | exact host names) when a tenant is served from a domain that is not under APP_URL.
+  |
+  */
+
+  'trusted_hosts' => array_values(array_filter(array_map('trim', explode(',', (string) env('TRUSTED_HOSTS', ''))))),
+
+  /*
+  |--------------------------------------------------------------------------
+  | API Rate Limits (requests per minute)
+  |--------------------------------------------------------------------------
+  |
+  | Per signed-in user (see the `api` limiter in AppServiceProvider). A page load makes a handful of calls, so the
+  | default is far above normal use; raise it with API_RATE_LIMIT for a load test. Exports are limited separately.
+  |
+  */
+
+  'api_rate_limit' => (int) env('API_RATE_LIMIT', 300),
+
+  'export_rate_limit' => (int) env('EXPORT_RATE_LIMIT', 20),
+
+  /*
+  |--------------------------------------------------------------------------
   | Application Timezone
   |--------------------------------------------------------------------------
   |

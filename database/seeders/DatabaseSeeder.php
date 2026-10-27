@@ -14,6 +14,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Demo accounts (admin@gcm.test, driver@gcm.test, ...) all use the factory's public default password. On a live
+        // system the roles are seeded on their own: `php artisan db:seed --class=RoleSeeder --force` (DEPLOYMENT.md §7).
+        if (app()->isProduction()) {
+            throw new \RuntimeException('DatabaseSeeder creates demo accounts with a known password and must not run in production — seed RoleSeeder only.');
+        }
+
         $this->call([
             RoleSeeder::class,
             PermissionSeeder::class,

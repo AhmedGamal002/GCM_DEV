@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\SanitizedRichText;
 use App\Concerns\BelongsToTenant;
 use App\Concerns\VisibleToContractorAccount;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -42,6 +43,7 @@ class Asset extends Model
     protected function casts(): array
     {
         return [
+        'additional_data' => SanitizedRichText::class,
             'purchase_date' => 'date',
         ];
     }

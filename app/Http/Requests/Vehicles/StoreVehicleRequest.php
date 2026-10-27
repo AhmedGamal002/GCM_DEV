@@ -36,7 +36,7 @@ class StoreVehicleRequest extends FormRequest
                     ->where(fn ($q) => $q->where('tenant_id', $tenantId)
                         ->where('plate_letters', $this->input('plate_letters'))),
             ],
-            'vehicle_category_id' => ['required', 'integer', 'exists:vehicle_categories,id'],
+            'vehicle_category_id' => ['required', 'integer', Rule::exists('vehicle_categories', 'id')->where('tenant_id', $tenantId)],
 
             'has_embedded_container' => ['required', 'boolean'],
             'embedded_container_type' => ['nullable', 'required_if:has_embedded_container,1,true', Rule::in(['container', 'tank'])],

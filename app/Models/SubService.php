@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\SanitizedRichText;
 use App\Concerns\BelongsToTenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -50,6 +51,7 @@ class SubService extends Model
     protected function casts(): array
     {
         return [
+        'additional_data' => SanitizedRichText::class,
             'requires_recycle_receipt' => 'boolean',
         ];
     }

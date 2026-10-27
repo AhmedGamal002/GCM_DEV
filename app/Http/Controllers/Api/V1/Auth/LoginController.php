@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 
@@ -39,7 +40,11 @@ class LoginController extends Controller
             ->where('email', $credentials['email'])
             ->first();
 
-        if (! $user || ! Hash::check($credentials['password'], $user->password)) {
+        // A hash is checked even when no account has this email: skipping it answered in a few milliseconds instead of
+        // the ~100 a real check takes, which told a stranger which emails are registered.
+        $passwordMatches = Hash::check($credentials['password'], $user?->password ?? $this->unknownUserHash());
+
+        if (! $user || ! $passwordMatches) {
             throw ValidationException::withMessages([
                 'email' => __('auth.failed'),
             ]);
@@ -67,6 +72,14 @@ class LoginController extends Controller
             'token' => $user->createToken('mobile')->plainTextToken,
             'user' => $this->userPayload($user),
         ]);
+    }
+
+    /** A real hash (same algorithm and cost as the users') of a password nobody knows, made once per process. */
+    private function unknownUserHash(): string
+    {
+        static $hash = null;
+
+        return $hash ??= Hash::make(Str::random(40));
     }
 
     private function userPayload(User $user): array

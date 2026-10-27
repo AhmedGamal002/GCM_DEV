@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\SanitizedRichText;
 use App\Concerns\BelongsToTenant;
 use App\Concerns\VisibleToContractorAccount;
 use App\Domain\Settings\Support\ExpiryWarning;
@@ -38,6 +39,7 @@ class Vehicle extends Model
     protected function casts(): array
     {
         return [
+        'additional_data' => SanitizedRichText::class,
             'has_embedded_container' => 'boolean',
         ];
     }

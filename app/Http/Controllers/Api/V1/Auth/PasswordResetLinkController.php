@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Validation\ValidationException;
 
 /**
  * Same reasoning as LoginController: one API endpoint for both the web
@@ -18,16 +17,11 @@ class PasswordResetLinkController extends Controller
     {
         $request->validate(['email' => ['required', 'email']]);
 
-        $status = Password::broker('users')->sendResetLink(
-            $request->only('email')
-        );
+        // The answer is the same whether or not the address belongs to an account (and whether the link was sent or
+        // held back by the broker's own per-user throttle): "no such user" / "please wait" would tell a stranger
+        // which emails are registered.
+        Password::broker('users')->sendResetLink($request->only('email'));
 
-        if ($status !== Password::RESET_LINK_SENT) {
-            throw ValidationException::withMessages([
-                'email' => [__($status)],
-            ]);
-        }
-
-        return response()->json(['message' => __($status)]);
+        return response()->json(['message' => __(Password::RESET_LINK_SENT)]);
     }
 }

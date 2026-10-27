@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\SanitizedRichText;
 use App\Concerns\BelongsToTenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -46,6 +47,7 @@ class IntermediateFacility extends Model
     protected function casts(): array
     {
         return [
+        'additional_data' => SanitizedRichText::class,
             'recycling_efficiency' => 'decimal:2',
             'contract_start' => 'date',
             'contract_end' => 'date',

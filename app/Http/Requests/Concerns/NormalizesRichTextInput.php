@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Concerns;
 
+use App\Support\RichText;
+
 /**
  * The "Additional Data" field across Users/Drivers/Vehicles/Assets is a
  * Quill rich-text editor — an untouched (or fully cleared) editor doesn't
@@ -18,12 +20,12 @@ namespace App\Http\Requests\Concerns;
  */
 trait NormalizesRichTextInput
 {
+    /**
+     * Also strips everything outside the editor's allowlist (scripts, event handlers, javascript: links...) — the view
+     * pages render this field with `innerHTML`, see App\Support\RichText.
+     */
     protected function normalizeRichText(?string $html): ?string
     {
-        if ($html === null) {
-            return null;
-        }
-
-        return trim(strip_tags($html)) === '' ? null : $html;
+        return RichText::sanitize($html);
     }
 }

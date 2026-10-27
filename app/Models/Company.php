@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\SanitizedRichText;
 use App\Concerns\BelongsToTenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -51,6 +52,7 @@ class Company extends Model
     protected function casts(): array
     {
         return [
+        'additional_data' => SanitizedRichText::class,
             'contract_start_date' => 'date',
             'contract_end_date' => 'date',
         ];

@@ -258,3 +258,16 @@ Hostinger Business بيدّي شهادة Let's Encrypt مجانية — فعّل
 - أي تصدير PDF فوق **1,500 صف** (`exports.pdf_fast_above`) بيتعمل بـ`PdfTableWriter` (رسم مباشر على الـPDF من غير HTML) بدل DomPDF العادي — عشان 50,000 صف (≈1,700 صفحة) يخلصوا في حدود **40 ثانية و~210MB** بدل ما يفشلوا. لا يحتاج أي إعداد على السيرفر.
 - `PdfExport` بيطلب لنفسه `memory_limit` 768M و`max_execution_time` 300 ثانية في طلبات الويب (لو الاستضافة بتسمح — ما بينزّلش حد موجود أعلى منه). **لو الاستضافة أو الـproxy قدامها بيقطع الطلب قبل كده** (شائع: 60–120 ثانية)، التصدير الكبير جدًا (عشرات الآلاف) ممكن يتقطع — ساعتها الحل شغل في الخلفية (queue) مش تعديل في الكود ده.
 - القياسات دي بـXdebug مقفول؛ مع Xdebug (زي `php artisan serve` المحلي) الوقت ~3 أضعاف.
+
+## 15. الأمان — ما اتقفل في الكود وإيه المطلوب منك في كل بيئة
+
+مراجعة أمنية على الكود والاعتماديات اتعملت (أكتوبر 2026) — التفاصيل والـ residual risks في `docs/security-review-2026-10.md`. اللي يهم النشر:
+
+- **`APP_URL` لازم يطابق الدومين الفعلي بالظبط (https + من غير مسار)** في كل بيئة غير `local`. من غير تعديل في الكود: `TrustHosts` (في `bootstrap/app.php`) بيقبل بس host الـ`APP_URL` وساب-دوميناته — أي `Host` تاني بيرجع 400. ده بيمنع تزوير رابط إيميل استرجاع كلمة السر. لو tenant بيتخدم من دومين خاص مش تحت `APP_URL`، ضيفه في `TRUSTED_HOSTS` (host كامل، مفصول بفاصلة). **`APP_ENV=local` (بيئة dev على Hostinger) مستثناة من الفحص ده** — ولو غيّرت `APP_URL` وبعدين الموقع بقى يرد 400 على كل حاجة، ده السبب.
+- **`SESSION_SECURE_COOKIE`** بقى `true` تلقائيًا لما `APP_ENV=production`؛ على باقي البيئات اللي بـHTTPS (testing/staging) سيبها `true` صراحة في الـ`.env` (زي المثال في §6).
+- **توكنات الموبايل (Bearer) بتنتهي بعد 30 يوم** (`SANCTUM_TOKEN_EXPIRATION` بالدقايق). `routes/console.php` فيه `sanctum:prune-expired` يوميًا — محتاج الـcron بتاع `php artisan schedule:run` على السيرفر عشان يتنفّذ (الانتهاء نفسه شغال من غيره، التنضيف بس اللي بيحتاجه).
+- **حدود الطلبات**: تسجيل الدخول 5/دقيقة لكل (إيميل+IP) و30/دقيقة لكل IP، لوحة الـSuper Admin نفس الشيء، والـAPI كله `API_RATE_LIMIT` (300 افتراضي) في الدقيقة لكل مستخدم، والتصدير `EXPORT_RATE_LIMIT` (20). لو الاستضافة قدام proxy/CDN (Cloudflare، LiteSpeed reverse proxy) لازم `trustProxies` يتظبط وإلا `request()->ip()` هيرجّع عنوان الـproxy فكل المستخدمين هيتحسبوا IP واحد — اتأكد بتجربة فعلية قبل الإطلاق.
+- **`DatabaseSeeder` و`PlatformAdminSeeder` بيرفضوا يشتغلوا لما `APP_ENV=production`** (بيزرعوا حسابات باسورد `password` المعروف). على production زرع الأدوار بس: `php artisan db:seed --class=RoleSeeder --force`، وأنشئ الـSuper Admin الحقيقي بباسورد خاص بيك.
+- **صفحات سقالة Vuexy التجريبية مش متسجّلة خالص** إلا لو `SHOW_DEMO_MENU=true` **و**البيئة مش production، وساعتها لمدير النظام فقط. (كانت مفتوحة لأي زائر، ومعاها CRUD تجريبي للمستخدمين.)
+- **رؤوس الأمان** (`X-Frame-Options`, `nosniff`, `Referrer-Policy`, `Permissions-Policy`, `Content-Security-Policy` للـframing/base/form/object، و`HSTS` على HTTPS) بيحطها `SecurityHeaders` على كل رد — متكررهاش في `.htaccess`. ملاحظة: مفيش `script-src` عمدًا (قوالب Vuexy والصفحات بتستخدم inline scripts).
+- **بعد أي تحديث كود**: `composer install --no-dev --optimize-autoloader` (الـlock اتحدّث بنسخة Laravel 12.70 وExcel 3.1.70 وباقي الحزم اللي كانت عليها ثغرات) و`npm ci && npm run build`، وفحص دوري: `composer audit` و`npm audit --omit=dev`.

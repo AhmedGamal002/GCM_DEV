@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Casts\SanitizedRichText;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Concerns\BelongsToTenant;
+use App\Domain\Users\Actions\RevokeUserSessions;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -68,6 +70,7 @@ class User extends Authenticatable
   protected function casts(): array
   {
     return [
+      'additional_data' => SanitizedRichText::class,
       'email_verified_at' => 'datetime',
       'password' => 'hashed',
       'all_projects' => 'boolean',
@@ -89,6 +92,14 @@ class User extends Authenticatable
         } while (static::where('code', $candidate)->exists());
 
         $user->code = $candidate;
+      }
+    });
+
+    // A new password (self-service change, admin edit, reset link) ends the account's other sessions, tokens and
+    // "remember me" cookies — one hook so no path that sets a password can forget to.
+    static::saved(function (User $user) {
+      if (! $user->wasRecentlyCreated && $user->wasChanged('password')) {
+        RevokeUserSessions::execute($user);
       }
     });
   }

@@ -446,7 +446,8 @@ class CompanyManagementTest extends TestCase
 
     public function test_the_list_is_paginated_searchable_filterable_and_sortable(): void
     {
-        Company::factory()->count(20)->create();
+        // Fixed filler names: random faker names occasionally contain "ndl" and made the search for NDL below match two rows.
+        Company::factory()->count(20)->sequence(fn ($sequence) => ['name' => 'Filler Company '.$sequence->index])->create();
         Company::factory()->create(['name' => 'Needle Corp', 'prefix' => 'NDL']);
         Company::factory()->deactivated()->create(['name' => 'Sleeping Corp', 'prefix' => 'SLP']);
 

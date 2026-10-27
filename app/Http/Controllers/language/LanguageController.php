@@ -16,6 +16,11 @@ class LanguageController extends Controller
       $request->session()->put('locale', $locale);
     }
     App::setLocale($locale);
-    return redirect()->back();
+
+    // back() trusts the Referer header, so a link on another site could bounce the visitor to an arbitrary
+    // address after the switch — only go back to a page of this app.
+    $previous = url()->previous();
+
+    return redirect()->to(parse_url($previous, PHP_URL_HOST) === $request->getHost() ? $previous : url('/'));
   }
 }

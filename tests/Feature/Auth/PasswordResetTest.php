@@ -33,13 +33,21 @@ class PasswordResetTest extends TestCase
         $this->assertDatabaseHas('password_reset_tokens', ['email' => $user->email]);
     }
 
-    public function test_forgot_password_rejects_unknown_email(): void
+    public function test_forgot_password_does_not_reveal_that_an_email_is_unknown(): void
     {
+        // Same 200 answer as for a real account (AccountEnumerationTest), and nothing is issued.
         $response = $this->postJson('/api/v1/auth/forgot-password', [
             'email' => 'nobody@gcm.test',
         ]);
 
-        $response->assertJsonValidationErrors('email');
+        $response->assertOk()->assertJsonStructure(['message']);
+        $this->assertDatabaseMissing('password_reset_tokens', ['email' => 'nobody@gcm.test']);
+    }
+
+    public function test_forgot_password_still_rejects_something_that_is_not_an_email(): void
+    {
+        $this->postJson('/api/v1/auth/forgot-password', ['email' => 'not-an-email'])
+            ->assertJsonValidationErrors('email');
     }
 
     public function test_reset_password_with_valid_token_updates_password(): void

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\SanitizedRichText;
 use App\Concerns\BelongsToTenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -77,5 +78,12 @@ class MainService extends Model
     public function isInUse(): bool
     {
         return $this->hasPurchaseOrders();
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'additional_data' => SanitizedRichText::class,
+        ];
     }
 }
