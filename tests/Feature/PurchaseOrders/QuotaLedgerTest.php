@@ -195,21 +195,34 @@ class QuotaLedgerTest extends PurchaseOrderTestCase
     {
         $this->charge($this->line(), 2);
 
+        $first = QuotaLedgerEntry::query()->orderBy('id')->first();
+
         foreach ([
-            fn () => QuotaLedgerEntry::query()->update(['trips_delta' => 0]),
-            fn () => QuotaLedgerEntry::query()->delete(),
-            fn () => QuotaLedgerEntry::query()->increment('trips_delta'),
-            fn () => QuotaLedgerEntry::query()->decrement('trips_delta'),
-            fn () => QuotaLedgerEntry::query()->forceDelete(),
-        ] as $write) {
+            'update' => fn () => QuotaLedgerEntry::query()->update(['trips_delta' => 0]),
+            'upsert' => fn () => QuotaLedgerEntry::query()->upsert([['id' => $first->id, 'trips_delta' => 0]], ['id'], ['trips_delta']),
+            'touch' => fn () => QuotaLedgerEntry::query()->touch('created_at'),
+            'increment' => fn () => QuotaLedgerEntry::query()->increment('trips_delta'),
+            'decrement' => fn () => QuotaLedgerEntry::query()->decrement('trips_delta'),
+            'incrementEach' => fn () => QuotaLedgerEntry::query()->incrementEach(['trips_delta' => 1]),
+            'decrementEach' => fn () => QuotaLedgerEntry::query()->decrementEach(['trips_delta' => 1]),
+            'updateOrInsert' => fn () => QuotaLedgerEntry::query()->updateOrInsert(['id' => $first->id], ['trips_delta' => 0]),
+            'updateFrom' => fn () => QuotaLedgerEntry::query()->updateFrom(['trips_delta' => 0]),
+            'delete' => fn () => QuotaLedgerEntry::query()->delete(),
+            'forceDelete' => fn () => QuotaLedgerEntry::query()->forceDelete(),
+            'truncate' => fn () => QuotaLedgerEntry::query()->truncate(),
+            'static truncate' => fn () => QuotaLedgerEntry::truncate(),
+            'saveQuietly' => fn () => tap(QuotaLedgerEntry::find($first->id), fn ($e) => $e->trips_delta = 9)->saveQuietly(),
+            'deleteQuietly' => fn () => QuotaLedgerEntry::find($first->id)->deleteQuietly(),
+        ] as $name => $write) {
             try {
                 $write();
-                $this->fail('The ledger accepted a mass write.');
+                $this->fail("The ledger accepted a write through {$name}().");
             } catch (LedgerIsAppendOnlyException) {
             }
         }
 
-        $this->assertSame(2, QuotaLedgerEntry::sum('trips_delta'));
+        $this->assertSame(2, QuotaLedgerEntry::count());
+        $this->assertSame(2, (int) QuotaLedgerEntry::sum('trips_delta'));
     }
 
     // ------------------------------------------------------------ concurrency
