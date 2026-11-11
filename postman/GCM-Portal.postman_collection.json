@@ -102,6 +102,11 @@
       "type": "string"
     },
     {
+      "key": "last_purchase_order_id",
+      "value": "",
+      "type": "string"
+    },
+    {
       "key": "last_vehicle_category_id",
       "value": "",
       "type": "string"
@@ -5664,6 +5669,552 @@
               ]
             },
             "description": "Same filters and search as the list. Arabic text is rendered correctly."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Purchase Orders",
+      "description": "FRD V01.14 §1.13 (Phase 3 · part 6.2). System Admin creates / edits / deactivates; System Admin + Auditor read and export; a client Project Manager reads the POs of their own projects (every amount, no export). Data Entry, client Project Auditor, contractor users and drivers get 403 — Data Entry has NO access to POs at all, not even to view. The PO number is the company short name + the paper contract number (ALN-1200), unique per tenant.",
+      "item": [
+        {
+          "name": "List Purchase Orders",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/purchase-orders?per_page=15",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "purchase-orders"
+              ],
+              "query": [
+                {
+                  "key": "per_page",
+                  "value": "15",
+                  "description": "page size (max 1000)"
+                },
+                {
+                  "key": "company_id",
+                  "value": "{{last_company_id}}",
+                  "disabled": true,
+                  "description": "only this client company"
+                },
+                {
+                  "key": "project_id",
+                  "value": "{{last_project_id}}",
+                  "disabled": true,
+                  "description": "only this project"
+                },
+                {
+                  "key": "date_from",
+                  "value": "2026-01-01",
+                  "disabled": true,
+                  "description": "a PO whose dates overlap [date_from, date_to] (either bound may be left out)"
+                },
+                {
+                  "key": "date_to",
+                  "value": "2026-12-31",
+                  "disabled": true,
+                  "description": "see date_from"
+                },
+                {
+                  "key": "status",
+                  "value": "near_exhaustion",
+                  "disabled": true,
+                  "description": "\"الحالة العامة للبنود\": valid | near_exhaustion | exhausted (computed from the quota ledger, in SQL)"
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "disabled": true,
+                  "description": "\"حالة حساب ال PO\": active | deactivated"
+                },
+                {
+                  "key": "search",
+                  "value": "ALN-1200",
+                  "disabled": true,
+                  "description": "matches the PO number, the client company name or the project name"
+                },
+                {
+                  "key": "sort_by",
+                  "value": "starts_on",
+                  "disabled": true,
+                  "description": "number | starts_on | ends_on | operational_status | created_at | status (the items status: valid, then about to run out, then exhausted) — default starts_on"
+                },
+                {
+                  "key": "sort_dir",
+                  "value": "desc",
+                  "disabled": true,
+                  "description": "asc | desc (default desc)"
+                }
+              ]
+            },
+            "description": "Genuinely paginated server-side. Each row carries the computed state: `status` (valid / near_exhaustion / exhausted + `status_label`), `timeline` (not_started / running / ended) with exactly one of `days_remaining` / `days_until_start` / `days_since_end` and a translated `days_label`. A client manager only gets the POs of their projects."
+          }
+        },
+        {
+          "name": "Purchase Order Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/purchase-orders/stats",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "purchase-orders",
+                "stats"
+              ]
+            },
+            "description": "The five cards: ACTIVE purchase orders, client companies and projects they cover, trips recorded on them (every trip that is not cancelled — 0 until trips exist), and the total of the cost items (sum of every line's maximum trip cost + ancillary cost; also returned split). Scoped to a client manager's own projects."
+          }
+        },
+        {
+          "name": "Create Purchase Order",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    if (body.data && body.data.id) {",
+                  "        pm.collectionVariables.set('last_purchase_order_id', body.data.id);",
+                  "        console.log('last_purchase_order_id saved:', body.data.id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"paper_number\": \"1200\",\n  \"company_id\": \"{{last_company_id}}\",\n  \"project_id\": \"{{last_project_id}}\",\n  \"starts_on\": \"2026-01-01\",\n  \"ends_on\": \"2026-05-30\",\n  \"region\": \"Riyadh\",\n  \"operational_status\": \"active\",\n  \"additional_data\": \"<p>Notes</p>\",\n  \"services\": [\n    {\n      \"main_service_id\": \"{{last_main_service_id}}\",\n      \"quota_method\": \"trips_only\",\n      \"max_trips\": 150,\n      \"trip_cost\": 50,\n      \"alert_percent\": 20\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/purchase-orders",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "purchase-orders"
+              ]
+            },
+            "description": "System Admin only. paper_number = digits only (up to 10, leading zeros kept); the stored number is the company prefix + \"-\" + it. The company and project must be active and together; the number must be free (even a deactivated PO keeps its number). `region` is pre-filled from the project when left out. `services[]` = at least one line: main_service_id (active), quota_method (`trips_only` | `trips_and_ancillary`), max_trips, trip_cost, ancillary_cost_per_trip (required for trips_and_ancillary), alert_percent (1–99). Totals (max trips × cost) are computed, never sent. 422 when another active PO of the project already holds one of the services over a shared day, unless that PO's line has run out. Returns the full PO with its state and edit lock (`editability`)."
+          }
+        },
+        {
+          "name": "Create Purchase Order (with attachment)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    if (body.data && body.data.id) {",
+                  "        pm.collectionVariables.set('last_purchase_order_id', body.data.id);",
+                  "        console.log('last_purchase_order_id saved:', body.data.id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "paper_number",
+                  "value": "1201",
+                  "type": "text"
+                },
+                {
+                  "key": "company_id",
+                  "value": "{{last_company_id}}",
+                  "type": "text"
+                },
+                {
+                  "key": "project_id",
+                  "value": "{{last_project_id}}",
+                  "type": "text"
+                },
+                {
+                  "key": "starts_on",
+                  "value": "2026-06-01",
+                  "type": "text"
+                },
+                {
+                  "key": "ends_on",
+                  "value": "2026-09-30",
+                  "type": "text"
+                },
+                {
+                  "key": "services[0][main_service_id]",
+                  "value": "{{last_main_service_id}}",
+                  "type": "text"
+                },
+                {
+                  "key": "services[0][quota_method]",
+                  "value": "trips_and_ancillary",
+                  "type": "text"
+                },
+                {
+                  "key": "services[0][max_trips]",
+                  "value": "150",
+                  "type": "text"
+                },
+                {
+                  "key": "services[0][trip_cost]",
+                  "value": "50",
+                  "type": "text"
+                },
+                {
+                  "key": "services[0][ancillary_cost_per_trip]",
+                  "value": "30",
+                  "type": "text"
+                },
+                {
+                  "key": "services[0][alert_percent]",
+                  "value": "20",
+                  "type": "text"
+                },
+                {
+                  "key": "attachment",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true,
+                  "description": "PDF / JPG / PNG, up to 5 MB — enable and choose a file"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{api_base}}/purchase-orders",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "purchase-orders"
+              ]
+            },
+            "description": "Same as Create, as multipart/form-data with the optional `attachment` (the paper contract: PDF or image, up to 5 MB, kept on the private disk)."
+          }
+        },
+        {
+          "name": "Show Purchase Order",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/purchase-orders/{{last_purchase_order_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "purchase-orders",
+                "{{last_purchase_order_id}}"
+              ]
+            },
+            "description": "The PO with its lines. Per line: the quota, the computed totals, `status` and `components` (date / trips / trip_cost / ancillary_cost — each with state ok|near|exhausted, used, max, remaining, percent_remaining). `totals` sums the lines. `editability` tells the edit form what is locked: `has_trips`, `editable_fields`, `can_change_services` and per line (`services[].id`) `can_change`, `min_max_trips`, `editable_fields`."
+          }
+        },
+        {
+          "name": "Update Purchase Order",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"region\": \"Jeddah\",\n  \"services\": [\n    {\n      \"id\": 1,\n      \"main_service_id\": \"{{last_main_service_id}}\",\n      \"quota_method\": \"trips_and_ancillary\",\n      \"max_trips\": 200,\n      \"trip_cost\": 55,\n      \"ancillary_cost_per_trip\": 30,\n      \"alert_percent\": 15\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/purchase-orders/{{last_purchase_order_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "purchase-orders",
+                "{{last_purchase_order_id}}"
+              ]
+            },
+            "description": "System Admin only. Decision ب2: while no (non-cancelled) trip is recorded on the PO everything can change; once one is, ONLY the quota of the existing lines (max_trips, trip_cost, ancillary_cost_per_trip, alert_percent) — the dates, number, company, project, region, notes, attachment, and the lines themselves lock (422 naming the field). max_trips can never go below the trips already consumed. `services` is the WHOLE list of lines after the edit: an item with `id` edits that line, one without adds a line, a line left out is removed. A new trip cost applies to later trips only. To replace the attachment send multipart with `_method=PATCH`. Deactivating / re-activating is its own endpoint."
+          }
+        },
+        {
+          "name": "Deactivate / Activate Purchase Order",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"deactivated\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/purchase-orders/{{last_purchase_order_id}}/status",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "purchase-orders",
+                "{{last_purchase_order_id}}",
+                "status"
+              ]
+            },
+            "description": "System Admin only; allowed with or without trips. status = `active` | `deactivated`. A deactivated PO is not offered for new trips, does not block another PO and does not make its services \"in a PO\". Re-activating is refused (422 on `status`) when another active PO of the project now holds one of its services over a shared day."
+          }
+        },
+        {
+          "name": "Download Purchase Order Attachment",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/purchase-orders/{{last_purchase_order_id}}/attachment",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "purchase-orders",
+                "{{last_purchase_order_id}}",
+                "attachment"
+              ]
+            },
+            "description": "The paper contract from the private disk, behind the same gate as viewing the PO. 404 when none was uploaded."
+          }
+        },
+        {
+          "name": "Export Purchase Orders (Excel)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/purchase-orders/export?format=xlsx",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "purchase-orders",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "xlsx",
+                  "description": "xlsx | pdf"
+                },
+                {
+                  "key": "company_id",
+                  "value": "{{last_company_id}}",
+                  "disabled": true,
+                  "description": "only this client company"
+                },
+                {
+                  "key": "project_id",
+                  "value": "{{last_project_id}}",
+                  "disabled": true,
+                  "description": "only this project"
+                },
+                {
+                  "key": "date_from",
+                  "value": "2026-01-01",
+                  "disabled": true,
+                  "description": "a PO whose dates overlap [date_from, date_to] (either bound may be left out)"
+                },
+                {
+                  "key": "date_to",
+                  "value": "2026-12-31",
+                  "disabled": true,
+                  "description": "see date_from"
+                },
+                {
+                  "key": "status",
+                  "value": "near_exhaustion",
+                  "disabled": true,
+                  "description": "\"الحالة العامة للبنود\": valid | near_exhaustion | exhausted (computed from the quota ledger, in SQL)"
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "disabled": true,
+                  "description": "\"حالة حساب ال PO\": active | deactivated"
+                },
+                {
+                  "key": "search",
+                  "value": "ALN-1200",
+                  "disabled": true,
+                  "description": "matches the PO number, the client company name or the project name"
+                },
+                {
+                  "key": "sort_by",
+                  "value": "starts_on",
+                  "disabled": true,
+                  "description": "number | starts_on | ends_on | operational_status | created_at | status (the items status: valid, then about to run out, then exhausted) — default starts_on"
+                },
+                {
+                  "key": "sort_dir",
+                  "value": "desc",
+                  "disabled": true,
+                  "description": "asc | desc (default desc)"
+                }
+              ]
+            },
+            "description": "System Admin / Auditor. Same filters and search as the list (one filteredQuery), so the file holds exactly the rows on screen. Use \"Send and Download\"."
+          }
+        },
+        {
+          "name": "Export Purchase Orders (PDF)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/purchase-orders/export?format=pdf",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "purchase-orders",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "pdf",
+                  "description": "xlsx | pdf"
+                },
+                {
+                  "key": "company_id",
+                  "value": "{{last_company_id}}",
+                  "disabled": true,
+                  "description": "only this client company"
+                },
+                {
+                  "key": "project_id",
+                  "value": "{{last_project_id}}",
+                  "disabled": true,
+                  "description": "only this project"
+                },
+                {
+                  "key": "date_from",
+                  "value": "2026-01-01",
+                  "disabled": true,
+                  "description": "a PO whose dates overlap [date_from, date_to] (either bound may be left out)"
+                },
+                {
+                  "key": "date_to",
+                  "value": "2026-12-31",
+                  "disabled": true,
+                  "description": "see date_from"
+                },
+                {
+                  "key": "status",
+                  "value": "near_exhaustion",
+                  "disabled": true,
+                  "description": "\"الحالة العامة للبنود\": valid | near_exhaustion | exhausted (computed from the quota ledger, in SQL)"
+                },
+                {
+                  "key": "operational_status",
+                  "value": "active",
+                  "disabled": true,
+                  "description": "\"حالة حساب ال PO\": active | deactivated"
+                },
+                {
+                  "key": "search",
+                  "value": "ALN-1200",
+                  "disabled": true,
+                  "description": "matches the PO number, the client company name or the project name"
+                },
+                {
+                  "key": "sort_by",
+                  "value": "starts_on",
+                  "disabled": true,
+                  "description": "number | starts_on | ends_on | operational_status | created_at | status (the items status: valid, then about to run out, then exhausted) — default starts_on"
+                },
+                {
+                  "key": "sort_dir",
+                  "value": "desc",
+                  "disabled": true,
+                  "description": "asc | desc (default desc)"
+                }
+              ]
+            },
+            "description": "Same as the Excel export, as a PDF. Use \"Send and Download\"."
           }
         }
       ]

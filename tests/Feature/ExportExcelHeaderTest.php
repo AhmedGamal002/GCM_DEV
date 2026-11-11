@@ -9,6 +9,7 @@ use App\Domain\Contractors\Exports\ContractorsExport;
 use App\Domain\Drivers\Exports\DriversExport;
 use App\Domain\Facilities\Exports\FacilitiesExport;
 use App\Domain\Projects\Exports\ProjectsExport;
+use App\Domain\PurchaseOrders\Exports\PurchaseOrdersExport;
 use App\Domain\Services\Exports\MainServicesExport;
 use App\Domain\Services\Exports\SubServicesExport;
 use App\Domain\Users\Exports\UsersExport;
@@ -48,6 +49,7 @@ class ExportExcelHeaderTest extends TestCase
             'drivers' => [DriversExport::class],
             'facilities' => [FacilitiesExport::class],
             'projects' => [ProjectsExport::class],
+            'purchase orders' => [PurchaseOrdersExport::class],
             'main services' => [MainServicesExport::class],
             'sub-services' => [SubServicesExport::class],
             'users' => [UsersExport::class],

@@ -40,4 +40,12 @@ class PerPageLimitTest extends TestCase
         $this->getJson('/api/v1/companies?per_page=-5')->assertOk()->assertJsonPath('meta.per_page', 15);
         $this->getJson('/api/v1/companies')->assertOk()->assertJsonPath('meta.per_page', 15);
     }
+
+    public function test_the_purchase_order_list_is_capped_too(): void
+    {
+        $this->actAsAdmin();
+
+        $this->getJson('/api/v1/purchase-orders?per_page=5000')->assertOk()->assertJsonPath('meta.per_page', 1000);
+        $this->getJson('/api/v1/purchase-orders?per_page=0')->assertOk()->assertJsonPath('meta.per_page', 15);
+    }
 }

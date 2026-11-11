@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\V1\MainServiceController;
 use App\Http\Controllers\Api\V1\ProfileController;
 use App\Http\Controllers\Api\V1\ProjectAssetController;
 use App\Http\Controllers\Api\V1\ProjectController;
+use App\Http\Controllers\Api\V1\PurchaseOrderController;
 use App\Http\Controllers\Api\V1\RoleController;
 use App\Http\Controllers\Api\V1\SubServiceController;
 use App\Http\Controllers\Api\V1\UserController;
@@ -188,5 +189,18 @@ Route::prefix('v1')->group(function () {
         Route::post('/drivers/{driver}/entry-permits', [DriverController::class, 'addEntryPermit']);
         Route::get('/drivers/{driver}/documents/{type}', [DriverController::class, 'downloadDocument']);
         Route::get('/driver-entry-permits/{permit}/attachment', [DriverController::class, 'downloadEntryPermitAttachment']);
+
+        // ── Phase 3 · 6.2 purchase orders (FRD V01.14 §1.13) ──
+        // /purchase-orders/export and /stats MUST come before /purchase-orders/{purchaseOrder}.
+        Route::get('/purchase-orders/export', [PurchaseOrderController::class, 'export']);
+        Route::get('/purchase-orders/stats', [PurchaseOrderController::class, 'stats']);
+        Route::get('/purchase-orders', [PurchaseOrderController::class, 'index']);
+        Route::post('/purchase-orders', [PurchaseOrderController::class, 'store']);
+        Route::get('/purchase-orders/{purchaseOrder}', [PurchaseOrderController::class, 'show'])->whereNumber('purchaseOrder');
+        Route::patch('/purchase-orders/{purchaseOrder}', [PurchaseOrderController::class, 'update'])->whereNumber('purchaseOrder');
+        Route::patch('/purchase-orders/{purchaseOrder}/status', [PurchaseOrderController::class, 'status'])->whereNumber('purchaseOrder');
+        Route::get('/purchase-orders/{purchaseOrder}/attachment', [PurchaseOrderController::class, 'downloadAttachment'])
+            ->whereNumber('purchaseOrder')
+            ->name('api.purchase-orders.attachment');
     });
 });

@@ -222,6 +222,18 @@ return [
         'tax_number' => 'tax registration number',
         'driver_expiry_warning_days' => 'driver documents warning period',
         'vehicle_expiry_warning_days' => 'vehicle documents warning period',
+        'paper_number' => 'PO number',
+        'starts_on' => 'start date',
+        'ends_on' => 'end date',
+        'region' => 'operational region',
+        'attachment' => 'attachment',
+        'services' => 'services',
+        'services.*.main_service_id' => 'main service',
+        'services.*.quota_method' => 'quota calculation method',
+        'services.*.max_trips' => 'maximum number of trips',
+        'services.*.trip_cost' => 'trip cost',
+        'services.*.ancillary_cost_per_trip' => 'ancillary services cost per trip',
+        'services.*.alert_percent' => 'expiry alert percentage',
     ],
 
 ];
