@@ -23,6 +23,9 @@ use App\Http\Controllers\Web\Profile\AccountSettingsController;
 use App\Http\Controllers\Web\Projects\ProjectAccountController;
 use App\Http\Controllers\Web\Projects\ProjectAddController;
 use App\Http\Controllers\Web\Projects\ProjectListController;
+use App\Http\Controllers\Web\PurchaseOrders\PurchaseOrderAccountController;
+use App\Http\Controllers\Web\PurchaseOrders\PurchaseOrderAddController;
+use App\Http\Controllers\Web\PurchaseOrders\PurchaseOrderListController;
 use App\Http\Controllers\Web\Services\MainServicePageController;
 use App\Http\Controllers\Web\Services\SubServicePageController;
 use App\Http\Controllers\Web\Users\ClientUserController;
@@ -143,6 +146,14 @@ Route::middleware(['auth', 'tenant'])->group(function () {
     Route::get('/app/project/view/{project}', [ProjectAccountController::class, 'view'])->whereNumber('project')->name('app-project-view');
     Route::get('/app/project/edit/{project}', [ProjectAccountController::class, 'edit'])->whereNumber('project')->middleware('can:create,App\\Models\\Project')->name('app-project-edit');
 
+    // ── Phase 3 · 6.3 purchase orders (FRD V01.14 §1.13) ──
+    // {purchaseOrder} is a raw numeric id (see ProjectController's docblock). The FRD gives Data Entry, the client
+    // Project Auditor, contractor users and drivers no access to POs at all, so even the read pages carry
+    // `can:viewAny` (System Admin, Auditor, client Project Manager) and add / edit `can:create` (System Admin only).
+    Route::get('/app/po/list', [PurchaseOrderListController::class, 'index'])->middleware('can:viewAny,App\Models\PurchaseOrder')->name('app-po-list');
+    Route::get('/app/po/add', [PurchaseOrderAddController::class, 'index'])->middleware('can:create,App\Models\PurchaseOrder')->name('app-po-add');
+    Route::get('/app/po/view/{purchaseOrder}', [PurchaseOrderAccountController::class, 'view'])->whereNumber('purchaseOrder')->middleware('can:viewAny,App\Models\PurchaseOrder')->name('app-po-view');
+    Route::get('/app/po/edit/{purchaseOrder}', [PurchaseOrderAccountController::class, 'edit'])->whereNumber('purchaseOrder')->middleware('can:create,App\Models\PurchaseOrder')->name('app-po-edit');
     // Profile (any authenticated tenant user) — one page, two cards
     // (photo + password change). Used to be two tabs/pages; merged per the
     // client's request. The old security URL just lands on the same page.

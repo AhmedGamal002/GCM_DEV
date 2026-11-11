@@ -558,6 +558,26 @@
           ]
         },
         {
+          "name": "Purchase Orders",
+          "icon": "menu-icon tf-icons ti ti-file-invoice",
+          "slug": "app-po",
+          "roles": ["system_admin", "auditor", "client_project_manager"],
+          "submenu": [
+            {
+              "url": "app/po/list",
+              "name": "List",
+              "slug": "app-po-list",
+              "roles": ["system_admin", "auditor", "client_project_manager"]
+            },
+            {
+              "url": "app/po/add",
+              "name": "Add",
+              "slug": "app-po-add",
+              "roles": ["system_admin"]
+            }
+          ]
+        },
+        {
           "url": "app/settings",
           "name": "General Settings",
           "icon": "menu-icon tf-icons ti ti-settings",

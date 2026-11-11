@@ -388,6 +388,39 @@ class MenuVisibilityTest extends TestCase
             ->assertDontSee('app/project/list', false);
     }
 
+    /**
+     * Purchase Orders (FRD V01.14 §1.13): the System Admin manages them; the Auditor and a client Project Manager
+     * only view; Data Entry, the client Project Auditor, contractor users and drivers don't see the item at all.
+     */
+    public function test_purchase_orders_menu_visibility_per_role(): void
+    {
+        $company = \App\Models\Company::factory()->create();
+        $dataEntry = User::factory()->create();
+        $dataEntry->assignRole('data_entry');
+        $auditor = User::factory()->create();
+        $auditor->assignRole('auditor');
+        $driver = User::factory()->create();
+        $driver->assignRole('driver');
+        $clientManager = User::factory()->client($company, 'client_project_manager', true)->create();
+        $clientAuditor = User::factory()->client($company, 'client_project_auditor', true)->create();
+
+        $this->actingAs($this->tenantAdmin, 'web')->get('/dashboard')->assertOk()
+            ->assertSee('>Purchase Orders<', false)
+            ->assertSee('app/po/list', false)
+            ->assertSee('app/po/add', false);
+
+        foreach ([$auditor, $clientManager] as $viewer) {
+            $this->actingAs($viewer, 'web')->get('/dashboard')->assertOk()
+                ->assertSee('app/po/list', false)
+                ->assertDontSee('app/po/add', false);
+        }
+
+        foreach ([$dataEntry, $clientAuditor, $driver] as $other) {
+            $this->actingAs($other, 'web')->get('/dashboard')->assertOk()
+                ->assertDontSee('>Purchase Orders<', false)
+                ->assertDontSee('app/po/list', false);
+        }
+    }
     public function test_a_driver_sees_no_section_titles_at_all(): void
     {
         $driver = User::factory()->create();
