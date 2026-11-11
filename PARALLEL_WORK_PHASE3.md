@@ -11,7 +11,7 @@
 
 | # | الجزء | يبدأ لما | يخلّص لما |
 |---|---|---|---|
-| 1 | **6.1** نواة التعاقد والحصص | فورًا | تستات الدفتر (append-only، الاسترجاع، التزامن، الحدود) والحالات وقاعدة التداخل وعزل tenant خضرا |
+| 1 | **6.1** نواة التعاقد والحصص ✅ (2026-11-11) | فورًا | تستات الدفتر (append-only، الاسترجاع، التزامن، الحدود) والحالات وقاعدة التداخل وعزل tenant خضرا |
 | 2 | **7.1** نواة الرحلة | 6.1 اندمج (ج1 وج3 بالافتراضي لحد رد العميل) | جدول الانتقالات كامل (كل حالة × كل فعل: المسموح والممنوع) + الخصم والاسترجاع + الإلغاء + ترقيم متزامن |
 | 3 | **7.2** منطق الاختيار المتتابع | 7.1 اندمج | تستات لكل خطوة من التسع وللحالات الحدّية (مفيش تعاقد، منتهي، نفذ، مدمجة/خارجية، توريد، متعهد معطّل) |
 | 4 | **7.4 — جانب الـAPI** | 7.1 + 7.2 + 7.3 اندمجوا | مجلد Postman «Trips» بأمثلة ردود + تستات الصلاحيات والانتقالات؛ وبعدها رحلة كاملة من الواجهة مع B |
@@ -133,6 +133,7 @@
 - `purchase_order_services`: `id`، `purchase_order_id`، `main_service_id`، `quota_method` (`trips_only`/`trips_and_ancillary`)، `max_trips`، `trip_cost` (decimal 12,2)، `ancillary_cost_per_trip` (decimal 12,2، افتراضي 0)، `alert_percent`. الإجماليات (`max_trips × trip_cost` وغيرها) **بتتحسب مش بتتخزّن**.
 - `quota_ledger_entries` (Append-only — الموديل بيرمي exception على أي update أو delete): `id`، `tenant_id`، `purchase_order_service_id`، `trip_id` (unsigned nullable، **من غير FK في 6.1** — الـFK بيتضاف في migration 7.1)، `type` (`consume`/`release`)، `trips_delta` (موقّع)، `trip_cost_delta` و`ancillary_cost_delta` (موقّعين)، `occurred_at`، `created_by`، `created_at` (من غير `updated_at`).
 - النماذج في `app/Models/` (الاستثناء الواعي المعروف): `PurchaseOrder`، `PurchaseOrderService`، `QuotaLedgerEntry`. باقي الكود في `app/Domain/PurchaseOrders/`.
+- **✅ اتبنى في 6.1 (2026-11-11) — 3 فروق عن اللي فوق (إضافات، مفيش اسم اتشال):** (1) `purchase_orders.operational_status` = **`active`/`deactivated`** مش `inactive` — زي كل موديولات النظام ونص الـFRD «نشطة / معطلة»، عشان الفلاتر والبادجات ومفاتيح اللغة الموجودة تشتغل زي ما هي (**B: لو عندك اعتراض قولي قبل 6.2**). (2) `purchase_order_services.tenant_id` (عزل tenant على البنود نفسها، و`exists` المتقيّد بالـtenant يشتغل عليها). (3) `quota_ledger_entries.reverses_id` (nullable، **فريد**، FK لنفس الجدول): صف الـ`release` بيشاور على الـ`consume` اللي بيرجّعه، فمفيش استهلاك يترجّع مرتين. وقيد فريد `(purchase_order_id, main_service_id)` (القرار 9.2 تحت).
 
 ### 4.2 دفتر الحصص — `App\Domain\PurchaseOrders\Quota\`
 
@@ -143,6 +144,14 @@
 - `DeductQuotaAction::execute(PurchaseOrderService $service, int $tripId, float $tripCost, float $ancillaryCost, User $actor): QuotaLedgerEntry` — جوه transaction و`lockForUpdate()` على صف البند. **مابترميش exception لو الرصيد ناقص**؛ اللي ينادي (إجراء الرحلة) هو اللي يسأل `canCover()` ويقرر يربط بالتعاقد ولا يسجّل الرحلة «بدون تعاقد» (قرار ب6 اتحسم 2026-11-09: الرحلة بتتخصم من التعاقد اللي اتختار حتى لو الرصيد بقى بالسالب، و«بدون تعاقد» بس لو المشروع مالوش تعاقد للخدمة أو المستخدم اختارها).
 - `ReleaseQuotaAction::execute(int $tripId, User $actor): int` — بيضيف صفوف عكسية لكل `consume` لسه ماتعمللهوش release، **idempotent** (ينادى مرتين مايعدّش مرتين)، وبيرجّع عدد الصفوف المضافة.
 - حالة التعاقد (سارية / على وشك النفاذ / نفذت…): `PurchaseOrderStatus` في نفس الـnamespace، ومعتمدة على `QuotaBalance` فقط.
+- **✅ اتبنى في 6.1 (2026-11-11) — اللي B يقدر يبني عليه في 6.2 من غير ما يلمس الـdomain:**
+  - **`QuotaBalance`** فيه فوق السبعة: `totalDays` · `timeline` (`not_started`/`running`/`ended`) · `daysUntilStart` · `daysSinceEnd` · `alertPercent` · `tracksAncillary`. و**`QuotaBalances::forMany($lines)`** = استعلام واحد لأي عدد بنود (للقوايم — ماتنادييش `for()` جوه loop).
+  - **`PurchaseOrderStatus::describe($po)`** بيرجّع كل اللي الصفحة محتاجاه بنصوص مترجمة من السيرفر (زي `ExpiryWarning::describe()`): `status` (`valid`/`near_exhaustion`/`exhausted`) + `status_label` + `timeline` + `timeline_label` + واحد بس من `days_remaining`/`days_until_start`/`days_since_end` + `days_label` + `services[line_id]` = حالة كل بند ومكوّناته (`date`/`trips`/`trip_cost`/`ancillary_cost`، كل واحد `state`/`used`/`max`/`remaining`/`percent_remaining`). الـresource يستخدمه ومايحسبش حاجة في الـJS.
+  - **الـActions جاهزة** في `App\Domain\PurchaseOrders\Actions\`: `CreatePurchaseOrderAction::execute($data, ?UploadedFile, $actor)` · `UpdatePurchaseOrderAction::execute($po, $data, ?UploadedFile, $actor)` · `UpdatePurchaseOrderStatusAction::execute($po, 'active'|'deactivated', $actor)`. بيفحصوا بنفسهم كل اللي محتاج داتا (الشركة والمشروع نشطين ومع بعض، الرقم فاضي، عدم التداخل، قفل التعديل) وبيرموا `ValidationException` بمفاتيح الحقول (`paper_number`، `project_id`، `services.0.main_service_id`، و`status` لإعادة التنشيط) — فالـcontroller بيرجّع 422 لوحده. المرفق على القرص الخاص في `purchase-order-attachments/{id}/`.
+  - **شكل الـinput** في `Support\PurchaseOrderRules::store()` / `::update()` — استخدمهم في الـFormRequests كما هم: `paper_number` (أرقام بس، والرقم المخزّن = الاختصار + `-` + هو، مثلًا `ALN-1200`، و`$po->paperNumber()` بيرجّعه)، `company_id`، `project_id`، `starts_on`/`ends_on` (`Y-m-d`)، `region` (لو مش مبعوت بيتعبّأ من منطقة المشروع)، `operational_status` (في الإنشاء بس)، `attachment`، `additional_data`، و`services[]` (`main_service_id`، `quota_method`، `max_trips`، `trip_cost`، `ancillary_cost_per_trip`، `alert_percent`، و`id` في التعديل). **في التعديل `services` = القايمة كاملة بعد التعديل:** بند فيه `id` بيتعدّل، من غيره بيتضاف، واللي مش موجود بيتشال.
+  - **`PurchaseOrderEditability::for($po)->toArray()`** للفورم: `has_trips`، `editable_fields`، `can_change_services`، و`services[line_id]` = `can_change` + `min_max_trips` + `editable_fields`. الحقل اللي بيتبعت بقيمته الحالية مش تغيير (الفورم يبعت كله عادي).
+  - **الحدث** `Events\PurchaseOrderLineStatusChanged($line, $from, $to)` بيتبعت بعد الـcommit بس لما الحالة تتغيّر بسبب كتابة (خصم، استرجاع، تعديل حصة) — لـ8.2. التغيّر بمرور الأيام بس (من غير كتابة) مابيبعتوش؛ ده فحص يومي في 8.2.
+  - **قاعدة لأي حد بيقرا الرصيد عشان يكتب:** جوه transaction على MySQL القراءة العادية بتشوف snapshot أقدم من القفل، فأي كود بيقرر حاجة على الرصيد أو التداخل جوه كتابة يستخدم `QuotaBalances::for($line, null, true)` (قراءة بقفل). اتجرّب بعمليات متوازية حقيقية (التفاصيل في `WEEKLY_PLAN.md` 6.1).
 
 ### 4.3 الرحلة (7.1) — الأسماء اللي B محتاجها
 
@@ -221,6 +230,6 @@
 ## 9) قرارات مفتوحة بين الاتنين
 
 1. **ربط 8.2 بالانتقالات:** هل 7.1 يطلق Events مع كل انتقال؟ (كان قرارنا نسأل عليه لما نوصل لـ7.1.)
-2. نفس الخدمة الأساسية مرتين جوه التعاقد الواحد: ممنوع بقيد فريد `(purchase_order_id, main_service_id)`؟ (افتراضنا: ممنوع.)
+2. ✅ نفس الخدمة الأساسية مرتين جوه التعاقد الواحد: **ممنوع** بقيد فريد `(purchase_order_id, main_service_id)` (اتبنى في 6.1 بالافتراض، 2026-11-11).
 3. ✅ العملة والخانات العشرية (أ4، **محسوم 2026-11-11 باعتماد اقتراحي**): ريال سعودي لكل التعاقدات (مفيش عمود عملة)، خانتين عشريتين (`decimal(12,2)`)، والأسعار كما تُدخل من غير إضافة ضريبة (مفيش حقول ضريبة قيمة مضافة). وأ1: مفيش نقل بيانات من النظام الحالي.
 4. أسماء مسارات `options` في 7.2 (4.4).

@@ -6,6 +6,7 @@ use App\Domain\Services\Actions\UpdateMainServiceAction;
 use App\Domain\Services\Actions\UpdateMainServiceStatusAction;
 use App\Domain\Services\Exceptions\MainServiceInUseException;
 use App\Models\MainService;
+use App\Models\PurchaseOrderService;
 use App\Models\SubService;
 use App\Models\Tenant;
 use App\Models\User;
@@ -492,23 +493,23 @@ class MainServiceManagementTest extends TestCase
 
     // -------------------------------------------------------------- helpers
 
-    /**
-     * POs don't exist yet — a subclass stands in for a main service that a
-     * PO includes (same approach as the facility in-use test).
-     */
+    /** A main service that an active PO includes (decision ج5: that is what "in a PO" means). */
     private function mainInPurchaseOrder(): MainService
     {
-        $main = new class extends MainService
-        {
-            protected $table = 'main_services';
-
-            public function hasPurchaseOrders(): bool
-            {
-                return true;
-            }
-        };
-        $main->forceFill(['name' => 'In a PO', 'service_type' => 'hazardous', 'operational_status' => 'active'])->save();
+        $main = MainService::factory()->ofType('hazardous')->create(['name' => 'In a PO']);
+        PurchaseOrderService::factory()->create(['main_service_id' => $main->id]);
 
         return $main;
+    }
+
+    public function test_a_service_whose_only_po_is_deactivated_can_be_edited_again(): void
+    {
+        $main = MainService::factory()->create();
+        $line = PurchaseOrderService::factory()->create(['main_service_id' => $main->id]);
+        $line->purchaseOrder->forceFill(['operational_status' => 'deactivated'])->save();
+
+        $updated = app(UpdateMainServiceAction::class)->execute($main, ['name' => 'Renamed'], $this->admin);
+
+        $this->assertSame('Renamed', $updated->name);
     }
 }

@@ -61,14 +61,23 @@ class MainService extends Model
         return $this->service_type === 'supplying';
     }
 
+    /** The PO lines that include this service. */
+    public function purchaseOrderServices(): HasMany
+    {
+        return $this->hasMany(PurchaseOrderService::class);
+    }
+
     /**
-     * Whether any PO includes this service. POs (FRD §1.13) don't exist yet,
-     * so nothing can; wire the PO lines in here when the contracts module
-     * lands.
+     * Whether a PO includes this service — "مرتبطة بـPO" (decision ج5,
+     * 2026-11-10): any ACTIVE PO, even one whose dates ended or whose items
+     * ran out. A deactivated PO doesn't count, so deactivating the PO lifts
+     * the lock (on this service and on its sub-services).
      */
     public function hasPurchaseOrders(): bool
     {
-        return false;
+        return $this->purchaseOrderServices()
+            ->whereHas('purchaseOrder', fn ($q) => $q->where('operational_status', 'active'))
+            ->exists();
     }
 
     /**
