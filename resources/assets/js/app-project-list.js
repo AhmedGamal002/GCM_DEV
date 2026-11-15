@@ -120,7 +120,7 @@ $(function () {
       {
         targets: 5,
         orderable: false,
-        render: (data, type, full) => escapeHtml(full.contracts_count)
+        render: (data, type, full) => (full.contracts_count == null ? '—' : escapeHtml(full.contracts_count))
       },
       {
         targets: 6,

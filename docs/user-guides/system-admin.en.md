@@ -238,7 +238,32 @@ Sidebar: heading **Clients & Projects** → **Client Projects** (List + Add). A 
 - Edit page: every field except the company (locked; the ID is shown above the form).
 - **Deactivate / reactivate** from the "Project Status" card on the edit page (with a confirmation). There is no delete. Deactivating a project does **not** deactivate the company, and deactivating a company does **not** deactivate its projects; a deactivated project is not offered when inserting an asset.
 
-## 14. Features available now
+## 14. Purchase orders (contracts) — `/app/po/list`
+
+Sidebar: heading **Clients & Projects** → **Purchase Orders** (List + Add). A purchase order (PO) is the **quota** of main services a client company buys for **one project** over a date range. Only the System Admin creates, edits and deactivates them (Data Entry has no access to POs at all, not even to read them).
+
+### List
+- Five cards: the **active** POs, the client companies and projects they cover, the trips recorded on them (0 until trips exist) and the total of their cost items (SAR).
+- Server-side table: ID (`ALN-1200`), client company, project, duration, **days left**, **items status** (In force / About to run out / Fully exhausted) and account status (Active / Deactivated). Search by number, company or project; filters for company, project, time range, items status and account status; sort by number, dates, status. Excel/PDF export of exactly what is on screen.
+
+### Create a PO
+- **PO No.**: the number on the paper contract (digits only, up to 10, leading zeros kept). The system ID is the company's short name + it (`ALN-1200`); a number is never reused, even after the PO is deactivated.
+- Pick the company, then one of its projects (the operational region fills in from the project and can be changed), the duration, status, an optional attachment (PDF or image, up to 5 MB) and notes.
+- **Contract services**: "Add Service" adds a block per main service with how its quota is counted — *trips cost only* (max trips × trip cost) or *trips and ancillary services* (plus the ancillary cost per trip). The maximum totals are calculated live. The **alert percentage** of each service warns when the days, the trips or a cost total left fall below that share.
+- **Overlap rule**: you can't add a main service to a PO of the same project while another active PO of that project already holds it over a shared day — unless one of its parts (trips, cost or date) has run out.
+
+### Details
+Left card: number, both statuses, company, project, region, duration, days left ("Starts in X days" / "Ended X days ago" when outside the range), attachment. Right: cards for the trips and cost used, and **one card per service** with its quota and a bar for what is left of each part (days, trips, trip cost, ancillary cost), coloured by its state.
+
+### Edit and deactivate
+- **No trip on the PO yet:** everything can be edited.
+- **Once a trip is recorded:** only the **quota** of each service (max trips — never below what was used —, trip cost, ancillary cost, alert percentage). The number, company, project, dates, notes, attachment and the services themselves lock. A new trip cost applies to later trips only.
+- **Deactivate / reactivate** is its own card on the edit page, allowed with or without trips. A deactivated PO is not offered for new trips, doesn't block another PO, and doesn't count in the cards. Reactivating is refused if another active PO now holds one of its services over a shared day.
+- A main service that is in an active PO can't be edited or deactivated.
+
+### In the company and project pages
+The company page and the project page each have a **Contracts** section — a table of that company's (or project's) POs with search, items-status filter, export and "Add Purchase Order" (company/project already chosen) — and the **Contracts** card and the list column show the real count.
+## 15. Features available now
 
 | Module | Available | Deferred |
 |---|---|---|
@@ -247,9 +272,10 @@ Sidebar: heading **Clients & Projects** → **Client Projects** (List + Add). A 
 | Drivers | Full CRUD + default vehicle + documents + permits | "on a trip" status (Week 7), mobile app |
 | Assets | Full CRUD + capacities + status + export + **insert an asset into a project** + "in a project" availability | Taking an asset out of a project (with trips) |
 | Intermediate facilities | Create / edit / deactivate + prefix + recycling efficiency + contract + export + supported sub-services | — |
-| Main & sub-services | Create / edit / deactivate (cascading to sub-services) + categories, capacities and facilities + recycle receipt + skip colour + main-services export | Real statistics and the PO/trip lock (Weeks 6–7) |
+| Main & sub-services | Create / edit / deactivate (cascading to sub-services) + categories, capacities and facilities + recycle receipt + skip colour + main-services export + **lock while the service is in an active PO** | Real statistics and the trip lock (Week 7) |
 | Contractors | Full CRUD + deactivate/reactivate + certified services + attachments + statistics + export + **driver / vehicle / asset affiliation to a contractor** + **contractor representative account** | — |
-| Client companies | Full CRUD + deactivate/reactivate + attachments + export + projects count + company projects table + **representative + users count** | The contracts section (with Contracts) |
-| Client projects | Full CRUD + deactivate/reactivate + ID from the company short name + project assets + export + **representative + users count** | Contracts section and trip statistics |
+| Client companies | Full CRUD + deactivate/reactivate + attachments + export + projects count + company projects table + **representative + users count** + **contracts count and the company's contracts table** | Trip and waste statistics (with Trips) |
+| Client projects | Full CRUD + deactivate/reactivate + ID from the company short name + project assets + export + **representative + users count** + **contracts count and the project's contracts table** | Trip and waste statistics (with Trips) |
+| Purchase orders | Create / edit (locks to the quota once a trip is recorded) / deactivate + quota per service + computed status + overlap rule + attachment + stats + export + contracts section on the company and project pages | Trips counting on a PO and the quantities (with Trips) |
 | General Settings | Warning period for driver and vehicle document expiry (default 30 days, 1–365) — the "time left" bars on the driver and vehicle pages turn yellow (tag "Need review") from then on | — |
 | Dashboard | Shell screen | Real stats (Week 8) |

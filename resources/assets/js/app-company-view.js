@@ -6,6 +6,8 @@
  */
 'use strict';
 
+import { initRelatedPoTable } from './po/related-table.js';
+
 document.addEventListener('DOMContentLoaded', function () {
   const t = window.companyViewTranslations || {};
   const id = window.companyViewId;
@@ -110,7 +112,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     Object.entries(c.stats || {}).forEach(([key, val]) => {
       const el = document.querySelector(`[data-stat="${key}"]`);
-      if (el) el.textContent = val;
+      // null = a figure this role may not see (Data Entry has no access to purchase orders): drop its card.
+      if (el && val === null) {
+        const card = el.closest('[class*="col-"]');
+        if (card) card.classList.add('d-none');
+      } else if (el) el.textContent = val;
     });
 
     document.getElementById('cv-edit-link').href = (t.edit_url_base || '/app/company/edit') + '/' + c.id;
@@ -123,6 +129,10 @@ document.addEventListener('DOMContentLoaded', function () {
     .get(`/api/v1/companies/${id}`)
     .then((response) => render(response.data.data))
     .catch((error) => showError(error.response && error.response.data && error.response.data.message));
+
+  // ---------------------------------------------- company purchase orders
+  // FRD V01.14 §1.11.3: the company's contracts across all its projects (does nothing for a role without PO access).
+  initRelatedPoTable({ params: () => ({ company_id: id }), showProject: true });
 
   // ------------------------------------------------------ company projects
   // Server-side DataTable of this company's projects (FRD V01.14 §1.11.3):
@@ -183,7 +193,7 @@ document.addEventListener('DOMContentLoaded', function () {
     columnDefs: [
       { targets: 0, render: (data, type, full) => escapeHtml(full.code) },
       { targets: 1, responsivePriority: 1, render: (data, type, full) => '<span class="fw-medium">' + escapeHtml(full.name) + '</span>' },
-      { targets: 2, orderable: false, render: (data, type, full) => escapeHtml(full.contracts_count) },
+      { targets: 2, orderable: false, render: (data, type, full) => (full.contracts_count == null ? '—' : escapeHtml(full.contracts_count)) },
       { targets: 3, orderable: false, render: (data, type, full) => escapeHtml(full.users_count) },
       {
         targets: 4,

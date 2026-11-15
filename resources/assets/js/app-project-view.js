@@ -3,10 +3,12 @@
  * (currently zero) statistics and a server-side DataTable of the assets
  * inserted into it (GET /api/v1/assets?project_id=…, type filter,
  * Excel/PDF export of exactly what is shown). Status changes happen on the
- * edit page (FRD V01.14 §1.12.4). The contracts section is a placeholder
- * until the Contracts module exists.
+ * edit page (FRD V01.14 §1.12.4). The contracts section is the shared
+ * purchase-orders table (po/related-table.js).
  */
 'use strict';
+
+import { initRelatedPoTable } from './po/related-table.js';
 
 document.addEventListener('DOMContentLoaded', function () {
   const t = window.projectViewTranslations || {};
@@ -105,7 +107,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     Object.entries(p.stats || {}).forEach(([key, val]) => {
       const el = document.querySelector(`[data-stat="${key}"]`);
-      if (el) el.textContent = val;
+      // null = a figure this role may not see (Data Entry has no access to purchase orders): drop its card.
+      if (el && val === null) {
+        const card = el.closest('[class*="col-"]');
+        if (card) card.classList.add('d-none');
+      } else if (el) el.textContent = val;
     });
 
     const editLink = document.getElementById('pv-edit-link');
@@ -119,6 +125,10 @@ document.addEventListener('DOMContentLoaded', function () {
     .get(`/api/v1/projects/${id}`)
     .then((response) => render(response.data.data))
     .catch((error) => showError(error.response && error.response.data && error.response.data.message));
+
+  // -------------------------------------------- purchase orders of this project
+  // FRD V01.14 §1.12.3: this project's contracts (does nothing for a role without PO access).
+  initRelatedPoTable({ params: () => ({ project_id: id }), showProject: false });
 
   // ------------------------------------------------- assets in this project
   const dt = $('.datatables-project-assets');

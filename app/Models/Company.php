@@ -91,6 +91,12 @@ class Company extends Model
         return $this->hasMany(Project::class);
     }
 
+    /** The company's purchase orders (FRD §1.13), over all of its projects. */
+    public function purchaseOrders(): HasMany
+    {
+        return $this->hasMany(PurchaseOrder::class);
+    }
+
     /** Every client account of this company (FRD §1.4), whatever its status. */
   public function users(): HasMany
   {

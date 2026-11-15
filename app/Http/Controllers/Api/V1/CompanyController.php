@@ -61,7 +61,7 @@ class CompanyController extends Controller
 
     public function show(int $company)
     {
-        $company = Company::withCount(['projects', 'users'])->with(['updatedBy', 'representative'])->findOrFail($company);
+        $company = Company::withCount(['projects', 'users', 'purchaseOrders'])->with(['updatedBy', 'representative'])->findOrFail($company);
 
         Gate::authorize('view', $company);
 
@@ -73,7 +73,7 @@ class CompanyController extends Controller
         $company = Company::findOrFail($company);
 
         $company = $action->execute($company, $request->validated(), $this->extractFiles($request), $request->user());
-        $company->loadCount(['projects', 'users']);
+        $company->loadCount(['projects', 'users', 'purchaseOrders']);
 
         return CompanyResource::make($company);
     }
@@ -83,7 +83,7 @@ class CompanyController extends Controller
         $company = Company::findOrFail($company);
         $company = $action->execute($company, $request->validated('status'), $request->user());
 
-        return CompanyResource::make($company->load(['updatedBy', 'representative'])->loadCount(['projects', 'users']));
+        return CompanyResource::make($company->load(['updatedBy', 'representative'])->loadCount(['projects', 'users', 'purchaseOrders']));
     }
 
     /**
@@ -159,7 +159,7 @@ class CompanyController extends Controller
     private function filteredQuery(Request $request): Builder
     {
         return Company::query()
-            ->withCount(['projects', 'users'])
+            ->withCount(['projects', 'users', 'purchaseOrders'])
             ->with('representative')
             ->when($request->filled('operational_status'), fn ($q) => $q->where('operational_status', $request->string('operational_status')))
             ->when($request->filled('search'), function ($q) use ($request) {

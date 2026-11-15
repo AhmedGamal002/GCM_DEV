@@ -97,7 +97,7 @@ Dashboard, then an **Accounts** section (Users · Drivers), a **Fleet & Assets**
 |---|---|
 | Create a "system_admin" account | ✖ — that option doesn't exist in the form |
 | Edit / deactivate / reactivate the **System Admin's own account** | ✖ — nobody can touch it |
-| Anything related to Contracts (PO) | ✖ — you don't see that section at all once it's built |
+| Anything related to Contracts (PO) | ✖ — no Purchase Orders menu, the "Contracts" section and card are hidden on the company and project pages (the list column shows `—`), the export column is blank, and `/app/po/*` and `/api/v1/purchase-orders` return 403 — the FRD gives Data Entry no access to POs, not even to read them |
 | Roles & permissions / Companies management | ✖ |
 
 ## 12. Features available now
@@ -105,4 +105,5 @@ Dashboard, then an **Accounts** section (Users · Drivers), a **Fleet & Assets**
 Users and Drivers: view/create/edit + every account status (on vacation/deactivate/reactivate) except the System Admin's own account.
 Vehicles, Assets, Intermediate facilities and Services (main and sub): full CRUD including deactivate/reactivate + export. The embedded container in the vehicle form works.
 Contractors, client companies and client projects: full CRUD including deactivate/reactivate + export. Inserting an asset into a project works.
+Purchase orders are not visible to Data Entry at all (the FRD keeps them with the System Admin; the Auditor may view them).
 Deferred: "on a trip" column for vehicles (Week 7), taking an asset out of a project (with trips).

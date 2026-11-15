@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Models\Project;
+use App\Models\PurchaseOrder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -42,13 +43,13 @@ class ProjectResource extends JsonResource
             'operational_status' => $this->operational_status,
             'additional_data' => $this->additional_data,
 
-            // Contracts (FRD §1.13) and trips don't exist yet, so those
-            // figures are 0 until those modules land. The user count (client
-            // accounts that can see the project) comes from withUsersCount().
-            'contracts_count' => 0,
+            // Trips don't exist yet, so those figures are 0 until that module lands. The user count (client
+            // accounts that can see the project) comes from withUsersCount(), the contract count from
+            // withCount('purchaseOrders') (null for a role without PO access).
+            'contracts_count' => $contracts = $this->contractsCount($request),
             'users_count' => (int) ($this->users_count ?? 0),
             'stats' => [
-                'contracts' => 0,
+                'contracts' => $contracts,
                 'trips' => 0,
                 'waste_tons' => 0,
             ],
@@ -57,5 +58,19 @@ class ProjectResource extends JsonResource
             'updated_at' => $this->updated_at,
             'created_at' => $this->created_at,
         ];
+    }
+
+    /**
+     * The number of purchase orders (every one, whatever its status). Only a role the FRD lets see POs gets a number:
+     * Data Entry has no access to them at all, not even to read, so for it the figure is null and the page shows "—".
+     * The controllers load `purchase_orders_count`; without it the count is asked for here, never reported as 0.
+     */
+    private function contractsCount(Request $request): ?int
+    {
+        if (! $request->user()?->can('viewAny', PurchaseOrder::class)) {
+            return null;
+        }
+
+        return (int) ($this->purchase_orders_count ?? $this->purchaseOrders()->count());
     }
 }

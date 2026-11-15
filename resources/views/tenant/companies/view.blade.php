@@ -45,6 +45,7 @@
   };
   window.companyViewId = {{ $companyId }};
 </script>
+@include('tenant.purchase-orders._related-translations')
 @vite(['resources/assets/js/datatables-server-side.js', 'resources/assets/js/app-company-view.js'])
 @endsection
 
@@ -108,8 +109,8 @@
   </div>
 
   <div class="col-xl-8 col-lg-7">
-    {{-- FRD V01.14 §1.11.3 statistics. Projects are real; contracts, trips
-         and quantities come from modules that don't exist yet — 0 until then. --}}
+    {{-- FRD V01.14 §1.11.3 statistics. Projects and contracts are real; trips and quantities come from
+         a module that doesn't exist yet — 0 until then. A role without PO access has no contracts card. --}}
     <div class="row g-4 mb-6">
       @foreach ([
         ['key' => 'projects',   'label' => __('Projects'),         'color' => 'primary', 'icon' => 'ti-briefcase'],
@@ -156,14 +157,8 @@
       </div>
     </div>
 
-    <div class="card">
-      <h5 class="card-header">{{ __('Contracts') }}</h5>
-      <div class="card-body">
-        <div class="alert alert-info mb-0">
-          {{ __('This company\'s purchase orders will appear here once the Contracts module is available.') }}
-        </div>
-      </div>
-    </div>
+    {{-- FRD V01.14 §1.11.3 "قسم التعاقدات التابعة للعميل في مختلف مشاريعه" — only for a role that may view POs. --}}
+    @include('tenant.purchase-orders._related-card', ['showProject' => true])
   </div>
 </div>
 

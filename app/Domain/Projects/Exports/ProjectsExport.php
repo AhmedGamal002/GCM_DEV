@@ -2,6 +2,7 @@
 
 namespace App\Domain\Projects\Exports;
 
+use App\Models\PurchaseOrder;
 use App\Support\ExportHeader;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
@@ -14,6 +15,11 @@ class ProjectsExport implements FromCollection, WithEvents, WithHeadings, WithMa
     use ExportHeader;
 
     public function __construct(private readonly Collection $projects) {}
+
+    private function canSeeContracts(): bool
+    {
+        return (bool) auth()->user()?->can('viewAny', PurchaseOrder::class);
+    }
 
     public function collection(): Collection
     {
@@ -32,8 +38,8 @@ class ProjectsExport implements FromCollection, WithEvents, WithHeadings, WithMa
             $project->company?->name,
             $project->name,
             $project->operational_region,
-            // Contracts and client users don't exist yet (FRD §1.13 / §1.4).
-            0,
+            // Blank for a role without access to purchase orders (Data Entry), like the list's "—".
+            $this->canSeeContracts() ? $project->purchase_orders_count : null,
             0,
             $project->operational_status,
             $project->created_at,

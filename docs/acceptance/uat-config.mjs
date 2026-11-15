@@ -27,6 +27,7 @@ const CU = 'week-5-contractor-users';
 const CUP = 'week-5-contractor-user-pages';
 const CO = 'week-4-client-companies';
 const PR = 'week-5-projects';
+const W6 = 'week-6-purchase-orders';
 const CA = 'week-5-client-accounts';
 const AS = 'week-5-account-status';
 const FC = 'week-5-form-clarity';
@@ -86,6 +87,7 @@ export const ROLES = [
           { title: 'شركات العملاء', ids: range(CO, 1, 9) },
           { title: 'المشروعات وإدراج الأصول', ids: list(PR, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 15, 16, 17, 21) },
           { title: 'حسابات العملاء', ids: [...range(CA, 1, 13), `${CA}#17`] },
+          { title: 'التعاقدات (Purchase Orders)', ids: [...range(W6, 2, 13), ...list(W6, 15, 16, 17, 22)] },
         ],
       },
       {
@@ -140,6 +142,7 @@ export const ROLES = [
           { title: 'شركات العملاء', ids: list(CO, 2, 7, 8) },
           { title: 'المشروعات وإدراج الأصول', ids: list(PR, 3, 9, 10, 11, 12) },
           { title: 'حسابات العملاء', ids: list(CA, 3, 4, 8, 10) },
+          { title: 'التعاقدات (مفيش وصول لمدخل البيانات)', ids: list(W6, 18) },
         ],
       },
       {
@@ -203,6 +206,7 @@ export const ROLES = [
           { title: 'شركات العملاء', ids: list(CO, 1, 6, 11, 9) },
           { title: 'المشروعات والأصول', ids: [...list(PR, 2, 7, 8, 15, 16, 17), 'uat-auditor#5'] },
           { title: 'حسابات العملاء والمتعهدين في قايمة المستخدمين', ids: ['uat-auditor#4'] },
+          { title: 'التعاقدات (Purchase Orders)', ids: list(W6, 2, 3, 4, 11, 19) },
         ],
       },
       {
@@ -310,7 +314,7 @@ export const ROLES = [
   ].map(r => ({
     ...r,
     alsoNeeds: ['system-admin'],
-    intro: `${r.scope} صفحات العميل الفعلية (الرحلات والتعاقدات والتقارير) جاية مع موديولاتها في مرحلة لاحقة — حاليًا الحساب بيدخل ويظبط ملفه الشخصي بس. الدور ده اتبنى في المرحلة التانية — فكل الملف تحتها.`,
+    intro: `${r.scope} صفحات العميل الفعلية (الرحلات والتقارير، وتعاقدات مشروعاتك لمدير المشروعات) — التعاقدات اتبنت والباقي جاي مع موديولاته في مرحلة لاحقة — حاليًا الحساب بيدخل ويظبط ملفه الشخصي بس. الدور ده اتبنى في المرحلة التانية — فكل الملف تحتها.`,
     prereq: ['بنود "حالة الحساب" محتاجة مدير النظام يغيّر حالة حسابك من نافذة تانية (`admin@gcm.test` / `password`).'],
     fixes: [],
     parts: [
@@ -319,6 +323,7 @@ export const ROLES = [
         groups: [
           { title: 'الدخول وحدود الصلاحية', ids: ['uat-client#1', 'uat-client#2'] },
           { title: 'الملف الشخصي (صورة، توقيع وختم، كلمة السر)', ids: [`${CA}#14`] },
+          ...(r.slug === 'client-project-manager' ? [{ title: 'التعاقدات (تعاقدات مشروعاتك)', ids: list(W6, 20) }] : []),
           { title: 'حالة الحساب (تعطيل فوري / إجازة)', ids: ['uat-client#3', 'uat-client#4'] },
         ],
       },

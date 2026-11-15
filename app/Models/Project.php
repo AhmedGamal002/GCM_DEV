@@ -73,6 +73,12 @@ class Project extends Model
         return $this->belongsTo(Company::class);
     }
 
+    /** The project's purchase orders (FRD §1.13) — a PO belongs to exactly one project. */
+    public function purchaseOrders(): HasMany
+    {
+        return $this->hasMany(PurchaseOrder::class);
+    }
+
     public function assets(): HasMany
     {
         return $this->hasMany(Asset::class);

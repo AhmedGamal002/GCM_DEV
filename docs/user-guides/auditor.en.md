@@ -67,12 +67,17 @@ Dashboard, then an **Accounts** section (Users · Drivers), a **Fleet & Assets**
 - **View** the list (search + company and status filters) + **export**, and the **details** of any project (and its assets table, with export).
 - **Not allowed:** creating, editing or deactivating; the "Add" link, the edit icon and the "Insert asset into project" button are not shown.
 
-## 11. What you cannot do (returns 403)
+## 11. Purchase orders — `/app/po/list`
+
+- **View** the list (cards, search, company / project / time-range / items-status / account-status filters), the **details** of any purchase order (its services and the bars of what is left of each part) and **export** (Excel/PDF), and download its attachment. The company and project pages also show a **Contracts** section.
+- **Not allowed:** creating, editing, deactivating; the "Add" link and the edit icon are not shown.
+
+## 12. What you cannot do (returns 403)
 
 - Create, edit, or deactivate any user / driver / vehicle / asset / facility / service / company / project / category, or insert an asset into a project.
 - Change your name or email on the profile page.
 - Manage roles & permissions / tenants.
 
-## 12. Features available now
+## 13. Features available now
 
-Full view + export across every built module (Users, Drivers, Vehicles, Assets, Intermediate facilities, Main & sub-services, Contractors, Client companies, Client projects, and asset capacities) — was limited to vehicles and assets only before the FRD V01.14 upgrade. Self-service password change works from the profile page.
+Full view + export across every built module (Users, Drivers, Vehicles, Assets, Intermediate facilities, Main & sub-services, Contractors, Client companies, Client projects, Purchase orders, and asset capacities) — was limited to vehicles and assets only before the FRD V01.14 upgrade. Self-service password change works from the profile page.

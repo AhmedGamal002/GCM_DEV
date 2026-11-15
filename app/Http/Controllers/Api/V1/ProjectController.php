@@ -87,7 +87,7 @@ class ProjectController extends Controller
     private function present(int $id): ProjectResource
     {
         return ProjectResource::make(
-            Project::withUsersCount()->with(['company', 'representative', 'updatedBy'])->findOrFail($id)
+            Project::withUsersCount()->withCount('purchaseOrders')->with(['company', 'representative', 'updatedBy'])->findOrFail($id)
         );
     }
 
@@ -116,6 +116,7 @@ class ProjectController extends Controller
     {
         return Project::query()
             ->withUsersCount()
+            ->withCount('purchaseOrders')
             ->with(['company', 'representative'])
             ->when($request->filled('company_id'), fn ($q) => $q->where('company_id', $request->integer('company_id')))
             ->when($request->filled('operational_status'), fn ($q) => $q->where('operational_status', $request->string('operational_status')))
