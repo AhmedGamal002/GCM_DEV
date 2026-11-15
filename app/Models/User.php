@@ -220,6 +220,12 @@ class User extends Authenticatable
     return $this->belongsTo(User::class, 'updated_by');
   }
 
+  /** Whether the user edits their OWN name and email on the profile page (client request: the System Admin only). */
+  public function canEditOwnIdentity(): bool
+  {
+    return $this->hasRole('system_admin');
+  }
+
   /**
    * Every role changes its OWN password from the profile page (the
    * "Security" tab; current password required).
@@ -235,12 +241,6 @@ class User extends Authenticatable
    *
    * Name and email stay read-only on the profile page for every role except the System Admin (client request).
    */
-  /** Whether the user edits their OWN name and email on the profile page (client request: the System Admin only). */
-  public function canEditOwnIdentity(): bool
-  {
-    return $this->hasRole('system_admin');
-  }
-
   public function canChangeOwnPassword(): bool
   {
     return $this->hasAnyRole(['system_admin', 'data_entry', 'auditor', 'driver', 'client_project_manager', 'client_project_auditor', 'contractor_user']);
