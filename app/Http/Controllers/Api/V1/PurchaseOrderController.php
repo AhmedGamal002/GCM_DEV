@@ -149,7 +149,7 @@ class PurchaseOrderController extends Controller
                 'cost_items_total' => round($tripCost + $ancillaryCost, 2),
                 'trip_cost_total' => $tripCost,
                 'ancillary_cost_total' => $ancillaryCost,
-                'currency' => config('purchase_orders.currency'),
+                'currency' => __(config('purchase_orders.currency')),
             ],
         ]);
     }

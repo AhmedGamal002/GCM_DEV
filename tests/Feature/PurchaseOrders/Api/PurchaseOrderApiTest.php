@@ -433,6 +433,20 @@ class PurchaseOrderApiTest extends PurchaseOrderTestCase
         $this->actAsAdmin()->getJson('/api/v1/purchase-orders?status=exhausted&per_page=1')
             ->assertOk()->assertJsonPath('meta.total', 1)->assertJsonPath('data.0.number', 'ALN-3');
     }
+    public function test_the_currency_label_follows_the_interface_language(): void
+    {
+        $id = $this->createPo();
+
+        $this->actAsAdmin()->getJson("/api/v1/purchase-orders/{$id}")->assertJsonPath('data.currency', 'SAR');
+        $this->actAsAdmin()->getJson('/api/v1/purchase-orders/stats')->assertJsonPath('data.currency', 'SAR');
+
+        // The locale is chosen per request by LocaleMiddleware from the session; here it is set directly.
+        app()->setLocale('ar');
+        $po = PurchaseOrder::with('services')->findOrFail($id);
+        $this->assertSame('ر.س', (new \App\Http\Resources\PurchaseOrderResource($po))->toArray(request())['currency']);
+        app()->setLocale('en');
+    }
+
     // ── stats ───────────────────────────────────────────────────────
 
     public function test_the_stats_count_active_pos_only(): void

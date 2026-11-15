@@ -77,7 +77,8 @@ class PurchaseOrderResource extends JsonResource
             'days_since_end' => $state['days_since_end'],
             'days_label' => $state['days_label'],
 
-            'currency' => config('purchase_orders.currency'),
+            // The code (SAR) shown in the interface's language: ر.س in Arabic, itself when there is no translation.
+            'currency' => __(config('purchase_orders.currency')),
             'services' => $lines->map(fn (PurchaseOrderService $line) => $this->line($line, $state['services'][$line->id] ?? null))->values(),
             'totals' => $this->totals($lines, $state),
 
