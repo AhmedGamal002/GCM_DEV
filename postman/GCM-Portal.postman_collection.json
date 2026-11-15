@@ -338,6 +338,20 @@
                   "key": "photo",
                   "type": "file",
                   "src": []
+                },
+                {
+                  "key": "name",
+                  "value": "System Admin",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "System Admin only — their own name"
+                },
+                {
+                  "key": "email",
+                  "value": "admin@gcm.test",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "System Admin only — their own email (unique across every account; it is what they sign in with)"
                 }
               ]
             },
@@ -350,7 +364,7 @@
                 "me"
               ]
             },
-            "description": "FRD: the only thing a user changes from their own profile is the photo (multipart, POST + _method=PATCH). Name/email/everything else is admin-managed."
+            "description": "What a user changes from their own profile: the photo (multipart, POST + _method=PATCH). Everything else is admin-managed, with one exception (client request): the System Admin can also send their own `name` and `email` (enable the two disabled fields; the email must not belong to another account in any tenant, since login looks it up globally). Any other role that sends them has them ignored. At least one of photo / name / email (or signature / stamp) must be sent, and changing the email does not sign anyone out — only a password change does."
           }
         },
         {
