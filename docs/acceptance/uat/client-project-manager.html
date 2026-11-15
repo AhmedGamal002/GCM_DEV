@@ -84,7 +84,7 @@
 <body>
 <div class="wrap">
   <h1>GCM Portal — اختبار القبول: مدير مشروعات العميل</h1>
-  <p class="sub">حسابك تابع لشركة <strong>Al Noor Construction</strong> بصلاحية على <strong>كل مشروعاتها</strong> (الحالية والمستقبلية). صفحات العميل الفعلية (الرحلات والتعاقدات والتقارير) جاية مع موديولاتها في مرحلة لاحقة — حاليًا الحساب بيدخل ويظبط ملفه الشخصي بس. الدور ده اتبنى في المرحلة التانية — فكل الملف تحتها.<br>لكل بند: جرّب الخطوات وقارن بالنتيجة المتوقعة. علّم ✔ لو نجح، ودوس "فشل" واكتب ملاحظة لو طلع غلط. تقدّمك بيتحفظ تلقائيًا في المتصفح ده، ولما تخلص صدّر النتيجة.</p>
+  <p class="sub">حسابك تابع لشركة <strong>Al Noor Construction</strong> بصلاحية على <strong>كل مشروعاتها</strong> (الحالية والمستقبلية). صفحات العميل الفعلية (الرحلات والتقارير، وتعاقدات مشروعاتك لمدير المشروعات) — التعاقدات اتبنت والباقي جاي مع موديولاته في مرحلة لاحقة — حاليًا الحساب بيدخل ويظبط ملفه الشخصي بس. الدور ده اتبنى في المرحلة التانية — فكل الملف تحتها.<br>لكل بند: جرّب الخطوات وقارن بالنتيجة المتوقعة. علّم ✔ لو نجح، ودوس "فشل" واكتب ملاحظة لو طلع غلط. تقدّمك بيتحفظ تلقائيًا في المتصفح ده، ولما تخلص صدّر النتيجة.</p>
 
   <div class="setup">
     <h2>بيانات الدخول</h2>
@@ -109,7 +109,7 @@
       <span>تم: <b id="s-pass">0</b></span>
       <span>فشل: <b id="s-fail" style="color:var(--bad)">0</b></span>
       <span>متبقي: <b id="s-left">0</b></span>
-      <span>من <b>9</b> بند</span>
+      <span>من <b>10</b> بند</span>
     </div>
     <div class="prog"><i class="p" id="b-pass"></i><i class="f" id="b-fail"></i></div>
     <div class="tools">
@@ -167,12 +167,26 @@
     </article>
     </details>
     <details open class="group">
+      <summary>التعاقدات (تعاقدات مشروعاتك) <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-6-purchase-orders#20" data-title="مدير مشروعات العميل: تعاقدات مشروعاته بكل المبالغ">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">4</span></label>
+        <h3>مدير مشروعات العميل: تعاقدات مشروعاته بكل المبالغ</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.4 (مدير المشروعات: متابعة حالة التعاقدات الخاصة بمشروعاته)</dd></div><div class="row"><dt>الخطوات</dt><dd>سجّل دخول بـ<code>client.manager</code> وافتح Purchase Orders ← List ثم تفاصيل تعاقد. جرّب تفتح تعاقد مشروع مش ليك (لو حسابك على مشروعات محددة).</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>بيشوف تعاقدات مشروعاته بس بكل المبالغ، من غير تصدير ولا إضافة ولا تعديل، وفلاتر الشركة والمشروع مخفية، والكروت على مشروعاته بس. تعاقد مشروع مش بتاعه 403. <code>client.auditor</code> ملوش أي وصول للتعاقدات.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+    <details open class="group">
       <summary>حالة الحساب (تعطيل فوري / إجازة) <span class="count"></span></summary>
       
     <article class="item" data-id="uat-client#3" data-title="لو مدير النظام عطّل حسابك وانت داخل">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">4</span></label>
+          <span class="num">5</span></label>
         <h3>لو مدير النظام عطّل حسابك وانت داخل</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -182,7 +196,7 @@
     <article class="item" data-id="uat-client#4" data-title="لو حسابك في &quot;إجازة&quot;">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">5</span></label>
+          <span class="num">6</span></label>
         <h3>لو حسابك في &quot;إجازة&quot;</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -202,7 +216,7 @@
     <article class="item" data-id="uat-common#1" data-title="التاريخ والوقت الحاليين في الشريط العلوي">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">6</span></label>
+          <span class="num">7</span></label>
         <h3>التاريخ والوقت الحاليين في الشريط العلوي</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -212,7 +226,7 @@
     <article class="item" data-id="week-3-frd-gap-review#2" data-title="تبديل الوضع الداكن / المضيء">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">7</span></label>
+          <span class="num">8</span></label>
         <h3>تبديل الوضع الداكن / المضيء</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -232,7 +246,7 @@
     <article class="item" data-id="uat-common#2" data-title="تبديل اللغة (عربي / إنجليزي) والاتجاه">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">8</span></label>
+          <span class="num">9</span></label>
         <h3>تبديل اللغة (عربي / إنجليزي) والاتجاه</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -242,7 +256,7 @@
     <article class="item" data-id="week-3-frd-gap-review#30" data-title="شاشة التحميل واللوجو والاسم">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">9</span></label>
+          <span class="num">10</span></label>
         <h3>شاشة التحميل واللوجو والاسم</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
