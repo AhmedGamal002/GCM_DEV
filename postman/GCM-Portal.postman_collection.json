@@ -4768,7 +4768,7 @@
     },
     {
       "name": "11. Client Companies",
-      "description": "Phase 2 · Part 4 — FRD V01.14 §1.11. system_admin / data_entry create, edit and (de)activate; auditor views and exports; driver has no access. No hard delete. The projects count is real (Part 5); users and contracts counts are 0 until those modules exist.",
+      "description": "Phase 2 · Part 4 — FRD V01.14 §1.11. system_admin / data_entry create, edit and (de)activate; auditor views and exports; driver has no access. No hard delete. The projects, users and contracts counts are real (the contracts count is `null` for Data Entry, which has no access to purchase orders); trips and waste are 0 until the trips module exists.",
       "item": [
         {
           "name": "List Client Companies",
@@ -4819,7 +4819,7 @@
                 }
               ]
             },
-            "description": "system_admin / data_entry / auditor (CompanyPolicy::viewAny). Genuinely paginated server-side."
+            "description": "system_admin / data_entry / auditor (CompanyPolicy::viewAny). Genuinely paginated server-side. Every row carries the real `contracts_count` (`null` for Data Entry, which has no access to purchase orders)."
           }
         },
         {
@@ -5000,7 +5000,7 @@
                 "{{last_company_id}}"
               ]
             },
-            "description": "Returns the company with its contract / commercial-registration / tax-registration blocks (each with a download_url when a file was uploaded) and the placeholder stats."
+            "description": "Returns the company with its contract / commercial-registration / tax-registration blocks (each with a download_url when a file was uploaded) and its stats: projects and contracts are real, `contracts_count` (and `stats.contracts`) is the real number of purchase orders (every one, whatever its status); it is `null` for a role with no access to purchase orders (Data Entry), which the pages show as a dash. Trips and waste are 0 until the trips module exists. The company's purchase orders themselves: GET /purchase-orders?company_id=…"
           }
         },
         {
@@ -5373,7 +5373,7 @@
                 }
               ]
             },
-            "description": "system_admin / data_entry / auditor (ProjectPolicy::viewAny). Genuinely paginated server-side. `company_id` also feeds the projects section of a company page."
+            "description": "system_admin / data_entry / auditor (ProjectPolicy::viewAny). Genuinely paginated server-side. `company_id` also feeds the projects section of a company page. Every row carries the real `contracts_count` (`null` for Data Entry, which has no access to purchase orders)."
           }
         },
         {
@@ -5444,7 +5444,7 @@
                 "{{last_project_id}}"
               ]
             },
-            "description": "Returns the project with its company block and the placeholder stats (contracts / trips / waste are 0 until those modules exist)."
+            "description": "Returns the project with its company block and its stats: contracts are real, `contracts_count` (and `stats.contracts`) is the real number of purchase orders (every one, whatever its status); it is `null` for a role with no access to purchase orders (Data Entry), which the pages show as a dash. Trips and waste are 0 until the trips module exists. The project's purchase orders themselves: GET /purchase-orders?project_id=…"
           }
         },
         {
