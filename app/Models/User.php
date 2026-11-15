@@ -233,8 +233,14 @@ class User extends Authenticatable
    * password as well, so all GCM roles can — an admin can still set
    * someone else's password from that user's edit page.
    *
-   * Name and email stay read-only on the profile page for every role.
+   * Name and email stay read-only on the profile page for every role except the System Admin (client request).
    */
+  /** Whether the user edits their OWN name and email on the profile page (client request: the System Admin only). */
+  public function canEditOwnIdentity(): bool
+  {
+    return $this->hasRole('system_admin');
+  }
+
   public function canChangeOwnPassword(): bool
   {
     return $this->hasAnyRole(['system_admin', 'data_entry', 'auditor', 'driver', 'client_project_manager', 'client_project_auditor', 'contractor_user']);

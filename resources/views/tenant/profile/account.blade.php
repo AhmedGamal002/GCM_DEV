@@ -31,18 +31,22 @@
               <div class="text-muted small mt-2">{{ __('Allowed JPG, PNG. Max size of 2MB.') }}</div>
             </div>
           </div>
+          {{-- Name and email are editable only for a user who canEditOwnIdentity() (the System Admin); the rest are managed by the administrator. --}}
+          @php($canEditIdentity = $user->canEditOwnIdentity())
           <div class="row">
             <div class="mb-4 col-md-6">
               <label for="name" class="form-label">{{ __('Full Name') }}</label>
-              <input class="form-control" type="text" id="name" value="{{ $user->name }}" disabled />
+              <input class="form-control" type="text" id="name" value="{{ $user->name }}" maxlength="255" @if($canEditIdentity) required @else disabled @endif />
             </div>
             <div class="mb-4 col-md-6">
               <label for="email" class="form-label">{{ __('Email') }}</label>
-              <input class="form-control" type="text" id="email" value="{{ $user->email }}" disabled />
+              <input class="form-control" type="{{ $canEditIdentity ? 'email' : 'text' }}" id="email" value="{{ $user->email }}" maxlength="255" dir="ltr" @if($canEditIdentity) required @else disabled @endif />
             </div>
           </div>
-          <p class="text-muted small">{{ __('Your name and account details are managed by your administrator — only your photo can be changed here.') }}</p>
-          <button type="submit" class="btn btn-primary">{{ __('Save photo') }}</button>
+          @unless($canEditIdentity)
+            <p class="text-muted small">{{ __('Your name and account details are managed by your administrator — only your photo can be changed here.') }}</p>
+          @endunless
+          <button type="submit" class="btn btn-primary">{{ $canEditIdentity ? __('Save changes') : __('Save photo') }}</button>
         </form>
       </div>
     </div>

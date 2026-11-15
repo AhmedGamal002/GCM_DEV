@@ -30,7 +30,7 @@ class ProfileUpdateTest extends TestCase
      * — name is admin-managed, so a name-only request is rejected and a
      * name sent alongside a photo is ignored.
      */
-    #[DataProvider('rolesProvider')]
+    #[DataProvider('rolesWithoutIdentityEdit')]
     public function test_a_users_own_name_cannot_be_changed_from_their_profile(string $role): void
     {
         Storage::fake('public');
@@ -53,6 +53,16 @@ class ProfileUpdateTest extends TestCase
     {
         return [
             ['system_admin'],
+            ['data_entry'],
+            ['auditor'],
+            ['driver'],
+        ];
+    }
+
+    /** Every role whose name stays admin-managed: all but the System Admin, who edits their own (AdminProfileIdentityTest). */
+    public static function rolesWithoutIdentityEdit(): array
+    {
+        return [
             ['data_entry'],
             ['auditor'],
             ['driver'],

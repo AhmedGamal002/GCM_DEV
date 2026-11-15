@@ -27,7 +27,12 @@ document.addEventListener('DOMContentLoaded', function () {
     errorBox.classList.add('d-none');
 
     const photo = photoInput.files[0];
-    if (!photo) {
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('email');
+    // Only the System Admin gets an editable name / email here; for everyone else a photo is the only thing to send.
+    const canEditIdentity = !!nameInput && !nameInput.disabled;
+
+    if (!photo && !canEditIdentity) {
       errorBox.textContent = form.dataset.noPhotoMessage;
       errorBox.classList.remove('d-none');
       return;
@@ -43,7 +48,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const data = new FormData();
     data.append('_method', 'PATCH');
-    data.append('photo', photo);
+    if (photo) data.append('photo', photo);
+    if (canEditIdentity) {
+      data.append('name', nameInput.value.trim());
+      data.append('email', emailInput.value.trim());
+    }
 
     window.gcmBusy.start({ progress: true });
 
