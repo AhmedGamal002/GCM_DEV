@@ -22,7 +22,7 @@ The System Admin has full control **within a single company** (Tenant). They can
 ## 3. Profile
 
 - Account menu (top bar) → **My Profile**.
-- **Change your profile photo and your password** (the "Security" tab — you enter your current password first). Name and email are read-only.
+- **Change your profile photo and your password** (the "Security" tab — you enter your current password first). **You can edit your own name and email** in the same profile page (the email is what you sign in with, and it must not belong to another account).
 
 ## 4. User management — `/app/user/list`
 

@@ -303,6 +303,20 @@
                   "key": "photo",
                   "type": "file",
                   "src": []
+                },
+                {
+                  "key": "name",
+                  "value": "System Admin",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "System Admin only — their own name"
+                },
+                {
+                  "key": "email",
+                  "value": "admin@example.com",
+                  "type": "text",
+                  "disabled": true,
+                  "description": "System Admin only — their own email (unique across every account; it is what they sign in with)"
                 }
               ]
             },
@@ -315,7 +329,7 @@
                 "me"
               ]
             },
-            "description": "FRD: the only thing a user changes from their own profile is the photo (multipart, POST + _method=PATCH). Name/email/everything else is admin-managed."
+            "description": "What a user changes from their own profile: the photo (multipart, POST + _method=PATCH). Everything else is admin-managed, with one exception: the System Admin can also send their own `name` and `email` (enable the two disabled fields; the email must not belong to another account, since it is what they sign in with). Any other role that sends them has them ignored. At least one of photo / name / email (or signature / stamp) must be sent, and changing the email does not sign anyone out — only a password change does."
           }
         },
         {
@@ -3489,6 +3503,35 @@
           }
         },
         {
+          "name": "Check Facility Prefix",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/facilities/prefix-available?prefix=ALF",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "facilities",
+                "prefix-available"
+              ],
+              "query": [
+                {
+                  "key": "prefix",
+                  "value": "ALF"
+                }
+              ]
+            },
+            "description": "Live check behind the create form's short-name field: `{\"available\": false}` when the 3-letter short name is already used by a facility (case-insensitive). Same permission as creating one (System Admin / Data Entry); the store request still validates uniqueness."
+          }
+        },
+        {
           "name": "Export Facilities (Excel)",
           "request": {
             "method": "GET",
@@ -4604,6 +4647,35 @@
           }
         },
         {
+          "name": "Check Contractor Short Name",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/contractors/prefix-available?prefix=DSH",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "contractors",
+                "prefix-available"
+              ],
+              "query": [
+                {
+                  "key": "prefix",
+                  "value": "DSH"
+                }
+              ]
+            },
+            "description": "Live check behind the create form's short-name field: `{\"available\": false}` when the 3-letter short name is already used by a contractor (case-insensitive). Same permission as creating one (System Admin / Data Entry); the store request still validates uniqueness."
+          }
+        },
+        {
           "name": "Export Contractors (Excel)",
           "request": {
             "method": "GET",
@@ -5125,6 +5197,35 @@
               ]
             },
             "description": "Change the last path segment: contract | cr | tax. Private file — 404 when nothing was uploaded for that type, 403 without view access."
+          }
+        },
+        {
+          "name": "Check Company Short Name",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/companies/prefix-available?prefix=ALN",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "companies",
+                "prefix-available"
+              ],
+              "query": [
+                {
+                  "key": "prefix",
+                  "value": "ALN"
+                }
+              ]
+            },
+            "description": "Live check behind the create form's short-name field: `{\"available\": false}` when the 3-letter short name is already used by a client company (case-insensitive). Same permission as creating one (System Admin / Data Entry); the store request still validates uniqueness."
           }
         },
         {

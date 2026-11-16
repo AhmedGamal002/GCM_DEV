@@ -220,6 +220,12 @@ class User extends Authenticatable
     return $this->belongsTo(User::class, 'updated_by');
   }
 
+  /** Whether the user edits their OWN name and email on the profile page (client request: the System Admin only). */
+  public function canEditOwnIdentity(): bool
+  {
+    return $this->hasRole('system_admin');
+  }
+
   /**
    * Every role changes its OWN password from the profile page (the
    * "Security" tab; current password required).
@@ -233,7 +239,7 @@ class User extends Authenticatable
    * password as well, so all GCM roles can — an admin can still set
    * someone else's password from that user's edit page.
    *
-   * Name and email stay read-only on the profile page for every role.
+   * Name and email stay read-only on the profile page for every role except the System Admin (client request).
    */
   public function canChangeOwnPassword(): bool
   {

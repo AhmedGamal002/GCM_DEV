@@ -12,18 +12,28 @@ use Illuminate\Support\Facades\Hash;
 /**
  * Self-service only — separate from MeController (pure "who am I" read)
  * and from UserController (admins managing OTHER users). From one's own
- * profile only the photo and the password can change (name/email/
- * everything else is admin-managed) — and, for a client account or GCM
- * staff, the signature and stamp images; the password part is gated by
- * User::canChangeOwnPassword(), which every role passes. Email is also
- * immutable for a technical reason: LoginController looks users up by
- * email globally (before the tenant is known).
+ * profile the photo and the password can change (everything else is
+ * admin-managed) — and, for a client account or GCM staff, the signature
+ * and stamp images; the password part is gated by
+ * User::canChangeOwnPassword(), which every role passes. The one exception
+ * (client request): the System Admin also edits their OWN name and email
+ * here. The email stays unique across the whole system because
+ * LoginController looks users up by email globally (before the tenant is
+ * known), so the request checks it against every account.
  */
 class ProfileController extends Controller
 {
     public function update(UpdateProfileRequest $request)
     {
         $user = $request->user();
+
+        // Name and email: only the System Admin's request has rules for them (UpdateProfileRequest).
+        $data = $request->validated();
+        foreach (['name', 'email'] as $field) {
+            if (isset($data[$field])) {
+                $user->{$field} = $data[$field];
+            }
+        }
 
         if ($request->hasFile('photo')) {
             $user->photo = $request->file('photo')->store('avatars', 'public');
