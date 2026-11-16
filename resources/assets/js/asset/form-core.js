@@ -220,6 +220,9 @@ export function initAssetForm(opts) {
         additional_data: quill.getLength() > 1 ? quill.root.innerHTML : null
       };
     } else {
+      // The payload is built by hand (not FormData), so the chosen contractor has to be
+      // read from the shared affiliation helper — the radio alone never carried it.
+      const aff = affiliation.get();
       payload = {
         name: form.querySelector('#name').value,
         asset_type: (form.querySelector('input[name="asset_type"]:checked') || {}).value,
@@ -228,7 +231,8 @@ export function initAssetForm(opts) {
           form.querySelectorAll('input[name="compatible_vehicle_category_ids[]"]:checked')
         ).map((c) => c.value),
         operational_status: (form.querySelector('input[name="operational_status"]:checked') || {}).value,
-        affiliation: (form.querySelector('input[name="affiliation"]:checked') || {}).value,
+        affiliation: aff.affiliation,
+        contractor_id: aff.contractor_id || null,
         purchase_date: form.querySelector('#purchase_date').value || null,
         additional_data: quill.getLength() > 1 ? quill.root.innerHTML : null
       };
