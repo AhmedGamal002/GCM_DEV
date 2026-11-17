@@ -20,6 +20,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  *  - tenant_id          — stamped by BelongsToTenant
  *  - main_service_id    — set once by CreateSubServiceAction and locked
  *  - operational_status — only ever set through the status actions
+ *  - deactivated_with_main — true while it is off only because its main service was
+ *                         deactivated, so reactivating the main service brings it back
+ *                         (UpdateMainServiceStatusAction); any status change of its own clears it
  *  - updated_by         — set explicitly by the actions
  */
 class SubService extends Model
@@ -53,6 +56,7 @@ class SubService extends Model
         return [
         'additional_data' => SanitizedRichText::class,
             'requires_recycle_receipt' => 'boolean',
+            'deactivated_with_main' => 'boolean',
         ];
     }
 

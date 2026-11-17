@@ -65,7 +65,7 @@ Dashboard, then an **Accounts** section (Users · Drivers), a **Fleet & Assets**
 ## 7. Services — `/app/main-service/list` and `/app/sub-service/list`
 
 - Exactly the System Admin's permissions (see the System Admin guide — Services).
-- **Main services:** view + search (which also covers sub-service names) + filters + **export**; create (name, type of service, supported vehicle categories); edit (the name and the additional data only; the type and the categories are locked); deactivate / reactivate from the edit page — **deactivating also deactivates every sub-service under it**.
+- **Main services:** view + search (which also covers sub-service names) + filters + **export**; create (name, type of service, supported vehicle categories); edit (the name and the additional data only; the type and the categories are locked); deactivate / reactivate from the edit page — **deactivating also deactivates every sub-service under it, and reactivating brings those back** (ones that were off on their own before stay off).
 - **Sub-services:** the accordion page; create (main service, type, capacities, facilities — optional only for supplying, recycle receipt, skip colour); edit (the name, the skip colour and the additional data only; the rest is locked); deactivate / reactivate (not while its main service is deactivated).
 
 ## 8. Contractors — `/app/contractor/list`

@@ -50,7 +50,7 @@
   <div class="card-body">
     <div class="alert alert-warning">
       <h5 class="alert-heading mb-1">{{ __('Change this service\'s status?') }}</h5>
-      <p class="mb-0">{{ __('Deactivating a main service also deactivates every sub-service under it. Reactivating it does not reactivate them — each sub-service is reactivated on its own.') }}</p>
+      <p class="mb-0">{{ __('Deactivating a main service also deactivates every sub-service under it. Reactivating it brings those sub-services back; any that were deactivated on their own before stay deactivated.') }}</p>
     </div>
     <form id="mainServiceStatusForm">
       <div class="mb-6">

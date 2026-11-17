@@ -659,7 +659,7 @@
   "Main service status updated successfully.": "تم تحديث حالة الخدمة الأساسية بنجاح.",
   "Sub-service status updated successfully.": "تم تحديث حالة الخدمة الفرعية بنجاح.",
   "Change this service's status?": "تغيير حالة هذه الخدمة؟",
-  "Deactivating a main service also deactivates every sub-service under it. Reactivating it does not reactivate them — each sub-service is reactivated on its own.": "تعطيل الخدمة الأساسية يعطّل كل الخدمات الفرعية التابعة لها. وإعادة تنشيطها لا تعيد تنشيط الخدمات الفرعية — كل خدمة فرعية يُعاد تنشيطها بشكل منفصل.",
+  "Deactivating a main service also deactivates every sub-service under it. Reactivating it brings those sub-services back; any that were deactivated on their own before stay deactivated.": "تعطيل الخدمة الأساسية يعطّل كل الخدمات الفرعية التابعة لها. وإعادة تنشيطها تعيد تنشيط هذه الخدمات الفرعية، أما ما كان معطّلًا بشكل منفصل من قبل فيبقى معطّلًا.",
   "A deactivated sub-service is kept for its history but can't be chosen for new trips. It can only be reactivated while its main service is active.": "الخدمة الفرعية المعطّلة تبقى محفوظة بسجلها لكن لا يمكن اختيارها في رحلات جديدة، ولا يمكن إعادة تنشيطها إلا والخدمة الأساسية التابعة لها نشطة.",
   "The type of service can't be changed after creation — the sub-services under it are built on it.": "لا يمكن تغيير نوعية الخدمة بعد الإنشاء — الخدمات الفرعية التابعة لها مبنية عليها.",
   "The main service can't be changed after creation.": "لا يمكن تغيير الخدمة الأساسية بعد الإنشاء.",

@@ -2591,7 +2591,7 @@
         <h3>تعطيل الخدمة الأساسية يعطّل خدماتها الفرعية</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.9.1 (تعطيل الخدمة يعني تلقائيًا تعطيل كل الخدمات الفرعية تحتها)</dd></div><div class="row"><dt>الخطوات</dt><dd>في صفحة تعديل &quot;Hazardous Waste Transport&quot; انزل لكارت &quot;حالة الخدمة&quot; ← Deactivated ← علّم &quot;I confirm&quot; ← Update Status. بعدين افتح Sub Services. بعدها رجّع الخدمة الأساسية &quot;Active&quot;.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الكارت بينبّه إن التعطيل بيعطّل كل الخدمات الفرعية. بعد التعطيل: الخدمة الأساسية معطّلة <strong>والخدمتين الفرعيتين تحتها معطّلين كمان</strong>. إعادة تنشيط الأساسية <strong>مابترجّعش</strong> الفرعيات تلقائيًا — كل واحدة بتتنشّط لوحدها. الخدمة الأساسية المعطّلة مابتظهرش في قائمة الاختيار عند إنشاء خدمة فرعية. (رفض التعطيل لو الخدمة في PO بيتفعّل مع التعاقدات.)</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Services/MainServiceManagementTest</code> (<code>test_deactivating_a_main_service_deactivates_all_its_sub_services</code>, <code>test_reactivating_*</code>, <code>test_a_service_in_a_purchase_order_cannot_be_deactivated</code>, <code>test_a_service_whose_sub_service_has_an_ongoing_trip_*</code>)</dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.9.1 (تعطيل الخدمة يعني تلقائيًا تعطيل كل الخدمات الفرعية تحتها) + <strong>بطلب العميل:</strong> إعادة التنشيط بترجّع الفرعيات اللي اتعطّلت معاها</dd></div><div class="row"><dt>الخطوات</dt><dd>في صفحة تعديل &quot;Hazardous Waste Transport&quot; انزل لكارت &quot;حالة الخدمة&quot; ← Deactivated ← علّم &quot;I confirm&quot; ← Update Status. بعدين افتح Sub Services. بعدها رجّع الخدمة الأساسية &quot;Active&quot;.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الكارت بينبّه إن التعطيل بيعطّل كل الخدمات الفرعية. بعد التعطيل: الخدمة الأساسية معطّلة <strong>والخدمتين الفرعيتين تحتها معطّلين كمان</strong>. إعادة تنشيط الأساسية <strong>بترجّع الخدمتين الفرعيتين نشطين تاني</strong> تلقائيًا (أي فرعية كانت معطّلة لوحدها قبل تعطيل الأساسية بتفضل معطّلة). الخدمة الأساسية المعطّلة مابتظهرش في قائمة الاختيار عند إنشاء خدمة فرعية. (رفض التعطيل لو الخدمة في PO بيتفعّل مع التعاقدات.)</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Services/MainServiceManagementTest</code> (<code>test_deactivating_a_main_service_deactivates_all_its_sub_services</code>, <code>test_reactivating_*</code>, <code>test_a_sub_service_given_its_own_status_*</code>, <code>test_the_migration_marks_*</code>, <code>test_a_service_in_a_purchase_order_cannot_be_deactivated</code>, <code>test_a_service_whose_sub_service_has_an_ongoing_trip_*</code>)</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-5-services#8" data-title="تصدير الخدمات الأساسية (Excel/PDF)">
@@ -2714,7 +2714,7 @@
     </article>
     </details>
   </section>
-  <p class="foot">اتولّد تلقائيًا من ملفات <code>docs/acceptance/week-*.md</code> بتاريخ 2026-11-16 — للتحديث: <code>node docs/acceptance/build-checklist.mjs</code>. متعدّلش الملف ده بإيدك.</p>
+  <p class="foot">اتولّد تلقائيًا من ملفات <code>docs/acceptance/week-*.md</code> بتاريخ 2026-11-17 — للتحديث: <code>node docs/acceptance/build-checklist.mjs</code>. متعدّلش الملف ده بإيدك.</p>
 </div>
 
 <script>

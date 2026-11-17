@@ -55,10 +55,10 @@
 - **النتيجة:** ⬜
 
 ### 7. تعطيل الخدمة الأساسية يعطّل خدماتها الفرعية
-- **FRD:** §1.9.1 (تعطيل الخدمة يعني تلقائيًا تعطيل كل الخدمات الفرعية تحتها)
+- **FRD:** §1.9.1 (تعطيل الخدمة يعني تلقائيًا تعطيل كل الخدمات الفرعية تحتها) + **بطلب العميل:** إعادة التنشيط بترجّع الفرعيات اللي اتعطّلت معاها
 - **الخطوات:** في صفحة تعديل "Hazardous Waste Transport" انزل لكارت "حالة الخدمة" ← Deactivated ← علّم "I confirm" ← Update Status. بعدين افتح Sub Services. بعدها رجّع الخدمة الأساسية "Active".
-- **المتوقع:** الكارت بينبّه إن التعطيل بيعطّل كل الخدمات الفرعية. بعد التعطيل: الخدمة الأساسية معطّلة **والخدمتين الفرعيتين تحتها معطّلين كمان**. إعادة تنشيط الأساسية **مابترجّعش** الفرعيات تلقائيًا — كل واحدة بتتنشّط لوحدها. الخدمة الأساسية المعطّلة مابتظهرش في قائمة الاختيار عند إنشاء خدمة فرعية. (رفض التعطيل لو الخدمة في PO بيتفعّل مع التعاقدات.)
-- **يغطيه آليًا:** `Services/MainServiceManagementTest` (`test_deactivating_a_main_service_deactivates_all_its_sub_services`, `test_reactivating_*`, `test_a_service_in_a_purchase_order_cannot_be_deactivated`, `test_a_service_whose_sub_service_has_an_ongoing_trip_*`)
+- **المتوقع:** الكارت بينبّه إن التعطيل بيعطّل كل الخدمات الفرعية. بعد التعطيل: الخدمة الأساسية معطّلة **والخدمتين الفرعيتين تحتها معطّلين كمان**. إعادة تنشيط الأساسية **بترجّع الخدمتين الفرعيتين نشطين تاني** تلقائيًا (أي فرعية كانت معطّلة لوحدها قبل تعطيل الأساسية بتفضل معطّلة). الخدمة الأساسية المعطّلة مابتظهرش في قائمة الاختيار عند إنشاء خدمة فرعية. (رفض التعطيل لو الخدمة في PO بيتفعّل مع التعاقدات.)
+- **يغطيه آليًا:** `Services/MainServiceManagementTest` (`test_deactivating_a_main_service_deactivates_all_its_sub_services`, `test_reactivating_*`, `test_a_sub_service_given_its_own_status_*`, `test_the_migration_marks_*`, `test_a_service_in_a_purchase_order_cannot_be_deactivated`, `test_a_service_whose_sub_service_has_an_ongoing_trip_*`)
 - **النتيجة:** ⬜
 
 ### 8. تصدير الخدمات الأساسية (Excel/PDF)

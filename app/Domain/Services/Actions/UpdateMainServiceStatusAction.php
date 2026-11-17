@@ -10,9 +10,10 @@ use Illuminate\Support\Facades\DB;
 /**
  * FRD V01.14 §1.9.1: deactivating a main service deactivates every
  * sub-service under it, and is refused while the service (or any of its
- * sub-services) is in use. Reactivating it does NOT bring the sub-services
- * back — each one is reactivated on its own (the FRD only defines the
- * cascade one way, and some may have been off before).
+ * sub-services) is in use. Reactivating it brings back exactly the
+ * sub-services that its deactivation turned off (client request — the FRD
+ * only defines the cascade one way): they carry `deactivated_with_main`.
+ * One that was already off on its own before stays off.
  */
 class UpdateMainServiceStatusAction
 {
@@ -42,7 +43,12 @@ class UpdateMainServiceStatusAction
             if ($status === 'deactivated') {
                 $service->subServices()
                     ->where('operational_status', 'active')
-                    ->update(['operational_status' => 'deactivated', 'updated_by' => $actor->id, 'updated_at' => now()]);
+                    ->update(['operational_status' => 'deactivated', 'deactivated_with_main' => true, 'updated_by' => $actor->id, 'updated_at' => now()]);
+            } else {
+                $service->subServices()
+                    ->where('operational_status', 'deactivated')
+                    ->where('deactivated_with_main', true)
+                    ->update(['operational_status' => 'active', 'deactivated_with_main' => false, 'updated_by' => $actor->id, 'updated_at' => now()]);
             }
 
             return $service;
