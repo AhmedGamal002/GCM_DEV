@@ -268,13 +268,13 @@ class PurchaseOrderEditabilityTest extends PurchaseOrderTestCase
     public function test_a_new_trip_cost_only_affects_the_trips_recorded_after_it(): void
     {
         $line = $this->po->services->first();
-        app(DeductQuotaAction::class)->execute($line, 1, 100, 0, $this->admin);
+        app(DeductQuotaAction::class)->execute($line, $this->newTrip($line), 100, 0, $this->admin);
 
         $this->update(['services' => [$this->lineInput(['trip_cost' => 120])]]);
 
         // The trip action (7.1) reads the cost from the line when it records a trip.
         $line->refresh();
-        app(DeductQuotaAction::class)->execute($line, 2, (float) $line->trip_cost, 0, $this->admin);
+        app(DeductQuotaAction::class)->execute($line, $this->newTrip($line), (float) $line->trip_cost, 0, $this->admin);
 
         $this->assertSame(['100.00', '120.00'], QuotaLedgerEntry::orderBy('id')->pluck('trip_cost_delta')->all());
         $this->assertSame(220.0, QuotaBalances::for($line)->tripCostUsed);

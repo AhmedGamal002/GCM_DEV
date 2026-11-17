@@ -15,6 +15,7 @@ use App\Models\PurchaseOrder;
 use App\Models\PurchaseOrderService;
 use App\Models\QuotaLedgerEntry;
 use App\Models\Tenant;
+use App\Models\Trip;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Validator;
@@ -36,6 +37,8 @@ class PurchaseOrderTenantIsolationTest extends PurchaseOrderTestCase
 
     private MainService $foreignService;
 
+    private int $foreignTripId;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -54,7 +57,8 @@ class PurchaseOrderTenantIsolationTest extends PurchaseOrderTestCase
             'services' => [[...$this->payload()['services'][0], 'main_service_id' => $this->foreignService->id]],
         ], null, $otherAdmin);
         $this->foreignLine = $po->services->first();
-        app(DeductQuotaAction::class)->execute($this->foreignLine, 77, 100, 0, $otherAdmin);
+        $this->foreignTripId = Trip::factory()->onLine($this->foreignLine)->create()->id;
+        app(DeductQuotaAction::class)->execute($this->foreignLine, $this->foreignTripId, 100, 0, $otherAdmin);
 
         app()->instance('tenant', $this->tenant);
     }
@@ -78,12 +82,12 @@ class PurchaseOrderTenantIsolationTest extends PurchaseOrderTestCase
     public function test_another_tenants_line_cannot_be_charged(): void
     {
         $this->expectException(ModelNotFoundException::class);
-        app(DeductQuotaAction::class)->execute($this->foreignLine, 1, 50, 0, $this->admin);
+        app(DeductQuotaAction::class)->execute($this->foreignLine, $this->foreignTripId, 50, 0, $this->admin);
     }
 
     public function test_releasing_a_trip_id_never_touches_another_tenants_ledger(): void
     {
-        $this->assertSame(0, app(ReleaseQuotaAction::class)->execute(77, $this->admin));
+        $this->assertSame(0, app(ReleaseQuotaAction::class)->execute($this->foreignTripId, $this->admin));
 
         app()->instance('tenant', $this->other);
         $this->assertSame(1, QuotaBalances::for(PurchaseOrderService::find($this->foreignLine->id))->tripsUsed);

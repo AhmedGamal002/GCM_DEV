@@ -29,10 +29,11 @@ class QuotaLedgerTest extends PurchaseOrderTestCase
     {
         $line = $this->line(['quota_method' => 'trips_and_ancillary', 'max_trips' => 150, 'trip_cost' => 50, 'ancillary_cost_per_trip' => 30]);
 
-        $entry = app(DeductQuotaAction::class)->execute($line, 7, 50, 30, $this->admin);
+        $tripId = $this->newTrip($line);
+        $entry = app(DeductQuotaAction::class)->execute($line, $tripId, 50, 30, $this->admin);
 
         $this->assertSame(QuotaLedgerEntry::TYPE_CONSUME, $entry->type);
-        $this->assertSame(7, $entry->trip_id);
+        $this->assertSame($tripId, $entry->trip_id);
         $this->assertSame(1, $entry->trips_delta);
         $this->assertSame('50.00', $entry->trip_cost_delta);
         $this->assertSame('30.00', $entry->ancillary_cost_delta);
@@ -79,13 +80,13 @@ class QuotaLedgerTest extends PurchaseOrderTestCase
         $line = $this->line(['quota_method' => 'trips_only']);
 
         try {
-            app(DeductQuotaAction::class)->execute($line, 1, 50, 10, $this->admin);
+            app(DeductQuotaAction::class)->execute($line, $this->newTrip($line), 50, 10, $this->admin);
             $this->fail('An ancillary cost on a trips-only line must be refused.');
         } catch (InvalidArgumentException) {
         }
 
         $this->expectException(InvalidArgumentException::class);
-        app(DeductQuotaAction::class)->execute($line, 2, -1, 0, $this->admin);
+        app(DeductQuotaAction::class)->execute($line, $this->newTrip($line), -1, 0, $this->admin);
     }
 
     public function test_a_trip_cannot_be_deducted_twice_without_a_release(): void
@@ -93,10 +94,11 @@ class QuotaLedgerTest extends PurchaseOrderTestCase
         $line = $this->line();
         $other = $this->line(['main_service_id' => $this->service->id], '2026-06-01', '2026-12-31');
 
-        app(DeductQuotaAction::class)->execute($line, 5, 50, 0, $this->admin);
+        $tripId = $this->newTrip($line);
+        app(DeductQuotaAction::class)->execute($line, $tripId, 50, 0, $this->admin);
 
         $this->expectException(QuotaAlreadyConsumedException::class);
-        app(DeductQuotaAction::class)->execute($other, 5, 50, 0, $this->admin);
+        app(DeductQuotaAction::class)->execute($other, $tripId, 50, 0, $this->admin);
     }
 
     // ------------------------------------------------------------ release
@@ -233,8 +235,9 @@ class QuotaLedgerTest extends PurchaseOrderTestCase
         $line = $this->line();
 
         try {
-            DB::transaction(function () use ($line) {
-                app(DeductQuotaAction::class)->execute($line, 1, 50, 0, $this->admin);
+            $tripId = $this->newTrip($line);
+            DB::transaction(function () use ($line, $tripId) {
+                app(DeductQuotaAction::class)->execute($line, $tripId, 50, 0, $this->admin);
                 throw new RuntimeException('the trip insert failed');
             });
         } catch (RuntimeException) {
@@ -289,9 +292,11 @@ class QuotaLedgerTest extends PurchaseOrderTestCase
 
         $small = $this->line(['max_trips' => 1], '2026-06-01', '2026-12-31');
 
+        $tripId = $this->newTrip($small);
+
         try {
-            DB::transaction(function () use ($small) {
-                app(DeductQuotaAction::class)->execute($small, 500, 50, 0, $this->admin);
+            DB::transaction(function () use ($small, $tripId) {
+                app(DeductQuotaAction::class)->execute($small, $tripId, 50, 0, $this->admin);
                 throw new RuntimeException('rolled back');
             });
         } catch (RuntimeException) {

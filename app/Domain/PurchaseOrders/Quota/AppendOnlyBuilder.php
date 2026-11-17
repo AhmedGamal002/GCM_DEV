@@ -4,6 +4,7 @@ namespace App\Domain\PurchaseOrders\Quota;
 
 use App\Domain\PurchaseOrders\Exceptions\LedgerIsAppendOnlyException;
 use Illuminate\Database\Eloquent\Builder;
+use LogicException;
 
 /**
  * The query builder of QuotaLedgerEntry: reads and inserts as usual, but any
@@ -18,42 +19,55 @@ use Illuminate\Database\Eloquent\Builder;
  * end here, so they are refused too. Only an explicit escape — `toBase()`,
  * `getQuery()` or `DB::table('quota_ledger_entries')` — gets past it; nothing
  * in the app writes that way, and nothing should.
+ *
+ * Other append-only tables (the trip history, part 7.1) extend it and
+ * override updateRefused() / deleteRefused() to throw their own exception.
  */
 class AppendOnlyBuilder extends Builder
 {
+    protected function updateRefused(): LogicException
+    {
+        return LedgerIsAppendOnlyException::update();
+    }
+
+    protected function deleteRefused(): LogicException
+    {
+        return LedgerIsAppendOnlyException::delete();
+    }
+
     public function update(array $values)
     {
-        throw LedgerIsAppendOnlyException::update();
+        throw $this->updateRefused();
     }
 
     public function upsert(array $values, $uniqueBy, $update = null)
     {
-        throw LedgerIsAppendOnlyException::update();
+        throw $this->updateRefused();
     }
 
     public function increment($column, $amount = 1, array $extra = [])
     {
-        throw LedgerIsAppendOnlyException::update();
+        throw $this->updateRefused();
     }
 
     public function decrement($column, $amount = 1, array $extra = [])
     {
-        throw LedgerIsAppendOnlyException::update();
+        throw $this->updateRefused();
     }
 
     public function incrementEach(array $columns, array $extra = [])
     {
-        throw LedgerIsAppendOnlyException::update();
+        throw $this->updateRefused();
     }
 
     public function decrementEach(array $columns, array $extra = [])
     {
-        throw LedgerIsAppendOnlyException::update();
+        throw $this->updateRefused();
     }
 
     public function touch($column = null)
     {
-        throw LedgerIsAppendOnlyException::update();
+        throw $this->updateRefused();
     }
 
     // Not defined on the Eloquent builder: without these, __call would forward
@@ -61,26 +75,26 @@ class AppendOnlyBuilder extends Builder
 
     public function updateOrInsert(array $attributes, $values = [])
     {
-        throw LedgerIsAppendOnlyException::update();
+        throw $this->updateRefused();
     }
 
     public function updateFrom(array $values)
     {
-        throw LedgerIsAppendOnlyException::update();
+        throw $this->updateRefused();
     }
 
     public function truncate()
     {
-        throw LedgerIsAppendOnlyException::delete();
+        throw $this->deleteRefused();
     }
 
     public function delete()
     {
-        throw LedgerIsAppendOnlyException::delete();
+        throw $this->deleteRefused();
     }
 
     public function forceDelete()
     {
-        throw LedgerIsAppendOnlyException::delete();
+        throw $this->deleteRefused();
     }
 }

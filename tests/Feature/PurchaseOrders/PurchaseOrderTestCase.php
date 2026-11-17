@@ -4,12 +4,15 @@ namespace Tests\Feature\PurchaseOrders;
 
 use App\Domain\PurchaseOrders\Quota\DeductQuotaAction;
 use App\Models\Company;
+use App\Models\Driver;
 use App\Models\MainService;
 use App\Models\Project;
 use App\Models\PurchaseOrder;
 use App\Models\PurchaseOrderService;
 use App\Models\Tenant;
+use App\Models\Trip;
 use App\Models\User;
+use App\Models\Vehicle;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -17,8 +20,8 @@ use Tests\TestCase;
 /**
  * Shared setup for the purchase-order core (part 6.1): one tenant, its system
  * admin, a client company "ALN" with a project, and helpers to build POs and
- * charge trips to them. There is no API yet (part 6.2), so the tests call the
- * domain classes directly. Trip ids are plain numbers until trips exist (7.1).
+ * charge trips to them (real trip rows since 7.1). The tests call the
+ * domain classes directly.
  *
  * "Today" is frozen at 2026-03-01 10:00 (Riyadh), inside the FRD example's
  * PO 1200 (1 Jan – 30 May 2026) — the default range of line().
@@ -37,7 +40,9 @@ abstract class PurchaseOrderTestCase extends TestCase
 
     protected MainService $service;
 
-    private int $nextTripId = 1;
+    private ?Driver $tripDriver = null;
+
+    private ?Vehicle $tripVehicle = null;
 
     protected function setUp(): void
     {
@@ -79,11 +84,27 @@ abstract class PurchaseOrderTestCase extends TestCase
         $ids = [];
 
         for ($i = 0; $i < $count; $i++) {
-            $ids[] = $tripId = $this->nextTripId++;
+            $ids[] = $tripId = $this->newTrip($line);
             app(DeductQuotaAction::class)->execute($line, $tripId, $tripCost, $ancillary, $this->admin);
         }
 
         return $ids;
+    }
+
+    /**
+     * A trip row on the line's project and service, NOT charged — the ledger's
+     * trip_id is a real foreign key since part 7.1. One driver and one vehicle
+     * serve every trip of the test. Returns the trip id.
+     */
+    protected function newTrip(PurchaseOrderService $line): int
+    {
+        $this->tripDriver ??= Driver::factory()->create();
+        $this->tripVehicle ??= Vehicle::factory()->create();
+
+        return Trip::factory()->onLine($line)->create([
+            'driver_id' => $this->tripDriver->id,
+            'vehicle_id' => $this->tripVehicle->id,
+        ])->id;
     }
 
     /** A valid create input for CreatePurchaseOrderAction (shape of PurchaseOrderRules::store()). */

@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Concerns\BelongsToTenant;
 use App\Concerns\VisibleToContractorAccount;
 use App\Domain\Settings\Support\ExpiryWarning;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -23,7 +24,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Driver extends Model
 {
-    use BelongsToTenant, VisibleToContractorAccount;
+    use BelongsToTenant, HasFactory, VisibleToContractorAccount;
 
     protected $fillable = [
         'user_id',
