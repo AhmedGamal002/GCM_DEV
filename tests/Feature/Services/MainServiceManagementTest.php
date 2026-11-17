@@ -4,6 +4,7 @@ namespace Tests\Feature\Services;
 
 use App\Domain\Services\Actions\UpdateMainServiceAction;
 use App\Domain\Services\Actions\UpdateMainServiceStatusAction;
+use App\Domain\Services\Actions\UpdateSubServiceStatusAction;
 use App\Domain\Services\Exceptions\MainServiceInUseException;
 use App\Models\MainService;
 use App\Models\PurchaseOrderService;
@@ -15,6 +16,7 @@ use App\Models\VehicleCategory;
 use App\Models\AssetCapacityCategory;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 /**
@@ -410,17 +412,81 @@ class MainServiceManagementTest extends TestCase
         $this->assertSame('active', $other->fresh()->operational_status);
     }
 
-    public function test_reactivating_a_main_service_does_not_reactivate_its_sub_services(): void
+    public function test_reactivating_a_main_service_brings_back_only_the_sub_services_it_deactivated(): void
     {
-        $main = MainService::factory()->deactivated()->create();
-        $sub = SubService::factory()->forService($main)->deactivated()->create();
+        $main = MainService::factory()->create();
+        $a = SubService::factory()->forService($main)->create();
+        $b = SubService::factory()->forService($main)->create();
+        $offBefore = SubService::factory()->forService($main)->deactivated()->create();
+        $otherMain = MainService::factory()->create();
+        $otherSub = SubService::factory()->forService($otherMain)->create();
 
-        $this->actingAs($this->admin, 'web')
-            ->patchJson("/api/v1/main-services/{$main->id}/status", ['status' => 'active'])
+        $this->actingAs($this->admin, 'web');
+        $this->patchJson("/api/v1/main-services/{$main->id}/status", ['status' => 'deactivated'])->assertOk();
+        $this->patchJson("/api/v1/main-services/{$otherMain->id}/status", ['status' => 'deactivated'])->assertOk();
+        $this->assertTrue($a->fresh()->deactivated_with_main);
+        $this->assertFalse($offBefore->fresh()->deactivated_with_main);
+
+        $this->patchJson("/api/v1/main-services/{$main->id}/status", ['status' => 'active'])
             ->assertOk()
             ->assertJsonPath('data.operational_status', 'active');
 
-        $this->assertSame('deactivated', $sub->fresh()->operational_status);
+        $this->assertSame('active', $a->fresh()->operational_status);
+        $this->assertSame('active', $b->fresh()->operational_status);
+        $this->assertFalse($a->fresh()->deactivated_with_main);
+        $this->assertSame($this->admin->id, $b->fresh()->updated_by);
+        // Off on its own before the main service was deactivated — stays off.
+        $this->assertSame('deactivated', $offBefore->fresh()->operational_status);
+        // Another main service's sub-services are not touched.
+        $this->assertSame('deactivated', $otherSub->fresh()->operational_status);
+    }
+
+    public function test_a_sub_service_given_its_own_status_while_the_main_service_is_off_stays_off(): void
+    {
+        $main = MainService::factory()->create();
+        $a = SubService::factory()->forService($main)->create();
+        $b = SubService::factory()->forService($main)->create();
+
+        $this->actingAs($this->admin, 'web');
+        $this->patchJson("/api/v1/main-services/{$main->id}/status", ['status' => 'deactivated'])->assertOk();
+
+        // Deactivated explicitly on its own: no longer "off only because of the main service".
+        app(UpdateSubServiceStatusAction::class)->execute($a->fresh(), 'deactivated', $this->admin);
+
+        $this->patchJson("/api/v1/main-services/{$main->id}/status", ['status' => 'active'])->assertOk();
+
+        $this->assertSame('deactivated', $a->fresh()->operational_status);
+        $this->assertSame('active', $b->fresh()->operational_status);
+    }
+
+    public function test_the_migration_marks_the_sub_services_that_are_already_off_with_their_main_service(): void
+    {
+        $at = now()->subDays(3)->startOfSecond();
+        $main = MainService::factory()->deactivated()->create();
+        $withMain = SubService::factory()->forService($main)->deactivated()->create();
+        $offBefore = SubService::factory()->forService($main)->deactivated()->create();
+        $activeMain = MainService::factory()->create();
+        $underActiveMain = SubService::factory()->forService($activeMain)->deactivated()->create();
+
+        // The cascade writes the main service and its sub-services in the same moment.
+        DB::table('main_services')->whereIn('id', [$main->id, $activeMain->id])->update(['updated_at' => $at]);
+        DB::table('sub_services')->whereIn('id', [$withMain->id, $underActiveMain->id])->update(['updated_at' => $at->copy()->addSecond()]);
+        DB::table('sub_services')->where('id', $offBefore->id)->update(['updated_at' => $at->copy()->subDay()]);
+
+        $migration = require database_path('migrations/2026_11_17_100000_add_deactivated_with_main_to_sub_services.php');
+        $migration->down();
+        $migration->up();
+
+        $this->assertTrue((bool) DB::table('sub_services')->where('id', $withMain->id)->value('deactivated_with_main'));
+        $this->assertFalse((bool) DB::table('sub_services')->where('id', $offBefore->id)->value('deactivated_with_main'));
+        $this->assertFalse((bool) DB::table('sub_services')->where('id', $underActiveMain->id)->value('deactivated_with_main'));
+
+        $this->actingAs($this->admin, 'web')
+            ->patchJson("/api/v1/main-services/{$main->id}/status", ['status' => 'active'])
+            ->assertOk();
+
+        $this->assertSame('active', $withMain->fresh()->operational_status);
+        $this->assertSame('deactivated', $offBefore->fresh()->operational_status);
     }
 
     public function test_a_service_in_a_purchase_order_cannot_be_deactivated(): void

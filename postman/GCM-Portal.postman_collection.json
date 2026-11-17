@@ -3835,7 +3835,7 @@
                 "status"
               ]
             },
-            "description": "status: active | deactivated. Deactivating also deactivates every sub-service under it; reactivating does NOT reactivate them. 422 when the service is in a PO."
+            "description": "status: active | deactivated. Deactivating also deactivates every sub-service under it; reactivating brings back the sub-services it deactivated (ones that were off on their own before stay off). 422 when the service is in a PO."
           }
         },
         {

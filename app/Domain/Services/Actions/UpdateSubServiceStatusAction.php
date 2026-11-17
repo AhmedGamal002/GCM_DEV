@@ -29,8 +29,10 @@ class UpdateSubServiceStatusAction
             throw new MainServiceDeactivatedException;
         }
 
-        // operational_status is outside $fillable — set explicitly.
+        // operational_status is outside $fillable — set explicitly. A status chosen for the sub-service
+        // itself is its own from now on, so reactivating the main service no longer brings it back.
         $sub->operational_status = $status;
+        $sub->deactivated_with_main = false;
         $sub->updated_by = $actor->id;
         $sub->save();
 

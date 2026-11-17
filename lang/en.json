@@ -659,7 +659,7 @@
   "Main service status updated successfully.": "Main service status updated successfully.",
   "Sub-service status updated successfully.": "Sub-service status updated successfully.",
   "Change this service's status?": "Change this service's status?",
-  "Deactivating a main service also deactivates every sub-service under it. Reactivating it does not reactivate them — each sub-service is reactivated on its own.": "Deactivating a main service also deactivates every sub-service under it. Reactivating it does not reactivate them — each sub-service is reactivated on its own.",
+  "Deactivating a main service also deactivates every sub-service under it. Reactivating it brings those sub-services back; any that were deactivated on their own before stay deactivated.": "Deactivating a main service also deactivates every sub-service under it. Reactivating it brings those sub-services back; any that were deactivated on their own before stay deactivated.",
   "A deactivated sub-service is kept for its history but can't be chosen for new trips. It can only be reactivated while its main service is active.": "A deactivated sub-service is kept for its history but can't be chosen for new trips. It can only be reactivated while its main service is active.",
   "The type of service can't be changed after creation — the sub-services under it are built on it.": "The type of service can't be changed after creation — the sub-services under it are built on it.",
   "The main service can't be changed after creation.": "The main service can't be changed after creation.",
