@@ -11,6 +11,9 @@ import './gcm-affiliation';
 import './gcm-prefix-check';
 import './expiry-bar';
 import './gcm-attachment';
+import './gcm-geo';
+import './gcm-camera';
+import './gcm-signature-pad';
 /*
   Add custom scripts here
 */

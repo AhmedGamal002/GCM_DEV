@@ -92,6 +92,11 @@ Route::middleware(['auth', 'tenant'])->group(function () {
     Route::get('/app/vehicle/view/{vehicle}', [VehicleAccountController::class, 'view'])->whereNumber('vehicle')->name('app-vehicle-view');
     Route::get('/app/vehicle/edit/{vehicle}', [VehicleAccountController::class, 'edit'])->whereNumber('vehicle')->middleware('can:create,App\\Models\\Vehicle')->name('app-vehicle-edit');
 
+    // Try-out page for the browser components (location / camera / signature pad): off unless SHOW_COMPONENT_DEMOS, never in production.
+    if (config('custom.custom.showComponentDemos') && ! app()->isProduction()) {
+        Route::get('/app/dev/components', [\App\Http\Controllers\Web\Dev\ComponentDemoController::class, 'index'])->middleware('can:viewAny,App\\Models\\TenantSetting')->name('app-dev-components');
+    }
+
     // General settings (system_admin only) — document-expiry warning days.
     Route::get('/app/settings', [\App\Http\Controllers\Web\Settings\SettingsController::class, 'index'])->middleware('can:viewAny,App\\Models\\TenantSetting')->name('app-settings');
 

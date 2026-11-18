@@ -957,5 +957,22 @@
   "Trip No.": "رقم الرحلة",
   "Date & Time": "التاريخ والوقت",
   "Open the trip": "فتح الرحلة",
-  "Approving needs a confirmation code that will be e-mailed to you, and it uses your signature and stamp — make sure they are the legal ones.": "يتطلب الاعتماد رمز تأكيد يُرسل إلى بريدك الإلكتروني، ويستخدم توقيعك وختمك — تأكد أنهما القانونيان."
+  "Approving needs a confirmation code that will be e-mailed to you, and it uses your signature and stamp — make sure they are the legal ones.": "يتطلب الاعتماد رمز تأكيد يُرسل إلى بريدك الإلكتروني، ويستخدم توقيعك وختمك — تأكد أنهما القانونيان.",
+  "Location is not supported on this device.": "الموقع غير مدعوم على هذا الجهاز.",
+  "Location only works on a secure (HTTPS) connection.": "الموقع يعمل فقط على اتصال آمن (HTTPS).",
+  "Location access was denied. Allow it in the browser settings and try again.": "تم رفض الوصول إلى الموقع. اسمح به من إعدادات المتصفح ثم حاول مرة أخرى.",
+  "Your location is not available right now. Move to an open area and try again.": "موقعك غير متاح الآن. انتقل إلى مكان مفتوح وحاول مرة أخرى.",
+  "Finding your location took too long. Try again.": "استغرق تحديد موقعك وقتًا طويلًا. حاول مرة أخرى.",
+  "The camera is not supported on this device or browser.": "الكاميرا غير مدعومة على هذا الجهاز أو المتصفح.",
+  "The camera only works on a secure (HTTPS) connection.": "الكاميرا تعمل فقط على اتصال آمن (HTTPS).",
+  "Camera access was denied. Allow it in the browser settings and try again.": "تم رفض الوصول إلى الكاميرا. اسمح به من إعدادات المتصفح ثم حاول مرة أخرى.",
+  "No camera was found on this device.": "لم يتم العثور على كاميرا في هذا الجهاز.",
+  "The camera is being used by another app. Close it and try again.": "الكاميرا مستخدمة من تطبيق آخر. أغلقه وحاول مرة أخرى.",
+  "The camera could not be started. Try again.": "تعذّر تشغيل الكاميرا. حاول مرة أخرى.",
+  "Take photo": "التقاط صورة",
+  "Retake": "إعادة التصوير",
+  "Use photo": "استخدام الصورة",
+  "Sign here": "وقّع هنا",
+  "Draw your signature first.": "ارسم توقيعك أولًا.",
+  "The signature is too large. Clear it and sign again.": "التوقيع كبير جدًا. امسحه ووقّع مرة أخرى."
 }

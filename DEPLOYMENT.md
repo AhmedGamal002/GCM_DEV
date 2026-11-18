@@ -154,6 +154,8 @@ MAIL_FROM_NAME="${APP_NAME}"
 
 بعد التغيير: `php artisan config:clear`، وجرّب من الـAPI (`POST /api/v1/otp/send` بحساب مدير النظام) وتأكد إن الإيميل وصل (راجع فولدر الـspam أول مرة). لو الإرسال فشل الـAPI بيرجّع 503 (`otp_mail_failed` / `reminder_mail_failed`) ومابيتحفظش رمز ولا سجل تذكير. أرقام الـOTP (10 دقايق، 5 محاولات، دقيقة بين رمزين، 8 ساعات للتحقق) وساعة التذكير في `.env` اختياريًا (`OTP_*` و`TRIP_REMINDER_INTERVAL_MINUTES`، `.env.example`). تنظيف رموز الـOTP القديمة (أكبر من أسبوع) بيتم يوميًا من `Schedule` في `routes/console.php` — يعني نفس الـcron الواحد `schedule:run` اللي مطلوب لباقي المهام.
 
+**صفحة تجربة مكوّنات الكاميرا/الموقع/التوقيع (اختيارية، للتجربة على موبايل):** ضيف `SHOW_COMPONENT_DEMOS=true` في `.env` بيئة التطوير (مش production أبدًا — الصفحة بترفض نفسها هناك) وافتح `/app/dev/components` بحساب مدير النظام من موبايل على رابط **HTTPS**؛ الكاميرا والموقع بيشتغلوا على HTTPS بس. بعد التجربة شيل السطر.
+
 ```bash
 php artisan key:generate
 ```

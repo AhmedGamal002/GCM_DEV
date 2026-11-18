@@ -55,7 +55,25 @@ $contentLayout = (isset($container) ? (($container === 'container-xxl') ? "layou
       unknown: @json(__('The request could not be completed. Please try again.')),
       unknown_status: @json(__('The request could not be completed (error :code). Please try again.')),
       required_hint: @json(__('Fields marked with * are required.')),
-      view: @json(__('View'))
+      view: @json(__('View')),
+      geo_unsupported: @json(__('Location is not supported on this device.')),
+      geo_insecure: @json(__('Location only works on a secure (HTTPS) connection.')),
+      geo_denied: @json(__('Location access was denied. Allow it in the browser settings and try again.')),
+      geo_unavailable: @json(__('Your location is not available right now. Move to an open area and try again.')),
+      geo_timeout: @json(__('Finding your location took too long. Try again.')),
+      camera_unsupported: @json(__('The camera is not supported on this device or browser.')),
+      camera_insecure: @json(__('The camera only works on a secure (HTTPS) connection.')),
+      camera_denied: @json(__('Camera access was denied. Allow it in the browser settings and try again.')),
+      camera_notfound: @json(__('No camera was found on this device.')),
+      camera_busy: @json(__('The camera is being used by another app. Close it and try again.')),
+      camera_failed: @json(__('The camera could not be started. Try again.')),
+      camera_take: @json(__('Take photo')),
+      camera_retake: @json(__('Retake')),
+      camera_use: @json(__('Use photo')),
+      camera_cancel: @json(__('Cancel')),
+      signature_hint: @json(__('Sign here')),
+      signature_empty: @json(__('Draw your signature first.')),
+      signature_too_large: @json(__('The signature is too large. Clear it and sign again.'))
     };
   </script>
 

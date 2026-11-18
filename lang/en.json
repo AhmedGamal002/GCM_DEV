@@ -957,5 +957,22 @@
   "Trip No.": "Trip No.",
   "Date & Time": "Date & Time",
   "Open the trip": "Open the trip",
-  "Approving needs a confirmation code that will be e-mailed to you, and it uses your signature and stamp — make sure they are the legal ones.": "Approving needs a confirmation code that will be e-mailed to you, and it uses your signature and stamp — make sure they are the legal ones."
+  "Approving needs a confirmation code that will be e-mailed to you, and it uses your signature and stamp — make sure they are the legal ones.": "Approving needs a confirmation code that will be e-mailed to you, and it uses your signature and stamp — make sure they are the legal ones.",
+  "Location is not supported on this device.": "Location is not supported on this device.",
+  "Location only works on a secure (HTTPS) connection.": "Location only works on a secure (HTTPS) connection.",
+  "Location access was denied. Allow it in the browser settings and try again.": "Location access was denied. Allow it in the browser settings and try again.",
+  "Your location is not available right now. Move to an open area and try again.": "Your location is not available right now. Move to an open area and try again.",
+  "Finding your location took too long. Try again.": "Finding your location took too long. Try again.",
+  "The camera is not supported on this device or browser.": "The camera is not supported on this device or browser.",
+  "The camera only works on a secure (HTTPS) connection.": "The camera only works on a secure (HTTPS) connection.",
+  "Camera access was denied. Allow it in the browser settings and try again.": "Camera access was denied. Allow it in the browser settings and try again.",
+  "No camera was found on this device.": "No camera was found on this device.",
+  "The camera is being used by another app. Close it and try again.": "The camera is being used by another app. Close it and try again.",
+  "The camera could not be started. Try again.": "The camera could not be started. Try again.",
+  "Take photo": "Take photo",
+  "Retake": "Retake",
+  "Use photo": "Use photo",
+  "Sign here": "Sign here",
+  "Draw your signature first.": "Draw your signature first.",
+  "The signature is too large. Clear it and sign again.": "The signature is too large. Clear it and sign again."
 }

@@ -23,6 +23,9 @@ return [
     // Off = the menu shows only what has actually been built. On = system_admin
     // sees the whole scaffold again (local development reference only).
     'showDemoMenu' => env('SHOW_DEMO_MENU', false),
+    // Developer try-out page for the live location / camera / signature components (/app/dev/components).
+    // System admin only and never in production — see ComponentDemoController.
+    'showComponentDemos' => env('SHOW_COMPONENT_DEMOS', false),
     'displayCustomizer' => false, // options[Boolean]: true(default), false // Display customizer UI or not, THIS WON'T REMOVE INCLUDED JS FILE. SO LOCAL STORAGE WILL WORK
     'contentLayout' => 'wide', // options[String]: 'compact', 'wide' (compact=container-xxl, wide=container-fluid) — wide = full-width content (client preference)
     'navbarType' => 'sticky', // options[String]: 'sticky', 'static', 'hidden' (Only for vertical Layout)
