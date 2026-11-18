@@ -48,6 +48,9 @@ class TripEvent extends Model
 
     public const QUOTA_RECHARGED = 'quota_recharged';
 
+    // Part 7.3: GCM sent the client an e-mail reminder to approve (ج17) — what the one-hour gap between reminders reads.
+    public const CLIENT_REMINDED = 'client_reminded';
+
     public const ASSET_MOVED = 'asset_moved';
 
     public const ASSET_MOVEMENT_SKIPPED = 'asset_movement_skipped';

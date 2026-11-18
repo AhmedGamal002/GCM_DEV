@@ -107,6 +107,11 @@
       "type": "string"
     },
     {
+      "key": "last_trip_id",
+      "value": "",
+      "type": "string"
+    },
+    {
       "key": "last_vehicle_category_id",
       "value": "",
       "type": "string"
@@ -5683,6 +5688,121 @@
               ]
             },
             "description": "Same filters and search as the list. Arabic text is rendered correctly."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Verification code (OTP) & client reminder",
+      "description": "Phase 3 · part 7.3. A one-time code e-mailed to the account's own address, asked for before the sensitive trip actions (client approve / reject, final approval, cancel, reject a client objection — NOT before creating a completed trip). One code belongs to one login (this session or this API token): once verified it stays valid for OTP_VERIFIED_FOR_MINUTES (default 8 h). Roles: system_admin, data_entry and the two client roles; others get 403. The code is 6 digits, valid 10 minutes, 5 wrong tries, a new one can be asked for after 1 minute (a new code cancels the old one). The trip action that needs it answers 403 with code=otp_required until /otp/verify has succeeded. With MAIL_MAILER=log the code is in storage/logs/laravel.log.",
+      "item": [
+        {
+          "name": "Send OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"purpose\": \"Approve trip ALN-T0001\"\n}"
+            },
+            "url": {
+              "raw": "{{api_base}}/otp/send",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "otp",
+                "send"
+              ]
+            },
+            "description": "Mails a fresh code. `purpose` is optional free text shown in the e-mail. 429 + Retry-After if asked again within a minute; 503 code=otp_mail_failed if the mail could not be sent (no code is left waiting). Returns the masked address, the validity and the earliest resend time."
+          }
+        },
+        {
+          "name": "Verify OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"code\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{api_base}}/otp/verify",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "otp",
+                "verify"
+              ]
+            },
+            "description": "Checks the code. Wrong: 422 with errors.code and the tries left; expired / never sent: 422; locked after 5 wrong tries: 429. On success this login is verified for the configured time."
+          }
+        },
+        {
+          "name": "OTP status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/otp/status",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "otp",
+                "status"
+              ]
+            },
+            "description": "Whether this login is currently verified, and until when. Lets the UI skip the code dialog."
+          }
+        },
+        {
+          "name": "Remind client to approve",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/trips/{{last_trip_id}}/remind-client",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "trips",
+                "{{last_trip_id}}",
+                "remind-client"
+              ]
+            },
+            "description": "System Admin / Data Entry only; needs no code. Mails the trip's default client approver, or — if there is none, or they are inactive / on vacation — every active client account that sees the project. 422 code=reminder_not_awaiting if the trip is not awaiting the client's approval; 422 code=reminder_no_recipient if nobody can approve; 429 code=reminder_too_soon (with retry_after_minutes) within an hour of the previous reminder; the reminder is written to the trip history."
           }
         }
       ]

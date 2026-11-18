@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\EnsureTenant;
 use App\Http\Middleware\LocaleMiddleware;
+use App\Http\Middleware\RequiresOtp;
 use App\Http\Middleware\SecurityHeaders;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -36,6 +37,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->api(append: LocaleMiddleware::class);
         $middleware->alias([
             'tenant' => EnsureTenant::class,
+            'otp' => RequiresOtp::class,
         ]);
         $middleware->redirectGuestsTo(function ($request) {
             return $request->is('platform/*') ? route('platform.login') : route('login');

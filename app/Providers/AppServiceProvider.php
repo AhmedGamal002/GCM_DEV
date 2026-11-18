@@ -89,6 +89,26 @@ class AppServiceProvider extends ServiceProvider
     // Every other API call (the group gets it from `throttleApi()` in bootstrap/app.php): a ceiling per signed-in user
     // — or per bearer token, per IP for a guest — so one account cannot scrape or hammer the whole API, plus a much
     // lower one for the Excel / PDF exports, which are the expensive requests.
+    // E-mailed one-time codes (part 7.3): asking for one is capped per account + IP (and per IP), entering one too —
+    // on top of the one-minute gap between codes and the 5 tries per code in OtpService.
+    RateLimiter::for('otp-send', function (Request $request) {
+      $who = 'u'.($request->user()?->getAuthIdentifier() ?? 'guest').'|'.$request->ip();
+
+      return [
+        Limit::perHour((int) config('otp.send_per_hour'))->by('otp-send|'.$who),
+        Limit::perMinute(20)->by('otp-send-ip|'.$request->ip()),
+      ];
+    });
+
+    RateLimiter::for('otp-verify', function (Request $request) {
+      $who = 'u'.($request->user()?->getAuthIdentifier() ?? 'guest').'|'.$request->ip();
+
+      return [
+        Limit::perMinute(10)->by('otp-verify|'.$who),
+        Limit::perMinute(30)->by('otp-verify-ip|'.$request->ip()),
+      ];
+    });
+
     RateLimiter::for('api', function (Request $request) {
       $token = $request->bearerToken();
       $who = $request->user()

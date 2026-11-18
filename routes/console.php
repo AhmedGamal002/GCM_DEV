@@ -10,3 +10,6 @@ Artisan::command('inspire', function () {
 
 // Mobile (bearer) tokens now expire — see config/sanctum.php; drop the dead rows once a day.
 Schedule::command('sanctum:prune-expired --hours=24')->daily();
+
+// One-time codes are useless after minutes; keep the table small (OtpChallenge::prunable() = older than a week).
+Schedule::command('model:prune', ['--model' => [\App\Models\OtpChallenge::class]])->daily();

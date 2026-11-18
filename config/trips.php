@@ -19,6 +19,9 @@ return [
     'attachment_max_kb' => 5120,
     'attachment_mimes' => ['pdf', 'jpg', 'jpeg', 'png'],
 
+    // ج17 (part 7.3): the least time between two "remind the client to approve" e-mails of the same trip.
+    'reminder_interval_minutes' => (int) env('TRIP_REMINDER_INTERVAL_MINUTES', 60),
+
     // Signatures and stamps — the same limits as the accounts' own (2 MB, images only).
     'signature_max_kb' => 2048,
     'signature_mimes' => ['png', 'jpg', 'jpeg'],

@@ -16,8 +16,10 @@ use App\Http\Controllers\Api\V1\FacilityController;
 use App\Http\Controllers\Api\V1\MainServiceController;
 use App\Http\Controllers\Api\V1\ProfileController;
 use App\Http\Controllers\Api\V1\ProjectAssetController;
+use App\Http\Controllers\Api\V1\OtpController;
 use App\Http\Controllers\Api\V1\ProjectController;
 use App\Http\Controllers\Api\V1\PurchaseOrderController;
+use App\Http\Controllers\Api\V1\TripReminderController;
 use App\Http\Controllers\Api\V1\RoleController;
 use App\Http\Controllers\Api\V1\SubServiceController;
 use App\Http\Controllers\Api\V1\UserController;
@@ -189,6 +191,14 @@ Route::prefix('v1')->group(function () {
         Route::post('/drivers/{driver}/entry-permits', [DriverController::class, 'addEntryPermit']);
         Route::get('/drivers/{driver}/documents/{type}', [DriverController::class, 'downloadDocument']);
         Route::get('/driver-entry-permits/{permit}/attachment', [DriverController::class, 'downloadEntryPermitAttachment']);
+
+        // ── Phase 3 · 7.3 one-time codes and the client reminder ──
+        // The e-mailed code (FRD "ايميل OTP"): ask for one, enter it, ask whether this login is verified. The sensitive
+        // trip actions sit behind the `otp` middleware (RequiresOtp). Reminding the client to approve a trip is GCM staff's.
+        Route::post('/otp/send', [OtpController::class, 'send'])->middleware('throttle:otp-send');
+        Route::post('/otp/verify', [OtpController::class, 'verify'])->middleware('throttle:otp-verify');
+        Route::get('/otp/status', [OtpController::class, 'status']);
+        Route::post('/trips/{trip}/remind-client', [TripReminderController::class, 'store'])->whereNumber('trip');
 
         // ── Phase 3 · 6.2 purchase orders (FRD V01.14 §1.13) ──
         // /purchase-orders/export and /stats MUST come before /purchase-orders/{purchaseOrder}.

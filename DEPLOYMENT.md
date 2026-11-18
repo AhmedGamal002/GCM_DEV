@@ -136,8 +136,23 @@ QUEUE_CONNECTION=database
 CACHE_STORE=database
 FILESYSTEM_DISK=local
 
-MAIL_MAILER=log                   # لحد ما يبقى فيه إعداد بريد حقيقي
+MAIL_MAILER=log                   # لحد ما يبقى فيه إعداد بريد حقيقي (راجع الفقرة اللي تحت)
 ```
+
+**البريد الحقيقي (مطلوب من الجزء 7.3):** رمز التحقق OTP وتذكير العميل بالاعتماد بيتبعتوا إيميل فعلًا، فمع `MAIL_MAILER=log` الرمز بيتكتب في `storage/logs/laravel.log` بس ومحدّش بيستلمه (مقبول في بيئة التطوير للتجربة، مش لأي مستخدم حقيقي). لتفعيل الإرسال أنشئ صندوق بريد من hPanel (Emails) ثم:
+
+```
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.hostinger.com
+MAIL_PORT=465
+MAIL_ENCRYPTION=ssl              # أو 587 مع tls
+MAIL_USERNAME=<عنوان صندوق البريد كامل>
+MAIL_PASSWORD=<باسورد صندوق البريد>
+MAIL_FROM_ADDRESS=<نفس عنوان الصندوق — Hostinger بيرفض مرسل مختلف>
+MAIL_FROM_NAME="${APP_NAME}"
+```
+
+بعد التغيير: `php artisan config:clear`، وجرّب من الـAPI (`POST /api/v1/otp/send` بحساب مدير النظام) وتأكد إن الإيميل وصل (راجع فولدر الـspam أول مرة). لو الإرسال فشل الـAPI بيرجّع 503 (`otp_mail_failed` / `reminder_mail_failed`) ومابيتحفظش رمز ولا سجل تذكير. أرقام الـOTP (10 دقايق، 5 محاولات، دقيقة بين رمزين، 8 ساعات للتحقق) وساعة التذكير في `.env` اختياريًا (`OTP_*` و`TRIP_REMINDER_INTERVAL_MINUTES`، `.env.example`). تنظيف رموز الـOTP القديمة (أكبر من أسبوع) بيتم يوميًا من `Schedule` في `routes/console.php` — يعني نفس الـcron الواحد `schedule:run` اللي مطلوب لباقي المهام.
 
 ```bash
 php artisan key:generate
