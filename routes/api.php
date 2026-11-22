@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\V1\ProjectAssetController;
 use App\Http\Controllers\Api\V1\OtpController;
 use App\Http\Controllers\Api\V1\ProjectController;
 use App\Http\Controllers\Api\V1\PurchaseOrderController;
+use App\Http\Controllers\Api\V1\TripOptionController;
 use App\Http\Controllers\Api\V1\TripReminderController;
 use App\Http\Controllers\Api\V1\RoleController;
 use App\Http\Controllers\Api\V1\SubServiceController;
@@ -199,6 +200,25 @@ Route::prefix('v1')->group(function () {
         Route::post('/otp/verify', [OtpController::class, 'verify'])->middleware('throttle:otp-verify');
         Route::get('/otp/status', [OtpController::class, 'status']);
         Route::post('/trips/{trip}/remind-client', [TripReminderController::class, 'store'])->whereNumber('trip');
+
+        // ── Phase 3 · 7.2 the trip form's cascading lists (FRD V01.14 §1.14) ──
+        // Read-only; staff form + the driver's own form (TripPolicy). The rules are TripOptions; the server
+        // re-checks every choice on save (TripChoiceCheck). Fixed names — B's 7.4 pages build on them.
+        Route::prefix('/trips/options')->controller(TripOptionController::class)->group(function () {
+            Route::get('/drivers', 'drivers');
+            Route::get('/vehicles', 'vehicles');
+            Route::get('/companies', 'companies');
+            Route::get('/projects', 'projects');
+            Route::get('/purchase-orders', 'purchaseOrders');
+            Route::get('/main-services', 'mainServices');
+            Route::get('/sub-services', 'subServices');
+            Route::get('/capacity', 'capacity');
+            Route::get('/going-assets', 'goingAssets');
+            Route::get('/returning-assets', 'returningAssets');
+            Route::get('/facilities', 'facilities');
+            Route::get('/client-approvers', 'clientApprovers');
+            Route::get('/gcm-approvers', 'gcmApprovers');
+        });
 
         // ── Phase 3 · 6.2 purchase orders (FRD V01.14 §1.13) ──
         // /purchase-orders/export and /stats MUST come before /purchase-orders/{purchaseOrder}.

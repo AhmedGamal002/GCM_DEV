@@ -974,5 +974,21 @@
   "Use photo": "Use photo",
   "Sign here": "Sign here",
   "Draw your signature first.": "Draw your signature first.",
-  "The signature is too large. Clear it and sign again.": "The signature is too large. Clear it and sign again."
+  "The signature is too large. Clear it and sign again.": "The signature is too large. Clear it and sign again.",
+  "This driver is not available for trips (on vacation, deactivated, or of a deactivated contractor).": "This driver is not available for trips (on vacation, deactivated, or of a deactivated contractor).",
+  "This vehicle is not available for trips (on maintenance, deactivated, or of a deactivated contractor).": "This vehicle is not available for trips (on maintenance, deactivated, or of a deactivated contractor).",
+  "The driver is not qualified for this vehicle's category.": "The driver is not qualified for this vehicle's category.",
+  "This main service is deactivated.": "This main service is deactivated.",
+  "This main service does not support the vehicle's category.": "This main service does not support the vehicle's category.",
+  "This sub-service is deactivated.": "This sub-service is deactivated.",
+  "The sub-service does not suit the trip's container type and capacity.": "The sub-service does not suit the trip's container type and capacity.",
+  "This intermediate facility is deactivated.": "This intermediate facility is deactivated.",
+  "This project is deactivated.": "This project is deactivated.",
+  "This client company is deactivated.": "This client company is deactivated.",
+  "The vehicle has an embedded container: the trip takes no going or returning container.": "The vehicle has an embedded container: the trip takes no going or returning container.",
+  "This container is not available (on maintenance, deactivated, of a deactivated contractor, or on another trip that is not finished).": "This container is not available (on maintenance, deactivated, of a deactivated contractor, or on another trip that is not finished).",
+  "This container is placed at a project; a going container comes from the available assets.": "This container is placed at a project; a going container comes from the available assets.",
+  "This container is not compatible with the vehicle's category.": "This container is not compatible with the vehicle's category.",
+  "A returning container must be at the trip's project (or be the going container).": "A returning container must be at the trip's project (or be the going container).",
+  "The quantity cannot exceed the container's capacity (:ton t / :cbm m³).": "The quantity cannot exceed the container's capacity (:ton t / :cbm m³)."
 }

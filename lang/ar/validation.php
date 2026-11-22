@@ -129,6 +129,7 @@ return [
         'services.*.alert_percent' => 'نسبة تنبيه النفاذ',
         // الرحلات (الجزء 7.1)
         'trip_at' => 'التاريخ والوقت',
+        'trip_id' => 'الرحلة',
         'project_id' => 'المشروع',
         'driver_id' => 'السائق',
         'vehicle_id' => 'المركبة',

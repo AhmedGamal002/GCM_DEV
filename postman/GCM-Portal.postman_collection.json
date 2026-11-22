@@ -5808,6 +5808,1181 @@
       ]
     },
     {
+      "name": "Trip form options",
+      "description": "Phase 3 · part 7.2. The cascading lists of the trip form — each answers \"what may be chosen here, given the choices made before it\" (FRD trip form; WEEKLY_PLAN 7.2, nine steps). Read-only GET. Roles: System Admin / Data Entry (the staff form) and Driver (his own form); the drivers, POs and default-approver lists are staff only; auditor, client and contractor accounts get 403. The server re-checks every choice when a trip is saved (an available, compatible resource — only for the fields the save changes: an old trip keeps resources that went on vacation / maintenance since), so these lists are a convenience, not the guarantee. Long lists are paged: `search`, `page`, `per_page` (default 20, max 1000); response `{data, meta: {current_page, last_page, per_page, total, …}}`. Any id of another tenant is a 422 like a missing one. The examples were taken from the test fixture (company ALN, project Riyadh Hotel, PO ALN-1200 running + ALN-1100 ended).",
+      "item": [
+        {
+          "name": "Drivers (staff form)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/trips/options/drivers",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "trips",
+                "options",
+                "drivers"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Step 1 of the staff form. Active drivers of GCM or of an active contractor (ج4: a driver on vacation / deactivated, or of a deactivated contractor, is never offered — even for a trip recorded after the fact). `default_vehicle_id` is the driver's default vehicle only while he may take it (available + his category). System Admin / Data Entry only (the driver form shows the driver himself). Paged: `search` (name, code, phone), `page`, `per_page` (default 20)."
+          },
+          "response": [
+            {
+              "name": "200 — example",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/trips/options/drivers",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "trips",
+                    "options",
+                    "drivers"
+                  ],
+                  "query": [
+                    {
+                      "key": "search",
+                      "value": "",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"data\": [\n        {\n            \"id\": 1,\n            \"name\": \"Driver One\",\n            \"code\": \"944154\",\n            \"phone\": \"+966531416766\",\n            \"affiliation\": \"gcm\",\n            \"entity_name\": \"GCM\",\n            \"default_vehicle_id\": 1\n        }\n    ],\n    \"meta\": {\n        \"current_page\": 1,\n        \"last_page\": 1,\n        \"per_page\": 20,\n        \"total\": 1\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Vehicles of the driver",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/trips/options/vehicles?driver_id={{last_driver_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "trips",
+                "options",
+                "vehicles"
+              ],
+              "query": [
+                {
+                  "key": "driver_id",
+                  "value": "{{last_driver_id}}",
+                  "disabled": false
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Step 1. The vehicles the driver may take: active, of GCM or of an active contractor, and of a category the driver is qualified for — affiliation is NOT a condition (ج4: a contractor's driver may drive a GCM vehicle). `is_default` / `meta.default_vehicle_id` prefill the form. For a driver account `driver_id` is ignored: always his own vehicles. `search` matches the plate as shown (\"ABC 1234\") or without the space."
+          },
+          "response": [
+            {
+              "name": "200 — example",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/trips/options/vehicles?driver_id={{last_driver_id}}",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "trips",
+                    "options",
+                    "vehicles"
+                  ],
+                  "query": [
+                    {
+                      "key": "driver_id",
+                      "value": "{{last_driver_id}}",
+                      "disabled": false
+                    },
+                    {
+                      "key": "search",
+                      "value": "",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"data\": [\n        {\n            \"id\": 1,\n            \"plate\": \"ABC 1234\",\n            \"category\": {\n                \"id\": 5,\n                \"slug\": \"dyna_box\",\n                \"name\": \"Dyna box\"\n            },\n            \"affiliation\": \"gcm\",\n            \"entity_name\": \"GCM\",\n            \"has_embedded_container\": false,\n            \"embedded_container\": null,\n            \"is_default\": true\n        }\n    ],\n    \"meta\": {\n        \"current_page\": 1,\n        \"last_page\": 1,\n        \"per_page\": 20,\n        \"total\": 1,\n        \"driver_id\": 1,\n        \"default_vehicle_id\": 1\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Client companies",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/trips/options/companies",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "trips",
+                "options",
+                "companies"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Step 2. Active client companies. `search`: name, prefix, code. Staff and driver."
+          },
+          "response": [
+            {
+              "name": "200 — example",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/trips/options/companies",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "trips",
+                    "options",
+                    "companies"
+                  ],
+                  "query": [
+                    {
+                      "key": "search",
+                      "value": "",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"data\": [\n        {\n            \"id\": 1,\n            \"name\": \"Al Nakheel\",\n            \"prefix\": \"ALN\",\n            \"code\": \"ALN-0001\"\n        }\n    ],\n    \"meta\": {\n        \"current_page\": 1,\n        \"last_page\": 1,\n        \"per_page\": 20,\n        \"total\": 1\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Projects of the company",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/trips/options/projects?company_id={{last_company_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "trips",
+                "options",
+                "projects"
+              ],
+              "query": [
+                {
+                  "key": "company_id",
+                  "value": "{{last_company_id}}",
+                  "disabled": false
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Step 2. The company's active projects. `company_id` required (422 otherwise, also for another tenant's id)."
+          },
+          "response": [
+            {
+              "name": "200 — example",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/trips/options/projects?company_id={{last_company_id}}",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "trips",
+                    "options",
+                    "projects"
+                  ],
+                  "query": [
+                    {
+                      "key": "company_id",
+                      "value": "{{last_company_id}}",
+                      "disabled": false
+                    },
+                    {
+                      "key": "search",
+                      "value": "",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"data\": [\n        {\n            \"id\": 1,\n            \"name\": \"Riyadh Hotel\",\n            \"code\": \"ALN-P0001\",\n            \"operational_region\": \"Riyadh\"\n        }\n    ],\n    \"meta\": {\n        \"current_page\": 1,\n        \"last_page\": 1,\n        \"per_page\": 20,\n        \"total\": 1\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "POs of the project (staff form)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/trips/options/purchase-orders?project_id={{last_project_id}}&main_service_id={{last_main_service_id}}&trip_at=2026-03-01 09:30",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "trips",
+                "options",
+                "purchase-orders"
+              ],
+              "query": [
+                {
+                  "key": "project_id",
+                  "value": "{{last_project_id}}",
+                  "disabled": false
+                },
+                {
+                  "key": "main_service_id",
+                  "value": "{{last_main_service_id}}",
+                  "disabled": false
+                },
+                {
+                  "key": "trip_at",
+                  "value": "2026-03-01 09:30",
+                  "disabled": false
+                }
+              ]
+            },
+            "description": "Step 3 + step 9 (cost source). EVERY PO of the project that is not deactivated — running, not started, ended or used up (ب6: the trip is recorded after it happened and may be charged past the balance) — newest first. With `main_service_id`: only the POs covering that service, each with its line's per-trip cost (`trip_cost`, `ancillary_cost` — read-only in the form) and status (`valid` / `near_exhaustion` / `exhausted`), and `is_default` = the PO a trip would be charged to (newest with balance on `trip_at`). `trip_at` (default now) dates the statuses. NO balances (used / remaining / max) — they stay behind /purchase-orders (Data Entry has no PO access). `meta.without_purchase_order_only` = true when the list is empty: the trip goes \"without PO\" with a hand-entered cost (`cost_source` = manual). System Admin / Data Entry only — the driver picks no PO."
+          },
+          "response": [
+            {
+              "name": "200 — example",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/trips/options/purchase-orders?project_id={{last_project_id}}&main_service_id={{last_main_service_id}}&trip_at=2026-03-01 09:30",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "trips",
+                    "options",
+                    "purchase-orders"
+                  ],
+                  "query": [
+                    {
+                      "key": "project_id",
+                      "value": "{{last_project_id}}",
+                      "disabled": false
+                    },
+                    {
+                      "key": "main_service_id",
+                      "value": "{{last_main_service_id}}",
+                      "disabled": false
+                    },
+                    {
+                      "key": "trip_at",
+                      "value": "2026-03-01 09:30",
+                      "disabled": false
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"data\": [\n        {\n            \"id\": 1,\n            \"number\": \"ALN-1200\",\n            \"starts_on\": \"2026-01-01\",\n            \"ends_on\": \"2026-05-30\",\n            \"timeline\": \"running\",\n            \"timeline_label\": \"Running\",\n            \"days_label\": \"91 days left\",\n            \"line\": {\n                \"quota_method\": \"trips_only\",\n                \"trip_cost\": 100,\n                \"ancillary_cost\": 0,\n                \"status\": \"valid\",\n                \"status_label\": \"In force\"\n            },\n            \"is_default\": true\n        },\n        {\n            \"id\": 2,\n            \"number\": \"ALN-1100\",\n            \"starts_on\": \"2025-01-01\",\n            \"ends_on\": \"2025-06-30\",\n            \"timeline\": \"ended\",\n            \"timeline_label\": \"Ended\",\n            \"days_label\": \"Ended 244 days ago\",\n            \"line\": {\n                \"quota_method\": \"trips_only\",\n                \"trip_cost\": 80,\n                \"ancillary_cost\": 0,\n                \"status\": \"exhausted\",\n                \"status_label\": \"Exhausted\"\n            },\n            \"is_default\": false\n        }\n    ],\n    \"meta\": {\n        \"trip_at\": \"2026-03-01T09:30:00+03:00\",\n        \"default_purchase_order_id\": 1,\n        \"without_purchase_order_only\": false,\n        \"cost_source\": \"purchase_order\"\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Main services",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/trips/options/main-services?project_id={{last_project_id}}&vehicle_id={{last_vehicle_id}}&requires_purchase_order=1",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "trips",
+                "options",
+                "main-services"
+              ],
+              "query": [
+                {
+                  "key": "project_id",
+                  "value": "{{last_project_id}}",
+                  "disabled": false
+                },
+                {
+                  "key": "vehicle_id",
+                  "value": "{{last_vehicle_id}}",
+                  "disabled": false
+                },
+                {
+                  "key": "requires_purchase_order",
+                  "value": "1",
+                  "disabled": false
+                },
+                {
+                  "key": "purchase_order_id",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Step 4. Active main services supporting the vehicle's category AND — when the trip needs a PO (`requires_purchase_order`, default 1) — covered by the chosen `purchase_order_id`, or by any PO of the project when none is chosen. A project with no PO at all, or `requires_purchase_order=0`, offers every supported service (FRD). A driver account always gets the PO-covered list (he names no PO). `purchase_order_id` of another project / deactivated → 422."
+          },
+          "response": [
+            {
+              "name": "200 — example",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/trips/options/main-services?project_id={{last_project_id}}&vehicle_id={{last_vehicle_id}}&requires_purchase_order=1",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "trips",
+                    "options",
+                    "main-services"
+                  ],
+                  "query": [
+                    {
+                      "key": "project_id",
+                      "value": "{{last_project_id}}",
+                      "disabled": false
+                    },
+                    {
+                      "key": "vehicle_id",
+                      "value": "{{last_vehicle_id}}",
+                      "disabled": false
+                    },
+                    {
+                      "key": "requires_purchase_order",
+                      "value": "1",
+                      "disabled": false
+                    },
+                    {
+                      "key": "purchase_order_id",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "search",
+                      "value": "",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"data\": [\n        {\n            \"id\": 1,\n            \"name\": \"Solid Waste Transport\",\n            \"service_type\": \"non_hazardous\",\n            \"is_supplying\": false\n        }\n    ],\n    \"meta\": {\n        \"current_page\": 1,\n        \"last_page\": 1,\n        \"per_page\": 20,\n        \"total\": 1,\n        \"project_has_purchase_orders\": true\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Sub-services",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/trips/options/sub-services?main_service_id={{last_main_service_id}}&vehicle_id={{last_vehicle_id}}&returning_asset_id={{last_asset_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "trips",
+                "options",
+                "sub-services"
+              ],
+              "query": [
+                {
+                  "key": "main_service_id",
+                  "value": "{{last_main_service_id}}",
+                  "disabled": false
+                },
+                {
+                  "key": "vehicle_id",
+                  "value": "{{last_vehicle_id}}",
+                  "disabled": false
+                },
+                {
+                  "key": "going_asset_id",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "returning_asset_id",
+                  "value": "{{last_asset_id}}",
+                  "disabled": false
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Step 5. Active sub-services of the main service that suit THE trip's container — its type (container / tank) and one of its capacities. The container is the vehicle's embedded one, else the returning container, else the going one (`meta.container`); with no container yet every active sub-service is offered."
+          },
+          "response": [
+            {
+              "name": "200 — example",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/trips/options/sub-services?main_service_id={{last_main_service_id}}&vehicle_id={{last_vehicle_id}}&returning_asset_id={{last_asset_id}}",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "trips",
+                    "options",
+                    "sub-services"
+                  ],
+                  "query": [
+                    {
+                      "key": "main_service_id",
+                      "value": "{{last_main_service_id}}",
+                      "disabled": false
+                    },
+                    {
+                      "key": "vehicle_id",
+                      "value": "{{last_vehicle_id}}",
+                      "disabled": false
+                    },
+                    {
+                      "key": "going_asset_id",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "returning_asset_id",
+                      "value": "{{last_asset_id}}",
+                      "disabled": false
+                    },
+                    {
+                      "key": "search",
+                      "value": "",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"data\": [\n        {\n            \"id\": 2,\n            \"name\": \"Cardboard collection\",\n            \"asset_type\": \"container\",\n            \"requires_recycle_receipt\": true,\n            \"skip_color_code\": null,\n            \"skip_color_label\": null\n        },\n        {\n            \"id\": 1,\n            \"name\": \"General collection\",\n            \"asset_type\": \"container\",\n            \"requires_recycle_receipt\": false,\n            \"skip_color_code\": null,\n            \"skip_color_label\": null\n        }\n    ],\n    \"meta\": {\n        \"current_page\": 1,\n        \"last_page\": 1,\n        \"per_page\": 20,\n        \"total\": 2,\n        \"container\": {\n            \"type\": \"container\",\n            \"capacity\": {\n                \"id\": 1,\n                \"name\": \"12 m3\",\n                \"capacity_ton\": 3.75,\n                \"capacity_cbm\": 12\n            }\n        }\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Container capacity & default quantity",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/trips/options/capacity?vehicle_id={{last_vehicle_id}}&main_service_id={{last_main_service_id}}&returning_asset_id={{last_asset_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "trips",
+                "options",
+                "capacity"
+              ],
+              "query": [
+                {
+                  "key": "vehicle_id",
+                  "value": "{{last_vehicle_id}}",
+                  "disabled": false
+                },
+                {
+                  "key": "main_service_id",
+                  "value": "{{last_main_service_id}}",
+                  "disabled": false
+                },
+                {
+                  "key": "returning_asset_id",
+                  "value": "{{last_asset_id}}",
+                  "disabled": false
+                }
+              ]
+            },
+            "description": "Step 6. The most the trip may carry (the quantity can be lowered, never raised — the server refuses a quantity over the capacity in both units) and the quantity it starts with: the embedded container's capacity, else the returning container's. `capacity` is null with no container yet, or for a supplying service (`source` = supplying — no waste, ج11). `converter` = the single ton ↔ m³ factor (ج10)."
+          },
+          "response": [
+            {
+              "name": "200 — example",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/trips/options/capacity?vehicle_id={{last_vehicle_id}}&main_service_id={{last_main_service_id}}&returning_asset_id={{last_asset_id}}",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "trips",
+                    "options",
+                    "capacity"
+                  ],
+                  "query": [
+                    {
+                      "key": "vehicle_id",
+                      "value": "{{last_vehicle_id}}",
+                      "disabled": false
+                    },
+                    {
+                      "key": "main_service_id",
+                      "value": "{{last_main_service_id}}",
+                      "disabled": false
+                    },
+                    {
+                      "key": "returning_asset_id",
+                      "value": "{{last_asset_id}}",
+                      "disabled": false
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"data\": {\n        \"capacity\": {\n            \"id\": 1,\n            \"name\": \"12 m3\",\n            \"capacity_ton\": 3.75,\n            \"capacity_cbm\": 12\n        },\n        \"source\": \"returning_container\",\n        \"default_quantity\": {\n            \"ton\": 3.75,\n            \"cbm\": 12\n        },\n        \"converter\": {\n            \"tonnes_per_cubic_meter\": 0.3125,\n            \"decimals\": 3\n        }\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Going containers",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/trips/options/going-assets?vehicle_id={{last_vehicle_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "trips",
+                "options",
+                "going-assets"
+              ],
+              "query": [
+                {
+                  "key": "vehicle_id",
+                  "value": "{{last_vehicle_id}}",
+                  "disabled": false
+                },
+                {
+                  "key": "trip_id",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Step 7. Active assets of GCM or of an active contractor, NOT placed at a project, compatible with the vehicle's category, and not held by another trip that is not finished (completed / cancelled frees them). Empty for a vehicle with an embedded container (`meta.takes_external_containers` = false). An edit form sends `trip_id` (staff only) so the trip's own containers stay offered."
+          },
+          "response": [
+            {
+              "name": "200 — example",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/trips/options/going-assets?vehicle_id={{last_vehicle_id}}",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "trips",
+                    "options",
+                    "going-assets"
+                  ],
+                  "query": [
+                    {
+                      "key": "vehicle_id",
+                      "value": "{{last_vehicle_id}}",
+                      "disabled": false
+                    },
+                    {
+                      "key": "trip_id",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "search",
+                      "value": "",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"data\": [\n        {\n            \"id\": 1,\n            \"name\": \"C-GO\",\n            \"asset_type\": \"container\",\n            \"capacity\": {\n                \"id\": 1,\n                \"name\": \"12 m3\",\n                \"capacity_ton\": 3.75,\n                \"capacity_cbm\": 12\n            },\n            \"affiliation\": \"gcm\",\n            \"entity_name\": \"GCM\",\n            \"at_project\": false\n        }\n    ],\n    \"meta\": {\n        \"current_page\": 1,\n        \"last_page\": 1,\n        \"per_page\": 20,\n        \"total\": 1,\n        \"takes_external_containers\": true\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Returning containers",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/trips/options/returning-assets?project_id={{last_project_id}}&vehicle_id={{last_vehicle_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "trips",
+                "options",
+                "returning-assets"
+              ],
+              "query": [
+                {
+                  "key": "project_id",
+                  "value": "{{last_project_id}}",
+                  "disabled": false
+                },
+                {
+                  "key": "vehicle_id",
+                  "value": "{{last_vehicle_id}}",
+                  "disabled": false
+                },
+                {
+                  "key": "going_asset_id",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "trip_id",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Step 7. The available assets placed at the project, plus the going container chosen in the same form (ج3: it may come back the same — then nothing moves). Not held by another unfinished trip. Empty for a vehicle with an embedded container."
+          },
+          "response": [
+            {
+              "name": "200 — example",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/trips/options/returning-assets?project_id={{last_project_id}}&vehicle_id={{last_vehicle_id}}",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "trips",
+                    "options",
+                    "returning-assets"
+                  ],
+                  "query": [
+                    {
+                      "key": "project_id",
+                      "value": "{{last_project_id}}",
+                      "disabled": false
+                    },
+                    {
+                      "key": "vehicle_id",
+                      "value": "{{last_vehicle_id}}",
+                      "disabled": false
+                    },
+                    {
+                      "key": "going_asset_id",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "trip_id",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "search",
+                      "value": "",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"data\": [\n        {\n            \"id\": 2,\n            \"name\": \"C-BACK\",\n            \"asset_type\": \"container\",\n            \"capacity\": {\n                \"id\": 1,\n                \"name\": \"12 m3\",\n                \"capacity_ton\": 3.75,\n                \"capacity_cbm\": 12\n            },\n            \"affiliation\": \"gcm\",\n            \"entity_name\": \"GCM\",\n            \"at_project\": true\n        },\n        {\n            \"id\": 1,\n            \"name\": \"C-GO\",\n            \"asset_type\": \"container\",\n            \"capacity\": {\n                \"id\": 1,\n                \"name\": \"12 m3\",\n                \"capacity_ton\": 3.75,\n                \"capacity_cbm\": 12\n            },\n            \"affiliation\": \"gcm\",\n            \"entity_name\": \"GCM\",\n            \"at_project\": false\n        }\n    ],\n    \"meta\": {\n        \"current_page\": 1,\n        \"last_page\": 1,\n        \"per_page\": 20,\n        \"total\": 2,\n        \"takes_external_containers\": true\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Intermediate facilities",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/trips/options/facilities?sub_service_id={{last_sub_service_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "trips",
+                "options",
+                "facilities"
+              ],
+              "query": [
+                {
+                  "key": "sub_service_id",
+                  "value": "{{last_sub_service_id}}",
+                  "disabled": false
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Step 8. The active intermediate facilities that serve the sub-service."
+          },
+          "response": [
+            {
+              "name": "200 — example",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/trips/options/facilities?sub_service_id={{last_sub_service_id}}",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "trips",
+                    "options",
+                    "facilities"
+                  ],
+                  "query": [
+                    {
+                      "key": "sub_service_id",
+                      "value": "{{last_sub_service_id}}",
+                      "disabled": false
+                    },
+                    {
+                      "key": "search",
+                      "value": "",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"data\": [\n        {\n            \"id\": 1,\n            \"name\": \"Riyadh Landfill\",\n            \"prefix\": \"FWB\",\n            \"environmental_service\": \"disposal\"\n        }\n    ],\n    \"meta\": {\n        \"current_page\": 1,\n        \"last_page\": 1,\n        \"per_page\": 20,\n        \"total\": 1\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Default client approver (staff form)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/trips/options/client-approvers?project_id={{last_project_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "trips",
+                "options",
+                "client-approvers"
+              ],
+              "query": [
+                {
+                  "key": "project_id",
+                  "value": "{{last_project_id}}",
+                  "disabled": false
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "The \"approvals & services\" card. The client accounts that can approve the project's trips (active, of its company, seeing the project — ج6); `meta.default_id` = the project's representative when it can. System Admin / Data Entry only."
+          },
+          "response": [
+            {
+              "name": "200 — example",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/trips/options/client-approvers?project_id={{last_project_id}}",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "trips",
+                    "options",
+                    "client-approvers"
+                  ],
+                  "query": [
+                    {
+                      "key": "project_id",
+                      "value": "{{last_project_id}}",
+                      "disabled": false
+                    },
+                    {
+                      "key": "search",
+                      "value": "",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"data\": [\n        {\n            \"id\": 5,\n            \"name\": \"Client Auditor\",\n            \"role\": \"client_project_auditor\"\n        },\n        {\n            \"id\": 4,\n            \"name\": \"Client Manager\",\n            \"role\": \"client_project_manager\"\n        }\n    ],\n    \"meta\": {\n        \"current_page\": 1,\n        \"last_page\": 1,\n        \"per_page\": 20,\n        \"total\": 2,\n        \"default_id\": 4\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Default GCM approver (staff form)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/trips/options/gcm-approvers",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "trips",
+                "options",
+                "gcm-approvers"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Active System Admin / Data Entry accounts; `meta.default_id` = the caller (the FRD prefills the trip's creator). Data Entry never sees the System Admin's account. System Admin / Data Entry only."
+          },
+          "response": [
+            {
+              "name": "200 — example",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/trips/options/gcm-approvers",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "trips",
+                    "options",
+                    "gcm-approvers"
+                  ],
+                  "query": [
+                    {
+                      "key": "search",
+                      "value": "",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"data\": [\n        {\n            \"id\": 2,\n            \"name\": \"Data entry\",\n            \"role\": \"data_entry\"\n        },\n        {\n            \"id\": 1,\n            \"name\": \"System admin\",\n            \"role\": \"system_admin\"\n        }\n    ],\n    \"meta\": {\n        \"current_page\": 1,\n        \"last_page\": 1,\n        \"per_page\": 20,\n        \"total\": 2,\n        \"default_id\": 1\n    }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "name": "Purchase Orders",
       "description": "FRD V01.14 §1.13 (Phase 3 · part 6.2). System Admin creates / edits / deactivates; System Admin + Auditor read and export; a client Project Manager reads the POs of their own projects (every amount, no export). Data Entry, client Project Auditor, contractor users and drivers get 403 — Data Entry has NO access to POs at all, not even to view. The PO number is the company short name + the paper contract number (ALN-1200), unique per tenant.",
       "item": [

@@ -236,6 +236,7 @@ return [
         'services.*.alert_percent' => 'expiry alert percentage',
         // Trips (part 7.1)
         'trip_at' => 'date and time',
+        'trip_id' => 'trip',
         'project_id' => 'project',
         'driver_id' => 'driver',
         'vehicle_id' => 'vehicle',

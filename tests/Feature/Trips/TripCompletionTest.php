@@ -137,7 +137,8 @@ class TripCompletionTest extends TripTestCase
     public function test_a_supplying_trip_needs_no_facility_and_has_no_quantity(): void
     {
         $supplying = MainService::factory()->supplying()->create(['name' => 'Water supply']);
-        $supplySub = SubService::factory()->forService($supplying)->create(['asset_type' => 'tank']);
+        $supplySub = SubService::factory()->forService($supplying)->create(['asset_type' => 'container']);
+        $this->makeCompatible(null, $this->vehicle, $supplying, [$supplySub], [$this->goingAsset, $this->returningAsset]);
 
         $trip = app(CreateTripByStaffAction::class)->execute($this->admin, $this->staffData([
             'main_service_id' => $supplying->id, 'sub_service_id' => $supplySub->id, 'intermediate_facility_id' => null,

@@ -8,6 +8,7 @@ use App\Domain\Trips\Actions\ClientRejectTripAction;
 use App\Domain\Trips\Actions\CreateTripByDriverAction;
 use App\Domain\Trips\Actions\CreateTripByStaffAction;
 use App\Domain\Trips\Actions\FinalApproveTripAction;
+use App\Domain\Trips\Options\TripResourceAvailability;
 use App\Models\Asset;
 use App\Models\AssetCapacityCategory;
 use App\Models\Company;
@@ -131,6 +132,37 @@ abstract class TripTestCase extends TestCase
         $this->goingAsset = Asset::factory()->container()->create(['name' => 'C-GO', 'asset_capacity_category_id' => $this->capacity->id]);
         $this->returningAsset = Asset::factory()->container()->create(['name' => 'C-BACK', 'asset_capacity_category_id' => $this->capacity->id]);
         $this->returningAsset->forceFill(['project_id' => $this->project->id])->save();
+
+        // The cascading choices (7.2) are re-checked on every save: make the fixture hang together.
+        $this->makeCompatible($this->driver, $this->vehicle, $this->service, [$this->sub, $this->receiptSub], [$this->goingAsset, $this->returningAsset]);
+    }
+
+    /**
+     * Ties a trip's resources the way the trip form requires (TripCompatibility): the driver is
+     * qualified for the vehicle's category, the main service supports it, the containers fit it, and
+     * the sub-services take the containers' type and capacity.
+     *
+     * @param  list<SubService>  $subs
+     * @param  list<Asset>  $assets
+     */
+    protected function makeCompatible(?Driver $driver, Vehicle $vehicle, ?MainService $service = null, array $subs = [], array $assets = []): void
+    {
+        $driver?->qualifiedVehicleCategories()->syncWithoutDetaching([$vehicle->vehicle_category_id]);
+        $service?->vehicleCategories()->syncWithoutDetaching([$vehicle->vehicle_category_id]);
+
+        foreach ($assets as $asset) {
+            $asset->compatibleVehicleCategories()->syncWithoutDetaching([$vehicle->vehicle_category_id]);
+
+            foreach ($subs as $sub) {
+                $sub->capacities()->syncWithoutDetaching([$asset->asset_capacity_category_id]);
+            }
+        }
+
+        if ($vehicle->has_embedded_container) {
+            foreach ($subs as $sub) {
+                $sub->capacities()->syncWithoutDetaching([$vehicle->embedded_asset_capacity_category_id]);
+            }
+        }
     }
 
     protected function staff(string $role, string $email): User
@@ -150,8 +182,7 @@ abstract class TripTestCase extends TestCase
             'project_id' => $this->project->id,
             'driver_id' => $this->driver->id,
             'vehicle_id' => $this->vehicle->id,
-            'going_asset_id' => $this->goingAsset->id,
-            'returning_asset_id' => $this->returningAsset->id,
+            ...$this->containers(going: true),
             'requires_client_approval' => true,
             'requires_purchase_order' => true,
             'purchase_order_id' => $this->po->id,
@@ -159,6 +190,31 @@ abstract class TripTestCase extends TestCase
             'sub_service_id' => $this->sub->id,
             'intermediate_facility_id' => $this->facility->id,
         ], $overrides);
+    }
+
+    /**
+     * The fixture's containers — or, once an unfinished trip holds them (a trip reserves its
+     * containers until it is completed or cancelled: TripResourceAvailability, reading of ج3),
+     * a fresh compatible pair, so a test can open several trips in a row.
+     *
+     * @return array{going_asset_id?: int, returning_asset_id: int}
+     */
+    protected function containers(bool $going): array
+    {
+        $held = fn (Asset $asset) => ! TripResourceAvailability::isAssetAvailable($asset);
+
+        if ($held($this->returningAsset) || ($going && $held($this->goingAsset))) {
+            $back = Asset::factory()->container()->create(['asset_capacity_category_id' => $this->capacity->id]);
+            $back->forceFill(['project_id' => $this->project->id])->save();
+            $go = Asset::factory()->container()->create(['asset_capacity_category_id' => $this->capacity->id]);
+            $this->makeCompatible(null, $this->vehicle, null, [], [$back, $go]);
+
+            return $going ? ['going_asset_id' => $go->id, 'returning_asset_id' => $back->id] : ['returning_asset_id' => $back->id];
+        }
+
+        return $going
+            ? ['going_asset_id' => $this->goingAsset->id, 'returning_asset_id' => $this->returningAsset->id]
+            : ['returning_asset_id' => $this->returningAsset->id];
     }
 
     /** The driver's create input. */
@@ -169,7 +225,7 @@ abstract class TripTestCase extends TestCase
             'project_id' => $this->project->id,
             'vehicle_id' => $this->vehicle->id,
             'main_service_id' => $this->service->id,
-            'returning_asset_id' => $this->returningAsset->id,
+            ...$this->containers(going: false),
             'location_url' => 'https://www.google.com/maps?q=24.7136,46.6753',
         ], $overrides);
     }

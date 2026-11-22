@@ -91,6 +91,8 @@ class TripCreationTest extends TripTestCase
     {
         $tank = \App\Models\AssetCapacityCategory::factory()->create(['applies_to' => 'tank', 'capacity_cbm' => 20, 'capacity_ton' => 6.25]);
         $truck = Vehicle::factory()->create(['has_embedded_container' => true, 'embedded_container_type' => 'tank', 'embedded_asset_capacity_category_id' => $tank->id]);
+        $this->sub->forceFill(['asset_type' => 'tank'])->save();
+        $this->makeCompatible($this->driver, $truck, $this->service, [$this->sub]);
 
         $trip = $this->createAwaiting(['vehicle_id' => $truck->id, 'going_asset_id' => null, 'returning_asset_id' => null]);
 
@@ -123,6 +125,7 @@ class TripCreationTest extends TripTestCase
     public function test_changing_the_service_to_supplying_drops_the_quantity(): void
     {
         $supplying = MainService::factory()->supplying()->create();
+        $this->makeCompatible(null, $this->vehicle, $supplying);
         PurchaseOrder::factory()->forProject($this->project)->create(); // irrelevant PO, other service
         $trip = $this->createAwaiting();
 

@@ -2,6 +2,7 @@
 
 namespace App\Domain\Trips\Support;
 
+use App\Domain\Trips\Options\TripChoiceCheck;
 use App\Domain\Trips\Quota\TripPurchaseOrderLine;
 use App\Domain\Trips\Quota\TripQuota;
 use App\Models\Asset;
@@ -37,9 +38,11 @@ use Illuminate\Validation\ValidationException;
  *  - the default approvers are a client account that can approve the
  *    project's trips (ج6) and an active system admin / data entry.
  *
- * Which resources are AVAILABLE for a new trip (active, the contractor not
- * deactivated, the container not busy, compatible with the vehicle…) is the
- * cascading-choice logic of part 7.2 (TripResourceAvailability), not this.
+ * Which resources are AVAILABLE and COMPATIBLE (active, the contractor not
+ * deactivated, the container not held by another trip, fits the vehicle /
+ * driver / container, quantity within the capacity) is the cascading-choice
+ * logic of part 7.2 — re-checked here through TripChoiceCheck, for the
+ * fields this save changes.
  *
  * Only the keys present in `$data` change the trip (an edit may send one
  * field). Nothing is saved here.
@@ -94,6 +97,7 @@ final class TripInput
         self::assertServices($trip);
         self::assertLocation($trip);
         self::quantity($trip, $data, $creating);
+        TripChoiceCheck::assert($trip, $creating);
         self::approvers($trip, $data, $creating);
     }
 

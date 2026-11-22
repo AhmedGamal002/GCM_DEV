@@ -974,5 +974,21 @@
   "Use photo": "استخدام الصورة",
   "Sign here": "وقّع هنا",
   "Draw your signature first.": "ارسم توقيعك أولًا.",
-  "The signature is too large. Clear it and sign again.": "التوقيع كبير جدًا. امسحه ووقّع مرة أخرى."
+  "The signature is too large. Clear it and sign again.": "التوقيع كبير جدًا. امسحه ووقّع مرة أخرى.",
+  "This driver is not available for trips (on vacation, deactivated, or of a deactivated contractor).": "هذا السائق غير متاح للرحلات (في إجازة، أو معطّل، أو تابع لمتعهد معطّل).",
+  "This vehicle is not available for trips (on maintenance, deactivated, or of a deactivated contractor).": "هذه المركبة غير متاحة للرحلات (في الصيانة، أو معطّلة، أو تابعة لمتعهد معطّل).",
+  "The driver is not qualified for this vehicle's category.": "السائق غير مؤهَّل لتصنيف هذه المركبة.",
+  "This main service is deactivated.": "هذه الخدمة الأساسية معطّلة.",
+  "This main service does not support the vehicle's category.": "هذه الخدمة الأساسية لا تدعم تصنيف المركبة.",
+  "This sub-service is deactivated.": "هذه الخدمة الفرعية معطّلة.",
+  "The sub-service does not suit the trip's container type and capacity.": "الخدمة الفرعية لا تتناسب مع نوع حاوية الرحلة وسعتها.",
+  "This intermediate facility is deactivated.": "هذه المنشأة الوسيطة معطّلة.",
+  "This project is deactivated.": "هذا المشروع معطّل.",
+  "This client company is deactivated.": "شركة العميل هذه معطّلة.",
+  "The vehicle has an embedded container: the trip takes no going or returning container.": "المركبة بها حاوية مدمجة: لا تأخذ الرحلة حاوية ذهاب ولا حاوية رجوع.",
+  "This container is not available (on maintenance, deactivated, of a deactivated contractor, or on another trip that is not finished).": "هذه الحاوية غير متاحة (في الصيانة، أو معطّلة، أو تابعة لمتعهد معطّل، أو على رحلة أخرى لم تنتهِ).",
+  "This container is placed at a project; a going container comes from the available assets.": "هذه الحاوية مُدرجة في مشروع؛ حاوية الذهاب تُختار من الأصول المتاحة.",
+  "This container is not compatible with the vehicle's category.": "هذه الحاوية غير متوافقة مع تصنيف المركبة.",
+  "A returning container must be at the trip's project (or be the going container).": "حاوية الرجوع يجب أن تكون في مشروع الرحلة (أو أن تكون هي حاوية الذهاب).",
+  "The quantity cannot exceed the container's capacity (:ton t / :cbm m³).": "لا يمكن أن تتجاوز الكمية سعة الحاوية (:ton طن / :cbm م³)."
 }

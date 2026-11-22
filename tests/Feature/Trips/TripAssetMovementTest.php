@@ -44,9 +44,10 @@ class TripAssetMovementTest extends TripTestCase
 
     public function test_the_same_container_going_and_returning_does_not_move(): void
     {
-        $this->tripInWith(['going_asset_id' => $this->returningAsset->id, 'returning_asset_id' => $this->returningAsset->id]);
+        // ج3: the going container comes from the pool and may come back the same — it ends where it began.
+        $this->tripInWith(['going_asset_id' => $this->goingAsset->id, 'returning_asset_id' => $this->goingAsset->id]);
 
-        $this->assertSame($this->project->id, $this->returningAsset->fresh()->project_id);
+        $this->assertNull($this->goingAsset->fresh()->project_id);
         $this->assertSame(0, TripAssetMovement::count());
     }
 
@@ -76,9 +77,11 @@ class TripAssetMovementTest extends TripTestCase
 
     public function test_a_container_not_where_the_trip_expects_it_does_not_block_completion(): void
     {
+        // Moved by hand after the trip was recorded (a new trip can't pick a placed container — 7.2).
+        $trip = $this->clientApprove($this->createAwaiting());
         $this->goingAsset->forceFill(['project_id' => Project::factory()->for($this->company)->create()->id])->save();
 
-        $trip = $this->tripIn(Trip::STATUS_COMPLETED);
+        $trip = $this->finalApprove($trip);
 
         $this->assertSame(Trip::STATUS_COMPLETED, $trip->status);
         $this->assertSame(1, TripAssetMovement::count(), 'Only the returning container moved.');
@@ -89,6 +92,7 @@ class TripAssetMovementTest extends TripTestCase
     {
         $trip = $this->tripIn(Trip::STATUS_COMPLETED);
         $replacement = Asset::factory()->container()->create(['name' => 'C-NEW', 'asset_capacity_category_id' => $this->capacity->id]);
+        $this->makeCompatible(null, $this->vehicle, null, [$this->sub], [$replacement]);
 
         app(UpdateTripAction::class)->execute($trip, $this->admin, ['going_asset_id' => $replacement->id]);
 
