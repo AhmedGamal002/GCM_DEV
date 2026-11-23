@@ -30,12 +30,20 @@ final class TripSignatures
     /**
      * The approving client account's snapshot.
      *
-     * @param  array{signature?: ?UploadedFile, use_saved_signature?: bool, save_signature?: bool}  $input
+     * The stamp: one uploaded on the approval page (the FRD form's optional stamp file — this trip only),
+     * else the account's own (د6), else none.
+     *
+     * @param  array{signature?: ?UploadedFile, use_saved_signature?: bool, save_signature?: bool, stamp?: ?UploadedFile}  $input
      */
     public static function fromClientApproval(Trip $trip, User $client, array $input, TripFiles $files): void
     {
         self::signerSignature($trip, $client, $input['signature'] ?? null, (bool) ($input['use_saved_signature'] ?? false), (bool) ($input['save_signature'] ?? false), 'client_signature_path', 'signature', $files);
-        self::copyStamp($trip, $client, 'client_stamp_path', $files);
+
+        if (($input['stamp'] ?? null) instanceof UploadedFile) {
+            $files->put($trip, 'client_stamp_path', $input['stamp'], 'stamp');
+        } else {
+            self::copyStamp($trip, $client, 'client_stamp_path', $files);
+        }
 
         $trip->client_signer_name = $client->name;
     }

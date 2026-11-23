@@ -31,7 +31,9 @@ use Maatwebsite\Excel\Facades\Excel;
  * its filters, the five status counts, the export, the details with the
  * history, the staff create / edit, and the staff transitions. The client's,
  * driver's and contractor's own trip pages come in 7.5–7.7 on the same
- * scope (Trip::scopeVisibleTo) and resource (TripResource, ج18).
+ * scope (Trip::scopeVisibleTo) and resource (TripResource, ج18). Part 7.5
+ * opened the list, counters, export, details and files to the client's
+ * accounts (their approve / reject is ClientTripReviewController).
  *
  * Every rule of a change lives in its Action (who, from which status, the
  * data, the quota, the assets, the history); this controller only shapes the
@@ -39,7 +41,8 @@ use Maatwebsite\Excel\Facades\Excel;
  * and cancelling sit behind the `otp` middleware (ج15).
  *
  * {trip} is not route-model-bound (SubstituteBindings runs before the tenant
- * middleware) — it is looked up here, so another tenant's trip is a 404.
+ * middleware) — it is looked up here, among the trips the user sees, so
+ * another tenant's trip — or another project's for a client — is a 404.
  */
 class TripController extends Controller
 {
@@ -51,12 +54,12 @@ class TripController extends Controller
         'company', 'project', 'driver.user', 'driver.contractor', 'vehicle.contractor', 'vehicle.category',
         'vehicle.embeddedCapacityCategory', 'goingAsset.capacityCategory', 'goingAsset.contractor',
         'returningAsset.capacityCategory', 'returningAsset.contractor', 'mainService', 'subService',
-        'purchaseOrderService.purchaseOrder', 'facility', 'updatedBy',
+        'purchaseOrderService.purchaseOrder', 'facility', 'updatedBy', 'clientApprover',
     ];
 
     /** What the details page adds. */
     private const DETAIL_RELATIONS = [
-        'project.representative', 'clientApprover', 'gcmApprover', 'clientApprovedBy', 'completedBy',
+        'project.representative', 'gcmApprover', 'clientApprovedBy', 'completedBy',
         'cancelledBy', 'createdBy',
     ];
 
@@ -116,7 +119,7 @@ class TripController extends Controller
 
     public function show(Request $request, int $trip)
     {
-        $model = Trip::findOrFail($trip);
+        $model = self::find($request, $trip);
         Gate::authorize('view', $model);
 
         return $this->present($model->id, withHistory: TripFieldVisibility::seesInternals($request->user()));
@@ -176,17 +179,17 @@ class TripController extends Controller
 
     /**
      * GET /trips/{trip}/files/{kind} — a trip file, inline (the browser's viewer opens it, like the
-     * driver's documents). Safe inline: every trip upload is pdf / jpg / png (TripFiles). The files are
-     * GCM staff's for now (ج18 readings); the other roles' files open with their parts.
+     * driver's documents). Safe inline: every trip upload is pdf / jpg / png (TripFiles). Which kinds a role
+     * opens is TripFieldVisibility::fileKinds (staff: all; client: the live photo and its own attachment).
      */
     public function file(Request $request, int $trip, string $kind)
     {
-        $model = Trip::findOrFail($trip);
+        $model = self::find($request, $trip);
         Gate::authorize('view', $model);
-        abort_unless(TripFieldVisibility::seesInternals($request->user()), 403);
 
         $column = collect(TripFiles::COLUMNS)->search(fn (array $spec) => $spec[0] === $kind);
         abort_if($column === false, 404);
+        abort_unless(in_array($kind, TripFieldVisibility::fileKinds($request->user()), true), 403);
 
         $path = $model->{$column};
         abort_if($path === null || ! Storage::disk(TripFiles::DISK)->exists($path), 404);
@@ -199,10 +202,16 @@ class TripController extends Controller
     /** A trip the user may manage (System Admin / Data Entry); the action re-checks the status. */
     private function managed(int $id): Trip
     {
-        $trip = Trip::findOrFail($id);
+        $trip = self::find(request(), $id);
         Gate::authorize('update', $trip);
 
         return $trip;
+    }
+
+    /** A trip among those the user sees (Trip::scopeVisibleTo) — any other is a 404, never a 403 that confirms it exists. */
+    public static function find(Request $request, int $id): Trip
+    {
+        return Trip::query()->visibleTo($request->user())->findOrFail($id);
     }
 
     private function present(int $id, bool $withHistory = true): TripResource
@@ -248,7 +257,7 @@ class TripController extends Controller
                 'none' => $q->whereNull('trips.purchase_order_service_id'),
                 default => $q,
             })
-            ->when($request->filled('search'), fn ($q) => $this->search($q, $str('search')));
+            ->when($request->filled('search'), fn ($q) => $this->search($q, $str('search'), TripFieldVisibility::seesPurchaseOrderNumber($request->user())));
     }
 
     private function affiliation(Builder $query, string $relation, string $value): void
@@ -262,8 +271,12 @@ class TripController extends Controller
         };
     }
 
-    /** Every text column of the table: trip No., driver, vehicle plate (as shown), client, project, sub-service, PO No. */
-    private function search(Builder $query, string $search): void
+    /**
+     * Every text column of the table: trip No., driver, vehicle plate (as shown), client, project, sub-service,
+     * PO No. — the PO number only for whoever sees it (ج18), or a search would tell the client's auditor which
+     * number a trip carries.
+     */
+    private function search(Builder $query, string $search, bool $poNumber): void
     {
         $collapsed = preg_replace('/\s+/', '', $search);
         [$withSpace, $noSpace] = $query->getConnection()->getDriverName() === 'sqlite'
@@ -279,6 +292,7 @@ class TripController extends Controller
             ->orWhereHas('company', fn ($c) => $c->where('companies.name', 'like', "%{$search}%"))
             ->orWhereHas('project', fn ($p) => $p->where('projects.name', 'like', "%{$search}%"))
             ->orWhereHas('subService', fn ($s) => $s->where('sub_services.name', 'like', "%{$search}%"))
-            ->orWhereHas('purchaseOrderService.purchaseOrder', fn ($p) => $p->where('purchase_orders.number', 'like', "%{$search}%")));
+            ->when($poNumber, fn ($q) => $q
+                ->orWhereHas('purchaseOrderService.purchaseOrder', fn ($p) => $p->where('purchase_orders.number', 'like', "%{$search}%"))));
     }
 }

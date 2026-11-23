@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V1\Auth\LogoutController;
 use App\Http\Controllers\Api\V1\Auth\MeController;
 use App\Http\Controllers\Api\V1\Auth\NewPasswordController;
 use App\Http\Controllers\Api\V1\Auth\PasswordResetLinkController;
+use App\Http\Controllers\Api\V1\ClientTripController;
 use App\Http\Controllers\Api\V1\ClientUserController;
 use App\Http\Controllers\Api\V1\ContractorUserController;
 use App\Http\Controllers\Api\V1\CompanyController;
@@ -217,6 +218,14 @@ Route::prefix('v1')->group(function () {
         Route::post('/trips/{trip}/reject-objection', [TripController::class, 'rejectObjection'])->whereNumber('trip')->middleware('otp');
         Route::post('/trips/{trip}/cancel', [TripController::class, 'cancel'])->whereNumber('trip')->middleware('otp');
         Route::get('/trips/{trip}/files/{kind}', [TripController::class, 'file'])->whereNumber('trip')->where('kind', '[a-z-]+');
+
+        // ── Phase 3 · 7.5 the client's trips (FRD V01.14 §1.14 "مراجعة العميل للرحلات") ──
+        // The list / counters / export / details / files above are open to the client's accounts (their projects
+        // only, Trip::scopeVisibleTo). Approving and rejecting need the e-mailed code (`otp`, FRD).
+        Route::get('/trips/client-filters', [ClientTripController::class, 'filters']);
+        Route::get('/trips/{trip}/client-sub-services', [ClientTripController::class, 'subServices'])->whereNumber('trip');
+        Route::post('/trips/{trip}/client-approve', [ClientTripController::class, 'approve'])->whereNumber('trip')->middleware('otp');
+        Route::post('/trips/{trip}/client-reject', [ClientTripController::class, 'reject'])->whereNumber('trip')->middleware('otp');
 
         // ── Phase 3 · 7.2 the trip form's cascading lists (FRD V01.14 §1.14) ──
         // Read-only; staff form + the driver's own form (TripPolicy). The rules are TripOptions; the server

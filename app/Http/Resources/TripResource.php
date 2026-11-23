@@ -114,20 +114,22 @@ class TripResource extends JsonResource
             'client_approved_at' => $this->client_approved_at?->toIso8601String(),
 
             'additional_data' => $this->when($internals, $this->additional_data),
-            'client_approver' => $this->detail($internals, 'clientApprover'),
+            'client_approver' => $this->detail(TripFieldVisibility::seesClientApprover($user), 'clientApprover'),
             'gcm_approver' => $this->detail($internals, 'gcmApprover'),
             'client_approved_by' => $this->detail($internals, 'clientApprovedBy'),
             'client_signer_name' => $this->when($internals, $this->client_signer_name),
             'completed_by' => $this->detail($internals, 'completedBy'),
             'cancelled_by' => $this->detail($internals, 'cancelledBy'),
             'created_by' => $this->detail($internals, 'createdBy'),
-            'files' => $this->when($internals, fn () => $this->files()),
+            'files' => $this->when(TripFieldVisibility::fileKinds($user) !== [], fn () => $this->files(TripFieldVisibility::fileKinds($user))),
 
             // "Last updated by … — date and time" (FRD details page, every role).
             'updated_by' => $this->person($this->updatedBy),
             'updated_at' => $this->updated_at?->toIso8601String(),
 
             'actions' => $this->when($staff, fn () => $this->actions($user)),
+            // The client's buttons (part 7.5): approve / reject while the trip awaits them and the account may (ج6).
+            'client_actions' => $this->when($user->isClient(), fn () => $this->clientActions($user)),
             'events' => $this->when(
                 $internals && $this->relationLoaded('events'),
                 fn () => $this->events->map(fn (TripEvent $e) => [
@@ -162,12 +164,36 @@ class TripResource extends JsonResource
         ];
     }
 
-    /** @return array<string, ?string> file kind => inline URL (null = none) */
-    private function files(): array
+    /** What the client's details page may offer — the approve / reject page (the action re-checks). */
+    private function clientActions(User $user): array
+    {
+        $may = false;
+
+        if ($this->status === Trip::STATUS_AWAITING_CLIENT_APPROVAL) {
+            // Whether the account may approve depends on the project only — asked once per project and request
+            // (no query per list row).
+            $memo = request()->attributes->get('trip.client_review', []);
+            $memo[$this->project_id] ??= $user->can('clientReview', $this->resource);
+            request()->attributes->set('trip.client_review', $memo);
+            $may = $memo[$this->project_id];
+        }
+
+        return ['approve' => $may, 'reject' => $may];
+    }
+
+    /**
+     * @param  list<string>  $kinds  the kinds the user may open (TripFieldVisibility::fileKinds)
+     * @return array<string, ?string> file kind => inline URL (null = none)
+     */
+    private function files(array $kinds): array
     {
         $out = [];
 
         foreach (TripFiles::COLUMNS as $column => [$kind]) {
+            if (! in_array($kind, $kinds, true)) {
+                continue;
+            }
+
             $out[$kind] = $this->{$column} === null ? null : url("/api/v1/trips/{$this->id}/files/{$kind}");
         }
 

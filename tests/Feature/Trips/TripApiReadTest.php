@@ -57,11 +57,6 @@ class TripApiReadTest extends TripTestCase
         $this->as($this->driver->user, 'trips')->assertForbidden();
     }
 
-    public function test_a_client_gets_403_until_7_5(): void
-    {
-        $this->as($this->clientManager, 'trips')->assertForbidden();
-    }
-
     public function test_a_contractor_user_gets_403_until_7_7(): void
     {
         $this->as(User::factory()->contractorUser(Contractor::factory()->create())->create(), 'trips')->assertForbidden();

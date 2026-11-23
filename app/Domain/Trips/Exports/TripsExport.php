@@ -17,6 +17,10 @@ use Maatwebsite\Excel\Concerns\WithMapping;
  * driver + affiliation, vehicle + affiliation, client, project, sub-service,
  * status, linked to a PO. The PO column follows ج18 (TripFieldVisibility):
  * whoever may not see the number gets "linked" / "not linked".
+ *
+ * A client account gets the columns of ITS list (FRD "مراجعة العميل للرحلات",
+ * part 7.5): trip No., date, driver, vehicle, project, default client
+ * approver, sub-service, status, PO — no affiliations, no client company.
  */
 class TripsExport implements FromCollection, WithEvents, WithHeadings, WithMapping
 {
@@ -31,7 +35,15 @@ class TripsExport implements FromCollection, WithEvents, WithHeadings, WithMappi
 
     public function headings(): array
     {
-        return ['Trip No.', 'Date', 'Driver', 'Driver affiliation', 'Vehicle', 'Vehicle affiliation', 'Client', 'Project', 'Sub-service', 'Status', 'PO'];
+        return self::headers($this->viewer ?? auth()->user());
+    }
+
+    /** @return list<string> the untranslated headings for the viewer (the PDF translates them) */
+    public static function headers(User $viewer): array
+    {
+        return $viewer->isClient()
+            ? ['Trip No.', 'Date', 'Driver', 'Vehicle', 'Project', 'Default client approver', 'Sub-service', 'Status', 'PO']
+            : ['Trip No.', 'Date', 'Driver', 'Driver affiliation', 'Vehicle', 'Vehicle affiliation', 'Client', 'Project', 'Sub-service', 'Status', 'PO'];
     }
 
     public function map($trip): array
@@ -49,6 +61,25 @@ class TripsExport implements FromCollection, WithEvents, WithHeadings, WithMappi
     {
         $affiliation = fn (?string $value, $contractor) => $value === 'contractor' && $contractor ? $contractor->name : $label($value);
         $po = $trip->purchaseOrderService?->purchaseOrder;
+        $poCell = match (true) {
+            $trip->purchase_order_service_id === null => __('Not linked to a PO'),
+            TripFieldVisibility::seesPurchaseOrderNumber($viewer) => $po?->number,
+            default => __('Linked to a PO'),
+        };
+
+        if ($viewer->isClient()) {
+            return [
+                $trip->code,
+                $trip->trip_at?->format('Y-m-d H:i'),
+                $trip->driver?->user?->name,
+                $trip->vehicle?->plate(),
+                $trip->project?->name,
+                $trip->clientApprover?->name,
+                $trip->subService?->name,
+                Trip::statusLabel($trip->status),
+                $poCell,
+            ];
+        }
 
         return [
             $trip->code,
@@ -61,11 +92,7 @@ class TripsExport implements FromCollection, WithEvents, WithHeadings, WithMappi
             $trip->project?->name,
             $trip->subService?->name,
             Trip::statusLabel($trip->status),
-            match (true) {
-                $trip->purchase_order_service_id === null => __('Not linked to a PO'),
-                TripFieldVisibility::seesPurchaseOrderNumber($viewer) => $po?->number,
-                default => __('Linked to a PO'),
-            },
+            $poCell,
         ];
     }
 }

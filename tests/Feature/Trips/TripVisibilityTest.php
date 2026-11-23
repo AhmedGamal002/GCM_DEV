@@ -73,8 +73,10 @@ class TripVisibilityTest extends TripTestCase
 
         $this->assertSame('ALN-1200', $data['purchase_order']['number']);
         $this->assertTrue($data['linked_to_purchase_order']);
-        $this->assertNoneOf($data, ['trip_cost', 'ancillary_cost', 'facility', 'delivery_note_number', 'waste_manifest_number', 'recycle_receipt_number', 'events', 'files', 'additional_data', 'actions']);
+        $this->assertNoneOf($data, ['trip_cost', 'ancillary_cost', 'facility', 'delivery_note_number', 'waste_manifest_number', 'recycle_receipt_number', 'events', 'additional_data', 'actions']);
         $this->assertArrayHasKey('client_comment', $data);
+        // 7.5: the live photo and the client's own attachment only — no signatures, stamps or staff documents.
+        $this->assertSame(['live-photo', 'client-attachment'], array_keys($data['files']));
     }
 
     public function test_the_client_auditor_sees_neither_po_number_cost_facility_nor_document_number(): void
@@ -82,7 +84,8 @@ class TripVisibilityTest extends TripTestCase
         $data = $this->seenBy($this->clientAuditor);
 
         $this->assertTrue($data['linked_to_purchase_order'], 'Linked or not — not which PO.');
-        $this->assertNoneOf($data, ['purchase_order', 'trip_cost', 'ancillary_cost', 'facility', 'delivery_note_number', 'waste_manifest_number', 'recycle_receipt_number', 'events', 'files']);
+        $this->assertNoneOf($data, ['purchase_order', 'trip_cost', 'ancillary_cost', 'facility', 'delivery_note_number', 'waste_manifest_number', 'recycle_receipt_number', 'events']);
+        $this->assertSame(['live-photo', 'client-attachment'], array_keys($data['files']));
     }
 
     public function test_the_driver_sees_the_facility_and_the_delivery_note_number_only(): void

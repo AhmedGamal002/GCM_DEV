@@ -5809,7 +5809,7 @@
     },
     {
       "name": "Trips",
-      "description": "Phase 3 · part 7.4 — GCM's trips (FRD trips management). Manage = System Admin / Data Entry; view and export = + Auditor. The client's, driver's and contractor's own trip pages come in 7.5–7.7 on the same endpoints' scope and field rules (ج18). The final approval, rejecting the client's objection and cancelling need the e-mailed code first (Verification code (OTP) folder); creating a completed trip and accepting the objection don't (ج15). Form lists: the Trip form options folder. The examples were taken from the test fixture (company ALN, project Riyadh Hotel, PO ALN-1200).",
+      "description": "Phase 3 · part 7.4 — GCM's trips (FRD trips management). Manage = System Admin / Data Entry; view and export = + Auditor. Part 7.5 opened the list, counters, export, details and files to the client's project manager / auditor (their projects only; see the Client trips folder); the driver's and contractor's come in 7.6–7.7 on the same scope and field rules (ج18). The final approval, rejecting the client's objection and cancelling need the e-mailed code first (Verification code (OTP) folder); creating a completed trip and accepting the objection don't (ج15). Form lists: the Trip form options folder. The examples were taken from the test fixture (company ALN, project Riyadh Hotel, PO ALN-1200).",
       "item": [
         {
           "name": "List trips",
@@ -7309,6 +7309,429 @@
             },
             "description": "A trip file, opened inline (PDF / image): kind = delivery-note | waste-manifest | recycle-receipt | live-photo | other | client-attachment | client-signature | client-stamp | gcm-signature | gcm-stamp. GCM staff only for now. 404 when the trip has none."
           }
+        }
+      ]
+    },
+    {
+      "name": "Client trips",
+      "description": "Phase 3 · part 7.5 — the client's side of the trips (FRD \"مراجعة العميل للرحلات\"). The client's project manager and auditor also use the Trips folder's list, counters, export, details and files: scoped to the projects they see (another project's trip is a 404), with the fields of ج18 (no costs, no facility, no document numbers; the PO number for the project manager only; files: live photo and the client's attachment). Approving and rejecting need the e-mailed code (Verification code folder). Log in as a client account (e.g. client.manager@gcm.test) to try them.",
+      "item": [
+        {
+          "name": "Client list filters",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/trips/client-filters",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "trips",
+                "client-filters"
+              ],
+              "query": []
+            },
+            "description": "The client trips list's filter options: the projects this client account sees, and the main / sub-services of its trips. Client accounts only (staff: 403 — they have the staff lookups)."
+          },
+          "response": [
+            {
+              "name": "200 — example",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/trips/client-filters",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "trips",
+                    "client-filters"
+                  ],
+                  "query": []
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"data\": {\n        \"projects\": [\n            {\n                \"id\": 2,\n                \"name\": \"Al Noor Residential Complex\"\n            },\n            {\n                \"id\": 1,\n                \"name\": \"Al Noor Tower\"\n            }\n        ],\n        \"main_services\": [\n            {\n                \"id\": 2,\n                \"name\": \"Hazardous Waste Transport\"\n            }\n        ],\n        \"sub_services\": [\n            {\n                \"id\": 5,\n                \"name\": \"Contaminated soil\"\n            }\n        ]\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Sub-services the client may switch to",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/trips/{{last_trip_id}}/client-sub-services",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "trips",
+                "{{last_trip_id}}",
+                "client-sub-services"
+              ],
+              "query": []
+            },
+            "description": "The sub-services the client may pick on the approve page: active, of the trip's main service, suiting the trip's container type and capacity (the staff form's rule). Only while the account may approve the trip (else 403); another project's trip is a 404."
+          },
+          "response": [
+            {
+              "name": "200 — example",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/trips/{{last_trip_id}}/client-sub-services",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "trips",
+                    "{{last_trip_id}}",
+                    "client-sub-services"
+                  ],
+                  "query": []
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"data\": [\n        {\n            \"id\": 5,\n            \"name\": \"Contaminated soil\"\n        },\n        {\n            \"id\": 6,\n            \"name\": \"Oily sludge\"\n        }\n    ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Client approves (OTP)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/trips/{{last_trip_id}}/client-approve",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "trips",
+                "{{last_trip_id}}",
+                "client-approve"
+              ],
+              "query": []
+            },
+            "description": "The client's project manager or auditor (any active account of the company that sees the project, ج6) approves a trip awaiting it. Needs the e-mailed code first (Verification code folder): 403 code=otp_required until /otp/verify. Only the sub-service may change (a sub-service that suits the trip's container; an unfit facility is cleared, ج7) — any other field sent is ignored. Signature required: a drawn PNG / JPG ≤ 2 MB, or use_saved_signature=true. The stamp: the uploaded file (this trip only) or the account's saved one (د6). 409 when the trip is no longer awaiting the client.",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "signature",
+                  "type": "file",
+                  "src": [],
+                  "description": "The signature drawn now — PNG / JPG ≤ 2 MB (or send use_saved_signature=true)",
+                  "disabled": false
+                },
+                {
+                  "key": "use_saved_signature",
+                  "value": "false",
+                  "type": "text",
+                  "description": "true = use the signature saved on my profile",
+                  "disabled": false
+                },
+                {
+                  "key": "save_signature",
+                  "value": "false",
+                  "type": "text",
+                  "description": "true = also keep the drawn signature on my profile (د6)",
+                  "disabled": false
+                },
+                {
+                  "key": "stamp",
+                  "type": "file",
+                  "src": [],
+                  "description": "Optional operational stamp for this trip only (else the account's saved stamp) — PNG / JPG ≤ 2 MB",
+                  "disabled": true
+                },
+                {
+                  "key": "sub_service_id",
+                  "value": "{{last_sub_service_id}}",
+                  "type": "text",
+                  "description": "Optional — switch the sub-service (see \"Sub-services the client may switch to\")",
+                  "disabled": true
+                },
+                {
+                  "key": "comment",
+                  "value": "All good",
+                  "type": "text",
+                  "description": "Optional client comment (≤ 2000)",
+                  "disabled": false
+                },
+                {
+                  "key": "attachment",
+                  "type": "file",
+                  "src": [],
+                  "description": "Optional attachment — PDF / JPG / PNG ≤ 5 MB",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200 — example",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/trips/{{last_trip_id}}/client-approve",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "trips",
+                    "{{last_trip_id}}",
+                    "client-approve"
+                  ],
+                  "query": []
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"data\": {\n        \"id\": 2,\n        \"code\": \"ALN-T0002\",\n        \"status\": \"client_approved\",\n        \"status_label\": \"Client approved\",\n        \"source\": \"staff\",\n        \"trip_at\": \"2026-11-21T19:57:16+03:00\",\n        \"requires_client_approval\": true,\n        \"requires_purchase_order\": true,\n        \"company\": {\n            \"id\": 1,\n            \"name\": \"Al Noor Construction\",\n            \"code\": \"ALN-0001\"\n        },\n        \"project\": {\n            \"id\": 1,\n            \"name\": \"Al Noor Tower\",\n            \"code\": \"ALN-P0001\",\n            \"location_url\": null,\n            \"representative\": {\n                \"id\": 5,\n                \"name\": \"Client Project Auditor\"\n            }\n        },\n        \"driver\": {\n            \"id\": 3,\n            \"name\": \"Elda Abshire\",\n            \"code\": \"541915\",\n            \"phone\": \"+966590955621\",\n            \"affiliation\": \"gcm\",\n            \"entity_name\": \"GCM\"\n        },\n        \"vehicle\": {\n            \"id\": 2,\n            \"plate\": \"OYE 4279\",\n            \"category\": {\n                \"id\": 1,\n                \"name\": \"Hook lift system\"\n            },\n            \"has_embedded_container\": false,\n            \"embedded_container_type\": null,\n            \"affiliation\": \"gcm\",\n            \"entity_name\": \"GCM\"\n        },\n        \"going_asset\": null,\n        \"returning_asset\": null,\n        \"capacity\": null,\n        \"main_service\": {\n            \"id\": 2,\n            \"name\": \"Hazardous Waste Transport\",\n            \"service_type\": \"hazardous\"\n        },\n        \"sub_service\": {\n            \"id\": 5,\n            \"name\": \"Contaminated soil\",\n            \"requires_recycle_receipt\": false\n        },\n        \"quantity_ton\": 3.75,\n        \"quantity_cbm\": 12,\n        \"quantity_converter\": {\n            \"tonnes_per_cubic_meter\": 0.3125,\n            \"decimals\": 3\n        },\n        \"linked_to_purchase_order\": true,\n        \"purchase_order\": {\n            \"id\": 1,\n            \"number\": \"ALN-1200\"\n        },\n        \"location_url\": null,\n        \"has_live_photo\": false,\n        \"client_comment\": \"All good\",\n        \"cancellation_reason\": null,\n        \"cancelled_at\": null,\n        \"completed_at\": null,\n        \"client_approved_at\": \"2026-11-23T19:58:40+03:00\",\n        \"client_approver\": {\n            \"id\": 4,\n            \"name\": \"Client Project Manager\"\n        },\n        \"files\": {\n            \"live-photo\": null,\n            \"client-attachment\": null\n        },\n        \"updated_by\": {\n            \"id\": 4,\n            \"name\": \"Client Project Manager\"\n        },\n        \"updated_at\": \"2026-11-23T19:58:40+03:00\",\n        \"client_actions\": {\n            \"approve\": false,\n            \"reject\": false\n        }\n    }\n}"
+            },
+            {
+              "name": "403 — no verification code yet",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/trips/{{last_trip_id}}/client-approve",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "trips",
+                    "{{last_trip_id}}",
+                    "client-approve"
+                  ],
+                  "query": []
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"message\": \"Enter the verification code we e-mailed you to continue.\",\n    \"code\": \"otp_required\"\n}"
+            },
+            {
+              "name": "422 — no signature",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/trips/{{last_trip_id}}/client-approve",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "trips",
+                    "{{last_trip_id}}",
+                    "client-approve"
+                  ],
+                  "query": []
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"message\": \"A signature is required: use your saved signature or sign now.\",\n    \"errors\": {\n        \"signature\": [\n            \"A signature is required: use your saved signature or sign now.\"\n        ]\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Client rejects (OTP)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/trips/{{last_trip_id}}/client-reject",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "trips",
+                "{{last_trip_id}}",
+                "client-reject"
+              ],
+              "query": []
+            },
+            "description": "The client rejects a trip awaiting it (\"Client issue\"): the reasons are required (ج8), with an optional attachment. Needs the e-mailed code first (403 otp_required). A sub-service sent along is not kept (ج7). 409 when the trip is no longer awaiting the client.",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "reason",
+                  "value": "The container was half empty",
+                  "type": "text",
+                  "description": "Required — the detailed reasons (≤ 2000)",
+                  "disabled": false
+                },
+                {
+                  "key": "attachment",
+                  "type": "file",
+                  "src": [],
+                  "description": "Optional attachment — PDF / JPG / PNG ≤ 5 MB",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200 — example",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/trips/{{last_trip_id}}/client-reject",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "trips",
+                    "{{last_trip_id}}",
+                    "client-reject"
+                  ],
+                  "query": []
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"data\": {\n        \"id\": 2,\n        \"code\": \"ALN-T0002\",\n        \"status\": \"client_issue\",\n        \"status_label\": \"Client issue\",\n        \"source\": \"staff\",\n        \"trip_at\": \"2026-11-21T19:57:16+03:00\",\n        \"requires_client_approval\": true,\n        \"requires_purchase_order\": true,\n        \"company\": {\n            \"id\": 1,\n            \"name\": \"Al Noor Construction\",\n            \"code\": \"ALN-0001\"\n        },\n        \"project\": {\n            \"id\": 1,\n            \"name\": \"Al Noor Tower\",\n            \"code\": \"ALN-P0001\",\n            \"location_url\": null,\n            \"representative\": {\n                \"id\": 5,\n                \"name\": \"Client Project Auditor\"\n            }\n        },\n        \"driver\": {\n            \"id\": 3,\n            \"name\": \"Elda Abshire\",\n            \"code\": \"541915\",\n            \"phone\": \"+966590955621\",\n            \"affiliation\": \"gcm\",\n            \"entity_name\": \"GCM\"\n        },\n        \"vehicle\": {\n            \"id\": 2,\n            \"plate\": \"OYE 4279\",\n            \"category\": {\n                \"id\": 1,\n                \"name\": \"Hook lift system\"\n            },\n            \"has_embedded_container\": false,\n            \"embedded_container_type\": null,\n            \"affiliation\": \"gcm\",\n            \"entity_name\": \"GCM\"\n        },\n        \"going_asset\": null,\n        \"returning_asset\": null,\n        \"capacity\": null,\n        \"main_service\": {\n            \"id\": 2,\n            \"name\": \"Hazardous Waste Transport\",\n            \"service_type\": \"hazardous\"\n        },\n        \"sub_service\": {\n            \"id\": 5,\n            \"name\": \"Contaminated soil\",\n            \"requires_recycle_receipt\": false\n        },\n        \"quantity_ton\": 3.75,\n        \"quantity_cbm\": 12,\n        \"quantity_converter\": {\n            \"tonnes_per_cubic_meter\": 0.3125,\n            \"decimals\": 3\n        },\n        \"linked_to_purchase_order\": true,\n        \"purchase_order\": {\n            \"id\": 1,\n            \"number\": \"ALN-1200\"\n        },\n        \"location_url\": null,\n        \"has_live_photo\": false,\n        \"client_comment\": \"The container was half empty\",\n        \"cancellation_reason\": null,\n        \"cancelled_at\": null,\n        \"completed_at\": null,\n        \"client_approved_at\": null,\n        \"client_approver\": {\n            \"id\": 4,\n            \"name\": \"Client Project Manager\"\n        },\n        \"files\": {\n            \"live-photo\": null,\n            \"client-attachment\": null\n        },\n        \"updated_by\": {\n            \"id\": 4,\n            \"name\": \"Client Project Manager\"\n        },\n        \"updated_at\": \"2026-11-23T19:58:40+03:00\",\n        \"client_actions\": {\n            \"approve\": false,\n            \"reject\": false\n        }\n    }\n}"
+            },
+            {
+              "name": "422 — no reasons",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/trips/{{last_trip_id}}/client-reject",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "trips",
+                    "{{last_trip_id}}",
+                    "client-reject"
+                  ],
+                  "query": []
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"message\": \"The reason field is required.\",\n    \"errors\": {\n        \"reason\": [\n            \"The reason field is required.\"\n        ]\n    }\n}"
+            }
+          ]
         }
       ]
     },

@@ -22,9 +22,11 @@ use App\Models\User;
  *    note's only; the client sees none.
  *
  * Our readings for what ج18 doesn't name (change them here if corrected):
- * the client's comment is the client's and staff's; the additional data, the
- * default approvers, who approved / created, the signatures and the trip's
- * history are staff only (ج8 for the history).
+ * the client's comment is the client's and staff's; the default CLIENT
+ * approver is the client's and staff's (a column of the FRD's client list);
+ * the client opens the live photo and its own attachment; the additional
+ * data, GCM's approver, who approved / created, the signatures and the
+ * trip's history are staff only (ج8 for the history).
  */
 final class TripFieldVisibility
 {
@@ -63,7 +65,32 @@ final class TripFieldVisibility
         return self::isStaff($user) || $user->isClient();
     }
 
-    /** Additional data, approvers, signatures, files, who created / approved, the history (ج8). */
+    /**
+     * The trip's default client approver — a column of the client's trips list (FRD "المسؤول الافتراضي عن
+     * اعتماد الرحلة", part 7.5), so the client sees it too; the field side doesn't.
+     */
+    public static function seesClientApprover(User $user): bool
+    {
+        return self::isStaff($user) || $user->isClient();
+    }
+
+    /**
+     * The trip files (TripFiles kinds) the user may open. Staff: all. The client (FRD client details page,
+     * part 7.5): the live photo and the client's own attachment — not the signatures, the stamps or the
+     * staff's documents (the generated documents come with 8.1). The field side opens theirs in 7.6 / 7.7.
+     *
+     * @return list<string>
+     */
+    public static function fileKinds(User $user): array
+    {
+        return match (true) {
+            self::isStaff($user) => array_column(TripFiles::COLUMNS, 0),
+            $user->isClient() => ['live-photo', 'client-attachment'],
+            default => [],
+        };
+    }
+
+    /** Additional data, GCM's approver, signatures, who created / approved, the history (ج8). */
     public static function seesInternals(User $user): bool
     {
         return self::isStaff($user);

@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Domain\Trips\Support\ClientApproverResolver;
 use App\Models\Trip;
 use App\Models\User;
 
@@ -14,10 +15,15 @@ use App\Models\User;
  * pages). Every single-trip ability also needs Trip::isVisibleTo() — the one
  * visibility rule (staff: all; client / driver / contractor: theirs).
  *
- * The client's, driver's and contractor's own trip pages open their roles
- * here in their parts (7.5 A, 7.6 / 7.7 B): viewAny / view are staff-only
- * until then. Trip::scopeVisibleTo and TripResource (ج18) already handle
- * those roles, so a part opens its role and adds its tests.
+ * Part 7.5 — the client's project manager and project auditor (FRD §1.4:
+ * "عرض / اعتماد / رفض / تصدير") view and export the trips of the projects
+ * they see (Trip::scopeVisibleTo), and approve / reject one awaiting their
+ * approval (clientReview — ClientApproverResolver, ج6; the action re-checks
+ * the account and the status under the row lock).
+ *
+ * The driver's and contractor's own trip pages open their roles here in
+ * their parts (7.6 / 7.7 B). Trip::scopeVisibleTo and TripResource (ج18)
+ * already handle those roles, so a part opens its role and adds its tests.
  *
  * Part 7.2 — the trip form's lists:
  *  - pickOptions: whoever fills a trip form — System Admin / Data Entry
@@ -35,7 +41,7 @@ class TripPolicy
 
     public function viewAny(User $actor): bool
     {
-        return $actor->hasAnyRole(Trip::STAFF_VIEW_ROLES);
+        return $actor->hasAnyRole([...Trip::STAFF_VIEW_ROLES, ...User::CLIENT_ROLES]);
     }
 
     public function view(User $actor, Trip $trip): bool
@@ -45,7 +51,13 @@ class TripPolicy
 
     public function export(User $actor): bool
     {
-        return $actor->hasAnyRole(Trip::STAFF_VIEW_ROLES);
+        return $actor->hasAnyRole([...Trip::STAFF_VIEW_ROLES, ...User::CLIENT_ROLES]);
+    }
+
+    /** Approve or reject `$trip` for the client (ج6). The status is the action's check (409). */
+    public function clientReview(User $actor, Trip $trip): bool
+    {
+        return $actor->isClient() && app(ClientApproverResolver::class)->canApprove($actor, $trip);
     }
 
     /** Create a trip from the staff form. The driver's own create comes with 7.6. */

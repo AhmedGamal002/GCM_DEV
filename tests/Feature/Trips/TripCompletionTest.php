@@ -90,6 +90,7 @@ class TripCompletionTest extends TripTestCase
         $other = SubService::factory()->forService($this->service)->create(['name' => 'Concrete collection']);
         $otherFacility = IntermediateFacility::factory()->create(['name' => 'Crusher']);
         $other->facilities()->attach($otherFacility);
+        $this->makeCompatible(null, $this->vehicle, null, [$other], [$this->returningAsset]);
 
         $trip = $this->clientApprove($this->createAwaiting(), ['sub_service_id' => $other->id]);
 
@@ -116,6 +117,14 @@ class TripCompletionTest extends TripTestCase
         $foreign = SubService::factory()->create();
 
         $this->assertArrayHasKey('sub_service_id', $this->errorsOf(fn () => $this->clientApprove($this->createAwaiting(), ['sub_service_id' => $foreign->id])));
+    }
+
+    public function test_the_client_can_only_pick_a_sub_service_that_suits_the_trips_container(): void
+    {
+        // Same main service, active — but it takes no container of the trip's capacity (FRD: "تتناسب مع نوع الحاوية وسعتها").
+        $unfit = SubService::factory()->forService($this->service)->create();
+
+        $this->assertArrayHasKey('sub_service_id', $this->errorsOf(fn () => $this->clientApprove($this->createAwaiting(), ['sub_service_id' => $unfit->id])));
     }
 
     public function test_a_facility_that_does_not_serve_the_sub_service_is_refused(): void

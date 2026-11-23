@@ -578,6 +578,20 @@
           ]
         },
         {
+          "name": "Trips",
+          "icon": "menu-icon tf-icons ti ti-truck-delivery",
+          "slug": "app-client-trip",
+          "roles": ["client_project_manager", "client_project_auditor"],
+          "submenu": [
+            {
+              "url": "app/client-trip/list",
+              "name": "List",
+              "slug": "app-client-trip-list",
+              "roles": ["client_project_manager", "client_project_auditor"]
+            }
+          ]
+        },
+        {
           "url": "app/settings",
           "name": "General Settings",
           "icon": "menu-icon tf-icons ti ti-settings",

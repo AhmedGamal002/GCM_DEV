@@ -26,6 +26,7 @@ use App\Http\Controllers\Web\Projects\ProjectListController;
 use App\Http\Controllers\Web\PurchaseOrders\PurchaseOrderAccountController;
 use App\Http\Controllers\Web\PurchaseOrders\PurchaseOrderAddController;
 use App\Http\Controllers\Web\PurchaseOrders\PurchaseOrderListController;
+use App\Http\Controllers\Web\Trips\ClientTripController;
 use App\Http\Controllers\Web\Services\MainServicePageController;
 use App\Http\Controllers\Web\Services\SubServicePageController;
 use App\Http\Controllers\Web\Users\ClientUserController;
@@ -159,6 +160,13 @@ Route::middleware(['auth', 'tenant'])->group(function () {
     Route::get('/app/po/add', [PurchaseOrderAddController::class, 'index'])->middleware('can:create,App\Models\PurchaseOrder')->name('app-po-add');
     Route::get('/app/po/view/{purchaseOrder}', [PurchaseOrderAccountController::class, 'view'])->whereNumber('purchaseOrder')->middleware('can:viewAny,App\Models\PurchaseOrder')->name('app-po-view');
     Route::get('/app/po/edit/{purchaseOrder}', [PurchaseOrderAccountController::class, 'edit'])->whereNumber('purchaseOrder')->middleware('can:create,App\Models\PurchaseOrder')->name('app-po-edit');
+
+    // ── Phase 3 · 7.5 the client's trips (FRD V01.14 §1.14 "مراجعة العميل للرحلات") ──
+    // The client's project manager / auditor only (the controller checks); a trip of a project they don't see is a 404.
+    Route::get('/app/client-trip/list', [ClientTripController::class, 'list'])->name('app-client-trip-list');
+    Route::get('/app/client-trip/view/{trip}', [ClientTripController::class, 'view'])->whereNumber('trip')->name('app-client-trip-view');
+    Route::get('/app/client-trip/review/{trip}', [ClientTripController::class, 'review'])->whereNumber('trip')->name('app-client-trip-review');
+
     // Profile (any authenticated tenant user) — one page, two cards
     // (photo + password change). Used to be two tabs/pages; merged per the
     // client's request. The old security URL just lands on the same page.

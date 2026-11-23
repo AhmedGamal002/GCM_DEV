@@ -2,16 +2,18 @@
 
 namespace App\Domain\Trips\Actions;
 
+use App\Domain\Trips\Options\TripCompatibility;
+use App\Domain\Trips\Options\TripOptions;
 use App\Domain\Trips\Support\TripActors;
 use App\Domain\Trips\Support\TripChanges;
 use App\Domain\Trips\Support\TripFiles;
 use App\Domain\Trips\Support\TripHistory;
 use App\Domain\Trips\Support\TripLock;
 use App\Domain\Trips\Support\TripSignatures;
-use App\Models\SubService;
 use App\Models\Trip;
 use App\Models\TripEvent;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Validation\ValidationException;
 
@@ -24,16 +26,21 @@ use Illuminate\Validation\ValidationException;
  * If the trip's facility doesn't serve the new sub-service it is cleared,
  * and GCM picks a fitting one before the final approval — the client's
  * approval isn't blocked by it (decision ج7); the history records the
- * change. They sign — their saved signature or one drawn now, saved to
+ * change. The new sub-service must suit the trip's container like on the
+ * staff form (TripOptions::subServices — the FRD's "تتناسب مع نوع الحاوية
+ * وسعتها"). They sign — their saved signature or one drawn now, saved to
  * their profile only if they ask — and their own stamp (if any) is copied
- * with it (د6); an optional comment and attachment go with the approval.
+ * with it (د6), unless they upload a stamp on the page (the FRD form's
+ * optional "الختم التشغيلي" file: a snapshot on this trip only, never put
+ * on the account); an optional comment and attachment go with the approval.
  * The OTP check (7.3) sits on the route, before this.
  */
 class ClientApproveTripAction
 {
     /**
      * @param  array{sub_service_id?: mixed, comment?: ?string, attachment?: ?UploadedFile,
-     *               signature?: ?UploadedFile, use_saved_signature?: bool, save_signature?: bool}  $input
+     *               signature?: ?UploadedFile, use_saved_signature?: bool, save_signature?: bool,
+     *               stamp?: ?UploadedFile}  $input
      */
     public function execute(Trip $trip, User $client, array $input = []): Trip
     {
@@ -74,11 +81,11 @@ class ClientApproveTripAction
 
     private function changeSubService(Trip $trip, mixed $id): void
     {
-        $sub = is_numeric($id) ? SubService::with('facilities')->find((int) $id) : null;
+        $sub = is_numeric($id) ? self::choices($trip)->with('facilities')->find((int) $id) : null;
 
-        if ($sub === null || (int) $sub->main_service_id !== (int) $trip->main_service_id || ! $sub->isActive()) {
+        if ($sub === null) {
             throw ValidationException::withMessages([
-                'sub_service_id' => __('Choose an active sub-service of the trip\'s main service.'),
+                'sub_service_id' => __('Choose an active sub-service of the trip\'s main service that suits its container.'),
             ]);
         }
 
@@ -87,6 +94,20 @@ class ClientApproveTripAction
         if ($trip->intermediate_facility_id !== null && ! $sub->facilities->contains('id', (int) $trip->intermediate_facility_id)) {
             $trip->intermediate_facility_id = null;
         }
+    }
+
+    /**
+     * The sub-services the client may switch to: active, of the trip's main service, suiting the trip's
+     * container (type and capacity) — the staff form's list (TripOptions), so both sides offer the same.
+     */
+    public static function choices(Trip $trip): Builder
+    {
+        $trip->loadMissing(['vehicle.embeddedCapacityCategory', 'goingAsset.capacityCategory', 'returningAsset.capacityCategory']);
+
+        return TripOptions::subServices(
+            (int) $trip->main_service_id,
+            TripCompatibility::container($trip->vehicle, $trip->goingAsset, $trip->returningAsset),
+        );
     }
 
     private static function text(?string $text): ?string

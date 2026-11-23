@@ -14,6 +14,7 @@ import './gcm-attachment';
 import './gcm-geo';
 import './gcm-camera';
 import './gcm-signature-pad';
+import './gcm-otp';
 /*
   Add custom scripts here
 */

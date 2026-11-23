@@ -73,7 +73,15 @@ $contentLayout = (isset($container) ? (($container === 'container-xxl') ? "layou
       camera_cancel: @json(__('Cancel')),
       signature_hint: @json(__('Sign here')),
       signature_empty: @json(__('Draw your signature first.')),
-      signature_too_large: @json(__('The signature is too large. Clear it and sign again.'))
+      signature_too_large: @json(__('The signature is too large. Clear it and sign again.')),
+      otp_title: @json(__('Verification code')),
+      otp_sending: @json(__('Sending a code to your e-mail…')),
+      otp_sent: @json(__('We e-mailed a code to :email. Enter it to continue.')),
+      otp_enter: @json(__('Enter the code we e-mailed you.')),
+      otp_verify: @json(__('Confirm')),
+      otp_cancel: @json(__('Cancel')),
+      otp_resend: @json(__('Send a new code')),
+      otp_resend_in: @json(__('Send a new code in :s s'))
     };
   </script>
 
