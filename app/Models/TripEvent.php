@@ -57,6 +57,30 @@ class TripEvent extends Model
 
     public const ASSET_MOVEMENT_REVERSED = 'asset_movement_reversed';
 
+    /** What the history card shows for each event type (translation keys). */
+    public const TYPE_LABELS = [
+        self::CREATED => 'Trip created',
+        self::UPDATED => 'Trip edited',
+        self::CLIENT_APPROVED => 'Approved by the client',
+        self::CLIENT_REJECTED => 'Rejected by the client',
+        self::OBJECTION_ACCEPTED => 'Client objection accepted',
+        self::OBJECTION_REJECTED => 'Client objection rejected',
+        self::FINAL_APPROVED => 'Final approval',
+        self::CANCELLED => 'Trip cancelled',
+        self::RECYCLE_RECEIPT_ATTACHED => 'Recycle receipt attached',
+        self::CLIENT_SIGNATURE_UPLOADED => 'Client signature uploaded',
+        self::QUOTA_RECHARGED => 'Quota re-charged',
+        self::CLIENT_REMINDED => 'Client reminded to approve',
+        self::ASSET_MOVED => 'Container moved',
+        self::ASSET_MOVEMENT_SKIPPED => 'Container move skipped',
+        self::ASSET_MOVEMENT_REVERSED => 'Container move reversed',
+    ];
+
+    public static function typeLabel(string $type): string
+    {
+        return isset(self::TYPE_LABELS[$type]) ? __(self::TYPE_LABELS[$type]) : $type;
+    }
+
     protected $guarded = ['id', 'tenant_id'];
 
     protected function casts(): array

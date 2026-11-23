@@ -193,17 +193,20 @@ abstract class TripTestCase extends TestCase
     }
 
     /**
-     * The fixture's containers — or, once an unfinished trip holds them (a trip reserves its
-     * containers until it is completed or cancelled: TripResourceAvailability, reading of ج3),
-     * a fresh compatible pair, so a test can open several trips in a row.
+     * The fixture's containers — or a fresh compatible pair once they can't serve a new trip: an
+     * unfinished trip holds them (a trip reserves its containers until it is completed or cancelled:
+     * TripResourceAvailability, reading of ج3), or a completed trip moved them (the going one into
+     * the project, the returning one out of it — TripAssetMovement). So a test can open trips in a row.
      *
      * @return array{going_asset_id?: int, returning_asset_id: int}
      */
     protected function containers(bool $going): array
     {
         $held = fn (Asset $asset) => ! TripResourceAvailability::isAssetAvailable($asset);
+        $moved = fn () => $this->returningAsset->fresh()->project_id !== $this->project->id
+            || ($going && $this->goingAsset->fresh()->project_id !== null);
 
-        if ($held($this->returningAsset) || ($going && $held($this->goingAsset))) {
+        if ($held($this->returningAsset) || ($going && $held($this->goingAsset)) || $moved()) {
             $back = Asset::factory()->container()->create(['asset_capacity_category_id' => $this->capacity->id]);
             $back->forceFill(['project_id' => $this->project->id])->save();
             $go = Asset::factory()->container()->create(['asset_capacity_category_id' => $this->capacity->id]);

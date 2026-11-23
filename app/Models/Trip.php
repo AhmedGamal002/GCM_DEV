@@ -57,6 +57,66 @@ class Trip extends Model
 
     public const SOURCE_STAFF = 'staff';
 
+    /** The FRD's status names (§1.14, "دورة حياة الرحلة"), translation keys. */
+    public const STATUS_LABELS = [
+        self::STATUS_AWAITING_CLIENT_APPROVAL => 'Awaiting client approval',
+        self::STATUS_CLIENT_APPROVED => 'Client approved',
+        self::STATUS_CLIENT_ISSUE => 'Client issue',
+        self::STATUS_COMPLETED => 'Completed trip',
+        self::STATUS_CANCELLED => 'Cancelled trip',
+    ];
+
+    /** GCM staff who see every trip of the tenant. */
+    public const STAFF_VIEW_ROLES = ['system_admin', 'data_entry', 'auditor'];
+
+    public static function statusLabel(?string $status): string
+    {
+        return isset(self::STATUS_LABELS[$status]) ? __(self::STATUS_LABELS[$status]) : (string) $status;
+    }
+
+    /**
+     * The one visibility rule for trips — every list, count, export, details
+     * page and file download goes through it (security checklist §1.2):
+     *
+     *  - GCM staff (System Admin, Data Entry, Auditor): every trip;
+     *  - a client account: the trips of the projects it sees (Project::scopeVisibleTo);
+     *  - a driver: their own trips;
+     *  - a contractor user: a trip whose driver OR vehicle belongs to their
+     *    contractor — not the containers (decision ج19);
+     *  - anyone else: none.
+     */
+    public function scopeVisibleTo(\Illuminate\Database\Eloquent\Builder $query, User $user): \Illuminate\Database\Eloquent\Builder
+    {
+        if ($user->hasAnyRole(self::STAFF_VIEW_ROLES)) {
+            return $query;
+        }
+
+        if ($user->isClient()) {
+            return $query->whereIn('trips.project_id', Project::query()->visibleTo($user)->select('projects.id'));
+        }
+
+        if ($user->hasRole('driver')) {
+            $driverId = $user->driver?->id;
+
+            return $driverId === null ? $query->whereRaw('1 = 0') : $query->where('trips.driver_id', $driverId);
+        }
+
+        if ($user->isContractorUser() && $user->contractor_id !== null) {
+            $contractor = $user->contractor_id;
+
+            return $query->where(fn ($q) => $q
+                ->whereIn('trips.driver_id', Driver::query()->where('drivers.contractor_id', $contractor)->select('drivers.id'))
+                ->orWhereIn('trips.vehicle_id', Vehicle::query()->where('vehicles.contractor_id', $contractor)->select('vehicles.id')));
+        }
+
+        return $query->whereRaw('1 = 0');
+    }
+
+    public function isVisibleTo(User $user): bool
+    {
+        return static::query()->visibleTo($user)->whereKey($this->id)->exists();
+    }
+
     protected $fillable = [
         'trip_at',
         'driver_id',

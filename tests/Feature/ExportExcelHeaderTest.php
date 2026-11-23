@@ -10,6 +10,7 @@ use App\Domain\Drivers\Exports\DriversExport;
 use App\Domain\Facilities\Exports\FacilitiesExport;
 use App\Domain\Projects\Exports\ProjectsExport;
 use App\Domain\PurchaseOrders\Exports\PurchaseOrdersExport;
+use App\Domain\Trips\Exports\TripsExport;
 use App\Domain\Services\Exports\MainServicesExport;
 use App\Domain\Services\Exports\SubServicesExport;
 use App\Domain\Users\Exports\UsersExport;
@@ -50,6 +51,7 @@ class ExportExcelHeaderTest extends TestCase
             'facilities' => [FacilitiesExport::class],
             'projects' => [ProjectsExport::class],
             'purchase orders' => [PurchaseOrdersExport::class],
+            'trips' => [TripsExport::class],
             'main services' => [MainServicesExport::class],
             'sub-services' => [SubServicesExport::class],
             'users' => [UsersExport::class],

@@ -5808,6 +5808,1511 @@
       ]
     },
     {
+      "name": "Trips",
+      "description": "Phase 3 · part 7.4 — GCM's trips (FRD trips management). Manage = System Admin / Data Entry; view and export = + Auditor. The client's, driver's and contractor's own trip pages come in 7.5–7.7 on the same endpoints' scope and field rules (ج18). The final approval, rejecting the client's objection and cancelling need the e-mailed code first (Verification code (OTP) folder); creating a completed trip and accepting the objection don't (ج15). Form lists: the Trip form options folder. The examples were taken from the test fixture (company ALN, project Riyadh Hotel, PO ALN-1200).",
+      "item": [
+        {
+          "name": "List trips",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/trips?page=1&per_page=15&sort_by=trip_at&sort_dir=desc",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "trips"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "disabled": false
+                },
+                {
+                  "key": "per_page",
+                  "value": "15",
+                  "disabled": false
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "sort_by",
+                  "value": "trip_at",
+                  "disabled": false
+                },
+                {
+                  "key": "sort_dir",
+                  "value": "desc",
+                  "disabled": false
+                },
+                {
+                  "key": "date_from",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "date_to",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "driver_id",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "vehicle_id",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "driver_affiliation",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "vehicle_affiliation",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "contractor_id",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "company_id",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "project_id",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "main_service_id",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "sub_service_id",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "purchase_order",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "The FRD trips table, newest first (sort_by: trip_at | code | status). Filters: date_from / date_to (Y-m-d, the end day included), status (awaiting_client_approval | client_approved | client_issue | completed | cancelled), driver_id, vehicle_id, driver_affiliation / vehicle_affiliation (gcm | contractor), contractor_id (the driver's OR the vehicle's contractor — ج19), company_id, project_id, main_service_id, sub_service_id, purchase_order (linked | none). search: trip No., driver name, plate (as shown or without the space), client, project, sub-service, PO No. Roles: System Admin, Data Entry, Auditor (client / driver / contractor pages come in 7.5–7.7). Each row is a TripResource (see Trip details) without the history and the people of the details page."
+          },
+          "response": [
+            {
+              "name": "200 — example",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/trips?page=1&per_page=15&sort_by=trip_at&sort_dir=desc",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "trips"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1",
+                      "disabled": false
+                    },
+                    {
+                      "key": "per_page",
+                      "value": "15",
+                      "disabled": false
+                    },
+                    {
+                      "key": "search",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "sort_by",
+                      "value": "trip_at",
+                      "disabled": false
+                    },
+                    {
+                      "key": "sort_dir",
+                      "value": "desc",
+                      "disabled": false
+                    },
+                    {
+                      "key": "date_from",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "date_to",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "status",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "driver_id",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "vehicle_id",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "driver_affiliation",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "vehicle_affiliation",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "contractor_id",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "company_id",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "project_id",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "main_service_id",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "sub_service_id",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "purchase_order",
+                      "value": "",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"data\": [\n        {\n            \"id\": 1,\n            \"code\": \"ALN-T0001\",\n            \"status\": \"completed\",\n            \"status_label\": \"Completed trip\",\n            \"source\": \"staff\",\n            \"trip_at\": \"2026-03-01T09:30:00+03:00\",\n            \"requires_client_approval\": true,\n            \"requires_purchase_order\": true,\n            \"company\": {\n                \"id\": 1,\n                \"name\": \"Al Nakheel\",\n                \"code\": \"ALN-0001\"\n            },\n            \"project\": {\n                \"id\": 1,\n                \"name\": \"Riyadh Hotel\",\n                \"code\": \"ALN-P0001\",\n                \"location_url\": null\n            },\n            \"driver\": {\n                \"id\": 1,\n                \"name\": \"Driver One\",\n                \"code\": \"990568\",\n                \"phone\": \"+966539680675\",\n                \"affiliation\": \"gcm\",\n                \"entity_name\": \"GCM\"\n            },\n            \"vehicle\": {\n                \"id\": 1,\n                \"plate\": \"ABC 1234\",\n                \"category\": {\n                    \"id\": 5,\n                    \"name\": \"Dyna box\"\n                },\n                \"has_embedded_container\": false,\n                \"embedded_container_type\": null,\n                \"affiliation\": \"gcm\",\n                \"entity_name\": \"GCM\"\n            },\n            \"going_asset\": {\n                \"id\": 1,\n                \"name\": \"C-GO\",\n                \"asset_type\": \"container\",\n                \"capacity\": {\n                    \"id\": 1,\n                    \"name\": \"12 m3\",\n                    \"capacity_ton\": 3.75,\n                    \"capacity_cbm\": 12\n                },\n                \"affiliation\": \"gcm\",\n                \"entity_name\": \"GCM\"\n            },\n            \"returning_asset\": {\n                \"id\": 2,\n                \"name\": \"C-BACK\",\n                \"asset_type\": \"container\",\n                \"capacity\": {\n                    \"id\": 1,\n                    \"name\": \"12 m3\",\n                    \"capacity_ton\": 3.75,\n                    \"capacity_cbm\": 12\n                },\n                \"affiliation\": \"gcm\",\n                \"entity_name\": \"GCM\"\n            },\n            \"capacity\": {\n                \"id\": 1,\n                \"name\": \"12 m3\",\n                \"capacity_ton\": 3.75,\n                \"capacity_cbm\": 12\n            },\n            \"main_service\": {\n                \"id\": 1,\n                \"name\": \"Solid Waste Transport\",\n                \"service_type\": \"non_hazardous\"\n            },\n            \"sub_service\": {\n                \"id\": 1,\n                \"name\": \"General collection\",\n                \"requires_recycle_receipt\": false\n            },\n            \"quantity_ton\": 3.2,\n            \"quantity_cbm\": 10.24,\n            \"quantity_converter\": {\n                \"tonnes_per_cubic_meter\": 0.3125,\n                \"decimals\": 3\n            },\n            \"linked_to_purchase_order\": true,\n            \"purchase_order\": {\n                \"id\": 1,\n                \"number\": \"ALN-1200\"\n            },\n            \"trip_cost\": 100,\n            \"ancillary_cost\": 0,\n            \"facility\": {\n                \"id\": 1,\n                \"name\": \"Riyadh Landfill\"\n            },\n            \"delivery_note_number\": \"DN-5521\",\n            \"waste_manifest_number\": \"WM-880\",\n            \"recycle_receipt_number\": null,\n            \"location_url\": null,\n            \"has_live_photo\": false,\n            \"client_comment\": null,\n            \"cancellation_reason\": null,\n            \"cancelled_at\": null,\n            \"completed_at\": \"2026-03-01T10:00:00+03:00\",\n            \"client_approved_at\": \"2026-03-01T10:00:00+03:00\",\n            \"additional_data\": null,\n            \"client_signer_name\": \"Client Manager\",\n            \"files\": {\n                \"delivery-note\": null,\n                \"waste-manifest\": null,\n                \"recycle-receipt\": null,\n                \"live-photo\": null,\n                \"other\": null,\n                \"client-attachment\": null,\n                \"client-signature\": \"http://localhost:8000/api/v1/trips/1/files/client-signature\",\n                \"client-stamp\": null,\n                \"gcm-signature\": \"http://localhost:8000/api/v1/trips/1/files/gcm-signature\",\n                \"gcm-stamp\": null\n            },\n            \"updated_by\": {\n                \"id\": 1,\n                \"name\": \"System admin\"\n            },\n            \"updated_at\": \"2026-03-01T10:00:00+03:00\",\n            \"actions\": {\n                \"update\": true,\n                \"final_approve\": false,\n                \"accept_objection\": false,\n                \"reject_objection\": false,\n                \"cancel\": true,\n                \"remind_client\": false\n            }\n        },\n        {\n            \"id\": 4,\n            \"code\": \"ALN-T0004\",\n            \"status\": \"cancelled\",\n            \"status_label\": \"Cancelled trip\",\n            \"source\": \"staff\",\n            \"trip_at\": \"2026-02-22T11:00:00+03:00\",\n            \"requires_client_approval\": true,\n            \"requires_purchase_order\": true,\n            \"company\": {\n                \"id\": 1,\n                \"name\": \"Al Nakheel\",\n                \"code\": \"ALN-0001\"\n            },\n            \"project\": {\n                \"id\": 1,\n                \"name\": \"Riyadh Hotel\",\n                \"code\": \"ALN-P0001\",\n                \"location_url\": null\n            },\n            \"driver\": {\n                \"id\": 1,\n                \"name\": \"Driver One\",\n                \"code\": \"990568\",\n                \"phone\": \"+966539680675\",\n                \"affiliation\": \"gcm\",\n                \"entity_name\": \"GCM\"\n            },\n            \"vehicle\": {\n                \"id\": 1,\n                \"plate\": \"ABC 1234\",\n                \"category\": {\n                    \"id\": 5,\n                    \"name\": \"Dyna box\"\n                },\n                \"has_embedded_container\": false,\n                \"embedded_container_type\": null,\n                \"affiliation\": \"gcm\",\n                \"entity_name\": \"GCM\"\n            },\n            \"going_asset\": {\n                \"id\": 8,\n                \"name\": \"Container 15ut\",\n                \"asset_type\": \"container\",\n                \"capacity\": {\n                    \"id\": 1,\n                    \"name\": \"12 m3\",\n                    \"capacity_ton\": 3.75,\n                    \"capacity_cbm\": 12\n                },\n                \"affiliation\": \"gcm\",\n                \"entity_name\": \"GCM\"\n            },\n            \"returning_asset\": {\n                \"id\": 7,\n                \"name\": \"Container 77ji\",\n                \"asset_type\": \"container\",\n                \"capacity\": {\n                    \"id\": 1,\n                    \"name\": \"12 m3\",\n                    \"capacity_ton\": 3.75,\n                    \"capacity_cbm\": 12\n                },\n                \"affiliation\": \"gcm\",\n                \"entity_name\": \"GCM\"\n            },\n            \"capacity\": {\n                \"id\": 1,\n                \"name\": \"12 m3\",\n                \"capacity_ton\": 3.75,\n                \"capacity_cbm\": 12\n            },\n            \"main_service\": {\n                \"id\": 1,\n                \"name\": \"Solid Waste Transport\",\n                \"service_type\": \"non_hazardous\"\n            },\n            \"sub_service\": {\n                \"id\": 1,\n                \"name\": \"General collection\",\n                \"requires_recycle_receipt\": false\n            },\n            \"quantity_ton\": 3.75,\n            \"quantity_cbm\": 12,\n            \"quantity_converter\": {\n                \"tonnes_per_cubic_meter\": 0.3125,\n                \"decimals\": 3\n            },\n            \"linked_to_purchase_order\": true,\n            \"purchase_order\": {\n                \"id\": 1,\n                \"number\": \"ALN-1200\"\n            },\n            \"trip_cost\": 100,\n            \"ancillary_cost\": 0,\n            \"facility\": {\n                \"id\": 1,\n                \"name\": \"Riyadh Landfill\"\n            },\n            \"delivery_note_number\": null,\n            \"waste_manifest_number\": null,\n            \"recycle_receipt_number\": null,\n            \"location_url\": null,\n            \"has_live_photo\": false,\n            \"client_comment\": null,\n            \"cancellation_reason\": \"Entered twice\",\n            \"cancelled_at\": \"2026-03-01T10:00:00+03:00\",\n            \"completed_at\": null,\n            \"client_approved_at\": null,\n            \"additional_data\": null,\n            \"client_signer_name\": null,\n            \"files\": {\n                \"delivery-note\": null,\n                \"waste-manifest\": null,\n                \"recycle-receipt\": null,\n                \"live-photo\": null,\n                \"other\": null,\n                \"client-attachment\": null,\n                \"client-signature\": null,\n                \"client-stamp\": null,\n                \"gcm-signature\": null,\n                \"gcm-stamp\": null\n            },\n            \"updated_by\": {\n                \"id\": 1,\n                \"name\": \"System admin\"\n            },\n            \"updated_at\": \"2026-03-01T10:00:00+03:00\",\n            \"actions\": {\n                \"update\": false,\n                \"final_approve\": false,\n                \"accept_objection\": false,\n                \"reject_objection\": false,\n                \"cancel\": false,\n                \"remind_client\": false\n            }\n        }\n    ],\n    \"links\": {\n        \"first\": \"http://localhost:8000/api/v1/trips?page=1\",\n        \"last\": \"http://localhost:8000/api/v1/trips?page=2\",\n        \"prev\": null,\n        \"next\": \"http://localhost:8000/api/v1/trips?page=2\"\n    },\n    \"meta\": {\n        \"current_page\": 1,\n        \"from\": 1,\n        \"last_page\": 2,\n        \"links\": [\n            {\n                \"url\": null,\n                \"label\": \"&laquo; Previous\",\n                \"page\": null,\n                \"active\": false\n            },\n            {\n                \"url\": \"http://localhost:8000/api/v1/trips?page=1\",\n                \"label\": \"1\",\n                \"page\": 1,\n                \"active\": true\n            },\n            {\n                \"url\": \"http://localhost:8000/api/v1/trips?page=2\",\n                \"label\": \"2\",\n                \"page\": 2,\n                \"active\": false\n            },\n            {\n                \"url\": \"http://localhost:8000/api/v1/trips?page=2\",\n                \"label\": \"Next &raquo;\",\n                \"page\": 2,\n                \"active\": false\n            }\n        ],\n        \"path\": \"http://localhost:8000/api/v1/trips\",\n        \"per_page\": 2,\n        \"to\": 2,\n        \"total\": 4\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Trip counters",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/trips/stats",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "trips",
+                "stats"
+              ],
+              "query": []
+            },
+            "description": "The FRD counters: trips per status (with its label) and the total, over the trips the user sees."
+          },
+          "response": [
+            {
+              "name": "200 — example",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/trips/stats",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "trips",
+                    "stats"
+                  ],
+                  "query": []
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"data\": {\n        \"total\": 4,\n        \"by_status\": [\n            {\n                \"status\": \"awaiting_client_approval\",\n                \"label\": \"Awaiting client approval\",\n                \"count\": 1\n            },\n            {\n                \"status\": \"client_approved\",\n                \"label\": \"Client approved\",\n                \"count\": 0\n            },\n            {\n                \"status\": \"client_issue\",\n                \"label\": \"Client issue\",\n                \"count\": 0\n            },\n            {\n                \"status\": \"completed\",\n                \"label\": \"Completed trip\",\n                \"count\": 2\n            },\n            {\n                \"status\": \"cancelled\",\n                \"label\": \"Cancelled trip\",\n                \"count\": 1\n            }\n        ]\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Export trips (Excel / PDF)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/trips/export?format=xlsx",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "trips",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "format",
+                  "value": "xlsx",
+                  "disabled": false
+                },
+                {
+                  "key": "status",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Same filters and search as List trips — the file holds exactly the rows on screen. format = xlsx | pdf. System Admin, Data Entry, Auditor."
+          }
+        },
+        {
+          "name": "Trip details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/trips/{{last_trip_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "trips",
+                "{{last_trip_id}}"
+              ],
+              "query": []
+            },
+            "description": "Everything the details page shows. Fields follow ج18 per role (GCM staff see all): trip_cost / ancillary_cost staff only; purchase_order (number) staff + the client's project manager — everyone else gets linked_to_purchase_order only; facility staff + driver + contractor user; document numbers staff (driver / contractor: the delivery note's only). events = the trip's history (ج8, staff only, with type_label). actions = which buttons apply to the trip's status now (the action re-checks; 409 code=trip_transition_not_allowed if the status moved). files = inline URLs of the trip's files (staff)."
+          },
+          "response": [
+            {
+              "name": "200 — example",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/trips/{{last_trip_id}}",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "trips",
+                    "{{last_trip_id}}"
+                  ],
+                  "query": []
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"data\": {\n        \"id\": 1,\n        \"code\": \"ALN-T0001\",\n        \"status\": \"completed\",\n        \"status_label\": \"Completed trip\",\n        \"source\": \"staff\",\n        \"trip_at\": \"2026-03-01T09:30:00+03:00\",\n        \"requires_client_approval\": true,\n        \"requires_purchase_order\": true,\n        \"company\": {\n            \"id\": 1,\n            \"name\": \"Al Nakheel\",\n            \"code\": \"ALN-0001\"\n        },\n        \"project\": {\n            \"id\": 1,\n            \"name\": \"Riyadh Hotel\",\n            \"code\": \"ALN-P0001\",\n            \"location_url\": null,\n            \"representative\": {\n                \"id\": 4,\n                \"name\": \"Client Manager\"\n            }\n        },\n        \"driver\": {\n            \"id\": 1,\n            \"name\": \"Driver One\",\n            \"code\": \"990568\",\n            \"phone\": \"+966539680675\",\n            \"affiliation\": \"gcm\",\n            \"entity_name\": \"GCM\"\n        },\n        \"vehicle\": {\n            \"id\": 1,\n            \"plate\": \"ABC 1234\",\n            \"category\": {\n                \"id\": 5,\n                \"name\": \"Dyna box\"\n            },\n            \"has_embedded_container\": false,\n            \"embedded_container_type\": null,\n            \"affiliation\": \"gcm\",\n            \"entity_name\": \"GCM\"\n        },\n        \"going_asset\": {\n            \"id\": 1,\n            \"name\": \"C-GO\",\n            \"asset_type\": \"container\",\n            \"capacity\": {\n                \"id\": 1,\n                \"name\": \"12 m3\",\n                \"capacity_ton\": 3.75,\n                \"capacity_cbm\": 12\n            },\n            \"affiliation\": \"gcm\",\n            \"entity_name\": \"GCM\"\n        },\n        \"returning_asset\": {\n            \"id\": 2,\n            \"name\": \"C-BACK\",\n            \"asset_type\": \"container\",\n            \"capacity\": {\n                \"id\": 1,\n                \"name\": \"12 m3\",\n                \"capacity_ton\": 3.75,\n                \"capacity_cbm\": 12\n            },\n            \"affiliation\": \"gcm\",\n            \"entity_name\": \"GCM\"\n        },\n        \"capacity\": {\n            \"id\": 1,\n            \"name\": \"12 m3\",\n            \"capacity_ton\": 3.75,\n            \"capacity_cbm\": 12\n        },\n        \"main_service\": {\n            \"id\": 1,\n            \"name\": \"Solid Waste Transport\",\n            \"service_type\": \"non_hazardous\"\n        },\n        \"sub_service\": {\n            \"id\": 1,\n            \"name\": \"General collection\",\n            \"requires_recycle_receipt\": false\n        },\n        \"quantity_ton\": 3.2,\n        \"quantity_cbm\": 10.24,\n        \"quantity_converter\": {\n            \"tonnes_per_cubic_meter\": 0.3125,\n            \"decimals\": 3\n        },\n        \"linked_to_purchase_order\": true,\n        \"purchase_order\": {\n            \"id\": 1,\n            \"number\": \"ALN-1200\"\n        },\n        \"trip_cost\": 100,\n        \"ancillary_cost\": 0,\n        \"facility\": {\n            \"id\": 1,\n            \"name\": \"Riyadh Landfill\"\n        },\n        \"delivery_note_number\": \"DN-5521\",\n        \"waste_manifest_number\": \"WM-880\",\n        \"recycle_receipt_number\": null,\n        \"location_url\": null,\n        \"has_live_photo\": false,\n        \"client_comment\": null,\n        \"cancellation_reason\": null,\n        \"cancelled_at\": null,\n        \"completed_at\": \"2026-03-01T10:00:00+03:00\",\n        \"client_approved_at\": \"2026-03-01T10:00:00+03:00\",\n        \"additional_data\": null,\n        \"client_approver\": {\n            \"id\": 4,\n            \"name\": \"Client Manager\"\n        },\n        \"gcm_approver\": {\n            \"id\": 1,\n            \"name\": \"System admin\"\n        },\n        \"client_approved_by\": {\n            \"id\": 4,\n            \"name\": \"Client Manager\"\n        },\n        \"client_signer_name\": \"Client Manager\",\n        \"completed_by\": {\n            \"id\": 1,\n            \"name\": \"System admin\"\n        },\n        \"cancelled_by\": null,\n        \"created_by\": {\n            \"id\": 1,\n            \"name\": \"System admin\"\n        },\n        \"files\": {\n            \"delivery-note\": null,\n            \"waste-manifest\": null,\n            \"recycle-receipt\": null,\n            \"live-photo\": null,\n            \"other\": null,\n            \"client-attachment\": null,\n            \"client-signature\": \"http://localhost:8000/api/v1/trips/1/files/client-signature\",\n            \"client-stamp\": null,\n            \"gcm-signature\": \"http://localhost:8000/api/v1/trips/1/files/gcm-signature\",\n            \"gcm-stamp\": null\n        },\n        \"updated_by\": {\n            \"id\": 1,\n            \"name\": \"System admin\"\n        },\n        \"updated_at\": \"2026-03-01T10:00:00+03:00\",\n        \"actions\": {\n            \"update\": true,\n            \"final_approve\": false,\n            \"accept_objection\": false,\n            \"reject_objection\": false,\n            \"cancel\": true,\n            \"remind_client\": false\n        },\n        \"events\": [\n            {\n                \"id\": 1,\n                \"type\": \"created\",\n                \"type_label\": \"Trip created\",\n                \"actor\": {\n                    \"id\": 1,\n                    \"name\": \"System admin\"\n                },\n                \"from_status\": null,\n                \"to_status\": \"awaiting_client_approval\",\n                \"reason\": null,\n                \"changes\": null,\n                \"created_at\": \"2026-03-01T10:00:00+03:00\"\n            },\n            {\n                \"id\": 2,\n                \"type\": \"updated\",\n                \"type_label\": \"Trip edited\",\n                \"actor\": {\n                    \"id\": 1,\n                    \"name\": \"System admin\"\n                },\n                \"from_status\": \"awaiting_client_approval\",\n                \"to_status\": \"awaiting_client_approval\",\n                \"reason\": null,\n                \"changes\": {\n                    \"quantity_ton\": {\n                        \"from\": \"3.750\",\n                        \"to\": \"3.200\"\n                    },\n                    \"quantity_cbm\": {\n                        \"from\": \"12.000\",\n                        \"to\": \"10.240\"\n                    },\n                    \"waste_manifest_number\": {\n                        \"from\": null,\n                        \"to\": \"WM-880\"\n                    }\n                },\n                \"created_at\": \"2026-03-01T10:00:00+03:00\"\n            },\n            {\n                \"id\": 12,\n                \"type\": \"client_approved\",\n                \"type_label\": \"Approved by the client\",\n                \"actor\": {\n                    \"id\": 4,\n                    \"name\": \"Client Manager\"\n                },\n                \"from_status\": \"awaiting_client_approval\",\n                \"to_status\": \"client_approved\",\n                \"reason\": null,\n                \"changes\": null,\n                \"created_at\": \"2026-03-01T10:00:00+03:00\"\n            },\n            {\n                \"id\": 13,\n                \"type\": \"final_approved\",\n                \"type_label\": \"Final approval\",\n                \"actor\": {\n                    \"id\": 1,\n                    \"name\": \"System admin\"\n                },\n                \"from_status\": \"client_approved\",\n                \"to_status\": \"completed\",\n                \"reason\": null,\n                \"changes\": null,\n                \"created_at\": \"2026-03-01T10:00:00+03:00\"\n            },\n            {\n                \"id\": 14,\n                \"type\": \"asset_moved\",\n                \"type_label\": \"Container moved\",\n                \"actor\": {\n                    \"id\": 1,\n                    \"name\": \"System admin\"\n                },\n                \"from_status\": null,\n                \"to_status\": null,\n                \"reason\": null,\n                \"changes\": {\n                    \"going_asset\": {\n                        \"from\": \"C-GO\",\n                        \"to\": \"C-GO\"\n                    },\n                    \"asset_project\": {\n                        \"from\": null,\n                        \"to\": \"ALN-P0001\"\n                    }\n                },\n                \"created_at\": \"2026-03-01T10:00:00+03:00\"\n            },\n            {\n                \"id\": 15,\n                \"type\": \"asset_moved\",\n                \"type_label\": \"Container moved\",\n                \"actor\": {\n                    \"id\": 1,\n                    \"name\": \"System admin\"\n                },\n                \"from_status\": null,\n                \"to_status\": null,\n                \"reason\": null,\n                \"changes\": {\n                    \"returning_asset\": {\n                        \"from\": \"C-BACK\",\n                        \"to\": \"C-BACK\"\n                    },\n                    \"asset_project\": {\n                        \"from\": \"ALN-P0001\",\n                        \"to\": null\n                    }\n                },\n                \"created_at\": \"2026-03-01T10:00:00+03:00\"\n            }\n        ]\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create trip (staff)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/trips",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "trips"
+              ],
+              "query": []
+            },
+            "description": "The staff form (System Admin / Data Entry), multipart. Every choice is re-checked on the server: same company / project, the PO of the project and service, active and compatible resources (7.2 — errors come back 422 on the form field). requires_client_approval=false creates it completed directly — no OTP (ج15) — and needs GCM's signature (and the client's, uploaded, when none — د4). The quota is charged at once (ج1).",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "trip_at",
+                  "value": "2026-03-01 09:30",
+                  "type": "text",
+                  "description": "Date & time of the trip (required on create)",
+                  "disabled": false
+                },
+                {
+                  "key": "company_id",
+                  "value": "{{last_company_id}}",
+                  "type": "text",
+                  "description": "Client company (create only — locked after)",
+                  "disabled": false
+                },
+                {
+                  "key": "project_id",
+                  "value": "{{last_project_id}}",
+                  "type": "text",
+                  "description": "A project of that company (an edit may move it to another project of the same company)",
+                  "disabled": false
+                },
+                {
+                  "key": "requires_client_approval",
+                  "value": "true",
+                  "type": "text",
+                  "description": "false = created completed directly (no OTP, ج15) — then send the signatures below",
+                  "disabled": false
+                },
+                {
+                  "key": "requires_purchase_order",
+                  "value": "true",
+                  "type": "text",
+                  "description": "false = \"without PO\": trip_cost (and ancillary_cost) entered by hand",
+                  "disabled": false
+                },
+                {
+                  "key": "purchase_order_id",
+                  "value": "{{last_purchase_order_id}}",
+                  "type": "text",
+                  "description": "A PO of the project (Trip form options → POs); any one but a deactivated one (ب6)",
+                  "disabled": false
+                },
+                {
+                  "key": "driver_id",
+                  "value": "{{last_driver_id}}",
+                  "type": "text",
+                  "description": "Trip form options → Drivers",
+                  "disabled": false
+                },
+                {
+                  "key": "vehicle_id",
+                  "value": "{{last_vehicle_id}}",
+                  "type": "text",
+                  "description": "Trip form options → Vehicles of the driver",
+                  "disabled": false
+                },
+                {
+                  "key": "going_asset_id",
+                  "value": "",
+                  "type": "text",
+                  "description": "optional — Trip form options → Going containers",
+                  "disabled": true
+                },
+                {
+                  "key": "returning_asset_id",
+                  "value": "{{last_asset_id}}",
+                  "type": "text",
+                  "description": "optional — Trip form options → Returning containers",
+                  "disabled": false
+                },
+                {
+                  "key": "main_service_id",
+                  "value": "{{last_main_service_id}}",
+                  "type": "text",
+                  "description": "Trip form options → Main services",
+                  "disabled": false
+                },
+                {
+                  "key": "sub_service_id",
+                  "value": "{{last_sub_service_id}}",
+                  "type": "text",
+                  "description": "required on the staff form — Trip form options → Sub-services",
+                  "disabled": false
+                },
+                {
+                  "key": "intermediate_facility_id",
+                  "value": "{{last_facility_id}}",
+                  "type": "text",
+                  "description": "required unless the main service is supplying",
+                  "disabled": false
+                },
+                {
+                  "key": "quantity_ton",
+                  "value": "3.75",
+                  "type": "text",
+                  "description": "required unless supplying — tons OR m³ (the other is computed, ج10); never above the capacity",
+                  "disabled": false
+                },
+                {
+                  "key": "quantity_cbm",
+                  "value": "",
+                  "type": "text",
+                  "description": "m³ instead of tons",
+                  "disabled": true
+                },
+                {
+                  "key": "trip_cost",
+                  "value": "",
+                  "type": "text",
+                  "description": "required when requires_purchase_order=false",
+                  "disabled": true
+                },
+                {
+                  "key": "ancillary_cost",
+                  "value": "",
+                  "type": "text",
+                  "description": "without PO, optional (0)",
+                  "disabled": true
+                },
+                {
+                  "key": "delivery_note_number",
+                  "value": "",
+                  "type": "text",
+                  "description": "paper delivery note No. (optional)",
+                  "disabled": true
+                },
+                {
+                  "key": "waste_manifest_number",
+                  "value": "",
+                  "type": "text",
+                  "description": "paper manifest No. (optional)",
+                  "disabled": true
+                },
+                {
+                  "key": "recycle_receipt_number",
+                  "value": "",
+                  "type": "text",
+                  "description": "recycle receipt No. (required at completion when the sub-service requires a receipt, ج13)",
+                  "disabled": true
+                },
+                {
+                  "key": "delivery_note",
+                  "type": "file",
+                  "src": [],
+                  "description": "PDF / JPG / PNG ≤ 5 MB",
+                  "disabled": true
+                },
+                {
+                  "key": "waste_manifest",
+                  "type": "file",
+                  "src": [],
+                  "description": "PDF / JPG / PNG ≤ 5 MB",
+                  "disabled": true
+                },
+                {
+                  "key": "recycle_receipt",
+                  "type": "file",
+                  "src": [],
+                  "description": "PDF / JPG / PNG ≤ 5 MB",
+                  "disabled": true
+                },
+                {
+                  "key": "live_photo",
+                  "type": "file",
+                  "src": [],
+                  "description": "JPG / PNG ≤ 5 MB",
+                  "disabled": true
+                },
+                {
+                  "key": "other_attachment",
+                  "type": "file",
+                  "src": [],
+                  "description": "PDF / JPG / PNG ≤ 5 MB",
+                  "disabled": true
+                },
+                {
+                  "key": "location_url",
+                  "value": "",
+                  "type": "text",
+                  "description": "http(s) link (Google Maps)",
+                  "disabled": true
+                },
+                {
+                  "key": "additional_data",
+                  "value": "",
+                  "type": "text",
+                  "description": "rich text (sanitised)",
+                  "disabled": true
+                },
+                {
+                  "key": "client_approver_id",
+                  "value": "",
+                  "type": "text",
+                  "description": "default client approver (Trip form options → Default client approver); defaults to the project representative",
+                  "disabled": true
+                },
+                {
+                  "key": "gcm_approver_id",
+                  "value": "",
+                  "type": "text",
+                  "description": "default GCM approver; defaults to the creator",
+                  "disabled": true
+                },
+                {
+                  "key": "gcm_signature",
+                  "type": "file",
+                  "src": [],
+                  "description": "GCM's representative signature (د5): PNG / JPG ≤ 2 MB drawn on the signature pad — or send use_saved_gcm_signature=true instead",
+                  "disabled": true
+                },
+                {
+                  "key": "use_saved_gcm_signature",
+                  "value": "false",
+                  "type": "text",
+                  "description": "true = use the signature saved on my profile",
+                  "disabled": true
+                },
+                {
+                  "key": "save_gcm_signature",
+                  "value": "false",
+                  "type": "text",
+                  "description": "true = also keep the drawn signature on my profile",
+                  "disabled": true
+                },
+                {
+                  "key": "client_signature",
+                  "type": "file",
+                  "src": [],
+                  "description": "The client's signature, uploaded by staff when the trip has none (د4) — PNG / JPG ≤ 2 MB",
+                  "disabled": true
+                },
+                {
+                  "key": "client_stamp",
+                  "type": "file",
+                  "src": [],
+                  "description": "The client's stamp (optional, with client_signature)",
+                  "disabled": true
+                },
+                {
+                  "key": "client_signer_name",
+                  "value": "",
+                  "type": "text",
+                  "description": "The client signer's name (with client_signature)",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "201 — example",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/trips",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "trips"
+                  ],
+                  "query": []
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"data\": {\n        \"id\": 1,\n        \"code\": \"ALN-T0001\",\n        \"status\": \"awaiting_client_approval\",\n        \"status_label\": \"Awaiting client approval\",\n        \"source\": \"staff\",\n        \"trip_at\": \"2026-03-01T09:30:00+03:00\",\n        \"requires_client_approval\": true,\n        \"requires_purchase_order\": true,\n        \"company\": {\n            \"id\": 1,\n            \"name\": \"Al Nakheel\",\n            \"code\": \"ALN-0001\"\n        },\n        \"project\": {\n            \"id\": 1,\n            \"name\": \"Riyadh Hotel\",\n            \"code\": \"ALN-P0001\",\n            \"location_url\": null,\n            \"representative\": {\n                \"id\": 4,\n                \"name\": \"Client Manager\"\n            }\n        },\n        \"driver\": {\n            \"id\": 1,\n            \"name\": \"Driver One\",\n            \"code\": \"990568\",\n            \"phone\": \"+966539680675\",\n            \"affiliation\": \"gcm\",\n            \"entity_name\": \"GCM\"\n        },\n        \"vehicle\": {\n            \"id\": 1,\n            \"plate\": \"ABC 1234\",\n            \"category\": {\n                \"id\": 5,\n                \"name\": \"Dyna box\"\n            },\n            \"has_embedded_container\": false,\n            \"embedded_container_type\": null,\n            \"affiliation\": \"gcm\",\n            \"entity_name\": \"GCM\"\n        },\n        \"going_asset\": {\n            \"id\": 1,\n            \"name\": \"C-GO\",\n            \"asset_type\": \"container\",\n            \"capacity\": {\n                \"id\": 1,\n                \"name\": \"12 m3\",\n                \"capacity_ton\": 3.75,\n                \"capacity_cbm\": 12\n            },\n            \"affiliation\": \"gcm\",\n            \"entity_name\": \"GCM\"\n        },\n        \"returning_asset\": {\n            \"id\": 2,\n            \"name\": \"C-BACK\",\n            \"asset_type\": \"container\",\n            \"capacity\": {\n                \"id\": 1,\n                \"name\": \"12 m3\",\n                \"capacity_ton\": 3.75,\n                \"capacity_cbm\": 12\n            },\n            \"affiliation\": \"gcm\",\n            \"entity_name\": \"GCM\"\n        },\n        \"capacity\": {\n            \"id\": 1,\n            \"name\": \"12 m3\",\n            \"capacity_ton\": 3.75,\n            \"capacity_cbm\": 12\n        },\n        \"main_service\": {\n            \"id\": 1,\n            \"name\": \"Solid Waste Transport\",\n            \"service_type\": \"non_hazardous\"\n        },\n        \"sub_service\": {\n            \"id\": 1,\n            \"name\": \"General collection\",\n            \"requires_recycle_receipt\": false\n        },\n        \"quantity_ton\": 3.75,\n        \"quantity_cbm\": 12,\n        \"quantity_converter\": {\n            \"tonnes_per_cubic_meter\": 0.3125,\n            \"decimals\": 3\n        },\n        \"linked_to_purchase_order\": true,\n        \"purchase_order\": {\n            \"id\": 1,\n            \"number\": \"ALN-1200\"\n        },\n        \"trip_cost\": 100,\n        \"ancillary_cost\": 0,\n        \"facility\": {\n            \"id\": 1,\n            \"name\": \"Riyadh Landfill\"\n        },\n        \"delivery_note_number\": \"DN-5521\",\n        \"waste_manifest_number\": null,\n        \"recycle_receipt_number\": null,\n        \"location_url\": null,\n        \"has_live_photo\": false,\n        \"client_comment\": null,\n        \"cancellation_reason\": null,\n        \"cancelled_at\": null,\n        \"completed_at\": null,\n        \"client_approved_at\": null,\n        \"additional_data\": null,\n        \"client_approver\": {\n            \"id\": 4,\n            \"name\": \"Client Manager\"\n        },\n        \"gcm_approver\": {\n            \"id\": 1,\n            \"name\": \"System admin\"\n        },\n        \"client_approved_by\": null,\n        \"client_signer_name\": null,\n        \"completed_by\": null,\n        \"cancelled_by\": null,\n        \"created_by\": {\n            \"id\": 1,\n            \"name\": \"System admin\"\n        },\n        \"files\": {\n            \"delivery-note\": null,\n            \"waste-manifest\": null,\n            \"recycle-receipt\": null,\n            \"live-photo\": null,\n            \"other\": null,\n            \"client-attachment\": null,\n            \"client-signature\": null,\n            \"client-stamp\": null,\n            \"gcm-signature\": null,\n            \"gcm-stamp\": null\n        },\n        \"updated_by\": {\n            \"id\": 1,\n            \"name\": \"System admin\"\n        },\n        \"updated_at\": \"2026-03-01T10:00:00+03:00\",\n        \"actions\": {\n            \"update\": true,\n            \"final_approve\": true,\n            \"accept_objection\": false,\n            \"reject_objection\": false,\n            \"cancel\": true,\n            \"remind_client\": true\n        },\n        \"events\": [\n            {\n                \"id\": 1,\n                \"type\": \"created\",\n                \"type_label\": \"Trip created\",\n                \"actor\": {\n                    \"id\": 1,\n                    \"name\": \"System admin\"\n                },\n                \"from_status\": null,\n                \"to_status\": \"awaiting_client_approval\",\n                \"reason\": null,\n                \"changes\": null,\n                \"created_at\": \"2026-03-01T10:00:00+03:00\"\n            }\n        ]\n    }\n}"
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const body = pm.response.json();",
+                  "    if (body.data && body.data.id) {",
+                  "        pm.collectionVariables.set('last_trip_id', body.data.id);",
+                  "        console.log('last_trip_id saved:', body.data.id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Edit trip",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/trips/{{last_trip_id}}",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "trips",
+                "{{last_trip_id}}"
+              ],
+              "query": []
+            },
+            "description": "PATCH sent as multipart POST with _method=PATCH. Only the fields sent change; the status stays (ج9); a completed trip can be edited (its completion rules are re-checked); a cancelled one can't (409). Changing the date / project / service / PO re-charges the quota (ب7). Same fields as Create (company_id is ignored — locked).",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "_method",
+                  "value": "PATCH",
+                  "type": "text",
+                  "description": "",
+                  "disabled": false
+                },
+                {
+                  "key": "quantity_ton",
+                  "value": "3.2",
+                  "type": "text",
+                  "description": "",
+                  "disabled": false
+                },
+                {
+                  "key": "waste_manifest_number",
+                  "value": "WM-880",
+                  "type": "text",
+                  "description": "",
+                  "disabled": false
+                },
+                {
+                  "key": "project_id",
+                  "value": "{{last_project_id}}",
+                  "type": "text",
+                  "description": "A project of that company (an edit may move it to another project of the same company)",
+                  "disabled": true
+                },
+                {
+                  "key": "requires_client_approval",
+                  "value": "true",
+                  "type": "text",
+                  "description": "false = created completed directly (no OTP, ج15) — then send the signatures below",
+                  "disabled": true
+                },
+                {
+                  "key": "requires_purchase_order",
+                  "value": "true",
+                  "type": "text",
+                  "description": "false = \"without PO\": trip_cost (and ancillary_cost) entered by hand",
+                  "disabled": true
+                },
+                {
+                  "key": "purchase_order_id",
+                  "value": "{{last_purchase_order_id}}",
+                  "type": "text",
+                  "description": "A PO of the project (Trip form options → POs); any one but a deactivated one (ب6)",
+                  "disabled": true
+                },
+                {
+                  "key": "driver_id",
+                  "value": "{{last_driver_id}}",
+                  "type": "text",
+                  "description": "Trip form options → Drivers",
+                  "disabled": true
+                },
+                {
+                  "key": "vehicle_id",
+                  "value": "{{last_vehicle_id}}",
+                  "type": "text",
+                  "description": "Trip form options → Vehicles of the driver",
+                  "disabled": true
+                },
+                {
+                  "key": "going_asset_id",
+                  "value": "",
+                  "type": "text",
+                  "description": "optional — Trip form options → Going containers",
+                  "disabled": true
+                },
+                {
+                  "key": "returning_asset_id",
+                  "value": "{{last_asset_id}}",
+                  "type": "text",
+                  "description": "optional — Trip form options → Returning containers",
+                  "disabled": true
+                },
+                {
+                  "key": "main_service_id",
+                  "value": "{{last_main_service_id}}",
+                  "type": "text",
+                  "description": "Trip form options → Main services",
+                  "disabled": true
+                },
+                {
+                  "key": "sub_service_id",
+                  "value": "{{last_sub_service_id}}",
+                  "type": "text",
+                  "description": "required on the staff form — Trip form options → Sub-services",
+                  "disabled": true
+                },
+                {
+                  "key": "intermediate_facility_id",
+                  "value": "{{last_facility_id}}",
+                  "type": "text",
+                  "description": "required unless the main service is supplying",
+                  "disabled": true
+                },
+                {
+                  "key": "quantity_ton",
+                  "value": "3.75",
+                  "type": "text",
+                  "description": "required unless supplying — tons OR m³ (the other is computed, ج10); never above the capacity",
+                  "disabled": true
+                },
+                {
+                  "key": "quantity_cbm",
+                  "value": "",
+                  "type": "text",
+                  "description": "m³ instead of tons",
+                  "disabled": true
+                },
+                {
+                  "key": "trip_cost",
+                  "value": "",
+                  "type": "text",
+                  "description": "required when requires_purchase_order=false",
+                  "disabled": true
+                },
+                {
+                  "key": "ancillary_cost",
+                  "value": "",
+                  "type": "text",
+                  "description": "without PO, optional (0)",
+                  "disabled": true
+                },
+                {
+                  "key": "delivery_note_number",
+                  "value": "",
+                  "type": "text",
+                  "description": "paper delivery note No. (optional)",
+                  "disabled": true
+                },
+                {
+                  "key": "waste_manifest_number",
+                  "value": "",
+                  "type": "text",
+                  "description": "paper manifest No. (optional)",
+                  "disabled": true
+                },
+                {
+                  "key": "recycle_receipt_number",
+                  "value": "",
+                  "type": "text",
+                  "description": "recycle receipt No. (required at completion when the sub-service requires a receipt, ج13)",
+                  "disabled": true
+                },
+                {
+                  "key": "delivery_note",
+                  "type": "file",
+                  "src": [],
+                  "description": "PDF / JPG / PNG ≤ 5 MB",
+                  "disabled": true
+                },
+                {
+                  "key": "waste_manifest",
+                  "type": "file",
+                  "src": [],
+                  "description": "PDF / JPG / PNG ≤ 5 MB",
+                  "disabled": true
+                },
+                {
+                  "key": "recycle_receipt",
+                  "type": "file",
+                  "src": [],
+                  "description": "PDF / JPG / PNG ≤ 5 MB",
+                  "disabled": true
+                },
+                {
+                  "key": "live_photo",
+                  "type": "file",
+                  "src": [],
+                  "description": "JPG / PNG ≤ 5 MB",
+                  "disabled": true
+                },
+                {
+                  "key": "other_attachment",
+                  "type": "file",
+                  "src": [],
+                  "description": "PDF / JPG / PNG ≤ 5 MB",
+                  "disabled": true
+                },
+                {
+                  "key": "location_url",
+                  "value": "",
+                  "type": "text",
+                  "description": "http(s) link (Google Maps)",
+                  "disabled": true
+                },
+                {
+                  "key": "additional_data",
+                  "value": "",
+                  "type": "text",
+                  "description": "rich text (sanitised)",
+                  "disabled": true
+                },
+                {
+                  "key": "client_approver_id",
+                  "value": "",
+                  "type": "text",
+                  "description": "default client approver (Trip form options → Default client approver); defaults to the project representative",
+                  "disabled": true
+                },
+                {
+                  "key": "gcm_approver_id",
+                  "value": "",
+                  "type": "text",
+                  "description": "default GCM approver; defaults to the creator",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200 — example",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/trips/{{last_trip_id}}",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "trips",
+                    "{{last_trip_id}}"
+                  ],
+                  "query": []
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"data\": {\n        \"id\": 1,\n        \"code\": \"ALN-T0001\",\n        \"status\": \"awaiting_client_approval\",\n        \"status_label\": \"Awaiting client approval\",\n        \"source\": \"staff\",\n        \"trip_at\": \"2026-03-01T09:30:00+03:00\",\n        \"requires_client_approval\": true,\n        \"requires_purchase_order\": true,\n        \"company\": {\n            \"id\": 1,\n            \"name\": \"Al Nakheel\",\n            \"code\": \"ALN-0001\"\n        },\n        \"project\": {\n            \"id\": 1,\n            \"name\": \"Riyadh Hotel\",\n            \"code\": \"ALN-P0001\",\n            \"location_url\": null,\n            \"representative\": {\n                \"id\": 4,\n                \"name\": \"Client Manager\"\n            }\n        },\n        \"driver\": {\n            \"id\": 1,\n            \"name\": \"Driver One\",\n            \"code\": \"990568\",\n            \"phone\": \"+966539680675\",\n            \"affiliation\": \"gcm\",\n            \"entity_name\": \"GCM\"\n        },\n        \"vehicle\": {\n            \"id\": 1,\n            \"plate\": \"ABC 1234\",\n            \"category\": {\n                \"id\": 5,\n                \"name\": \"Dyna box\"\n            },\n            \"has_embedded_container\": false,\n            \"embedded_container_type\": null,\n            \"affiliation\": \"gcm\",\n            \"entity_name\": \"GCM\"\n        },\n        \"going_asset\": {\n            \"id\": 1,\n            \"name\": \"C-GO\",\n            \"asset_type\": \"container\",\n            \"capacity\": {\n                \"id\": 1,\n                \"name\": \"12 m3\",\n                \"capacity_ton\": 3.75,\n                \"capacity_cbm\": 12\n            },\n            \"affiliation\": \"gcm\",\n            \"entity_name\": \"GCM\"\n        },\n        \"returning_asset\": {\n            \"id\": 2,\n            \"name\": \"C-BACK\",\n            \"asset_type\": \"container\",\n            \"capacity\": {\n                \"id\": 1,\n                \"name\": \"12 m3\",\n                \"capacity_ton\": 3.75,\n                \"capacity_cbm\": 12\n            },\n            \"affiliation\": \"gcm\",\n            \"entity_name\": \"GCM\"\n        },\n        \"capacity\": {\n            \"id\": 1,\n            \"name\": \"12 m3\",\n            \"capacity_ton\": 3.75,\n            \"capacity_cbm\": 12\n        },\n        \"main_service\": {\n            \"id\": 1,\n            \"name\": \"Solid Waste Transport\",\n            \"service_type\": \"non_hazardous\"\n        },\n        \"sub_service\": {\n            \"id\": 1,\n            \"name\": \"General collection\",\n            \"requires_recycle_receipt\": false\n        },\n        \"quantity_ton\": 3.2,\n        \"quantity_cbm\": 10.24,\n        \"quantity_converter\": {\n            \"tonnes_per_cubic_meter\": 0.3125,\n            \"decimals\": 3\n        },\n        \"linked_to_purchase_order\": true,\n        \"purchase_order\": {\n            \"id\": 1,\n            \"number\": \"ALN-1200\"\n        },\n        \"trip_cost\": 100,\n        \"ancillary_cost\": 0,\n        \"facility\": {\n            \"id\": 1,\n            \"name\": \"Riyadh Landfill\"\n        },\n        \"delivery_note_number\": \"DN-5521\",\n        \"waste_manifest_number\": \"WM-880\",\n        \"recycle_receipt_number\": null,\n        \"location_url\": null,\n        \"has_live_photo\": false,\n        \"client_comment\": null,\n        \"cancellation_reason\": null,\n        \"cancelled_at\": null,\n        \"completed_at\": null,\n        \"client_approved_at\": null,\n        \"additional_data\": null,\n        \"client_approver\": {\n            \"id\": 4,\n            \"name\": \"Client Manager\"\n        },\n        \"gcm_approver\": {\n            \"id\": 1,\n            \"name\": \"System admin\"\n        },\n        \"client_approved_by\": null,\n        \"client_signer_name\": null,\n        \"completed_by\": null,\n        \"cancelled_by\": null,\n        \"created_by\": {\n            \"id\": 1,\n            \"name\": \"System admin\"\n        },\n        \"files\": {\n            \"delivery-note\": null,\n            \"waste-manifest\": null,\n            \"recycle-receipt\": null,\n            \"live-photo\": null,\n            \"other\": null,\n            \"client-attachment\": null,\n            \"client-signature\": null,\n            \"client-stamp\": null,\n            \"gcm-signature\": null,\n            \"gcm-stamp\": null\n        },\n        \"updated_by\": {\n            \"id\": 1,\n            \"name\": \"System admin\"\n        },\n        \"updated_at\": \"2026-03-01T10:00:00+03:00\",\n        \"actions\": {\n            \"update\": true,\n            \"final_approve\": true,\n            \"accept_objection\": false,\n            \"reject_objection\": false,\n            \"cancel\": true,\n            \"remind_client\": true\n        },\n        \"events\": [\n            {\n                \"id\": 1,\n                \"type\": \"created\",\n                \"type_label\": \"Trip created\",\n                \"actor\": {\n                    \"id\": 1,\n                    \"name\": \"System admin\"\n                },\n                \"from_status\": null,\n                \"to_status\": \"awaiting_client_approval\",\n                \"reason\": null,\n                \"changes\": null,\n                \"created_at\": \"2026-03-01T10:00:00+03:00\"\n            },\n            {\n                \"id\": 2,\n                \"type\": \"updated\",\n                \"type_label\": \"Trip edited\",\n                \"actor\": {\n                    \"id\": 1,\n                    \"name\": \"System admin\"\n                },\n                \"from_status\": \"awaiting_client_approval\",\n                \"to_status\": \"awaiting_client_approval\",\n                \"reason\": null,\n                \"changes\": {\n                    \"quantity_ton\": {\n                        \"from\": \"3.750\",\n                        \"to\": \"3.200\"\n                    },\n                    \"quantity_cbm\": {\n                        \"from\": \"12.000\",\n                        \"to\": \"10.240\"\n                    },\n                    \"waste_manifest_number\": {\n                        \"from\": null,\n                        \"to\": \"WM-880\"\n                    }\n                },\n                \"created_at\": \"2026-03-01T10:00:00+03:00\"\n            }\n        ]\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Final approval (OTP)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/trips/{{last_trip_id}}/final-approve",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "trips",
+                "{{last_trip_id}}",
+                "final-approve"
+              ],
+              "query": []
+            },
+            "description": "Completes a trip the client approved — or one still awaiting the client (GCM approves without them, ج6; then the client's signature must be uploaded, د4). Needs the e-mailed code first (Verification code folder): 403 code=otp_required until /otp/verify. Optional last corrections can go along (any Edit field, e.g. intermediate_facility_id — ج7). The containers move with completion (ج3).",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "gcm_signature",
+                  "type": "file",
+                  "src": [],
+                  "description": "GCM's representative signature (د5): PNG / JPG ≤ 2 MB drawn on the signature pad — or send use_saved_gcm_signature=true instead",
+                  "disabled": false
+                },
+                {
+                  "key": "use_saved_gcm_signature",
+                  "value": "false",
+                  "type": "text",
+                  "description": "true = use the signature saved on my profile",
+                  "disabled": false
+                },
+                {
+                  "key": "save_gcm_signature",
+                  "value": "false",
+                  "type": "text",
+                  "description": "true = also keep the drawn signature on my profile",
+                  "disabled": false
+                },
+                {
+                  "key": "client_signature",
+                  "type": "file",
+                  "src": [],
+                  "description": "The client's signature, uploaded by staff when the trip has none (د4) — PNG / JPG ≤ 2 MB",
+                  "disabled": true
+                },
+                {
+                  "key": "client_stamp",
+                  "type": "file",
+                  "src": [],
+                  "description": "The client's stamp (optional, with client_signature)",
+                  "disabled": true
+                },
+                {
+                  "key": "client_signer_name",
+                  "value": "",
+                  "type": "text",
+                  "description": "The client signer's name (with client_signature)",
+                  "disabled": true
+                },
+                {
+                  "key": "intermediate_facility_id",
+                  "value": "",
+                  "type": "text",
+                  "description": "optional last correction",
+                  "disabled": true
+                },
+                {
+                  "key": "recycle_receipt_number",
+                  "value": "",
+                  "type": "text",
+                  "description": "optional last correction",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200 — example",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/trips/{{last_trip_id}}/final-approve",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "trips",
+                    "{{last_trip_id}}",
+                    "final-approve"
+                  ],
+                  "query": []
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"data\": {\n        \"id\": 1,\n        \"code\": \"ALN-T0001\",\n        \"status\": \"completed\",\n        \"status_label\": \"Completed trip\",\n        \"source\": \"staff\",\n        \"trip_at\": \"2026-03-01T09:30:00+03:00\",\n        \"requires_client_approval\": true,\n        \"requires_purchase_order\": true,\n        \"company\": {\n            \"id\": 1,\n            \"name\": \"Al Nakheel\",\n            \"code\": \"ALN-0001\"\n        },\n        \"project\": {\n            \"id\": 1,\n            \"name\": \"Riyadh Hotel\",\n            \"code\": \"ALN-P0001\",\n            \"location_url\": null,\n            \"representative\": {\n                \"id\": 4,\n                \"name\": \"Client Manager\"\n            }\n        },\n        \"driver\": {\n            \"id\": 1,\n            \"name\": \"Driver One\",\n            \"code\": \"990568\",\n            \"phone\": \"+966539680675\",\n            \"affiliation\": \"gcm\",\n            \"entity_name\": \"GCM\"\n        },\n        \"vehicle\": {\n            \"id\": 1,\n            \"plate\": \"ABC 1234\",\n            \"category\": {\n                \"id\": 5,\n                \"name\": \"Dyna box\"\n            },\n            \"has_embedded_container\": false,\n            \"embedded_container_type\": null,\n            \"affiliation\": \"gcm\",\n            \"entity_name\": \"GCM\"\n        },\n        \"going_asset\": {\n            \"id\": 1,\n            \"name\": \"C-GO\",\n            \"asset_type\": \"container\",\n            \"capacity\": {\n                \"id\": 1,\n                \"name\": \"12 m3\",\n                \"capacity_ton\": 3.75,\n                \"capacity_cbm\": 12\n            },\n            \"affiliation\": \"gcm\",\n            \"entity_name\": \"GCM\"\n        },\n        \"returning_asset\": {\n            \"id\": 2,\n            \"name\": \"C-BACK\",\n            \"asset_type\": \"container\",\n            \"capacity\": {\n                \"id\": 1,\n                \"name\": \"12 m3\",\n                \"capacity_ton\": 3.75,\n                \"capacity_cbm\": 12\n            },\n            \"affiliation\": \"gcm\",\n            \"entity_name\": \"GCM\"\n        },\n        \"capacity\": {\n            \"id\": 1,\n            \"name\": \"12 m3\",\n            \"capacity_ton\": 3.75,\n            \"capacity_cbm\": 12\n        },\n        \"main_service\": {\n            \"id\": 1,\n            \"name\": \"Solid Waste Transport\",\n            \"service_type\": \"non_hazardous\"\n        },\n        \"sub_service\": {\n            \"id\": 1,\n            \"name\": \"General collection\",\n            \"requires_recycle_receipt\": false\n        },\n        \"quantity_ton\": 3.2,\n        \"quantity_cbm\": 10.24,\n        \"quantity_converter\": {\n            \"tonnes_per_cubic_meter\": 0.3125,\n            \"decimals\": 3\n        },\n        \"linked_to_purchase_order\": true,\n        \"purchase_order\": {\n            \"id\": 1,\n            \"number\": \"ALN-1200\"\n        },\n        \"trip_cost\": 100,\n        \"ancillary_cost\": 0,\n        \"facility\": {\n            \"id\": 1,\n            \"name\": \"Riyadh Landfill\"\n        },\n        \"delivery_note_number\": \"DN-5521\",\n        \"waste_manifest_number\": \"WM-880\",\n        \"recycle_receipt_number\": null,\n        \"location_url\": null,\n        \"has_live_photo\": false,\n        \"client_comment\": null,\n        \"cancellation_reason\": null,\n        \"cancelled_at\": null,\n        \"completed_at\": \"2026-03-01T10:00:00+03:00\",\n        \"client_approved_at\": \"2026-03-01T10:00:00+03:00\",\n        \"additional_data\": null,\n        \"client_approver\": {\n            \"id\": 4,\n            \"name\": \"Client Manager\"\n        },\n        \"gcm_approver\": {\n            \"id\": 1,\n            \"name\": \"System admin\"\n        },\n        \"client_approved_by\": {\n            \"id\": 4,\n            \"name\": \"Client Manager\"\n        },\n        \"client_signer_name\": \"Client Manager\",\n        \"completed_by\": {\n            \"id\": 1,\n            \"name\": \"System admin\"\n        },\n        \"cancelled_by\": null,\n        \"created_by\": {\n            \"id\": 1,\n            \"name\": \"System admin\"\n        },\n        \"files\": {\n            \"delivery-note\": null,\n            \"waste-manifest\": null,\n            \"recycle-receipt\": null,\n            \"live-photo\": null,\n            \"other\": null,\n            \"client-attachment\": null,\n            \"client-signature\": \"http://localhost:8000/api/v1/trips/1/files/client-signature\",\n            \"client-stamp\": null,\n            \"gcm-signature\": \"http://localhost:8000/api/v1/trips/1/files/gcm-signature\",\n            \"gcm-stamp\": null\n        },\n        \"updated_by\": {\n            \"id\": 1,\n            \"name\": \"System admin\"\n        },\n        \"updated_at\": \"2026-03-01T10:00:00+03:00\",\n        \"actions\": {\n            \"update\": true,\n            \"final_approve\": false,\n            \"accept_objection\": false,\n            \"reject_objection\": false,\n            \"cancel\": true,\n            \"remind_client\": false\n        },\n        \"events\": [\n            {\n                \"id\": 1,\n                \"type\": \"created\",\n                \"type_label\": \"Trip created\",\n                \"actor\": {\n                    \"id\": 1,\n                    \"name\": \"System admin\"\n                },\n                \"from_status\": null,\n                \"to_status\": \"awaiting_client_approval\",\n                \"reason\": null,\n                \"changes\": null,\n                \"created_at\": \"2026-03-01T10:00:00+03:00\"\n            },\n            {\n                \"id\": 2,\n                \"type\": \"updated\",\n                \"type_label\": \"Trip edited\",\n                \"actor\": {\n                    \"id\": 1,\n                    \"name\": \"System admin\"\n                },\n                \"from_status\": \"awaiting_client_approval\",\n                \"to_status\": \"awaiting_client_approval\",\n                \"reason\": null,\n                \"changes\": {\n                    \"quantity_ton\": {\n                        \"from\": \"3.750\",\n                        \"to\": \"3.200\"\n                    },\n                    \"quantity_cbm\": {\n                        \"from\": \"12.000\",\n                        \"to\": \"10.240\"\n                    },\n                    \"waste_manifest_number\": {\n                        \"from\": null,\n                        \"to\": \"WM-880\"\n                    }\n                },\n                \"created_at\": \"2026-03-01T10:00:00+03:00\"\n            },\n            {\n                \"id\": 12,\n                \"type\": \"client_approved\",\n                \"type_label\": \"Approved by the client\",\n                \"actor\": {\n                    \"id\": 4,\n                    \"name\": \"Client Manager\"\n                },\n                \"from_status\": \"awaiting_client_approval\",\n                \"to_status\": \"client_approved\",\n                \"reason\": null,\n                \"changes\": null,\n                \"created_at\": \"2026-03-01T10:00:00+03:00\"\n            },\n            {\n                \"id\": 13,\n                \"type\": \"final_approved\",\n                \"type_label\": \"Final approval\",\n                \"actor\": {\n                    \"id\": 1,\n                    \"name\": \"System admin\"\n                },\n                \"from_status\": \"client_approved\",\n                \"to_status\": \"completed\",\n                \"reason\": null,\n                \"changes\": null,\n                \"created_at\": \"2026-03-01T10:00:00+03:00\"\n            },\n            {\n                \"id\": 14,\n                \"type\": \"asset_moved\",\n                \"type_label\": \"Container moved\",\n                \"actor\": {\n                    \"id\": 1,\n                    \"name\": \"System admin\"\n                },\n                \"from_status\": null,\n                \"to_status\": null,\n                \"reason\": null,\n                \"changes\": {\n                    \"going_asset\": {\n                        \"from\": \"C-GO\",\n                        \"to\": \"C-GO\"\n                    },\n                    \"asset_project\": {\n                        \"from\": null,\n                        \"to\": \"ALN-P0001\"\n                    }\n                },\n                \"created_at\": \"2026-03-01T10:00:00+03:00\"\n            },\n            {\n                \"id\": 15,\n                \"type\": \"asset_moved\",\n                \"type_label\": \"Container moved\",\n                \"actor\": {\n                    \"id\": 1,\n                    \"name\": \"System admin\"\n                },\n                \"from_status\": null,\n                \"to_status\": null,\n                \"reason\": null,\n                \"changes\": {\n                    \"returning_asset\": {\n                        \"from\": \"C-BACK\",\n                        \"to\": \"C-BACK\"\n                    },\n                    \"asset_project\": {\n                        \"from\": \"ALN-P0001\",\n                        \"to\": null\n                    }\n                },\n                \"created_at\": \"2026-03-01T10:00:00+03:00\"\n            }\n        ]\n    }\n}"
+            },
+            {
+              "name": "403 — no verification code yet",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/trips/{{last_trip_id}}/final-approve",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "trips",
+                    "{{last_trip_id}}",
+                    "final-approve"
+                  ],
+                  "query": []
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"message\": \"Enter the verification code we e-mailed you to continue.\",\n    \"code\": \"otp_required\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Accept client objection",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/trips/{{last_trip_id}}/accept-objection",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "trips",
+                "{{last_trip_id}}",
+                "accept-objection"
+              ],
+              "query": []
+            },
+            "description": "A trip the client rejected (client_issue): GCM accepts, corrects and sends it back to the client (awaiting_client_approval). No OTP. Optional corrections = any Edit field.",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "quantity_ton",
+                  "value": "2.5",
+                  "type": "text",
+                  "description": "optional correction",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200 — example",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/trips/{{last_trip_id}}/accept-objection",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "trips",
+                    "{{last_trip_id}}",
+                    "accept-objection"
+                  ],
+                  "query": []
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"data\": {\n        \"id\": 2,\n        \"code\": \"ALN-T0002\",\n        \"status\": \"awaiting_client_approval\",\n        \"status_label\": \"Awaiting client approval\",\n        \"source\": \"staff\",\n        \"trip_at\": \"2026-02-20T11:00:00+03:00\",\n        \"requires_client_approval\": true,\n        \"requires_purchase_order\": true,\n        \"company\": {\n            \"id\": 1,\n            \"name\": \"Al Nakheel\",\n            \"code\": \"ALN-0001\"\n        },\n        \"project\": {\n            \"id\": 1,\n            \"name\": \"Riyadh Hotel\",\n            \"code\": \"ALN-P0001\",\n            \"location_url\": null,\n            \"representative\": {\n                \"id\": 4,\n                \"name\": \"Client Manager\"\n            }\n        },\n        \"driver\": {\n            \"id\": 1,\n            \"name\": \"Driver One\",\n            \"code\": \"990568\",\n            \"phone\": \"+966539680675\",\n            \"affiliation\": \"gcm\",\n            \"entity_name\": \"GCM\"\n        },\n        \"vehicle\": {\n            \"id\": 1,\n            \"plate\": \"ABC 1234\",\n            \"category\": {\n                \"id\": 5,\n                \"name\": \"Dyna box\"\n            },\n            \"has_embedded_container\": false,\n            \"embedded_container_type\": null,\n            \"affiliation\": \"gcm\",\n            \"entity_name\": \"GCM\"\n        },\n        \"going_asset\": {\n            \"id\": 4,\n            \"name\": \"Container 93xn\",\n            \"asset_type\": \"container\",\n            \"capacity\": {\n                \"id\": 1,\n                \"name\": \"12 m3\",\n                \"capacity_ton\": 3.75,\n                \"capacity_cbm\": 12\n            },\n            \"affiliation\": \"gcm\",\n            \"entity_name\": \"GCM\"\n        },\n        \"returning_asset\": {\n            \"id\": 3,\n            \"name\": \"Container 39dh\",\n            \"asset_type\": \"container\",\n            \"capacity\": {\n                \"id\": 1,\n                \"name\": \"12 m3\",\n                \"capacity_ton\": 3.75,\n                \"capacity_cbm\": 12\n            },\n            \"affiliation\": \"gcm\",\n            \"entity_name\": \"GCM\"\n        },\n        \"capacity\": {\n            \"id\": 1,\n            \"name\": \"12 m3\",\n            \"capacity_ton\": 3.75,\n            \"capacity_cbm\": 12\n        },\n        \"main_service\": {\n            \"id\": 1,\n            \"name\": \"Solid Waste Transport\",\n            \"service_type\": \"non_hazardous\"\n        },\n        \"sub_service\": {\n            \"id\": 1,\n            \"name\": \"General collection\",\n            \"requires_recycle_receipt\": false\n        },\n        \"quantity_ton\": 2.5,\n        \"quantity_cbm\": 8,\n        \"quantity_converter\": {\n            \"tonnes_per_cubic_meter\": 0.3125,\n            \"decimals\": 3\n        },\n        \"linked_to_purchase_order\": true,\n        \"purchase_order\": {\n            \"id\": 1,\n            \"number\": \"ALN-1200\"\n        },\n        \"trip_cost\": 100,\n        \"ancillary_cost\": 0,\n        \"facility\": {\n            \"id\": 1,\n            \"name\": \"Riyadh Landfill\"\n        },\n        \"delivery_note_number\": null,\n        \"waste_manifest_number\": null,\n        \"recycle_receipt_number\": null,\n        \"location_url\": null,\n        \"has_live_photo\": false,\n        \"client_comment\": null,\n        \"cancellation_reason\": null,\n        \"cancelled_at\": null,\n        \"completed_at\": null,\n        \"client_approved_at\": null,\n        \"additional_data\": null,\n        \"client_approver\": {\n            \"id\": 4,\n            \"name\": \"Client Manager\"\n        },\n        \"gcm_approver\": {\n            \"id\": 1,\n            \"name\": \"System admin\"\n        },\n        \"client_approved_by\": null,\n        \"client_signer_name\": null,\n        \"completed_by\": null,\n        \"cancelled_by\": null,\n        \"created_by\": {\n            \"id\": 1,\n            \"name\": \"System admin\"\n        },\n        \"files\": {\n            \"delivery-note\": null,\n            \"waste-manifest\": null,\n            \"recycle-receipt\": null,\n            \"live-photo\": null,\n            \"other\": null,\n            \"client-attachment\": null,\n            \"client-signature\": null,\n            \"client-stamp\": null,\n            \"gcm-signature\": null,\n            \"gcm-stamp\": null\n        },\n        \"updated_by\": {\n            \"id\": 1,\n            \"name\": \"System admin\"\n        },\n        \"updated_at\": \"2026-03-01T10:00:00+03:00\",\n        \"actions\": {\n            \"update\": true,\n            \"final_approve\": true,\n            \"accept_objection\": false,\n            \"reject_objection\": false,\n            \"cancel\": true,\n            \"remind_client\": true\n        },\n        \"events\": [\n            {\n                \"id\": 3,\n                \"type\": \"created\",\n                \"type_label\": \"Trip created\",\n                \"actor\": {\n                    \"id\": 1,\n                    \"name\": \"System admin\"\n                },\n                \"from_status\": null,\n                \"to_status\": \"awaiting_client_approval\",\n                \"reason\": null,\n                \"changes\": null,\n                \"created_at\": \"2026-03-01T10:00:00+03:00\"\n            },\n            {\n                \"id\": 4,\n                \"type\": \"client_rejected\",\n                \"type_label\": \"Rejected by the client\",\n                \"actor\": {\n                    \"id\": 4,\n                    \"name\": \"Client Manager\"\n                },\n                \"from_status\": \"awaiting_client_approval\",\n                \"to_status\": \"client_issue\",\n                \"reason\": \"The quantity is wrong\",\n                \"changes\": null,\n                \"created_at\": \"2026-03-01T10:00:00+03:00\"\n            },\n            {\n                \"id\": 5,\n                \"type\": \"objection_accepted\",\n                \"type_label\": \"Client objection accepted\",\n                \"actor\": {\n                    \"id\": 1,\n                    \"name\": \"System admin\"\n                },\n                \"from_status\": \"client_issue\",\n                \"to_status\": \"awaiting_client_approval\",\n                \"reason\": \"The quantity is wrong\",\n                \"changes\": {\n                    \"quantity_ton\": {\n                        \"from\": \"3.750\",\n                        \"to\": \"2.500\"\n                    },\n                    \"quantity_cbm\": {\n                        \"from\": \"12.000\",\n                        \"to\": \"8.000\"\n                    }\n                },\n                \"created_at\": \"2026-03-01T10:00:00+03:00\"\n            }\n        ]\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Reject client objection (OTP)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/trips/{{last_trip_id}}/reject-objection",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "trips",
+                "{{last_trip_id}}",
+                "reject-objection"
+              ],
+              "query": []
+            },
+            "description": "GCM rejects the client's objection and completes the trip without the client — needs the code (403 otp_required), GCM's signature and the client's signature uploaded (د4).",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "gcm_signature",
+                  "type": "file",
+                  "src": [],
+                  "description": "GCM's representative signature (د5): PNG / JPG ≤ 2 MB drawn on the signature pad — or send use_saved_gcm_signature=true instead",
+                  "disabled": false
+                },
+                {
+                  "key": "use_saved_gcm_signature",
+                  "value": "false",
+                  "type": "text",
+                  "description": "true = use the signature saved on my profile",
+                  "disabled": false
+                },
+                {
+                  "key": "save_gcm_signature",
+                  "value": "false",
+                  "type": "text",
+                  "description": "true = also keep the drawn signature on my profile",
+                  "disabled": false
+                },
+                {
+                  "key": "client_signature",
+                  "type": "file",
+                  "src": [],
+                  "description": "The client's signature, uploaded by staff when the trip has none (د4) — PNG / JPG ≤ 2 MB",
+                  "disabled": true
+                },
+                {
+                  "key": "client_stamp",
+                  "type": "file",
+                  "src": [],
+                  "description": "The client's stamp (optional, with client_signature)",
+                  "disabled": true
+                },
+                {
+                  "key": "client_signer_name",
+                  "value": "",
+                  "type": "text",
+                  "description": "The client signer's name (with client_signature)",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200 — example",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/trips/{{last_trip_id}}/reject-objection",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "trips",
+                    "{{last_trip_id}}",
+                    "reject-objection"
+                  ],
+                  "query": []
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"data\": {\n        \"id\": 3,\n        \"code\": \"ALN-T0003\",\n        \"status\": \"completed\",\n        \"status_label\": \"Completed trip\",\n        \"source\": \"staff\",\n        \"trip_at\": \"2026-02-21T11:00:00+03:00\",\n        \"requires_client_approval\": true,\n        \"requires_purchase_order\": true,\n        \"company\": {\n            \"id\": 1,\n            \"name\": \"Al Nakheel\",\n            \"code\": \"ALN-0001\"\n        },\n        \"project\": {\n            \"id\": 1,\n            \"name\": \"Riyadh Hotel\",\n            \"code\": \"ALN-P0001\",\n            \"location_url\": null,\n            \"representative\": {\n                \"id\": 4,\n                \"name\": \"Client Manager\"\n            }\n        },\n        \"driver\": {\n            \"id\": 1,\n            \"name\": \"Driver One\",\n            \"code\": \"990568\",\n            \"phone\": \"+966539680675\",\n            \"affiliation\": \"gcm\",\n            \"entity_name\": \"GCM\"\n        },\n        \"vehicle\": {\n            \"id\": 1,\n            \"plate\": \"ABC 1234\",\n            \"category\": {\n                \"id\": 5,\n                \"name\": \"Dyna box\"\n            },\n            \"has_embedded_container\": false,\n            \"embedded_container_type\": null,\n            \"affiliation\": \"gcm\",\n            \"entity_name\": \"GCM\"\n        },\n        \"going_asset\": {\n            \"id\": 6,\n            \"name\": \"Container 63sg\",\n            \"asset_type\": \"container\",\n            \"capacity\": {\n                \"id\": 1,\n                \"name\": \"12 m3\",\n                \"capacity_ton\": 3.75,\n                \"capacity_cbm\": 12\n            },\n            \"affiliation\": \"gcm\",\n            \"entity_name\": \"GCM\"\n        },\n        \"returning_asset\": {\n            \"id\": 5,\n            \"name\": \"Container 32hw\",\n            \"asset_type\": \"container\",\n            \"capacity\": {\n                \"id\": 1,\n                \"name\": \"12 m3\",\n                \"capacity_ton\": 3.75,\n                \"capacity_cbm\": 12\n            },\n            \"affiliation\": \"gcm\",\n            \"entity_name\": \"GCM\"\n        },\n        \"capacity\": {\n            \"id\": 1,\n            \"name\": \"12 m3\",\n            \"capacity_ton\": 3.75,\n            \"capacity_cbm\": 12\n        },\n        \"main_service\": {\n            \"id\": 1,\n            \"name\": \"Solid Waste Transport\",\n            \"service_type\": \"non_hazardous\"\n        },\n        \"sub_service\": {\n            \"id\": 1,\n            \"name\": \"General collection\",\n            \"requires_recycle_receipt\": false\n        },\n        \"quantity_ton\": 3.75,\n        \"quantity_cbm\": 12,\n        \"quantity_converter\": {\n            \"tonnes_per_cubic_meter\": 0.3125,\n            \"decimals\": 3\n        },\n        \"linked_to_purchase_order\": true,\n        \"purchase_order\": {\n            \"id\": 1,\n            \"number\": \"ALN-1200\"\n        },\n        \"trip_cost\": 100,\n        \"ancillary_cost\": 0,\n        \"facility\": {\n            \"id\": 1,\n            \"name\": \"Riyadh Landfill\"\n        },\n        \"delivery_note_number\": null,\n        \"waste_manifest_number\": null,\n        \"recycle_receipt_number\": null,\n        \"location_url\": null,\n        \"has_live_photo\": false,\n        \"client_comment\": \"Not our site\",\n        \"cancellation_reason\": null,\n        \"cancelled_at\": null,\n        \"completed_at\": \"2026-03-01T10:00:00+03:00\",\n        \"client_approved_at\": null,\n        \"additional_data\": null,\n        \"client_approver\": {\n            \"id\": 4,\n            \"name\": \"Client Manager\"\n        },\n        \"gcm_approver\": {\n            \"id\": 1,\n            \"name\": \"System admin\"\n        },\n        \"client_approved_by\": null,\n        \"client_signer_name\": \"Site engineer\",\n        \"completed_by\": {\n            \"id\": 1,\n            \"name\": \"System admin\"\n        },\n        \"cancelled_by\": null,\n        \"created_by\": {\n            \"id\": 1,\n            \"name\": \"System admin\"\n        },\n        \"files\": {\n            \"delivery-note\": null,\n            \"waste-manifest\": null,\n            \"recycle-receipt\": null,\n            \"live-photo\": null,\n            \"other\": null,\n            \"client-attachment\": null,\n            \"client-signature\": \"http://localhost:8000/api/v1/trips/3/files/client-signature\",\n            \"client-stamp\": null,\n            \"gcm-signature\": \"http://localhost:8000/api/v1/trips/3/files/gcm-signature\",\n            \"gcm-stamp\": null\n        },\n        \"updated_by\": {\n            \"id\": 1,\n            \"name\": \"System admin\"\n        },\n        \"updated_at\": \"2026-03-01T10:00:00+03:00\",\n        \"actions\": {\n            \"update\": true,\n            \"final_approve\": false,\n            \"accept_objection\": false,\n            \"reject_objection\": false,\n            \"cancel\": true,\n            \"remind_client\": false\n        },\n        \"events\": [\n            {\n                \"id\": 6,\n                \"type\": \"created\",\n                \"type_label\": \"Trip created\",\n                \"actor\": {\n                    \"id\": 1,\n                    \"name\": \"System admin\"\n                },\n                \"from_status\": null,\n                \"to_status\": \"awaiting_client_approval\",\n                \"reason\": null,\n                \"changes\": null,\n                \"created_at\": \"2026-03-01T10:00:00+03:00\"\n            },\n            {\n                \"id\": 7,\n                \"type\": \"client_rejected\",\n                \"type_label\": \"Rejected by the client\",\n                \"actor\": {\n                    \"id\": 4,\n                    \"name\": \"Client Manager\"\n                },\n                \"from_status\": \"awaiting_client_approval\",\n                \"to_status\": \"client_issue\",\n                \"reason\": \"Not our site\",\n                \"changes\": null,\n                \"created_at\": \"2026-03-01T10:00:00+03:00\"\n            },\n            {\n                \"id\": 8,\n                \"type\": \"objection_rejected\",\n                \"type_label\": \"Client objection rejected\",\n                \"actor\": {\n                    \"id\": 1,\n                    \"name\": \"System admin\"\n                },\n                \"from_status\": \"client_issue\",\n                \"to_status\": \"completed\",\n                \"reason\": \"Not our site\",\n                \"changes\": null,\n                \"created_at\": \"2026-03-01T10:00:00+03:00\"\n            },\n            {\n                \"id\": 9,\n                \"type\": \"client_signature_uploaded\",\n                \"type_label\": \"Client signature uploaded\",\n                \"actor\": {\n                    \"id\": 1,\n                    \"name\": \"System admin\"\n                },\n                \"from_status\": null,\n                \"to_status\": null,\n                \"reason\": \"Site engineer\",\n                \"changes\": null,\n                \"created_at\": \"2026-03-01T10:00:00+03:00\"\n            },\n            {\n                \"id\": 10,\n                \"type\": \"asset_moved\",\n                \"type_label\": \"Container moved\",\n                \"actor\": {\n                    \"id\": 1,\n                    \"name\": \"System admin\"\n                },\n                \"from_status\": null,\n                \"to_status\": null,\n                \"reason\": null,\n                \"changes\": {\n                    \"going_asset\": {\n                        \"from\": \"Container 63sg\",\n                        \"to\": \"Container 63sg\"\n                    },\n                    \"asset_project\": {\n                        \"from\": null,\n                        \"to\": \"ALN-P0001\"\n                    }\n                },\n                \"created_at\": \"2026-03-01T10:00:00+03:00\"\n            },\n            {\n                \"id\": 11,\n                \"type\": \"asset_moved\",\n                \"type_label\": \"Container moved\",\n                \"actor\": {\n                    \"id\": 1,\n                    \"name\": \"System admin\"\n                },\n                \"from_status\": null,\n                \"to_status\": null,\n                \"reason\": null,\n                \"changes\": {\n                    \"returning_asset\": {\n                        \"from\": \"Container 32hw\",\n                        \"to\": \"Container 32hw\"\n                    },\n                    \"asset_project\": {\n                        \"from\": \"ALN-P0001\",\n                        \"to\": null\n                    }\n                },\n                \"created_at\": \"2026-03-01T10:00:00+03:00\"\n            }\n        ]\n    }\n}"
+            },
+            {
+              "name": "403 — no verification code yet",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/trips/{{last_trip_id}}/reject-objection",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "trips",
+                    "{{last_trip_id}}",
+                    "reject-objection"
+                  ],
+                  "query": []
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"message\": \"Enter the verification code we e-mailed you to continue.\",\n    \"code\": \"otp_required\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Cancel trip (OTP)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/trips/{{last_trip_id}}/cancel",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "trips",
+                "{{last_trip_id}}",
+                "cancel"
+              ],
+              "query": []
+            },
+            "description": "Any status but cancelled, even completed (ج2). The reason is optional. The quota is given back (ج1) and moved containers go back (ج3). Needs the code (403 otp_required).",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "reason",
+                  "value": "Entered twice",
+                  "type": "text",
+                  "description": "optional",
+                  "disabled": false
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200 — example",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/trips/{{last_trip_id}}/cancel",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "trips",
+                    "{{last_trip_id}}",
+                    "cancel"
+                  ],
+                  "query": []
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"data\": {\n        \"id\": 4,\n        \"code\": \"ALN-T0004\",\n        \"status\": \"cancelled\",\n        \"status_label\": \"Cancelled trip\",\n        \"source\": \"staff\",\n        \"trip_at\": \"2026-02-22T11:00:00+03:00\",\n        \"requires_client_approval\": true,\n        \"requires_purchase_order\": true,\n        \"company\": {\n            \"id\": 1,\n            \"name\": \"Al Nakheel\",\n            \"code\": \"ALN-0001\"\n        },\n        \"project\": {\n            \"id\": 1,\n            \"name\": \"Riyadh Hotel\",\n            \"code\": \"ALN-P0001\",\n            \"location_url\": null,\n            \"representative\": {\n                \"id\": 4,\n                \"name\": \"Client Manager\"\n            }\n        },\n        \"driver\": {\n            \"id\": 1,\n            \"name\": \"Driver One\",\n            \"code\": \"990568\",\n            \"phone\": \"+966539680675\",\n            \"affiliation\": \"gcm\",\n            \"entity_name\": \"GCM\"\n        },\n        \"vehicle\": {\n            \"id\": 1,\n            \"plate\": \"ABC 1234\",\n            \"category\": {\n                \"id\": 5,\n                \"name\": \"Dyna box\"\n            },\n            \"has_embedded_container\": false,\n            \"embedded_container_type\": null,\n            \"affiliation\": \"gcm\",\n            \"entity_name\": \"GCM\"\n        },\n        \"going_asset\": {\n            \"id\": 8,\n            \"name\": \"Container 15ut\",\n            \"asset_type\": \"container\",\n            \"capacity\": {\n                \"id\": 1,\n                \"name\": \"12 m3\",\n                \"capacity_ton\": 3.75,\n                \"capacity_cbm\": 12\n            },\n            \"affiliation\": \"gcm\",\n            \"entity_name\": \"GCM\"\n        },\n        \"returning_asset\": {\n            \"id\": 7,\n            \"name\": \"Container 77ji\",\n            \"asset_type\": \"container\",\n            \"capacity\": {\n                \"id\": 1,\n                \"name\": \"12 m3\",\n                \"capacity_ton\": 3.75,\n                \"capacity_cbm\": 12\n            },\n            \"affiliation\": \"gcm\",\n            \"entity_name\": \"GCM\"\n        },\n        \"capacity\": {\n            \"id\": 1,\n            \"name\": \"12 m3\",\n            \"capacity_ton\": 3.75,\n            \"capacity_cbm\": 12\n        },\n        \"main_service\": {\n            \"id\": 1,\n            \"name\": \"Solid Waste Transport\",\n            \"service_type\": \"non_hazardous\"\n        },\n        \"sub_service\": {\n            \"id\": 1,\n            \"name\": \"General collection\",\n            \"requires_recycle_receipt\": false\n        },\n        \"quantity_ton\": 3.75,\n        \"quantity_cbm\": 12,\n        \"quantity_converter\": {\n            \"tonnes_per_cubic_meter\": 0.3125,\n            \"decimals\": 3\n        },\n        \"linked_to_purchase_order\": true,\n        \"purchase_order\": {\n            \"id\": 1,\n            \"number\": \"ALN-1200\"\n        },\n        \"trip_cost\": 100,\n        \"ancillary_cost\": 0,\n        \"facility\": {\n            \"id\": 1,\n            \"name\": \"Riyadh Landfill\"\n        },\n        \"delivery_note_number\": null,\n        \"waste_manifest_number\": null,\n        \"recycle_receipt_number\": null,\n        \"location_url\": null,\n        \"has_live_photo\": false,\n        \"client_comment\": null,\n        \"cancellation_reason\": \"Entered twice\",\n        \"cancelled_at\": \"2026-03-01T10:00:00+03:00\",\n        \"completed_at\": null,\n        \"client_approved_at\": null,\n        \"additional_data\": null,\n        \"client_approver\": {\n            \"id\": 4,\n            \"name\": \"Client Manager\"\n        },\n        \"gcm_approver\": {\n            \"id\": 1,\n            \"name\": \"System admin\"\n        },\n        \"client_approved_by\": null,\n        \"client_signer_name\": null,\n        \"completed_by\": null,\n        \"cancelled_by\": {\n            \"id\": 1,\n            \"name\": \"System admin\"\n        },\n        \"created_by\": {\n            \"id\": 1,\n            \"name\": \"System admin\"\n        },\n        \"files\": {\n            \"delivery-note\": null,\n            \"waste-manifest\": null,\n            \"recycle-receipt\": null,\n            \"live-photo\": null,\n            \"other\": null,\n            \"client-attachment\": null,\n            \"client-signature\": null,\n            \"client-stamp\": null,\n            \"gcm-signature\": null,\n            \"gcm-stamp\": null\n        },\n        \"updated_by\": {\n            \"id\": 1,\n            \"name\": \"System admin\"\n        },\n        \"updated_at\": \"2026-03-01T10:00:00+03:00\",\n        \"actions\": {\n            \"update\": false,\n            \"final_approve\": false,\n            \"accept_objection\": false,\n            \"reject_objection\": false,\n            \"cancel\": false,\n            \"remind_client\": false\n        },\n        \"events\": [\n            {\n                \"id\": 16,\n                \"type\": \"created\",\n                \"type_label\": \"Trip created\",\n                \"actor\": {\n                    \"id\": 1,\n                    \"name\": \"System admin\"\n                },\n                \"from_status\": null,\n                \"to_status\": \"awaiting_client_approval\",\n                \"reason\": null,\n                \"changes\": null,\n                \"created_at\": \"2026-03-01T10:00:00+03:00\"\n            },\n            {\n                \"id\": 17,\n                \"type\": \"cancelled\",\n                \"type_label\": \"Trip cancelled\",\n                \"actor\": {\n                    \"id\": 1,\n                    \"name\": \"System admin\"\n                },\n                \"from_status\": \"awaiting_client_approval\",\n                \"to_status\": \"cancelled\",\n                \"reason\": \"Entered twice\",\n                \"changes\": null,\n                \"created_at\": \"2026-03-01T10:00:00+03:00\"\n            }\n        ]\n    }\n}"
+            },
+            {
+              "name": "403 — no verification code yet",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/trips/{{last_trip_id}}/cancel",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "trips",
+                    "{{last_trip_id}}",
+                    "cancel"
+                  ],
+                  "query": []
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"message\": \"Enter the verification code we e-mailed you to continue.\",\n    \"code\": \"otp_required\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Trip file (inline)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/trips/{{last_trip_id}}/files/live-photo",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "trips",
+                "{{last_trip_id}}",
+                "files",
+                "live-photo"
+              ],
+              "query": []
+            },
+            "description": "A trip file, opened inline (PDF / image): kind = delivery-note | waste-manifest | recycle-receipt | live-photo | other | client-attachment | client-signature | client-stamp | gcm-signature | gcm-stamp. GCM staff only for now. 404 when the trip has none."
+          }
+        }
+      ]
+    },
+    {
       "name": "Trip form options",
       "description": "Phase 3 · part 7.2. The cascading lists of the trip form — each answers \"what may be chosen here, given the choices made before it\" (FRD trip form; WEEKLY_PLAN 7.2, nine steps). Read-only GET. Roles: System Admin / Data Entry (the staff form) and Driver (his own form); the drivers, POs and default-approver lists are staff only; auditor, client and contractor accounts get 403. The server re-checks every choice when a trip is saved (an available, compatible resource — only for the fields the save changes: an old trip keeps resources that went on vacation / maintenance since), so these lists are a convenience, not the guarantee. Long lists are paged: `search`, `page`, `per_page` (default 20, max 1000); response `{data, meta: {current_page, last_page, per_page, total, …}}`. Any id of another tenant is a 422 like a missing one. The examples were taken from the test fixture (company ALN, project Riyadh Hotel, PO ALN-1200 running + ALN-1100 ended).",
       "item": [

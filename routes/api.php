@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\V1\ProjectAssetController;
 use App\Http\Controllers\Api\V1\OtpController;
 use App\Http\Controllers\Api\V1\ProjectController;
 use App\Http\Controllers\Api\V1\PurchaseOrderController;
+use App\Http\Controllers\Api\V1\TripController;
 use App\Http\Controllers\Api\V1\TripOptionController;
 use App\Http\Controllers\Api\V1\TripReminderController;
 use App\Http\Controllers\Api\V1\RoleController;
@@ -200,6 +201,22 @@ Route::prefix('v1')->group(function () {
         Route::post('/otp/verify', [OtpController::class, 'verify'])->middleware('throttle:otp-verify');
         Route::get('/otp/status', [OtpController::class, 'status']);
         Route::post('/trips/{trip}/remind-client', [TripReminderController::class, 'store'])->whereNumber('trip');
+
+        // ── Phase 3 · 7.4 GCM's trips (FRD V01.14 §1.14) ──
+        // TripPolicy: manage = System Admin / Data Entry, view / export + Auditor. The final approval, rejecting
+        // the client's objection and cancelling need the e-mailed code (`otp`, ج15); creating a completed trip
+        // directly and accepting the objection don't. Multipart edits: POST with `_method=PATCH`.
+        Route::get('/trips/export', [TripController::class, 'export']);
+        Route::get('/trips/stats', [TripController::class, 'stats']);
+        Route::get('/trips', [TripController::class, 'index']);
+        Route::post('/trips', [TripController::class, 'store']);
+        Route::get('/trips/{trip}', [TripController::class, 'show'])->whereNumber('trip');
+        Route::patch('/trips/{trip}', [TripController::class, 'update'])->whereNumber('trip');
+        Route::post('/trips/{trip}/final-approve', [TripController::class, 'finalApprove'])->whereNumber('trip')->middleware('otp');
+        Route::post('/trips/{trip}/accept-objection', [TripController::class, 'acceptObjection'])->whereNumber('trip');
+        Route::post('/trips/{trip}/reject-objection', [TripController::class, 'rejectObjection'])->whereNumber('trip')->middleware('otp');
+        Route::post('/trips/{trip}/cancel', [TripController::class, 'cancel'])->whereNumber('trip')->middleware('otp');
+        Route::get('/trips/{trip}/files/{kind}', [TripController::class, 'file'])->whereNumber('trip')->where('kind', '[a-z-]+');
 
         // ── Phase 3 · 7.2 the trip form's cascading lists (FRD V01.14 §1.14) ──
         // Read-only; staff form + the driver's own form (TripPolicy). The rules are TripOptions; the server

@@ -63,6 +63,19 @@ class ExportFiltersTest extends TestCase
         return $rows;
     }
 
+    public function test_trip_export_honours_search_and_filters(): void
+    {
+        $kept = \App\Models\Trip::factory()->create(['trip_at' => '2026-03-02 10:00']);
+        $other = \App\Models\Trip::factory()->status(\App\Models\Trip::STATUS_CANCELLED)->create(['trip_at' => '2026-01-05 10:00']);
+
+        $codes = fn (string $query) => $this->exported('/api/v1/trips/export?format=xlsx&'.$query, 'trips.xlsx')->pluck('code')->all();
+
+        $this->assertSame([$kept->code], $codes('status=awaiting_client_approval'));
+        $this->assertSame([$other->code], $codes('date_from=2026-01-01&date_to=2026-01-31'));
+        $this->assertSame([$kept->code], $codes('search='.urlencode($kept->code)));
+        $this->assertCount(2, $codes(''));
+    }
+
     public function test_vehicle_export_honours_search_and_every_filter(): void
     {
         $dump = VehicleCategory::where('slug', 'dump_truck')->firstOrFail();
