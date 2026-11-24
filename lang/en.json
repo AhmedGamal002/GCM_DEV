@@ -1170,5 +1170,7 @@
   "By": "By",
   "Reason / changes": "Reason / changes",
   "Cancelling the trip treats it as if it never happened: its quota and containers are given back. This cannot be undone.": "Cancelling the trip treats it as if it never happened: its quota and containers are given back. This cannot be undone.",
-  "Reason (optional)": "Reason (optional)"
+  "Reason (optional)": "Reason (optional)",
+  "The trip's documents are generated once the trip is completed.": "The trip's documents are generated once the trip is completed.",
+  "This trip has no waste manifest.": "This trip has no waste manifest."
 }

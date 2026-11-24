@@ -117,7 +117,8 @@ class AppServiceProvider extends ServiceProvider
 
       $limits = [Limit::perMinute((int) config('app.api_rate_limit', 300))->by($who)];
 
-      if ($request->is('api/v1/*/export')) {
+      // A trip document preview (8.1) is a PDF drawn on request too — as expensive as an export.
+      if ($request->is('api/v1/*/export', 'api/v1/trips/*/documents/*')) {
         $limits[] = Limit::perMinute((int) config('app.export_rate_limit', 20))->by('export|'.$who);
       }
 

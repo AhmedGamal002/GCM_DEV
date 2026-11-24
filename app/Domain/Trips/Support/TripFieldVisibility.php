@@ -2,6 +2,7 @@
 
 namespace App\Domain\Trips\Support;
 
+use App\Domain\Trips\Documents\TripDocuments;
 use App\Models\Trip;
 use App\Models\User;
 
@@ -88,6 +89,29 @@ final class TripFieldVisibility
             $user->isClient() => ['live-photo', 'client-attachment'],
             default => [],
         };
+    }
+
+    /**
+     * The generated documents (part 8.1) the user may open — decision د10 and the plan's visibility line:
+     * GCM staff and the client's accounts (manager AND auditor — د10 (1)) the delivery note and the waste
+     * manifest, the driver and the contractor user the delivery note only. Whether a trip HAS them (completed,
+     * not supplying) is TripDocuments::available().
+     *
+     * @return list<string> TripDocuments kinds
+     */
+    public static function documentKinds(User $user): array
+    {
+        return match (true) {
+            self::isStaff($user), $user->isClient() => [TripDocuments::DELIVERY_NOTE, TripDocuments::WASTE_MANIFEST],
+            self::isFieldSide($user) => [TripDocuments::DELIVERY_NOTE],
+            default => [],
+        };
+    }
+
+    /** The one combined PDF of a trip's documents — GCM staff only; the client previews, never exports (د10 (2)). */
+    public static function exportsDocuments(User $user): bool
+    {
+        return self::isStaff($user);
     }
 
     /** Additional data, GCM's approver, signatures, who created / approved, the history (ج8). */

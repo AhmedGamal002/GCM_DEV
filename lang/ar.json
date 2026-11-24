@@ -1170,5 +1170,7 @@
   "By": "بواسطة",
   "Reason / changes": "السبب / التغييرات",
   "Cancelling the trip treats it as if it never happened: its quota and containers are given back. This cannot be undone.": "إلغاء الرحلة يعتبرها كأنها لم تكن: تُرجَع حصتها وحاوياتها، ولا يمكن التراجع عن ذلك.",
-  "Reason (optional)": "السبب (اختياري)"
+  "Reason (optional)": "السبب (اختياري)",
+  "The trip's documents are generated once the trip is completed.": "تتولّد مستندات الرحلة بعد اكتمالها فقط.",
+  "This trip has no waste manifest.": "لا يوجد بيان نفايات لهذه الرحلة."
 }

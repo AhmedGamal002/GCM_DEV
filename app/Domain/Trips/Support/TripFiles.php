@@ -30,7 +30,7 @@ final class TripFiles
     public const COLUMNS = [
         'delivery_note_path' => ['delivery-note', 'document'],
         'waste_manifest_path' => ['waste-manifest', 'document'],
-        'recycle_receipt_path' => ['recycle-receipt', 'document'],
+        'recycle_receipt_path' => ['recycle-receipt', 'image'], // a photo — a page of the combined PDF (8.1)
         'live_photo_path' => ['live-photo', 'image'],
         'other_attachment_path' => ['other', 'document'],
         'client_attachment_path' => ['client-attachment', 'document'],

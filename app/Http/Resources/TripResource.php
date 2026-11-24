@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use App\Domain\Trips\Actions\CancelTripAction;
 use App\Domain\Trips\Actions\FinalApproveTripAction;
 use App\Domain\Trips\Actions\UpdateTripAction;
+use App\Domain\Trips\Documents\TripDocuments;
 use App\Domain\Trips\Support\TripCapacity;
 use App\Domain\Trips\Support\TripFieldVisibility;
 use App\Domain\Trips\Support\TripFiles;
@@ -122,6 +123,8 @@ class TripResource extends JsonResource
             'cancelled_by' => $this->detail($internals, 'cancelledBy'),
             'created_by' => $this->detail($internals, 'createdBy'),
             'files' => $this->when(TripFieldVisibility::fileKinds($user) !== [], fn () => $this->files(TripFieldVisibility::fileKinds($user))),
+            // The generated documents (8.1) the user may open — once the trip is completed (د3).
+            'documents' => $this->when(TripFieldVisibility::documentKinds($user) !== [], fn () => $this->documents($user)),
 
             // "Last updated by … — date and time" (FRD details page, every role).
             'updated_by' => $this->person($this->updatedBy),
@@ -196,6 +199,29 @@ class TripResource extends JsonResource
 
             $out[$kind] = $this->{$column} === null ? null : url("/api/v1/trips/{$this->id}/files/{$kind}");
         }
+
+        return $out;
+    }
+
+    /**
+     * The trip's generated documents for `$user` (part 8.1): each one they may open with its number
+     * (null until the first generation reserves it — د2) and inline URL, and the combined PDF's URL for
+     * GCM staff. Empty lists before the trip is completed (د3).
+     *
+     * @return array{delivery_note?: array{number: ?string, url: string}, waste_manifest?: array{number: ?string, url: string}, export_url: ?string}
+     */
+    private function documents(User $user): array
+    {
+        $out = [];
+
+        foreach (TripDocuments::for($user, $this->resource) as $kind) {
+            $out[str_replace('-', '_', $kind)] = [
+                'number' => TripDocuments::code($this->resource, $kind),
+                'url' => url("/api/v1/trips/{$this->id}/documents/{$kind}"),
+            ];
+        }
+
+        $out['export_url'] = TripDocuments::canExport($user, $this->resource) ? url("/api/v1/trips/{$this->id}/documents/export") : null;
 
         return $out;
     }

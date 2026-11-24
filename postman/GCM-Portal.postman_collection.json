@@ -6390,7 +6390,7 @@
                   "key": "recycle_receipt",
                   "type": "file",
                   "src": [],
-                  "description": "PDF / JPG / PNG ≤ 5 MB",
+                  "description": "Photo of the recycle receipt (jpg / png, ≤ 5 MB) — printed as a page of the combined PDF.",
                   "disabled": true
                 },
                 {
@@ -6722,7 +6722,7 @@
                   "key": "recycle_receipt",
                   "type": "file",
                   "src": [],
-                  "description": "PDF / JPG / PNG ≤ 5 MB",
+                  "description": "Photo of the recycle receipt (jpg / png, ≤ 5 MB) — printed as a page of the combined PDF.",
                   "disabled": true
                 },
                 {
@@ -7730,6 +7730,365 @@
                 }
               ],
               "body": "{\n    \"message\": \"The reason field is required.\",\n    \"errors\": {\n        \"reason\": [\n            \"The reason field is required.\"\n        ]\n    }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Trip documents",
+      "description": "The documents generated for a COMPLETED trip (FRD §1.14 \"Automatically generated documents\"): the delivery note (DN-100001) and the waste manifest (M-100001) — one number per trip, shared by both, given the first time a document of the trip is generated and never changed. Generated from the trip's current data on every request (editing a completed trip updates them). Before completion: 409. A supplying trip has a delivery note only (waste manifest: 404).\n\nWho: GCM staff (System Admin, Data Entry, Auditor) and the client's accounts open both documents; the driver and the contractor user the delivery note only (a trip they see). The combined PDF is GCM staff only. A trip the user doesn't see is a 404.\n\nTrip details (GET /trips/{id}) lists them under `documents`: `delivery_note` / `waste_manifest` = {number, url} for the ones the user may open, and `export_url` (null unless staff).",
+      "item": [
+        {
+          "name": "Delivery note (inline PDF)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/pdf"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/trips/{{last_trip_id}}/documents/delivery-note",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "trips",
+                "{{last_trip_id}}",
+                "documents",
+                "delivery-note"
+              ],
+              "query": []
+            },
+            "description": "The delivery note, inline (the browser previews it). Staff, client accounts, the trip's driver and its contractor user."
+          },
+          "response": [
+            {
+              "name": "200 — PDF",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/pdf"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/trips/{{last_trip_id}}/documents/delivery-note",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "trips",
+                    "{{last_trip_id}}",
+                    "documents",
+                    "delivery-note"
+                  ],
+                  "query": []
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/pdf"
+                },
+                {
+                  "key": "Content-Disposition",
+                  "value": "inline; filename=\"DN-100001.pdf\""
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-store, private"
+                }
+              ],
+              "body": "%PDF-1.7 … (binary)"
+            },
+            {
+              "name": "409 — the trip is not completed yet",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/pdf"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/trips/{{last_trip_id}}/documents/delivery-note",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "trips",
+                    "{{last_trip_id}}",
+                    "documents",
+                    "delivery-note"
+                  ],
+                  "query": []
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"message\": \"The trip's documents are generated once the trip is completed.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Waste manifest (inline PDF)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/pdf"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/trips/{{last_trip_id}}/documents/waste-manifest",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "trips",
+                "{{last_trip_id}}",
+                "documents",
+                "waste-manifest"
+              ],
+              "query": []
+            },
+            "description": "The waste manifest, inline. Staff and the client's accounts (the driver and the contractor user: 403). A supplying trip has none: 404."
+          },
+          "response": [
+            {
+              "name": "200 — PDF",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/pdf"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/trips/{{last_trip_id}}/documents/waste-manifest",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "trips",
+                    "{{last_trip_id}}",
+                    "documents",
+                    "waste-manifest"
+                  ],
+                  "query": []
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/pdf"
+                },
+                {
+                  "key": "Content-Disposition",
+                  "value": "inline; filename=\"M-100001.pdf\""
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-store, private"
+                }
+              ],
+              "body": "%PDF-1.7 … (binary)"
+            },
+            {
+              "name": "409 — the trip is not completed yet",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/pdf"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/trips/{{last_trip_id}}/documents/waste-manifest",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "trips",
+                    "{{last_trip_id}}",
+                    "documents",
+                    "waste-manifest"
+                  ],
+                  "query": []
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"message\": \"The trip's documents are generated once the trip is completed.\"\n}"
+            },
+            {
+              "name": "404 — a supplying trip",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/pdf"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/trips/{{last_trip_id}}/documents/waste-manifest",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "trips",
+                    "{{last_trip_id}}",
+                    "documents",
+                    "waste-manifest"
+                  ],
+                  "query": []
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"message\": \"This trip has no waste manifest.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Export the trip's documents (combined PDF)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/pdf"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/trips/{{last_trip_id}}/documents/export",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "trips",
+                "{{last_trip_id}}",
+                "documents",
+                "export"
+              ],
+              "query": []
+            },
+            "description": "One PDF: delivery note → waste manifest → recycle receipt (the uploaded photo), leaving out what the trip doesn't have. A download, GCM staff only (client: 403). Refused for an account on vacation, and counted in the export rate limit."
+          },
+          "response": [
+            {
+              "name": "200 — PDF",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/pdf"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/trips/{{last_trip_id}}/documents/export",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "trips",
+                    "{{last_trip_id}}",
+                    "documents",
+                    "export"
+                  ],
+                  "query": []
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/pdf"
+                },
+                {
+                  "key": "Content-Disposition",
+                  "value": "attachment; filename=\"ALN-T0001-documents.pdf\""
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-store, private"
+                }
+              ],
+              "body": "%PDF-1.7 … (binary)"
+            },
+            {
+              "name": "403 — not GCM staff",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/pdf"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/trips/{{last_trip_id}}/documents/export",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "trips",
+                    "{{last_trip_id}}",
+                    "documents",
+                    "export"
+                  ],
+                  "query": []
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"message\": \"This action is unauthorized.\"\n}"
             }
           ]
         }

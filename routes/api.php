@@ -21,6 +21,7 @@ use App\Http\Controllers\Api\V1\OtpController;
 use App\Http\Controllers\Api\V1\ProjectController;
 use App\Http\Controllers\Api\V1\PurchaseOrderController;
 use App\Http\Controllers\Api\V1\TripController;
+use App\Http\Controllers\Api\V1\TripDocumentController;
 use App\Http\Controllers\Api\V1\TripOptionController;
 use App\Http\Controllers\Api\V1\TripReminderController;
 use App\Http\Controllers\Api\V1\RoleController;
@@ -226,6 +227,12 @@ Route::prefix('v1')->group(function () {
         Route::get('/trips/{trip}/client-sub-services', [ClientTripController::class, 'subServices'])->whereNumber('trip');
         Route::post('/trips/{trip}/client-approve', [ClientTripController::class, 'approve'])->whereNumber('trip')->middleware('otp');
         Route::post('/trips/{trip}/client-reject', [ClientTripController::class, 'reject'])->whereNumber('trip')->middleware('otp');
+
+        // ── Phase 3 · 8.1 the trip's generated documents (FRD V01.14 §1.14 "الوثائق المولدة تلقائياً") ──
+        // Once the trip is completed: the delivery note / waste manifest inline (staff and client: both; driver and
+        // contractor user: the delivery note), and the combined PDF for GCM staff (an /export: vacation and rate limit).
+        Route::get('/trips/{trip}/documents/export', [TripDocumentController::class, 'export'])->whereNumber('trip');
+        Route::get('/trips/{trip}/documents/{kind}', [TripDocumentController::class, 'show'])->whereNumber('trip')->where('kind', 'delivery-note|waste-manifest');
 
         // ── Phase 3 · 7.2 the trip form's cascading lists (FRD V01.14 §1.14) ──
         // Read-only; staff form + the driver's own form (TripPolicy). The rules are TripOptions; the server

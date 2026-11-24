@@ -25,6 +25,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * $fillable is the trip's plain data only. Everything else is set by the
  * actions after they checked it:
  *  - tenant_id, sequence, code     — stamped here / by BelongsToTenant
+ *  - document_number               — reserved by TripDocumentNumber (8.1), then locked
  *  - company_id, project_id        — must agree with each other and with the PO
  *  - status, source, requires_*    — the transitions
  *  - purchase_order_service_id, trip_cost, ancillary_cost — the quota (TripQuota)
@@ -182,7 +183,7 @@ class Trip extends Model
         });
 
         static::updating(function (Trip $trip) {
-            foreach (['code', 'sequence', 'company_id', 'source'] as $locked) {
+            foreach (['code', 'sequence', 'company_id', 'source', 'document_number'] as $locked) {
                 if ($trip->isDirty($locked)) {
                     $trip->{$locked} = $trip->getOriginal($locked);
                 }

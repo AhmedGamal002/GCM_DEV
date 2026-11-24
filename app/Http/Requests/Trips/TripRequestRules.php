@@ -83,7 +83,8 @@ trait TripRequestRules
         return [
             'delivery_note' => $document,
             'waste_manifest' => $document,
-            'recycle_receipt' => $document,
+            // A photo (FRD "صورة إيصال التدوير"): it is printed as a page of the trip's combined PDF (8.1).
+            'recycle_receipt' => ['nullable', 'file', 'mimes:jpg,jpeg,png', 'max:'.config('trips.attachment_max_kb')],
             'other_attachment' => $document,
             'live_photo' => ['nullable', 'file', 'mimes:jpg,jpeg,png', 'max:'.config('trips.attachment_max_kb')],
         ];

@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Domain\Trips\Support\ClientApproverResolver;
+use App\Domain\Trips\Support\TripFieldVisibility;
 use App\Models\Trip;
 use App\Models\User;
 
@@ -52,6 +53,24 @@ class TripPolicy
     public function export(User $actor): bool
     {
         return $actor->hasAnyRole([...Trip::STAFF_VIEW_ROLES, ...User::CLIENT_ROLES]);
+    }
+
+    /**
+     * Part 8.1 — open one generated document of `$trip` (TripDocuments kind): staff and the client's
+     * accounts both documents, the driver and the contractor user the delivery note
+     * (TripFieldVisibility::documentKinds) — of a trip they see. Not tied to viewAny: the driver's and
+     * contractor's trip pages come in 7.6 / 7.7, but their delivery note is 8.1's. Whether the trip has
+     * the document yet (completed, not supplying) is the controller's 409 / 404.
+     */
+    public function viewDocument(User $actor, Trip $trip, string $kind): bool
+    {
+        return in_array($kind, TripFieldVisibility::documentKinds($actor), true) && $trip->isVisibleTo($actor);
+    }
+
+    /** Part 8.1 — the combined PDF of the trip's documents: GCM staff only (د10 (2)). */
+    public function exportDocuments(User $actor, Trip $trip): bool
+    {
+        return TripFieldVisibility::exportsDocuments($actor) && $trip->isVisibleTo($actor);
     }
 
     /** Approve or reject `$trip` for the client (ج6). The status is the action's check (409). */
