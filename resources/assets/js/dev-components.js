@@ -80,3 +80,27 @@ $('demo-sig-export').addEventListener('click', async () => {
     fail('demo-sig-error', error);
   }
 });
+
+// 4. trip form lists
+const tripSelects = {};
+document.querySelectorAll('#demo-trip-lists select[data-field]').forEach((el) => {
+  tripSelects[el.dataset.field] = el;
+});
+const tripLog = $('demo-trip-log');
+const say = (line) => {
+  tripLog.textContent += line + '\n';
+  tripLog.scrollTop = tripLog.scrollHeight;
+};
+
+window.demoTripLists = window.gcmTripFormLists({
+  staff: true,
+  selects: tripSelects,
+  onChange: (field, item) => say(field + ' → ' + (item ? item.id : 'cleared')),
+  onCapacity: (data) => say('capacity → ' + (data && data.capacity ? data.capacity.name + ' (' + data.source + ')' : 'none')),
+  onPurchaseOrders: (response) => say('purchase orders → ' + response.data.length + ' (default ' + response.meta.default_purchase_order_id + ')'),
+  onError: (field, error) => say('ERROR ' + field + ': ' + ((error && error.response && error.response.data && error.response.data.message) || error.message || error))
+});
+
+$('demo-trip-needs-po').addEventListener('change', function () {
+  window.demoTripLists.setExtra('requires_purchase_order', this.checked);
+});

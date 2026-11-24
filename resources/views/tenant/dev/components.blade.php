@@ -2,6 +2,14 @@
 
 @section('title', 'Browser components')
 
+@section('vendor-style')
+@vite(['resources/assets/vendor/libs/select2/select2.scss'])
+@endsection
+
+@section('vendor-script')
+@vite(['resources/assets/vendor/libs/select2/select2.js'])
+@endsection
+
 @section('page-script')
 @vite('resources/assets/js/dev-components.js')
 @endsection
@@ -58,6 +66,30 @@
       <img id="demo-sig-img" alt="" class="border rounded" style="background: repeating-conic-gradient(#eee 0 25%, #fff 0 50%) 0 / 16px 16px; max-width: 100%" />
     </div>
     <div class="text-danger mt-3 d-none" id="demo-sig-error"></div>
+  </div>
+</div>
+
+<div class="card mb-6">
+  <h5 class="card-header">4. Trip form lists (cascading, from /api/v1/trips/options/*)</h5>
+  <div class="card-body">
+    <div class="form-check form-switch mb-4">
+      <input class="form-check-input" type="checkbox" id="demo-trip-needs-po" checked />
+      <label class="form-check-label" for="demo-trip-needs-po">The trip needs a purchase order</label>
+    </div>
+    <div class="row g-4" id="demo-trip-lists">
+      @foreach ([
+        'driver_id' => 'Driver', 'vehicle_id' => 'Vehicle', 'company_id' => 'Company', 'project_id' => 'Project',
+        'purchase_order_id' => 'Purchase order', 'main_service_id' => 'Main service', 'sub_service_id' => 'Sub-service',
+        'going_asset_id' => 'Going container', 'returning_asset_id' => 'Returning container',
+        'intermediate_facility_id' => 'Intermediate facility', 'client_approver_id' => 'Client approver', 'gcm_approver_id' => 'GCM approver',
+      ] as $field => $label)
+        <div class="col-md-4">
+          <label class="form-label" for="demo-trip-{{ $field }}">{{ $label }}</label>
+          <select id="demo-trip-{{ $field }}" data-field="{{ $field }}" class="form-select" data-placeholder="—"><option value=""></option></select>
+        </div>
+      @endforeach
+    </div>
+    <pre class="mt-4 mb-0 small bg-lighter p-3 rounded" id="demo-trip-log" style="max-height: 220px; overflow:auto" dir="ltr"></pre>
   </div>
 </div>
 @endsection

@@ -285,6 +285,26 @@
     {
       "name": "Trips",
       "icon": "menu-icon tf-icons ti ti-truck-delivery",
+      "slug": "app-trip",
+      "roles": ["system_admin", "data_entry", "auditor"],
+      "submenu": [
+        {
+          "url": "app/trip/list",
+          "name": "List",
+          "slug": "app-trip-list",
+          "roles": ["system_admin", "data_entry", "auditor"]
+        },
+        {
+          "url": "app/trip/add",
+          "name": "Add",
+          "slug": "app-trip-add",
+          "roles": ["system_admin", "data_entry"]
+        }
+      ]
+    },
+    {
+      "name": "Trips",
+      "icon": "menu-icon tf-icons ti ti-truck-delivery",
       "slug": "app-client-trip",
       "roles": ["client_project_manager", "client_project_auditor"],
       "submenu": [

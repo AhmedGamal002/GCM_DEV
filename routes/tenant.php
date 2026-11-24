@@ -27,6 +27,7 @@ use App\Http\Controllers\Web\PurchaseOrders\PurchaseOrderAccountController;
 use App\Http\Controllers\Web\PurchaseOrders\PurchaseOrderAddController;
 use App\Http\Controllers\Web\PurchaseOrders\PurchaseOrderListController;
 use App\Http\Controllers\Web\Trips\ClientTripController;
+use App\Http\Controllers\Web\Trips\TripPageController;
 use App\Http\Controllers\Web\Services\MainServicePageController;
 use App\Http\Controllers\Web\Services\SubServicePageController;
 use App\Http\Controllers\Web\Users\ClientUserController;
@@ -163,6 +164,12 @@ Route::middleware(['auth', 'tenant'])->group(function () {
 
     // ── Phase 3 · 7.5 the client's trips (FRD V01.14 §1.14 "مراجعة العميل للرحلات") ──
     // The client's project manager / auditor only (the controller checks); a trip of a project they don't see is a 404.
+    // GCM's trips (part 7.4): System Admin / Data Entry manage, the Auditor views. The client's pages are /app/client-trip/*.
+    Route::get('/app/trip/list', [TripPageController::class, 'list'])->name('app-trip-list');
+    Route::get('/app/trip/add', [TripPageController::class, 'add'])->middleware('can:create,App\Models\Trip')->name('app-trip-add');
+    Route::get('/app/trip/view/{trip}', [TripPageController::class, 'view'])->whereNumber('trip')->name('app-trip-view');
+    Route::get('/app/trip/edit/{trip}', [TripPageController::class, 'edit'])->whereNumber('trip')->middleware('can:create,App\Models\Trip')->name('app-trip-edit');
+
     Route::get('/app/client-trip/list', [ClientTripController::class, 'list'])->name('app-client-trip-list');
     Route::get('/app/client-trip/view/{trip}', [ClientTripController::class, 'view'])->whereNumber('trip')->name('app-client-trip-view');
     Route::get('/app/client-trip/review/{trip}', [ClientTripController::class, 'review'])->whereNumber('trip')->name('app-client-trip-review');

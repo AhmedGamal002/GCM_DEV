@@ -71,6 +71,7 @@ $contentLayout = (isset($container) ? (($container === 'container-xxl') ? "layou
       camera_retake: @json(__('Retake')),
       camera_use: @json(__('Use photo')),
       camera_cancel: @json(__('Cancel')),
+      trip_default: @json(__('default')),
       signature_hint: @json(__('Sign here')),
       signature_empty: @json(__('Draw your signature first.')),
       signature_too_large: @json(__('The signature is too large. Clear it and sign again.')),

@@ -324,7 +324,9 @@ final class TripInput
         }
 
         try {
-            return Carbon::parse($value);
+            // A value with an offset ("...+02:00", what the browser form sends) is the same instant in the app's zone: Eloquent
+            // writes a Carbon in ITS OWN zone, so without this the wall-clock of the sender's zone would be stored as the app's.
+            return Carbon::parse($value)->setTimezone(config('app.timezone'));
         } catch (\Throwable) {
             throw ValidationException::withMessages(['trip_at' => __('The trip date and time is not valid.')]);
         }
