@@ -52,9 +52,13 @@ class TripApiReadTest extends TripTestCase
         $this->as($this->auditor, 'trips/stats')->assertOk()->assertJsonPath('data.total', 1);
     }
 
-    public function test_a_driver_gets_403_until_7_6(): void
+    public function test_a_driver_reads_the_list_and_never_the_export(): void
     {
-        $this->as($this->driver->user, 'trips')->assertForbidden();
+        $this->createAwaiting();
+
+        // Part 7.6 opened the driver's own list; he has no export (FRD: a table of his trips, add the receipt photo, view + DN).
+        $this->as($this->driver->user, 'trips')->assertOk()->assertJsonCount(1, 'data'); // the fixture's trip is his
+        $this->as($this->driver->user, 'trips/export')->assertForbidden();
     }
 
     public function test_a_contractor_user_gets_403_until_7_7(): void

@@ -191,4 +191,30 @@ class TripPagesTest extends TripTestCase
         // The staff pages never serve a client: 403 before the trip is even looked up.
         $this->actingAs($this->clientAuditor, 'web')->get("/app/trip/view/{$trip->id}")->assertForbidden();
     }
+    // ── the vehicle type ────────────────────────────────────────────
+
+    public function test_the_vehicle_type_is_plain_text_in_the_form_and_a_row_under_the_vehicle_in_the_details(): void
+    {
+        $trip = $this->createAwaiting();
+        $this->actingAs($this->admin, 'web');
+
+        // automatic fields are text, not read-only inputs that look editable
+        $form = $this->get('/app/trip/add')->assertOk()->getContent();
+        $this->assertStringContainsString('id="tf-vehicle_type"', $form);
+        $this->assertDoesNotMatchRegularExpression('/<input[^>]*id="tf-(vehicle_type|vehicle_capacity|returning_capacity)"/', $form);
+
+        // the details list the type right after the vehicle
+        $details = $this->get("/app/trip/view/{$trip->id}")->assertOk()->getContent();
+        $this->assertLessThan(strpos($details, 'data-row="vehicle_type"'), strpos($details, 'data-row="vehicle"'));
+        $this->assertLessThan(strpos($details, 'data-row="going"'), strpos($details, 'data-row="vehicle_type"'));
+    }
+    public function test_the_details_page_has_the_documents_card_and_its_export_button(): void
+    {
+        $trip = $this->createAwaiting();
+
+        $html = $this->actingAs($this->admin, 'web')->get("/app/trip/view/{$trip->id}")->assertOk()->getContent();
+
+        $this->assertStringContainsString('id="tv-generated-card"', $html);
+        $this->assertStringContainsString('id="tv-export-documents"', $html);
+    }
 }

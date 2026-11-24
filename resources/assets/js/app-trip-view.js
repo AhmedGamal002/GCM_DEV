@@ -8,6 +8,8 @@
  */
 'use strict';
 
+import { renderTripDocuments } from './trip/documents-card.js';
+
 $(function () {
   const cfg = window.tripViewConfig;
   const t = cfg.t;
@@ -59,6 +61,7 @@ $(function () {
     v('date', trip.trip_at ? moment(trip.trip_at).format('YYYY-MM-DD HH:mm') : '');
     v('driver', person(trip.driver));
     v('vehicle', person(trip.vehicle));
+    v('vehicle_type', trip.vehicle && trip.vehicle.category && trip.vehicle.category.name);
     v('going', person(trip.going_asset));
     v('returning', person(trip.returning_asset));
     v('company', trip.company && trip.company.name);
@@ -125,6 +128,8 @@ $(function () {
     $id('tv-additional-card').classList.toggle('d-none', !trip.additional_data);
     $id('tv-additional').innerHTML = trip.additional_data || '';
 
+    renderTripDocuments(trip, { card: $id('tv-generated-card'), list: $id('tv-generated'), hint: $id('tv-generated-hint'), exportButton: $id('tv-export-documents'), labels: { delivery_note: t.delivery_note, waste_manifest: t.waste_manifest } });
+
     const a = trip.actions || {};
     const editable = cfg.canManage && (a.update || a.final_approve || a.accept_objection || a.reject_objection);
     $id('tv-edit').classList.toggle('d-none', !editable);
@@ -150,6 +155,9 @@ $(function () {
       line.className = 'small text-muted';
       if (value && typeof value === 'object' && ('from' in value || 'to' in value)) {
         line.textContent = field + ': ' + (value.from === null || value.from === '' ? t.empty : value.from) + ' → ' + (value.to === null || value.to === '' ? t.empty : value.to);
+      } else if (Array.isArray(value)) {
+        // e.g. the people a reminder went to: their names, not the JSON
+        line.textContent = field + ': ' + value.map((v) => (v && v.name) || JSON.stringify(v)).join(', ');
       } else {
         line.textContent = field + ': ' + JSON.stringify(value);
       }

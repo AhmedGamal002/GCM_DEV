@@ -1172,5 +1172,19 @@
   "Cancelling the trip treats it as if it never happened: its quota and containers are given back. This cannot be undone.": "إلغاء الرحلة يعتبرها كأنها لم تكن: تُرجَع حصتها وحاوياتها، ولا يمكن التراجع عن ذلك.",
   "Reason (optional)": "السبب (اختياري)",
   "The trip's documents are generated once the trip is completed.": "تتولّد مستندات الرحلة بعد اكتمالها فقط.",
-  "This trip has no waste manifest.": "لا يوجد بيان نفايات لهذه الرحلة."
+  "This trip has no waste manifest.": "لا يوجد بيان نفايات لهذه الرحلة.",
+  "My trips": "رحلاتي",
+  "Finding your location…": "جارٍ تحديد موقعك…",
+  "Take the live location and the live photo to create the trip.": "التقط الموقع الحالي والصورة الحية لتتمكن من إنشاء الرحلة.",
+  "On site": "من موقع العميل",
+  "The recycle receipt photo was saved.": "تم حفظ صورة إيصال إعادة التدوير.",
+  "Choose the receipt photo first.": "اختر صورة الإيصال أولًا.",
+  "Current photo": "الصورة الحالية",
+  "Add or replace the recycle receipt photo": "إضافة أو استبدال صورة إيصال إعادة التدوير",
+  "Upload": "رفع",
+  "The trip is completed or cancelled: the receipt can no longer be changed here.": "الرحلة مكتملة أو ملغاة: لا يمكن تغيير الإيصال من هنا بعد الآن.",
+  "The sub-service was cleared: it does not suit the container or tank you chose.": "تم مسح الخدمة الفرعية لأنها لا تناسب الحاوية أو الصهريج الذي اخترته.",
+  "The main service was cleared: the chosen purchase order does not cover it.": "تم مسح الخدمة الأساسية لأن التعاقد المختار لا يغطيها.",
+  "Trip documents": "مستندات الرحلة",
+  "Export trip documents": "تصدير مستندات الرحلة"
 }

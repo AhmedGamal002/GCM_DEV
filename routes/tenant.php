@@ -27,6 +27,7 @@ use App\Http\Controllers\Web\PurchaseOrders\PurchaseOrderAccountController;
 use App\Http\Controllers\Web\PurchaseOrders\PurchaseOrderAddController;
 use App\Http\Controllers\Web\PurchaseOrders\PurchaseOrderListController;
 use App\Http\Controllers\Web\Trips\ClientTripController;
+use App\Http\Controllers\Web\Trips\DriverTripPageController;
 use App\Http\Controllers\Web\Trips\TripPageController;
 use App\Http\Controllers\Web\Services\MainServicePageController;
 use App\Http\Controllers\Web\Services\SubServicePageController;
@@ -169,6 +170,11 @@ Route::middleware(['auth', 'tenant'])->group(function () {
     Route::get('/app/trip/add', [TripPageController::class, 'add'])->middleware('can:create,App\Models\Trip')->name('app-trip-add');
     Route::get('/app/trip/view/{trip}', [TripPageController::class, 'view'])->whereNumber('trip')->name('app-trip-view');
     Route::get('/app/trip/edit/{trip}', [TripPageController::class, 'edit'])->whereNumber('trip')->middleware('can:create,App\Models\Trip')->name('app-trip-edit');
+
+    // The driver's trips (part 7.6): his table, the create form, the details. GCM's are /app/trip/*, the client's /app/client-trip/*.
+    Route::get('/app/driver-trip/list', [DriverTripPageController::class, 'list'])->name('app-driver-trip-list');
+    Route::get('/app/driver-trip/add', [DriverTripPageController::class, 'add'])->middleware('can:createAsDriver,App\Models\Trip')->name('app-driver-trip-add');
+    Route::get('/app/driver-trip/view/{trip}', [DriverTripPageController::class, 'view'])->whereNumber('trip')->name('app-driver-trip-view');
 
     Route::get('/app/client-trip/list', [ClientTripController::class, 'list'])->name('app-client-trip-list');
     Route::get('/app/client-trip/view/{trip}', [ClientTripController::class, 'view'])->whereNumber('trip')->name('app-client-trip-view');

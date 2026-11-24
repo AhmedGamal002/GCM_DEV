@@ -55,13 +55,14 @@
           <label class="form-label" for="tf-vehicle_id">{{ __('Vehicle') }}</label>
           <select id="tf-vehicle_id" name="vehicle_id" class="form-select" data-placeholder="{{ __('Select a vehicle') }}" required><option value=""></option></select>
         </div>
+        {{-- Automatic (FRD: "يظهر تلقائيا"): plain text, not an input — nothing here is for the user to change. --}}
         <div class="col-md-3">
-          <label class="form-label" for="tf-vehicle_type">{{ __('Vehicle type') }}</label>
-          <input type="text" class="form-control" id="tf-vehicle_type" readonly />
+          <label class="form-label">{{ __('Vehicle type') }}</label>
+          <div class="form-control-plaintext" id="tf-vehicle_type">—</div>
         </div>
         <div class="col-md-3">
-          <label class="form-label" for="tf-vehicle_capacity">{{ __('Vehicle capacity') }}</label>
-          <input type="text" class="form-control" id="tf-vehicle_capacity" readonly dir="ltr" />
+          <label class="form-label">{{ __('Vehicle capacity') }}</label>
+          <div class="form-control-plaintext" id="tf-vehicle_capacity" dir="ltr">—</div>
         </div>
         <div class="col-md-6" data-field="going_asset_id">
           <label class="form-label" for="tf-going_asset_id">{{ __('Going container / tank') }}</label>
@@ -72,8 +73,8 @@
           <select id="tf-returning_asset_id" name="returning_asset_id" class="form-select" data-placeholder="—"><option value=""></option></select>
         </div>
         <div class="col-md-6">
-          <label class="form-label" for="tf-returning_capacity">{{ __('Returning container capacity') }}</label>
-          <input type="text" class="form-control" id="tf-returning_capacity" readonly dir="ltr" />
+          <label class="form-label">{{ __('Returning container capacity') }}</label>
+          <div class="form-control-plaintext" id="tf-returning_capacity" dir="ltr">—</div>
         </div>
 
         <div class="col-md-6" data-field="location_url">

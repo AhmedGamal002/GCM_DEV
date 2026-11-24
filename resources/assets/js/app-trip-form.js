@@ -55,8 +55,22 @@ $(function () {
 
   // ---------------------------------------------------------------- errors
 
+  /** A choice the lists cleared because it no longer fits: say so, under its field, until the user chooses again. */
+  function notice(field) {
+    const holder = wrapper(field);
+    const message = field === 'sub_service_id' ? t.cleared_sub_service : field === 'main_service_id' ? t.cleared_main_service : null;
+    if (!holder || !message) return;
+
+    holder.querySelectorAll('.tf-note').forEach((n) => n.remove());
+    const note = document.createElement('div');
+    note.className = 'tf-note text-warning small mt-1';
+    note.textContent = message;
+    holder.appendChild(note);
+  }
+
   function clearErrors() {
     el('error').classList.add('d-none');
+    form.querySelectorAll('.tf-note').forEach((n) => n.remove());
     form.querySelectorAll('.tf-feedback').forEach((n) => n.remove());
     form.querySelectorAll('.is-invalid').forEach((n) => n.classList.remove('is-invalid'));
   }
@@ -98,6 +112,7 @@ $(function () {
     tripId: cfg.tripId,
     selects,
     onChange: (field, item) => {
+      if (item && wrapper(field)) wrapper(field).querySelectorAll('.tf-note').forEach((n) => n.remove());
       if (field === 'project_id' && !prefilling) {
         // another project: the "without PO" the previous one forced no longer applies
         el('rpo-yes').checked = true;
@@ -112,6 +127,7 @@ $(function () {
     },
     onCapacity: capacityLoaded,
     onPurchaseOrders: purchaseOrdersLoaded,
+    onInvalidated: (field) => notice(field),
     onError: (field, error) => {
       el('error').textContent = (error && error.response && error.response.data && error.response.data.message) || window.gcmErrorMessage(error);
       el('error').classList.remove('d-none');
@@ -119,14 +135,14 @@ $(function () {
   });
 
   function showVehicle(vehicle) {
-    el('vehicle_type').value = (vehicle && vehicle.category && vehicle.category.name) || '';
+    el('vehicle_type').textContent = (vehicle && vehicle.category && vehicle.category.name) || '—';
     const embedded = vehicle && vehicle.embedded_container && vehicle.embedded_container.capacity;
-    el('vehicle_capacity').value = embedded ? embedded.name + ' · ' + embedded.capacity_ton + ' t / ' + embedded.capacity_cbm + ' m³' : '';
+    el('vehicle_capacity').textContent = embedded ? embedded.name + ' · ' + embedded.capacity_ton + ' t / ' + embedded.capacity_cbm + ' m³' : '—';
   }
 
   function showReturning(asset) {
     const c = asset && asset.capacity;
-    el('returning_capacity').value = c ? c.name + ' · ' + c.capacity_ton + ' t / ' + c.capacity_cbm + ' m³' : '';
+    el('returning_capacity').textContent = c ? c.name + ' · ' + c.capacity_ton + ' t / ' + c.capacity_cbm + ' m³' : '—';
   }
 
   function mainServiceChosen(service) {

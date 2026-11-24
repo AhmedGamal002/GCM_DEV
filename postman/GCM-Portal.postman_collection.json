@@ -9270,6 +9270,133 @@
       ]
     },
     {
+      "name": "Driver trips",
+      "description": "Phase 3 · part 7.6 (FRD V01.14 §1.14 \"from the driver's point of view\"). Log in as a DRIVER (a Bearer token for the mobile app). The driver lists and opens his own trips with GET /trips and GET /trips/{id} (the Trips folder: his trips only, no costs, no PO number, no history, no export) — these two are what only he does. He cannot edit a trip after creating it. Another driver's trip is a 404. The camera and the GPS need HTTPS in a browser; the API itself only checks what arrives.",
+      "item": [
+        {
+          "name": "Create trip (driver)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "company_id",
+                  "value": "{{last_company_id}}",
+                  "type": "text"
+                },
+                {
+                  "key": "project_id",
+                  "value": "{{last_project_id}}",
+                  "type": "text"
+                },
+                {
+                  "key": "vehicle_id",
+                  "value": "1",
+                  "type": "text",
+                  "description": "one of the driver's qualified vehicles (GET /trips/options/vehicles)"
+                },
+                {
+                  "key": "main_service_id",
+                  "value": "1",
+                  "type": "text",
+                  "description": "GET /trips/options/main-services"
+                },
+                {
+                  "key": "sub_service_id",
+                  "type": "text",
+                  "description": "optional"
+                },
+                {
+                  "key": "going_asset_id",
+                  "type": "text",
+                  "description": "optional"
+                },
+                {
+                  "key": "returning_asset_id",
+                  "type": "text",
+                  "description": "optional"
+                },
+                {
+                  "key": "location_url",
+                  "value": "https://www.google.com/maps/search/?api=1&query=24.713600,46.675300",
+                  "type": "text",
+                  "description": "REQUIRED, live: only a Google Maps coordinates link of this exact form is accepted (what the app's GPS widget builds) — free text is refused (422)"
+                },
+                {
+                  "key": "live_photo",
+                  "type": "file",
+                  "description": "REQUIRED, live: jpg / png up to 5 MB"
+                },
+                {
+                  "key": "other_attachment",
+                  "type": "file",
+                  "description": "optional: pdf / jpg / png"
+                },
+                {
+                  "key": "additional_data",
+                  "type": "text",
+                  "description": "optional"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{api_base}}/driver/trips",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "driver",
+                "trips"
+              ]
+            },
+            "description": "The minimum of data. The driver is the account, the date is now, the PO and the costs are the server's (a project with no PO for the service gives a trip \"without PO\" that GCM prices later). Starts \"awaiting the client's approval\". 422 on the field's name; 403 for any role but a driver."
+          }
+        },
+        {
+          "name": "Add / replace recycle receipt photo",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "recycle_receipt",
+                  "type": "file",
+                  "description": "jpg / png / pdf up to 5 MB"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{api_base}}/driver/trips/{{last_trip_id}}/recycle-receipt",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "driver",
+                "trips",
+                "{{last_trip_id}}",
+                "recycle-receipt"
+              ]
+            },
+            "description": "The one change a driver may make after creating (ج13): add or replace the receipt photo of HIS trip until it is completed. 409 trip_transition_not_allowed once completed or cancelled; 404 for another driver's trip."
+          }
+        }
+      ]
+    },
+    {
       "name": "Purchase Orders",
       "description": "FRD V01.14 §1.13 (Phase 3 · part 6.2). System Admin creates / edits / deactivates; System Admin + Auditor read and export; a client Project Manager reads the POs of their own projects (every amount, no export). Data Entry, client Project Auditor, contractor users and drivers get 403 — Data Entry has NO access to POs at all, not even to view. The PO number is the company short name + the paper contract number (ALN-1200), unique per tenant.",
       "item": [

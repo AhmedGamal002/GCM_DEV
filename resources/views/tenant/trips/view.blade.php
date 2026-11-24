@@ -31,6 +31,8 @@
       gcm: @json(__('GCM')),
       without_po: @json(__('Without a PO')),
       open_map: @json(__('Open in Google Maps')),
+      delivery_note: @json(__('Delivery Note')),
+      waste_manifest: @json(__('Waste Manifest')),
       yes: @json(__('Yes')),
       no: @json(__('No')),
       reminder_sent: @json(__('The reminder was sent to :count.')),
@@ -76,7 +78,7 @@
         <h5 class="pb-4 border-bottom mt-6 mb-4">{{ __('Details') }}</h5>
         <ul class="list-unstyled my-3 py-1">
           @foreach ([
-            'date' => __('Date & Time'), 'driver' => __('Driver'), 'vehicle' => __('Vehicle'),
+            'date' => __('Date & Time'), 'driver' => __('Driver'), 'vehicle' => __('Vehicle'), 'vehicle_type' => __('Vehicle type'),
             'going' => __('Going container / tank'), 'returning' => __('Returning container / tank'),
             'company' => __('Client company'), 'project' => __('Project'), 'representative' => __('Field officer in the project'),
             'location' => __('Client location'), 'po' => __('Purchase order'),
@@ -107,6 +109,16 @@
     <div class="card mb-6">
       <h5 class="card-header">{{ __('Live photo from the site') }}</h5>
       <div class="card-body" id="tv-photo">—</div>
+    </div>
+
+    {{-- Part 8.1: the generated documents, once the trip is completed (GET /trips/{id} → documents). --}}
+    <div class="card mb-6 d-none" id="tv-generated-card">
+      <h5 class="card-header">{{ __('Trip documents') }}</h5>
+      <div class="card-body">
+        <ul class="list-unstyled mb-0" id="tv-generated"></ul>
+        <p class="text-muted small mb-0 d-none" id="tv-generated-hint">{{ __('The trip\'s documents are generated once the trip is completed.') }}</p>
+        <button type="button" class="btn btn-outline-primary mt-4 d-none" id="tv-export-documents"><i class="ti ti-file-export me-1"></i>{{ __('Export trip documents') }}</button>
+      </div>
     </div>
 
     <div class="card mb-6">

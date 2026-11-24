@@ -94,7 +94,11 @@ class TripVisibilityTest extends TripTestCase
 
         $this->assertSame($this->facility->id, $data['facility']['id']);
         $this->assertSame('DN-1', $data['delivery_note_number']);
-        $this->assertNoneOf($data, ['purchase_order', 'trip_cost', 'ancillary_cost', 'waste_manifest_number', 'recycle_receipt_number', 'client_comment', 'events', 'files', 'additional_data', 'actions']);
+        $this->assertNoneOf($data, ['purchase_order', 'trip_cost', 'ancillary_cost', 'waste_manifest_number', 'recycle_receipt_number', 'client_comment', 'events', 'additional_data', 'actions']);
+        // Part 7.6: he opens what he attached himself — not the signatures, the staff's documents or the client's file.
+        $kinds = array_keys($data['files']);
+        sort($kinds);
+        $this->assertSame(['live-photo', 'other', 'recycle-receipt'], $kinds);
     }
 
     public function test_the_contractor_user_sees_what_the_driver_sees(): void

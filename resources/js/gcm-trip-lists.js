@@ -14,6 +14,7 @@
  *     onCapacity: (data|null) => {},     // {capacity, source, default_quantity:{ton,cbm}, converter}
  *     onPurchaseOrders: (response) => {},// the PO list with each line's costs / status and meta
  *     onChange: (field, item|null) => {},
+ *     onInvalidated: (field) => {},      // a choice was cleared because it no longer fits (a recheck, not a plain clear)
  *     onError: (field, error) => {}
  *   });
  *   lists.set('project_id', { id, text }, { silent: true })   // prefill (edit): no clearing, no defaults
@@ -26,7 +27,9 @@
  *   project → PO, main service, returning container, client approver
  *   vehicle → main service, both containers, sub-service           PO → main service
  *   main service → sub-service (and re-reads the PO list's costs and the capacity)
- *   going / returning container → sub-service                      sub-service → facility
+ *   sub-service → facility
+ * Two changes only RE-CHECK instead of clearing (the choice stays when it still fits, and is cleared when it no longer
+ * does): a going / returning container → the sub-service, and the PO → the main service.
  * On a NEW trip the defaults are picked for the user when the field is empty: the driver's default vehicle, the
  * PO the trip would use, the project's default client approver and the signed-in user as GCM approver.
  *
@@ -85,7 +88,8 @@ const LISTS = {
     paged: false,
     needs: (v) => (v.requires_purchase_order === false ? ['never'] : ['project_id']),
     params: (v) => ({ project_id: v.project_id, main_service_id: v.main_service_id, trip_at: v.trip_at }),
-    clears: ['main_service_id'],
+    clears: [],
+    recheck: ['main_service_id'],
     label: (po) => join(po.number, po.timeline_label, po.is_default ? '(' + t('trip_default', 'default') + ')' : '')
   },
   main_service_id: {
@@ -121,7 +125,8 @@ const LISTS = {
     endpoint: 'going-assets',
     needs: () => ['vehicle_id'],
     params: (v, o) => ({ vehicle_id: v.vehicle_id, trip_id: o.tripId }),
-    clears: ['sub_service_id'],
+    clears: [],
+    recheck: ['sub_service_id'],
     refresh: ['returning_asset_id'],
     label: (a) => join(a.name, a.capacity && a.capacity.name, a.entity_name)
   },
@@ -134,7 +139,8 @@ const LISTS = {
       going_asset_id: v.going_asset_id,
       trip_id: o.tripId
     }),
-    clears: ['sub_service_id'],
+    clears: [],
+    recheck: ['sub_service_id'],
     refresh: ['capacity'],
     label: (a) => join(a.name, a.capacity && a.capacity.name, a.entity_name)
   },
@@ -278,6 +284,52 @@ window.gcmTripFormLists = function (options) {
     if (notify && typeof o.onChange === 'function') o.onChange(field, null);
   }
 
+  /**
+   * A change that MAY make a choice invalid (a container for the sub-service, a PO for the main service): the choice
+   * is kept when the list for the new situation still holds it, and cleared only when it no longer fits — asked of
+   * the server's own list, so the rule stays TripOptions'. A list that can't be read keeps the choice (the server
+   * re-checks on save anyway).
+   */
+  function recheck(field) {
+    const wanted = values[field];
+    if (wanted === null || wanted === undefined || !o.selects[field]) return;
+
+    const invalidated = () => {
+      clearField(field, true);
+      if (typeof o.onInvalidated === 'function') o.onInvalidated(field);
+    };
+
+    if (!ready(field)) {
+      invalidated();
+
+      return;
+    }
+
+    const def = LISTS[field];
+    const token = (tokens['r' + field] = (tokens['r' + field] || 0) + 1);
+
+    const find = async () => {
+      let page = 1;
+      let last = 1;
+
+      do {
+        const response = await o.load(def.endpoint, Object.assign({}, def.params(state(), o), { per_page: 100, page }));
+        if ((response.data || []).some((x) => x.id === wanted)) return true;
+        last = (response.meta && response.meta.last_page) || 1;
+        page += 1;
+      } while (page <= last && page <= 5);
+
+      return false;
+    };
+
+    find()
+      .then((found) => {
+        if (token !== tokens['r' + field] || destroyed || values[field] !== wanted) return; // the user moved on
+        if (!found) invalidated();
+      })
+      .catch((error) => fail(field, error));
+  }
+
   /** What a change of `field` does to the others. `silent` = a prefill: nothing is cleared and no default is picked. */
   function afterChange(field, silent) {
     if (destroyed) return;
@@ -286,6 +338,7 @@ window.gcmTripFormLists = function (options) {
 
     if (!silent) {
       def.clears.forEach((child) => clearField(child, true));
+      (def.recheck || []).forEach(recheck);
     }
 
     // every list that depends on this one opens / closes and starts afresh
@@ -449,6 +502,11 @@ window.gcmTripFormLists = function (options) {
   // the signed-in user is the default GCM approver of a NEW trip
   if (o.staff && o.selects.gcm_approver_id && (o.tripId === null || o.tripId === undefined)) {
     pickDefault('gcm_approver_id', 'gcm-approvers', { per_page: 100 }, null, (meta) => meta.default_id);
+  }
+
+  // the driver's own form has no driver list: his default vehicle is picked at once (a new trip only)
+  if (!o.staff && o.selects.vehicle_id && (o.tripId === null || o.tripId === undefined)) {
+    pickDefault('vehicle_id', 'vehicles', { per_page: 100 }, (x) => x.is_default === true);
   }
 
   return {

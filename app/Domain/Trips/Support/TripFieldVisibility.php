@@ -87,6 +87,8 @@ final class TripFieldVisibility
         return match (true) {
             self::isStaff($user) => array_column(TripFiles::COLUMNS, 0),
             $user->isClient() => ['live-photo', 'client-attachment'],
+            // Part 7.6: the driver opens what he attached himself (the generated documents come with 8.1).
+            $user->hasRole('driver') => ['live-photo', 'recycle-receipt', 'other'],
             default => [],
         };
     }

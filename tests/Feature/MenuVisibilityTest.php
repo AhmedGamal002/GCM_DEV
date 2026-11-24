@@ -421,12 +421,13 @@ class MenuVisibilityTest extends TestCase
                 ->assertDontSee('app/po/list', false);
         }
     }
-    public function test_a_driver_sees_no_section_titles_at_all(): void
+    /** Part 7.6 gave the driver his trips: a "Trips" item (list + add) under the one title it sits in, and nothing else. */
+    public function test_a_driver_sees_only_the_trips_section(): void
     {
         $driver = User::factory()->create();
         $driver->assignRole('driver');
 
-        $this->assertSame([], $this->headers($driver));
+        $this->assertSame(['Clients & Projects'], $this->headers($driver));
     }
 
     public function test_the_demo_scaffold_headers_never_show_without_the_demo_switch(): void

@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Domain\Trips\Actions\AttachRecycleReceiptByDriverAction;
 use App\Domain\Trips\Actions\CancelTripAction;
 use App\Domain\Trips\Actions\FinalApproveTripAction;
 use App\Domain\Trips\Actions\UpdateTripAction;
@@ -131,6 +132,8 @@ class TripResource extends JsonResource
             'updated_at' => $this->updated_at?->toIso8601String(),
 
             'actions' => $this->when($staff, fn () => $this->actions($user)),
+            // The driver's one change after creating (part 7.6, ج13): the recycle receipt photo, until the trip is completed.
+            'driver_actions' => $this->when($user->hasRole('driver'), fn () => ['attach_recycle_receipt' => in_array($this->status, AttachRecycleReceiptByDriverAction::FROM, true)]),
             // The client's buttons (part 7.5): approve / reject while the trip awaits them and the account may (ج6).
             'client_actions' => $this->when($user->isClient(), fn () => $this->clientActions($user)),
             'events' => $this->when(

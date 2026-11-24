@@ -26,7 +26,10 @@ class SecurityHeaders
             'X-Content-Type-Options' => 'nosniff',
             'X-Frame-Options' => 'SAMEORIGIN',
             'Referrer-Policy' => 'strict-origin-when-cross-origin',
-            'Permissions-Policy' => 'camera=(), microphone=(), geolocation=(), payment=(), usb=()',
+            // The trip pages take a live photo and a live location (decision ج12: the driver's form — and the staff's
+            // optional ones — use the camera and the GPS): allowed for this site only, never for an embedded third party.
+            // `camera=()` here switched both off for every page, so the browser refused without even asking.
+            'Permissions-Policy' => 'camera=(self), microphone=(), geolocation=(self), payment=(), usb=()',
             'Content-Security-Policy' => "base-uri 'self'; form-action 'self'; frame-ancestors 'self'; object-src 'none'",
         ];
 

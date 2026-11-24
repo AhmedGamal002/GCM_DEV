@@ -27,6 +27,25 @@ class SecurityHeadersTest extends TestCase
         $this->assertStringContainsString("object-src 'none'", $csp);
     }
 
+    /**
+     * The trip pages need the camera and the GPS (a live photo and a live location, decision ج12). A policy of
+     * `camera=()` switches them off for every page, and the browser refuses without even asking — so they are
+     * allowed for this site only, and everything the app never uses stays off.
+     */
+    public function test_the_camera_and_the_location_are_allowed_for_this_site_only(): void
+    {
+        $policy = $this->get('/login')->headers->get('Permissions-Policy');
+
+        $this->assertStringContainsString('camera=(self)', $policy);
+        $this->assertStringContainsString('geolocation=(self)', $policy);
+        $this->assertStringNotContainsString('camera=*', $policy);
+        $this->assertStringNotContainsString('geolocation=*', $policy);
+
+        foreach (['microphone=()', 'payment=()', 'usb=()'] as $off) {
+            $this->assertStringContainsString($off, $policy);
+        }
+    }
+
     public function test_api_responses_and_errors_carry_them_too(): void
     {
         $response = $this->getJson('/api/v1/me');

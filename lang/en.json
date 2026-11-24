@@ -1172,5 +1172,19 @@
   "Cancelling the trip treats it as if it never happened: its quota and containers are given back. This cannot be undone.": "Cancelling the trip treats it as if it never happened: its quota and containers are given back. This cannot be undone.",
   "Reason (optional)": "Reason (optional)",
   "The trip's documents are generated once the trip is completed.": "The trip's documents are generated once the trip is completed.",
-  "This trip has no waste manifest.": "This trip has no waste manifest."
+  "This trip has no waste manifest.": "This trip has no waste manifest.",
+  "My trips": "My trips",
+  "Finding your location…": "Finding your location…",
+  "Take the live location and the live photo to create the trip.": "Take the live location and the live photo to create the trip.",
+  "On site": "On site",
+  "The recycle receipt photo was saved.": "The recycle receipt photo was saved.",
+  "Choose the receipt photo first.": "Choose the receipt photo first.",
+  "Current photo": "Current photo",
+  "Add or replace the recycle receipt photo": "Add or replace the recycle receipt photo",
+  "Upload": "Upload",
+  "The trip is completed or cancelled: the receipt can no longer be changed here.": "The trip is completed or cancelled: the receipt can no longer be changed here.",
+  "The sub-service was cleared: it does not suit the container or tank you chose.": "The sub-service was cleared: it does not suit the container or tank you chose.",
+  "The main service was cleared: the chosen purchase order does not cover it.": "The main service was cleared: the chosen purchase order does not cover it.",
+  "Trip documents": "Trip documents",
+  "Export trip documents": "Export trip documents"
 }

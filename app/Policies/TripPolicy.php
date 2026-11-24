@@ -42,7 +42,7 @@ class TripPolicy
 
     public function viewAny(User $actor): bool
     {
-        return $actor->hasAnyRole([...Trip::STAFF_VIEW_ROLES, ...User::CLIENT_ROLES]);
+        return $actor->hasAnyRole([...Trip::STAFF_VIEW_ROLES, ...User::CLIENT_ROLES, 'driver']);
     }
 
     public function view(User $actor, Trip $trip): bool
@@ -71,6 +71,18 @@ class TripPolicy
     public function exportDocuments(User $actor, Trip $trip): bool
     {
         return TripFieldVisibility::exportsDocuments($actor) && $trip->isVisibleTo($actor);
+    }
+
+    /** The driver's own create form (FRD §1.14 "from the driver's point of view", part 7.6) — a driver account with a driver record. */
+    public function createAsDriver(User $actor): bool
+    {
+        return $actor->hasRole('driver') && $actor->driver !== null;
+    }
+
+    /** The driver adds the recycle receipt photo to HIS trip (ج13: until it is completed — the action checks the status). */
+    public function attachRecycleReceipt(User $actor, Trip $trip): bool
+    {
+        return $this->createAsDriver($actor) && $trip->isVisibleTo($actor);
     }
 
     /** Approve or reject `$trip` for the client (ج6). The status is the action's check (409). */

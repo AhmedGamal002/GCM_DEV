@@ -305,6 +305,26 @@
     {
       "name": "Trips",
       "icon": "menu-icon tf-icons ti ti-truck-delivery",
+      "slug": "app-driver-trip",
+      "roles": ["driver"],
+      "submenu": [
+        {
+          "url": "app/driver-trip/list",
+          "name": "List",
+          "slug": "app-driver-trip-list",
+          "roles": ["driver"]
+        },
+        {
+          "url": "app/driver-trip/add",
+          "name": "Add",
+          "slug": "app-driver-trip-add",
+          "roles": ["driver"]
+        }
+      ]
+    },
+    {
+      "name": "Trips",
+      "icon": "menu-icon tf-icons ti ti-truck-delivery",
       "slug": "app-client-trip",
       "roles": ["client_project_manager", "client_project_auditor"],
       "submenu": [

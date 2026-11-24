@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\V1\Auth\MeController;
 use App\Http\Controllers\Api\V1\Auth\NewPasswordController;
 use App\Http\Controllers\Api\V1\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Api\V1\ClientTripController;
+use App\Http\Controllers\Api\V1\DriverTripController;
 use App\Http\Controllers\Api\V1\ClientUserController;
 use App\Http\Controllers\Api\V1\ContractorUserController;
 use App\Http\Controllers\Api\V1\CompanyController;
@@ -233,6 +234,11 @@ Route::prefix('v1')->group(function () {
         // contractor user: the delivery note), and the combined PDF for GCM staff (an /export: vacation and rate limit).
         Route::get('/trips/{trip}/documents/export', [TripDocumentController::class, 'export'])->whereNumber('trip');
         Route::get('/trips/{trip}/documents/{kind}', [TripDocumentController::class, 'show'])->whereNumber('trip')->where('kind', 'delivery-note|waste-manifest');
+
+        // ── Phase 3 · 7.6 the driver's trips (FRD V01.14 §1.14 "from the driver's point of view") ──
+        // The driver lists and opens his own trips through /trips (Trip::scopeVisibleTo); these two are what only he does.
+        Route::post('/driver/trips', [DriverTripController::class, 'store']);
+        Route::post('/driver/trips/{trip}/recycle-receipt', [DriverTripController::class, 'attachRecycleReceipt'])->whereNumber('trip');
 
         // ── Phase 3 · 7.2 the trip form's cascading lists (FRD V01.14 §1.14) ──
         // Read-only; staff form + the driver's own form (TripPolicy). The rules are TripOptions; the server
