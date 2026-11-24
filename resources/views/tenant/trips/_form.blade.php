@@ -180,7 +180,7 @@
         </div>
         <div class="col-md-6" data-field="recycle_receipt" data-recycle>
           <label class="form-label" for="tf-recycle_receipt">{{ __('Recycle Receipt') }}</label>
-          <input type="file" class="form-control" id="tf-recycle_receipt" name="recycle_receipt" accept=".pdf,.jpg,.jpeg,.png" />
+          <input type="file" class="form-control" id="tf-recycle_receipt" name="recycle_receipt" accept=".jpg,.jpeg,.png" />
           <div class="form-text" data-existing="recycle-receipt"></div>
         </div>
 
