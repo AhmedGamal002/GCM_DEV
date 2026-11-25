@@ -6,14 +6,17 @@
 @vite([
   'resources/assets/vendor/scss/pages/page-user-view.scss',
   'resources/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.scss',
-  'resources/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.scss'
+  'resources/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.scss',
+  'resources/assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.scss',
+  'resources/assets/vendor/libs/select2/select2.scss'
 ])
 @endsection
 
 @section('vendor-script')
 @vite([
   'resources/assets/vendor/libs/moment/moment.js',
-  'resources/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js'
+  'resources/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js',
+  'resources/assets/vendor/libs/select2/select2.js'
 ])
 @endsection
 
@@ -47,7 +50,7 @@
   };
   window.vehicleViewId = {{ $vehicleId }};
 </script>
-@vite('resources/assets/js/app-vehicle-view.js')
+@vite(['resources/assets/js/datatables-server-side.js', 'resources/assets/js/app-vehicle-view.js'])
 @endsection
 
 @section('content')
@@ -159,6 +162,10 @@
         </div>
       </div>
     </div>
+
+    @can('viewAny', \App\Models\Trip::class)
+      @include('tenant.trips._entity-trips', ['kind' => 'vehicle', 'entityId' => $vehicleId])
+    @endcan
 
     <div class="card d-none" id="vehicle-status-card">
       <h5 class="card-header">{{ __('Vehicle Status') }}</h5>

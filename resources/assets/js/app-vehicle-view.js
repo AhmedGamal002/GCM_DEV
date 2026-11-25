@@ -6,6 +6,8 @@
  */
 'use strict';
 
+import { initEntityTrips } from './trip/entity-trips.js';
+
 document.addEventListener('DOMContentLoaded', function () {
   const t = window.vehicleViewTranslations || {};
   const id = window.vehicleViewId;
@@ -157,6 +159,7 @@ document.addEventListener('DOMContentLoaded', function () {
     loading.classList.add('d-none');
     content.classList.remove('d-none');
     window.gcmRecalcDocTables();
+    initEntityTrips();
     if (window.gcmCanManage) document.getElementById('vehicle-status-card').classList.remove('d-none');
   }
 

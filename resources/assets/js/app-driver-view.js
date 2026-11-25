@@ -1,3 +1,5 @@
+import { initEntityTrips } from './trip/entity-trips.js';
+
 'use strict';
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -35,6 +37,25 @@ document.addEventListener('DOMContentLoaded', function () {
     loading.classList.add('d-none');
     errorBox.textContent = message || (window.gcmI18n && window.gcmI18n.unknown);
     errorBox.classList.remove('d-none');
+  }
+
+  /** Completed against ongoing and cancelled trips (the server counts them: TripStatistics::tracker). */
+  function renderTracker(stats) {
+    const bar = document.getElementById('dt-bar');
+    if (!bar || !stats) return;
+    const total = (stats.completed || 0) + (stats.ongoing || 0) + (stats.cancelled || 0);
+    document.getElementById('dt-completed').textContent = stats.completed || 0;
+    document.getElementById('dt-ongoing').textContent = stats.ongoing || 0;
+    document.getElementById('dt-cancelled').textContent = stats.cancelled || 0;
+    bar.textContent = '';
+    [['completed', 'bg-success'], ['ongoing', 'bg-info'], ['cancelled', 'bg-secondary']].forEach(([key, cls]) => {
+      if (!total || !stats[key]) return;
+      const part = document.createElement('div');
+      part.className = 'progress-bar ' + cls;
+      part.style.width = (stats[key] / total * 100) + '%';
+      part.title = stats[key];
+      bar.appendChild(part);
+    });
   }
 
   function render(d) {
@@ -133,6 +154,8 @@ document.addEventListener('DOMContentLoaded', function () {
     content.classList.remove('d-none');
     document.getElementById('driver-documents-section').classList.remove('d-none');
     window.gcmRecalcDocTables();
+    renderTracker(d.trip_stats);
+    initEntityTrips();
     if (window.gcmCanManage) document.getElementById('driver-status-card').classList.remove('d-none');
   }
 

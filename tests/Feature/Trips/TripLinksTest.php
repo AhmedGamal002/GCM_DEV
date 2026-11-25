@@ -143,4 +143,65 @@ class TripLinksTest extends TripTestCase
 
         $this->assertEqualsWithDelta((float) $kept->fresh()->quantity_ton, $totals['waste_tons'], 0.001);
     }
+
+    // ── the trips tables of a vehicle's and a driver's details page ─
+
+    public function test_the_vehicle_and_driver_pages_carry_the_trips_table_for_staff_and_the_auditor(): void
+    {
+        $this->withoutVite();
+
+        foreach (['admin', 'auditor'] as $role) {
+            $this->actingAs($this->{$role}, 'web');
+
+            $this->get("/app/vehicle/view/{$this->vehicle->id}")->assertOk()
+                ->assertSee('id="et-table"', false)->assertSee('kind: "vehicle"', false)->assertSee('id="et-driver"', false);
+            $this->get("/app/driver/view/{$this->driver->id}")->assertOk()
+                ->assertSee('id="et-table"', false)->assertSee('kind: "driver"', false)->assertSee('id="et-service"', false)
+                ->assertSee('id="driver-tracker-card"', false);
+        }
+    }
+
+    public function test_a_contractor_user_gets_the_table_without_the_pickers_he_may_not_read(): void
+    {
+        $this->withoutVite();
+        $contractor = \App\Models\Contractor::factory()->create();
+        \App\Models\Vehicle::whereKey($this->vehicle->id)->update(['affiliation' => 'contractor', 'contractor_id' => $contractor->id]);
+        \App\Models\Driver::whereKey($this->driver->id)->update(['contractor_id' => $contractor->id]);
+
+        $this->actingAs(\App\Models\User::factory()->contractorUser($contractor)->create(), 'web');
+
+        foreach (["/app/vehicle/view/{$this->vehicle->id}", "/app/driver/view/{$this->driver->id}"] as $url) {
+            $this->get($url)->assertOk()
+                ->assertSee('id="et-table"', false)
+                ->assertSee('refFilters: false', false)
+                ->assertSee('contractor-trip\/view', false)
+                ->assertDontSee('id="et-company"', false)
+                ->assertDontSee('id="et-project"', false);
+        }
+    }
+
+    public function test_the_driver_tracker_counts_completed_ongoing_and_cancelled_trips(): void
+    {
+        $this->tripIn(Trip::STATUS_COMPLETED);
+        $this->tripIn(Trip::STATUS_AWAITING_CLIENT_APPROVAL);
+        $this->tripIn(Trip::STATUS_CANCELLED);
+
+        $this->actingAs($this->admin, 'web');
+        $stats = $this->getJson("/api/v1/drivers/{$this->driver->id}")->assertOk()->json('data.trip_stats');
+
+        $this->assertSame(['completed' => 1, 'ongoing' => 1, 'cancelled' => 1], $stats);
+    }
+
+    public function test_the_trips_list_narrows_to_one_vehicle_or_one_driver(): void
+    {
+        $this->createAwaiting();
+        $other = \App\Models\Driver::factory()->create();
+        $this->makeCompatible($other, $this->vehicle);
+        $this->createAwaiting(['driver_id' => $other->id]);
+
+        $this->actingAs($this->admin, 'web');
+
+        $this->assertCount(2, $this->getJson("/api/v1/trips?vehicle_id={$this->vehicle->id}")->assertOk()->json('data'));
+        $this->assertCount(1, $this->getJson("/api/v1/trips?driver_id={$other->id}")->assertOk()->json('data'));
+    }
 }

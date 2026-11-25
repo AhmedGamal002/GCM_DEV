@@ -50,6 +50,21 @@ final class TripStatistics
         return self::summary(self::counted()->where('vehicle_id', $vehicleId));
     }
 
+    /**
+     * The driver's tracker (FRD §1.6): his trips by outcome — completed, ongoing (not completed and not
+     * cancelled) and cancelled. Unlike every other figure here the cancelled are shown, as their own slice.
+     *
+     * @return array{completed: int, ongoing: int, cancelled: int}
+     */
+    public static function tracker(int $driverId): array
+    {
+        $counts = Trip::query()->where('driver_id', $driverId)->toBase()->selectRaw('status, COUNT(*) as n')->groupBy('status')->pluck('n', 'status');
+        $completed = (int) ($counts[Trip::STATUS_COMPLETED] ?? 0);
+        $cancelled = (int) ($counts[Trip::STATUS_CANCELLED] ?? 0);
+
+        return ['completed' => $completed, 'ongoing' => (int) $counts->sum() - $completed - $cancelled, 'cancelled' => $cancelled];
+    }
+
     /** The trips that count: everything but the cancelled. */
     public static function counted(): Builder
     {

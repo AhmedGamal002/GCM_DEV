@@ -6,14 +6,17 @@
 @vite([
   'resources/assets/vendor/scss/pages/page-user-view.scss',
   'resources/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.scss',
-  'resources/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.scss'
+  'resources/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.scss',
+  'resources/assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.scss',
+  'resources/assets/vendor/libs/select2/select2.scss'
 ])
 @endsection
 
 @section('vendor-script')
 @vite([
   'resources/assets/vendor/libs/moment/moment.js',
-  'resources/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js'
+  'resources/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js',
+  'resources/assets/vendor/libs/select2/select2.js'
 ])
 @endsection
 
@@ -50,7 +53,7 @@
   };
   window.driverViewId = {{ $driverId }};
 </script>
-@vite('resources/assets/js/app-driver-view.js')
+@vite(['resources/assets/js/datatables-server-side.js', 'resources/assets/js/app-driver-view.js'])
 @endsection
 
 @section('content')
@@ -135,6 +138,23 @@
         </table>
       </div>
     </div>
+
+    @can('viewAny', \App\Models\Trip::class)
+      {{-- FRD §1.6: Driver Trips Tracker — completed against ongoing and cancelled trips. --}}
+      <div class="card mb-6" id="driver-tracker-card">
+        <h5 class="card-header">{{ __('Driver Trips Tracker') }}</h5>
+        <div class="card-body">
+          <div class="progress mb-4" style="height: 14px" id="dt-bar"></div>
+          <div class="d-flex flex-wrap gap-4">
+            <span><span class="badge bg-label-success me-1" id="dt-completed">0</span>{{ __('Completed trips') }}</span>
+            <span><span class="badge bg-label-info me-1" id="dt-ongoing">0</span>{{ __('Ongoing trips') }}</span>
+            <span><span class="badge bg-label-secondary me-1" id="dt-cancelled">0</span>{{ __('Cancelled trips') }}</span>
+          </div>
+        </div>
+      </div>
+
+      @include('tenant.trips._entity-trips', ['kind' => 'driver', 'entityId' => $driverId])
+    @endcan
 
     <div class="card d-none" id="driver-status-card">
       <h5 class="card-header">{{ __('Account Status') }}</h5>

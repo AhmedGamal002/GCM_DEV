@@ -1193,5 +1193,7 @@
   "This main service is used in a purchase order or a trip, so it can't be edited or deactivated.": "This main service is used in a purchase order or a trip, so it can't be edited or deactivated.",
   "A sub-service under this main service is used in a trip, so the main service can't be deactivated.": "A sub-service under this main service is used in a trip, so the main service can't be deactivated.",
   "This sub-service is used in a trip or its main service is in a purchase order, so it can't be edited or deactivated.": "This sub-service is used in a trip or its main service is in a purchase order, so it can't be edited or deactivated.",
-  "Daily rate (trips / day)": "Daily rate (trips / day)"
+  "Daily rate (trips / day)": "Daily rate (trips / day)",
+  "Driver Trips Tracker": "Driver Trips Tracker",
+  "Ongoing trips": "Ongoing trips"
 }

@@ -7,6 +7,7 @@ use App\Domain\Drivers\Actions\CreateDriverAction;
 use App\Domain\Drivers\Actions\UpdateDriverAction;
 use App\Domain\Drivers\Exports\DriversExport;
 use App\Domain\Settings\Support\ExpiryWarning;
+use App\Domain\Trips\Support\TripStatistics;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Drivers\AddDriverEntryPermitRequest;
 use App\Http\Requests\Drivers\StoreDriverRequest;
@@ -147,6 +148,7 @@ class DriverController extends Controller
         $driver = Driver::with(['user.tenant', 'user.roles', 'user.contractor', 'entryPermits', 'defaultVehicle.category', 'qualifiedVehicleCategories', 'updatedBy'])->findOrFail($driver);
 
         Gate::authorize('view', $driver);
+        $driver->setAttribute('trip_stats', TripStatistics::tracker($driver->id));
 
         return DriverResource::make($driver);
     }

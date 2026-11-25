@@ -82,6 +82,9 @@ class DriverResource extends JsonResource
             ])),
 
             // FRD: view/edit pages show "Last updated by X — <datetime>".
+            // The Driver Trips Tracker (completed / ongoing / cancelled), set by the show endpoint only.
+            'trip_stats' => $this->when(isset($this->trip_stats), fn () => $this->trip_stats),
+
             'updated_by_name' => $this->whenLoaded('updatedBy', fn () => $this->updatedBy?->name),
             'updated_at' => $this->updated_at,
             'created_at' => $this->created_at,

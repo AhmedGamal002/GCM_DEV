@@ -102,7 +102,7 @@
       <span>تم: <b id="s-pass">0</b></span>
       <span>فشل: <b id="s-fail" style="color:var(--bad)">0</b></span>
       <span>متبقي: <b id="s-left">0</b></span>
-      <span>من <b>271</b> بند</span>
+      <span>من <b>273</b> بند</span>
     </div>
     <div class="prog"><i class="p" id="b-pass"></i><i class="f" id="b-fail"></i></div>
     <div class="tools">
@@ -3260,6 +3260,26 @@
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
       <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.5 و§1.13 (إحصائيات المركبة والتعاقد)</dd></div><div class="row"><dt>الخطوات</dt><dd>افتح قايمة المركبات وتفاصيل مركبة عملت بيها رحلات، وبعدين تفاصيل التعاقد المرتبط.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>عمود &quot;عدد الرحلات&quot; في القايمة حقيقي، وكارت الرحلات في التفاصيل فيه إجمالي الرحلات والنفايات والمعدل اليومي (الرحلات ÷ أيام تسجيل المركبة)، وكارت التعاقد &quot;النفايات المنقولة&quot; بمجموع طن الرحلات المخصومة عليه.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Trips/TripLinksTest::test_the_vehicle_counts_its_trips_in_the_list_and_the_details</code>, <code>test_the_purchase_order_shows_the_waste_moved_under_it</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-7-trips#28" data-title="جدول رحلات المركبة في صفحة تفاصيلها">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">28</span></label>
+        <h3>جدول رحلات المركبة في صفحة تفاصيلها</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.5 (جدول رحلات المركبة + الإحصائيات)</dd></div><div class="row"><dt>الخطوات</dt><dd>افتح تفاصيل مركبة عملت بيها رحلات (Vehicles ← عرض). في كارت &quot;Trips&quot; جرّب فلتر الحالة، والمدى الزمني، والعميل ثم المشروع، والسائق، والبحث، وزر الرابط في آخر الصف، وتصدير Excel وPDF.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>جدول بالأعمدة: رقم الرحلة، التاريخ، السائق، العميل، المشروع، الحالة، التفاصيل — رحلات المركبة دي بس، من الأحدث. كل فلتر بيضيّق الجدول، والتصدير فيه نفس الصفوف اللي على الشاشة، والرابط بيفتح تفاصيل الرحلة. لمستخدم المتعهد الجدول بيظهر من غير فلاتر العميل والمشروع والسائق.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Trips/TripLinksTest::test_the_vehicle_and_driver_pages_carry_the_trips_table_for_staff_and_the_auditor</code>, <code>test_a_contractor_user_gets_the_table_without_the_pickers_he_may_not_read</code>, <code>test_the_trips_list_narrows_to_one_vehicle_or_one_driver</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-7-trips#29" data-title="جدول رحلات السائق ومتتبع الرحلات">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">29</span></label>
+        <h3>جدول رحلات السائق ومتتبع الرحلات</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.6 (جدول رحلات السائق + Driver Trips Tracker)</dd></div><div class="row"><dt>الخطوات</dt><dd>افتح تفاصيل سائق عمل رحلات (Drivers ← عرض). بص على كارت &quot;Driver Trips Tracker&quot; وعلى جدول الرحلات وجرّب فلتر الحالة والمدى والعميل والمشروع والخدمة الأساسية والتصدير.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>المتتبع بيعرض شريط بنسب الرحلات المكتملة والجارية (اللي لسه ماكتملتش ولا اتلغت) والملغاة بالأعداد. الجدول فيه رحلات السائق ده بس بأعمدة: رقم الرحلة، التاريخ، المركبة، العميل، المشروع، الحالة، التفاصيل.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Trips/TripLinksTest::test_the_driver_tracker_counts_completed_ongoing_and_cancelled_trips</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     </details>
