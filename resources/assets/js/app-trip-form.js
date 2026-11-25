@@ -39,8 +39,6 @@ $(function () {
     poMeta: null,
     mainService: null,
     subService: null,
-    location: null,
-    photo: null,
     pad: null,
     pendingCompletion: null, // 'final-approve' | 'reject-objection' while the signatures card is open (edit)
     savedSignature: false
@@ -275,54 +273,39 @@ $(function () {
 
   el('trip_at').addEventListener('change', () => lists.setExtra('trip_at', isoAt()));
 
-  // ---------------------------------------------------------------- location and photo
+  // ---------------------------------------------------------------- location (typed) and photo (uploaded)
 
-  el('get-location').addEventListener('click', async function () {
-    this.disabled = true;
-    form.querySelectorAll('[data-field="location_url"] .tf-feedback').forEach((n) => n.remove());
+  /**
+   * The location the staff member typed (he is not at the site — the GPS is the driver's form): a web link as it is, or
+   * "latitude, longitude" turned into the same Google Maps link the driver's GPS widget builds. {value} (null = empty) or {error}.
+   * The server checks it again: any http(s) link (TripInput::assertLocation).
+   */
+  function normalizeLocation(raw) {
+    const text = (raw || '').trim();
+    if (text === '') return { value: null };
 
-    try {
-      const here = await window.gcmLocate();
-      state.location = here;
-      el('location_url').value = here.mapsUrl;
-      el('location-link').href = here.mapsUrl;
-      el('location-link').classList.remove('d-none');
-    } catch (error) {
-      fieldError('location_url', error.message);
-    } finally {
-      this.disabled = false;
+    const coords = text.match(/^(-?\d{1,3}(?:\.\d+)?)\s*[,;\s]\s*(-?\d{1,3}(?:\.\d+)?)$/);
+    if (coords) {
+      const link = window.gcmMapsLink(parseFloat(coords[1]), parseFloat(coords[2]));
+
+      return link ? { value: link } : { error: t.location_invalid };
     }
-  });
 
-  el('take-photo').addEventListener('click', async function () {
-    this.disabled = true;
-    form.querySelectorAll('[data-field="live_photo"] .tf-feedback').forEach((n) => n.remove());
+    return /^https?:\/\//i.test(text) ? { value: text } : { error: t.location_invalid };
+  }
 
-    try {
-      // The photo carries the location when we have one; a refused location doesn't stop the photo.
-      if (!state.location) {
-        try {
-          state.location = await window.gcmLocate();
-        } catch (e) {
-          state.location = null;
-        }
-      }
-      const photo = await window.gcmCamera.capture({ location: state.location });
-      state.photo = photo.file;
-      el('photo-preview').src = URL.createObjectURL(photo.blob);
-      el('photo-preview').classList.remove('d-none');
-      el('remove-photo').classList.remove('d-none');
-    } catch (error) {
-      if (!error || error.code !== 'cancelled') fieldError('live_photo', error.message);
-    } finally {
-      this.disabled = false;
-    }
-  });
+  function showLocationLink() {
+    const place = normalizeLocation(el('location_url').value);
+    el('location-link').classList.toggle('d-none', !place.value);
+    if (place.value) el('location-link').href = place.value;
+  }
 
-  el('remove-photo').addEventListener('click', () => {
-    state.photo = null;
-    el('photo-preview').classList.add('d-none');
-    el('remove-photo').classList.add('d-none');
+  el('location_url').addEventListener('input', showLocationLink);
+  el('location_url').addEventListener('blur', () => {
+    // coordinates become the link they stand for, so what is saved is what is shown
+    const place = normalizeLocation(el('location_url').value);
+    if (place.value) el('location_url').value = place.value;
+    showLocationLink();
   });
 
   // ---------------------------------------------------------------- signatures
@@ -424,14 +407,15 @@ $(function () {
     put('delivery_note_number', el('delivery_note_number').value, true);
     put('waste_manifest_number', el('waste_manifest_number').value, true);
     put('recycle_receipt_number', el('recycle_receipt_number').value, true);
-    put('location_url', el('location_url').value, true);
+    put('location_url', normalizeLocation(el('location_url').value).value, true);
     data.append('additional_data', quill.getText().trim() === '' && !quill.root.querySelector('img') ? '' : quill.root.innerHTML);
 
     ['delivery_note', 'waste_manifest', 'recycle_receipt', 'other_attachment'].forEach((k) => {
       const file = el(k).files[0];
       if (file) data.append(k, file);
     });
-    if (state.photo) data.append('live_photo', state.photo);
+    const photo = el('live_photo').files[0];
+    if (photo) data.append('live_photo', photo);
 
     return data;
   }
@@ -476,6 +460,10 @@ $(function () {
   async function submit(kind, needsCompletion, otp) {
     clearErrors();
     quantityCheck();
+
+    const place = normalizeLocation(el('location_url').value);
+    if (place.error) fieldError('location_url', place.error);
+
     if (form.querySelector('.tf-feedback') || !guard()) return;
 
     const data = buildData();

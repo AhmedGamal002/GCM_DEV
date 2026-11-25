@@ -31,6 +31,7 @@
     t: {
       max_capacity: @json(__('Maximum: :ton ton / :cbm m³')),
       over_capacity: @json(__('The quantity cannot exceed the container capacity (:ton ton / :cbm m³).')),
+      location_invalid: @json(__('Enter a map link (http or https) or the coordinates as "latitude, longitude".')),
       cleared_sub_service: @json(__('The sub-service was cleared: it does not suit the container or tank you chose.')),
       cleared_main_service: @json(__('The main service was cleared: the chosen purchase order does not cover it.')),
       cost_from_po: @json(__('Taken from the purchase order — it cannot be changed here.')),

@@ -1186,5 +1186,8 @@
   "The sub-service was cleared: it does not suit the container or tank you chose.": "The sub-service was cleared: it does not suit the container or tank you chose.",
   "The main service was cleared: the chosen purchase order does not cover it.": "The main service was cleared: the chosen purchase order does not cover it.",
   "Trip documents": "Trip documents",
-  "Export trip documents": "Export trip documents"
+  "Export trip documents": "Export trip documents",
+  "Photo from the site": "Photo from the site",
+  "Paste a map link, or type the coordinates (latitude, longitude).": "Paste a map link, or type the coordinates (latitude, longitude).",
+  "Enter a map link (http or https) or the coordinates as \"latitude, longitude\".": "Enter a map link (http or https) or the coordinates as \"latitude, longitude\"."
 }

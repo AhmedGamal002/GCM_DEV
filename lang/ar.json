@@ -1186,5 +1186,8 @@
   "The sub-service was cleared: it does not suit the container or tank you chose.": "تم مسح الخدمة الفرعية لأنها لا تناسب الحاوية أو الصهريج الذي اخترته.",
   "The main service was cleared: the chosen purchase order does not cover it.": "تم مسح الخدمة الأساسية لأن التعاقد المختار لا يغطيها.",
   "Trip documents": "مستندات الرحلة",
-  "Export trip documents": "تصدير مستندات الرحلة"
+  "Export trip documents": "تصدير مستندات الرحلة",
+  "Photo from the site": "صورة من الموقع",
+  "Paste a map link, or type the coordinates (latitude, longitude).": "الصق رابط الخريطة أو اكتب الإحداثيات (خط العرض، خط الطول).",
+  "Enter a map link (http or https) or the coordinates as \"latitude, longitude\".": "أدخل رابط خريطة (http أو https) أو الإحداثيات بصيغة \"خط العرض، خط الطول\"."
 }

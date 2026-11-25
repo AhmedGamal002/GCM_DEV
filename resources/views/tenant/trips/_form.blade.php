@@ -77,22 +77,16 @@
           <div class="form-control-plaintext" id="tf-returning_capacity" dir="ltr">—</div>
         </div>
 
+        {{-- The staff member enters the location (he is not at the site): a map link or the coordinates. The GPS is the driver's form. --}}
         <div class="col-md-6" data-field="location_url">
           <label class="form-label" for="tf-location_url">{{ __('Trip location') }}</label>
-          <div class="input-group">
-            <input type="text" class="form-control" id="tf-location_url" name="location_url" dir="ltr" readonly />
-            <button type="button" class="btn btn-outline-primary" id="tf-get-location"><i class="ti ti-map-pin me-1"></i>{{ __('Get my location') }}</button>
-          </div>
-          <div class="form-text"><a href="#" target="_blank" rel="noopener" class="d-none" id="tf-location-link">{{ __('Open in Google Maps') }}</a></div>
+          <input type="text" class="form-control" id="tf-location_url" name="location_url" dir="ltr" maxlength="2048" autocomplete="off" placeholder="https://maps.google.com/… / 24.7136, 46.6753" />
+          <div class="form-text">{{ __('Paste a map link, or type the coordinates (latitude, longitude).') }} <a href="#" target="_blank" rel="noopener" class="d-none" id="tf-location-link">{{ __('Open in Google Maps') }}</a></div>
         </div>
         <div class="col-md-6" data-field="live_photo">
-          <label class="form-label" for="tf-take-photo">{{ __('Live photo from the site') }}</label>
-          <div class="d-flex align-items-center gap-3">
-            <button type="button" class="btn btn-outline-primary" id="tf-take-photo"><i class="ti ti-camera me-1"></i>{{ __('Take photo') }}</button>
-            <button type="button" class="btn btn-text-danger d-none" id="tf-remove-photo"><i class="ti ti-trash me-1"></i>{{ __('Remove') }}</button>
-            <span id="tf-photo-existing"></span>
-          </div>
-          <img id="tf-photo-preview" class="img-fluid rounded border mt-3 d-none" alt="" style="max-height: 160px" />
+          <label class="form-label" for="tf-live_photo">{{ __('Photo from the site') }}</label>
+          <input type="file" class="form-control" id="tf-live_photo" name="live_photo" accept=".jpg,.jpeg,.png" />
+          <div class="form-text"><span id="tf-photo-existing"></span></div>
         </div>
       </div>
     </div>
@@ -150,11 +144,6 @@
           <label class="form-label" for="tf-intermediate_facility_id">{{ __('Waste disposal & recycle facility') }}</label>
           <select id="tf-intermediate_facility_id" name="intermediate_facility_id" class="form-select" data-placeholder="{{ __('Select a facility') }}"><option value=""></option></select>
         </div>
-        <div class="col-md-6" data-field="other_attachment">
-          <label class="form-label" for="tf-other_attachment">{{ __('Other attachments') }}</label>
-          <input type="file" class="form-control" id="tf-other_attachment" name="other_attachment" accept=".pdf,.jpg,.jpeg,.png" />
-          <div class="form-text" data-existing="other"></div>
-        </div>
 
         <div class="col-md-6" data-field="delivery_note_number">
           <label class="form-label" for="tf-delivery_note_number">{{ __('Delivery Note No.') }}</label>
@@ -183,6 +172,12 @@
           <label class="form-label" for="tf-recycle_receipt">{{ __('Recycle Receipt') }}</label>
           <input type="file" class="form-control" id="tf-recycle_receipt" name="recycle_receipt" accept=".jpg,.jpeg,.png" />
           <div class="form-text" data-existing="recycle-receipt"></div>
+        </div>
+
+        <div class="col-md-6" data-field="other_attachment">
+          <label class="form-label" for="tf-other_attachment">{{ __('Other attachments') }}</label>
+          <input type="file" class="form-control" id="tf-other_attachment" name="other_attachment" accept=".pdf,.jpg,.jpeg,.png" />
+          <div class="form-text" data-existing="other"></div>
         </div>
 
         <div class="col-12" data-field="additional_data">

@@ -217,4 +217,26 @@ class TripPagesTest extends TripTestCase
         $this->assertStringContainsString('id="tv-generated-card"', $html);
         $this->assertStringContainsString('id="tv-export-documents"', $html);
     }
+
+    public function test_the_staff_form_types_the_location_and_uploads_the_photo_without_the_gps_or_the_camera(): void
+    {
+        $this->actingAs($this->admin, 'web');
+        $form = $this->get('/app/trip/add')->assertOk()->getContent();
+
+        // the admin is not at the site: a text box for the link / coordinates, a plain file input for the photo
+        $this->assertMatchesRegularExpression('/<input[^>]*id="tf-location_url"(?![^>]*readonly)/', $form);
+        $this->assertMatchesRegularExpression('/<input[^>]*type="file"[^>]*id="tf-live_photo"[^>]*accept="\.jpg,\.jpeg,\.png"/', $form);
+        $this->assertStringNotContainsString('id="tf-get-location"', $form);
+        $this->assertStringNotContainsString('id="tf-take-photo"', $form);
+    }
+
+    public function test_other_attachments_is_the_last_upload_right_before_the_additional_data(): void
+    {
+        $form = $this->actingAs($this->admin, 'web')->get('/app/trip/add')->assertOk()->getContent();
+
+        $position = fn (string $field) => strpos($form, 'data-field="'.$field.'"');
+
+        $this->assertLessThan($position('other_attachment'), $position('recycle_receipt'));
+        $this->assertLessThan($position('additional_data'), $position('other_attachment'));
+    }
 }
