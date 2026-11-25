@@ -42,7 +42,8 @@ class TripPolicy
 
     public function viewAny(User $actor): bool
     {
-        return $actor->hasAnyRole([...Trip::STAFF_VIEW_ROLES, ...User::CLIENT_ROLES, 'driver']);
+        // Part 7.7: the contractor user too — only the trips of his drivers and vehicles (Trip::scopeVisibleTo, ج19).
+        return $actor->hasAnyRole([...Trip::STAFF_VIEW_ROLES, ...User::CLIENT_ROLES, 'driver', 'contractor_user']);
     }
 
     public function view(User $actor, Trip $trip): bool
@@ -52,7 +53,8 @@ class TripPolicy
 
     public function export(User $actor): bool
     {
-        return $actor->hasAnyRole([...Trip::STAFF_VIEW_ROLES, ...User::CLIENT_ROLES]);
+        // The contractor user exports his list like the client (FRD §6: view + export); the driver has no export.
+        return $actor->hasAnyRole([...Trip::STAFF_VIEW_ROLES, ...User::CLIENT_ROLES, 'contractor_user']);
     }
 
     /**

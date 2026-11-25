@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Domain\Trips\Support\TripStatistics;
 use App\Domain\Projects\Actions\CreateProjectAction;
 use App\Domain\Projects\Actions\UpdateProjectAction;
 use App\Domain\Projects\Actions\UpdateProjectStatusAction;
@@ -62,6 +63,7 @@ class ProjectController extends Controller
         $resource = $this->present($project);
 
         Gate::authorize('view', $resource->resource);
+        $resource->resource->setAttribute('trip_stats', TripStatistics::forProject($resource->resource->id));
 
         return $resource;
     }

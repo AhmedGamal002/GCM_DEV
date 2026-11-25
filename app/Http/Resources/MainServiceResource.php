@@ -41,16 +41,7 @@ class MainServiceResource extends JsonResource
 
             // FRD §1.9.1 statistics — all built on trips / POs, which don't
             // exist yet. Real numbers replace these zeros when they land.
-            'stats' => [
-                'trips' => 0,
-                'projects' => 0,
-                'quantity_ton' => 0,
-                'quantity_cbm' => 0,
-                'drivers' => 0,
-                'vehicles' => 0,
-                'containers' => 0,
-                'tanks' => 0,
-            ],
+            'stats' => $this->trip_stats ?? ['trips' => 0, 'projects' => 0, 'quantity_ton' => 0, 'quantity_cbm' => 0, 'drivers' => 0, 'vehicles' => 0, 'containers' => 0, 'tanks' => 0],
 
             'updated_by_name' => $this->whenLoaded('updatedBy', fn () => $this->updatedBy?->name),
             'updated_at' => $this->updated_at,

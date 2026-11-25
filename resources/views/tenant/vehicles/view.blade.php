@@ -151,8 +151,11 @@
     <div class="card mb-6">
       <h5 class="card-header">{{ __('Trips') }}</h5>
       <div class="card-body">
-        <div class="alert alert-info mb-0">
-          {{ __('Trip history and per-vehicle trip statistics will appear here once the Trips module is available.') }}
+        {{-- FRD §1.5: total trips, total waste moved, and the daily rate (trips / days since the vehicle was registered). --}}
+        <div class="row g-4 text-center">
+          <div class="col-sm-4"><h4 class="mb-1" id="vv-stat-trips">0</h4><span>{{ __('Total trips') }}</span></div>
+          <div class="col-sm-4"><h4 class="mb-1" id="vv-stat-tons">0</h4><span>{{ __('Waste moved (ton)') }}</span></div>
+          <div class="col-sm-4"><h4 class="mb-1" id="vv-stat-rate">0</h4><span>{{ __('Daily rate (trips / day)') }}</span></div>
         </div>
       </div>
     </div>

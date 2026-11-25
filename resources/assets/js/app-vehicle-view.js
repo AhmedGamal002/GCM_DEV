@@ -102,6 +102,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.getElementById('vv-edit-link').href = (t.edit_url_base || '/app/vehicle/edit') + '/' + v.id;
 
+    // Trip figures of this vehicle (trips that weren't cancelled), counted by the server.
+    const stats = v.trip_stats || {};
+    document.getElementById('vv-stat-trips').textContent = stats.trips || 0;
+    document.getElementById('vv-stat-tons').textContent = Number(stats.waste_tons || 0).toLocaleString(undefined, { maximumFractionDigits: 3 });
+    document.getElementById('vv-stat-rate').textContent = Number(stats.daily_rate || 0).toLocaleString(undefined, { maximumFractionDigits: 2 });
+
     // Documents and truck entry permits — two separate sections.
     const attachmentCell = (d) => (d.has_attachment ? window.gcmViewAttachment(d.download_url) : '—');
 

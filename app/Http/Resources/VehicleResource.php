@@ -53,8 +53,9 @@ class VehicleResource extends JsonResource
             'photo_front_url' => $this->photo_front ? Storage::disk('public')->url($this->photo_front) : null,
             'photo_back_url' => $this->photo_back ? Storage::disk('public')->url($this->photo_back) : null,
 
-            // Trip data depends on the Trip module (Week 7) — always 0 for now.
-            'trips_count' => 0,
+            // Trips that weren't cancelled: withCount() in the list, and the show endpoint's `trip_stats` (with the waste moved).
+            'trips_count' => (int) ($this->trips_count ?? ($this->trip_stats ?? [])['trips'] ?? 0),
+            'trip_stats' => $this->when(isset($this->trip_stats), fn () => $this->trip_stats),
 
             'documents' => VehicleDocumentResource::collection($this->whenLoaded('documents')),
             // The list column: Valid / Need review / Expired across every document and permit.

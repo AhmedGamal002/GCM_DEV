@@ -9,7 +9,7 @@
 
   {{-- FRD §1.9.2: nothing is editable while tied to an ongoing trip / its main service is in a PO. --}}
   <div class="alert alert-warning d-none" id="sub-service-locked">
-    {{ __('This sub-service is tied to an ongoing trip or its main service is in a purchase order, so it can\'t be edited or deactivated.') }}
+    {{ __('This sub-service is used in a trip or its main service is in a purchase order, so it can\'t be edited or deactivated.') }}
   </div>
 @endunless
 

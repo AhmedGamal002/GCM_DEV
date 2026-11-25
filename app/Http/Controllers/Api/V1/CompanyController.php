@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Domain\Trips\Support\TripStatistics;
 use App\Domain\Companies\Actions\CreateCompanyAction;
 use App\Domain\Companies\Actions\UpdateCompanyAction;
 use App\Domain\Companies\Actions\UpdateCompanyStatusAction;
@@ -64,6 +65,7 @@ class CompanyController extends Controller
         $company = Company::withCount(['projects', 'users', 'purchaseOrders'])->with(['updatedBy', 'representative'])->findOrFail($company);
 
         Gate::authorize('view', $company);
+        $company->setAttribute('trip_stats', TripStatistics::forCompany($company->id));
 
         return CompanyResource::make($company);
     }

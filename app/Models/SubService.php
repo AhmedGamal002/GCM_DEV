@@ -88,12 +88,13 @@ class SubService extends Model
     }
 
     /**
-     * Whether a trip that is still running uses this sub-service. Trips
-     * (FRD §1.14) don't exist yet; wire them in here when they land.
+     * Whether any trip uses this sub-service (decision ج5, 2026-11-10: the lock is permanent — once a trip that is
+     * not cancelled is tied to it, it stays locked even after the trip completes; a cancelled trip doesn't count).
+     * The name is kept from when only a running trip locked it.
      */
     public function hasOngoingTrips(): bool
     {
-        return false;
+        return Trip::query()->where('sub_service_id', $this->getKey())->where('status', '!=', Trip::STATUS_CANCELLED)->exists();
     }
 
     /**

@@ -27,6 +27,7 @@ use App\Http\Controllers\Web\PurchaseOrders\PurchaseOrderAccountController;
 use App\Http\Controllers\Web\PurchaseOrders\PurchaseOrderAddController;
 use App\Http\Controllers\Web\PurchaseOrders\PurchaseOrderListController;
 use App\Http\Controllers\Web\Trips\ClientTripController;
+use App\Http\Controllers\Web\Trips\ContractorTripPageController;
 use App\Http\Controllers\Web\Trips\DriverTripPageController;
 use App\Http\Controllers\Web\Trips\TripPageController;
 use App\Http\Controllers\Web\Services\MainServicePageController;
@@ -175,6 +176,10 @@ Route::middleware(['auth', 'tenant'])->group(function () {
     Route::get('/app/driver-trip/list', [DriverTripPageController::class, 'list'])->name('app-driver-trip-list');
     Route::get('/app/driver-trip/add', [DriverTripPageController::class, 'add'])->middleware('can:createAsDriver,App\Models\Trip')->name('app-driver-trip-add');
     Route::get('/app/driver-trip/view/{trip}', [DriverTripPageController::class, 'view'])->whereNumber('trip')->name('app-driver-trip-view');
+
+    // The contractor user's trips (part 7.7): view + export of the trips of his drivers and vehicles (the controller checks the role).
+    Route::get('/app/contractor-trip/list', [ContractorTripPageController::class, 'list'])->name('app-contractor-trip-list');
+    Route::get('/app/contractor-trip/view/{trip}', [ContractorTripPageController::class, 'view'])->whereNumber('trip')->name('app-contractor-trip-view');
 
     Route::get('/app/client-trip/list', [ClientTripController::class, 'list'])->name('app-client-trip-list');
     Route::get('/app/client-trip/view/{trip}', [ClientTripController::class, 'view'])->whereNumber('trip')->name('app-client-trip-view');

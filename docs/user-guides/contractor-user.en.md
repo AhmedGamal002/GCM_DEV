@@ -42,15 +42,19 @@ Dashboard, **Users**, **Drivers**, **Vehicles**, **Assets** — each with its **
 
 ---
 
+## 6. Trips — `/app/contractor-trip/list`
+
+Sidebar: **Trips** → List. **View and export only.**
+
+- **Whose trips:** the trips whose **driver or vehicle** belongs to your contractor (the containers don't count). Another contractor's trip is a 404.
+- **List:** five counters, a table with the trip number, date, driver and vehicle with their affiliation, client, project, sub-service, status and PO link (*linked / not linked* — no number), filters (time range, status, affiliations), search and **Excel / PDF export** of what's on screen.
+- **Details:** the trip data as it is — **no costs, PO number, history or photos** — and, once the trip is completed, the **Delivery Note** only (no waste manifest or combined PDF).
+
 ## What you cannot do
 
 - Create, edit or change the status of any user, driver, vehicle or asset (there are no buttons, and the server refuses the request).
 - See another contractor's records, GCM's own drivers / vehicles / assets, or any client account.
 - Open settings, contractors, companies, projects, services or facilities.
-
-## Coming later
-
-- **Trips table** for your users and vehicles, and each trip's data + delivery note (DN) — arrives with the Trips module.
 
 ## Features available now
 
@@ -61,4 +65,4 @@ Dashboard, **Users**, **Drivers**, **Vehicles**, **Assets** — each with its **
 | Drivers: view + documents + export | ✅ |
 | Vehicles: view + documents + export | ✅ |
 | Assets (containers / tanks): view + export | ✅ |
-| Trips: table + trip data + DN | — (later) |
+| Trips: table + trip data + delivery note (view / export) | ✅ |

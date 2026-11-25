@@ -54,17 +54,8 @@ class SubServiceResource extends JsonResource
             // Locks the edit form and the status card (ongoing trip / main in a PO).
             'locked' => $this->whenLoaded('mainService', fn () => $this->isLocked()),
 
-            // FRD §1.9.2 statistics — built on trips, which don't exist yet.
-            'stats' => [
-                'trips' => 0,
-                'projects' => 0,
-                'quantity_ton' => 0,
-                'quantity_cbm' => 0,
-                'drivers' => 0,
-                'vehicles' => 0,
-                'containers' => 0,
-                'tanks' => 0,
-            ],
+            // FRD §1.9.2 statistics — from the trips (`trip_stats`, set by the show endpoint; 0 in a list row).
+            'stats' => $this->trip_stats ?? ['trips' => 0, 'projects' => 0, 'quantity_ton' => 0, 'quantity_cbm' => 0, 'drivers' => 0, 'vehicles' => 0, 'containers' => 0, 'tanks' => 0],
 
             'updated_by_name' => $this->whenLoaded('updatedBy', fn () => $this->updatedBy?->name),
             'updated_at' => $this->updated_at,

@@ -1189,5 +1189,9 @@
   "Export trip documents": "تصدير مستندات الرحلة",
   "Photo from the site": "صورة من الموقع",
   "Paste a map link, or type the coordinates (latitude, longitude).": "الصق رابط الخريطة أو اكتب الإحداثيات (خط العرض، خط الطول).",
-  "Enter a map link (http or https) or the coordinates as \"latitude, longitude\".": "أدخل رابط خريطة (http أو https) أو الإحداثيات بصيغة \"خط العرض، خط الطول\"."
+  "Enter a map link (http or https) or the coordinates as \"latitude, longitude\".": "أدخل رابط خريطة (http أو https) أو الإحداثيات بصيغة \"خط العرض، خط الطول\".",
+  "This main service is used in a purchase order or a trip, so it can't be edited or deactivated.": "هذه الخدمة الأساسية مستخدمة في تعاقد (PO) أو رحلة، لذلك لا يمكن تعديلها أو تعطيلها.",
+  "A sub-service under this main service is used in a trip, so the main service can't be deactivated.": "إحدى الخدمات الفرعية تحت هذه الخدمة مستخدمة في رحلة، لذلك لا يمكن تعطيل الخدمة الأساسية.",
+  "This sub-service is used in a trip or its main service is in a purchase order, so it can't be edited or deactivated.": "هذه الخدمة الفرعية مستخدمة في رحلة أو خدمتها الأساسية مدرجة في تعاقد (PO)، لذلك لا يمكن تعديلها أو تعطيلها.",
+  "Daily rate (trips / day)": "المعدل اليومي (رحلة / يوم)"
 }

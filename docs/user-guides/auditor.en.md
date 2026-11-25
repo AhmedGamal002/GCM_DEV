@@ -72,12 +72,20 @@ Dashboard, then an **Accounts** section (Users · Drivers), a **Fleet & Assets**
 - **View** the list (cards, search, company / project / time-range / items-status / account-status filters), the **details** of any purchase order (its services and the bars of what is left of each part) and **export** (Excel/PDF), and download its attachment. The company and project pages also show a **Contracts** section.
 - **Not allowed:** creating, editing, deactivating; the "Add" link and the edit icon are not shown.
 
-## 12. What you cannot do (returns 403)
+## 12. Trips — `/app/trip/list`
+
+Sidebar: **Trips** → List.
+
+- **List:** five counters (awaiting client approval / approved / rejected / completed / cancelled), a server-side table (newest first) with the trip number, date, driver and vehicle with their affiliation, client, project, sub-service, status and PO link; filters (time range, status, client → project, driver, vehicle, affiliations, main → sub-service), search, and **Excel / PDF export** that matches the screen.
+- **Details:** the full trip data and its history, with **no action buttons** (view only).
+- **Trip documents:** a completed trip shows its Delivery Note, Waste Manifest (not for supply trips) and the combined PDF.
+
+## 13. What you cannot do (returns 403)
 
 - Create, edit, or deactivate any user / driver / vehicle / asset / facility / service / company / project / category, or insert an asset into a project.
 - Change your name or email on the profile page.
 - Manage roles & permissions / tenants.
 
-## 13. Features available now
+## 14. Features available now
 
 Full view + export across every built module (Users, Drivers, Vehicles, Assets, Intermediate facilities, Main & sub-services, Contractors, Client companies, Client projects, Purchase orders, and asset capacities) — was limited to vehicles and assets only before the FRD V01.14 upgrade. Self-service password change works from the profile page.

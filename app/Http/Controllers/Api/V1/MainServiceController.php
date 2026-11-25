@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Domain\Trips\Support\TripStatistics;
 use App\Domain\Services\Actions\CreateMainServiceAction;
 use App\Domain\Services\Actions\UpdateMainServiceAction;
 use App\Domain\Services\Actions\UpdateMainServiceStatusAction;
@@ -103,6 +104,7 @@ class MainServiceController extends Controller
             ->findOrFail($service);
 
         Gate::authorize('view', $service);
+        $service->setAttribute('trip_stats', TripStatistics::forMainService($service->id));
 
         return MainServiceResource::make($service)->additional([
             'meta' => ['embedded_capacities' => $this->embeddedCapacities($service)],

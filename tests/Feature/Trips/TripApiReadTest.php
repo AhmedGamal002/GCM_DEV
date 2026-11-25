@@ -61,9 +61,13 @@ class TripApiReadTest extends TripTestCase
         $this->as($this->driver->user, 'trips/export')->assertForbidden();
     }
 
-    public function test_a_contractor_user_gets_403_until_7_7(): void
+    public function test_a_contractor_user_reads_his_list_and_exports_it(): void
     {
-        $this->as(User::factory()->contractorUser(Contractor::factory()->create())->create(), 'trips')->assertForbidden();
+        // Part 7.7 opened it: a contractor with no driver or vehicle in the trip sees none (the scope is ContractorTripApiTest's).
+        $user = User::factory()->contractorUser(Contractor::factory()->create())->create();
+
+        $this->as($user, 'trips')->assertOk()->assertJsonCount(0, 'data');
+        $this->as($user, 'trips/stats')->assertOk()->assertJsonPath('data.total', 0);
     }
 
     public function test_a_guest_gets_401(): void

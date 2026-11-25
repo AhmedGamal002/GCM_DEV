@@ -156,6 +156,13 @@ class PurchaseOrderResource extends JsonResource
         $totals['max_cost'] = round($totals['max_cost'], 2);
         $totals['cost_used'] = round($totals['cost_used'], 2);
 
+        // The waste moved under this PO (the details page's third card): only the show endpoint asks for it, a list row doesn't.
+        if ($this->detailed) {
+            $totals['waste_tons'] = round((float) \App\Domain\Trips\Support\TripStatistics::counted()
+                ->whereIn('purchase_order_service_id', collect($lines)->pluck('id'))
+                ->sum('quantity_ton'), 3);
+        }
+
         return $totals;
     }
 }

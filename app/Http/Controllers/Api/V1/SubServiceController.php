@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Domain\Trips\Support\TripStatistics;
 use App\Domain\Services\Actions\CreateSubServiceAction;
 use App\Domain\Services\Actions\UpdateSubServiceAction;
 use App\Domain\Services\Actions\UpdateSubServiceStatusAction;
@@ -85,6 +86,7 @@ class SubServiceController extends Controller
         $sub = SubService::with(['mainService.vehicleCategories', 'capacities', 'facilities', 'updatedBy'])->findOrFail($service);
 
         Gate::authorize('view', $sub);
+        $sub->setAttribute('trip_stats', TripStatistics::forSubService($sub->id));
 
         return SubServiceResource::make($sub);
     }

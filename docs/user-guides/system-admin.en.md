@@ -263,7 +263,17 @@ Left card: number, both statuses, company, project, region, duration, days left 
 
 ### In the company and project pages
 The company page and the project page each have a **Contracts** section — a table of that company's (or project's) POs with search, items-status filter, export and "Add Purchase Order" (company/project already chosen) — and the **Contracts** card and the list column show the real count.
-## 15. Features available now
+## 15. Trips — `/app/trip/list`
+
+Sidebar: **Trips** → List + Add.
+
+- **List:** five counters (awaiting client approval / approved / rejected / completed / cancelled), a server-side table (newest first) with the trip number, date, driver and vehicle with their affiliation, client, project, sub-service, status and PO link; filters (time range, status, client → project, driver, vehicle, affiliations, main → sub-service), search, and **Excel / PDF export** that matches the screen.
+- **Create a trip (`/app/trip/add`):** pick in order driver → vehicle → client → project → main service → sub-service → facility; each list offers only what fits (active driver, vehicle within the driver's categories, service within the vehicle's category, containers that are free and fit). A vehicle with a built-in container or tank takes no external containers. The location is a map link or `lat, lng` and the photo a normal upload (no GPS or camera for staff). The PO quota is deducted when the trip is saved; with no PO the trip goes without one and the cost is typed. Choosing **No** for client approval records a completed trip directly (client and GCM signatures required, no code).
+- **Edit:** changing date / project / service re-deducts the quota and recomputes the cost; an approved or completed trip keeps its status. Every change is written to the trip history.
+- **Final approval, accepting / rejecting the client's objection, cancelling** (cancel gives the quota and containers back) and **reminding the client** are on the details page. Final approval, rejecting the objection and cancelling ask for a **verification code** sent to your email.
+- **Trip documents:** a completed trip shows its Delivery Note, Waste Manifest (not for supply trips) and the combined PDF.
+
+## 16. Features available now
 
 | Module | Available | Deferred |
 |---|---|---|
@@ -276,6 +286,7 @@ The company page and the project page each have a **Contracts** section — a ta
 | Contractors | Full CRUD + deactivate/reactivate + certified services + attachments + statistics + export + **driver / vehicle / asset affiliation to a contractor** + **contractor representative account** | — |
 | Client companies | Full CRUD + deactivate/reactivate + attachments + export + projects count + company projects table + **representative + users count** + **contracts count and the company's contracts table** | Trip and waste statistics (with Trips) |
 | Client projects | Full CRUD + deactivate/reactivate + ID from the company short name + project assets + export + **representative + users count** + **contracts count and the project's contracts table** | Trip and waste statistics (with Trips) |
-| Purchase orders | Create / edit (locks to the quota once a trip is recorded) / deactivate + quota per service + computed status + overlap rule + attachment + stats + export + contracts section on the company and project pages | Trips counting on a PO and the quantities (with Trips) |
+| Purchase orders | Create / edit (locks to the quota once a trip is recorded) / deactivate + quota per service + computed status + overlap rule + attachment + stats + export + contracts section on the company and project pages | — |
 | General Settings | Warning period for driver and vehicle document expiry (default 30 days, 1–365) — the "time left" bars on the driver and vehicle pages turn yellow (tag "Need review") from then on | — |
+| Trips | List + counters + filters + export, create / edit (cascading lists, quota deduction), final approval, objection handling, cancel, remind the client, documents; the services lock after the first trip and the company / project / service / vehicle / PO pages show real trip figures | Notifications, dashboard and reports (Week 8) |
 | Dashboard | Shell screen | Real stats (Week 8) |

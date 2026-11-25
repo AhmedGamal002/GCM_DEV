@@ -71,6 +71,11 @@ class Vehicle extends Model
         return $this->hasMany(VehicleDocument::class);
     }
 
+    public function trips(): HasMany
+    {
+        return $this->hasMany(Trip::class);
+    }
+
     public function entryPermits(): HasMany
     {
         return $this->hasMany(VehicleDocument::class)->where('type', 'entry_permit');

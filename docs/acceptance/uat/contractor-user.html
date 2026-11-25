@@ -84,7 +84,7 @@
 <body>
 <div class="wrap">
   <h1>GCM Portal — اختبار القبول: مستخدم المتعهد</h1>
-  <p class="sub">مستخدم المتعهد <strong>عرض وتصدير فقط</strong> لموارد متعهده: سائقيه ومستخدمي المتعهد التابعين له ومركباته وأصوله (حاويات وصهاريج). الدور ده اتبنى في المرحلة التانية — فكل الملف تحتها.<br>لكل بند: جرّب الخطوات وقارن بالنتيجة المتوقعة. علّم ✔ لو نجح، ودوس "فشل" واكتب ملاحظة لو طلع غلط. تقدّمك بيتحفظ تلقائيًا في المتصفح ده، ولما تخلص صدّر النتيجة.</p>
+  <p class="sub">مستخدم المتعهد <strong>عرض وتصدير فقط</strong> لموارد متعهده: سائقيه ومستخدمي المتعهد التابعين له ومركباته وأصوله (حاويات وصهاريج). الدور ده اتبنى في المرحلة التانية، ورحلات متعهده اتضافت في المرحلة التالتة.<br>لكل بند: جرّب الخطوات وقارن بالنتيجة المتوقعة. علّم ✔ لو نجح، ودوس "فشل" واكتب ملاحظة لو طلع غلط. تقدّمك بيتحفظ تلقائيًا في المتصفح ده، ولما تخلص صدّر النتيجة.</p>
 
   <div class="setup">
     <h2>بيانات الدخول</h2>
@@ -111,7 +111,7 @@
       <span>تم: <b id="s-pass">0</b></span>
       <span>فشل: <b id="s-fail" style="color:var(--bad)">0</b></span>
       <span>متبقي: <b id="s-left">0</b></span>
-      <span>من <b>22</b> بند</span>
+      <span>من <b>25</b> بند</span>
     </div>
     <div class="prog"><i class="p" id="b-pass"></i><i class="f" id="b-fail"></i></div>
     <div class="tools">
@@ -273,6 +273,46 @@
   </section>
 
   <section class="doc" data-doc="contractor-user-part-2">
+    <h2 class="doc-title">المرحلة التالتة — الرحلات</h2>
+    <p class="doc-note">الرحلات (إنشاء ومتابعة وتعديل وإلغاء) وربطها بباقي صفحات النظام — الجزء اللي يخص دورك.</p>
+    
+    <details open class="group">
+      <summary>رحلات متعهدي <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-7-trips#21" data-title="القايمة ونطاقها">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">13</span></label>
+        <h3>القايمة ونطاقها</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.14 (من منظور مستخدم المتعهد)</dd></div><div class="row"><dt>الخطوات</dt><dd>سجّل دخول بـ<code>contractor.desert</code>. افتح Trips ← List، وجرّب الفلاتر (المدى، الحالة، تبعية السائق والمركبة) والبحث. بعدين <code>contractor.gulf</code>.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>5 كروت وجدول بالرحلات اللي <strong>سائقها أو مركبتها</strong> تابع لمتعهدك بس (الحاويات مابتحسبش)، من غير عمود التكلفة، والتعاقد &quot;مرتبط / غير مرتبط&quot; من غير رقم، ومفيش زر إضافة. <code>contractor.gulf</code> مايشوفش رحلات Desert.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-7-trips#22" data-title="تفاصيل الرحلة وسند التسليم">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">14</span></label>
+        <h3>تفاصيل الرحلة وسند التسليم</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.14 (عرض البيانات ومستند DN فقط)</dd></div><div class="row"><dt>الخطوات</dt><dd>افتح رحلة من قايمتك (مكتملة وغير مكتملة). جرّب تفتح رابط رحلة متعهد تاني.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>بيانات الرحلة كما هي (بما فيها العميل والمشروع والسائق التابع لجهة تانية) من غير تكلفة ولا رقم تعاقد ولا سجل ولا صور. كارت المستندات فيه <strong>سند التسليم بس</strong> بعد الاكتمال (مفيش بيان نفايات ولا ملف مجمّع). رحلة متعهد تاني 404.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-7-trips#23" data-title="التصدير">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">15</span></label>
+        <h3>التصدير</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.14 (تصدير Excel / PDF)</dd></div><div class="row"><dt>الخطوات</dt><dd>بـ<code>contractor.desert</code> طبّق فلتر وصدّر Excel وPDF.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الملف فيه رحلات متعهدك اللي على الشاشة بس وبأعمدة تناسب دوره (من غير تكلفة ولا رقم تعاقد).</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+  </section>
+
+  <section class="doc" data-doc="contractor-user-part-3">
     <h2 class="doc-title">نواقص المرحلة الأولى — اللي اتكمّل</h2>
     <p class="doc-note">بنود طلعت في مراجعة الـFRD بعد تسليم المرحلة الأولى واتقفلت.</p>
     
@@ -282,7 +322,7 @@
     <article class="item" data-id="uat-common#1" data-title="التاريخ والوقت الحاليين في الشريط العلوي">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">13</span></label>
+          <span class="num">16</span></label>
         <h3>التاريخ والوقت الحاليين في الشريط العلوي</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -292,7 +332,7 @@
     <article class="item" data-id="week-3-frd-gap-review#2" data-title="تبديل الوضع الداكن / المضيء">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">14</span></label>
+          <span class="num">17</span></label>
         <h3>تبديل الوضع الداكن / المضيء</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -302,7 +342,7 @@
     </details>
   </section>
 
-  <section class="doc" data-doc="contractor-user-part-3">
+  <section class="doc" data-doc="contractor-user-part-4">
     <h2 class="doc-title">تحسينات اتضافت على اللي اتسلّم</h2>
     <p class="doc-note">تحسينات اتعملت بطلبك أو بعد ملاحظاتك على النسخة اللي اتسلّمت: وضوح الفورمات، تنبيهات الوثائق، التصدير، شاشات الحفظ والتحميل وغيرها.</p>
     
@@ -312,7 +352,7 @@
     <article class="item" data-id="uat-common#3" data-title="شريط الوقت المتبقي على الوثائق والتصاريح">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">15</span></label>
+          <span class="num">18</span></label>
         <h3>شريط الوقت المتبقي على الوثائق والتصاريح</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -322,7 +362,7 @@
     <article class="item" data-id="uat-common#4" data-title="عمود وفلتر &quot;Documents Status&quot; في قايمتَي السائقين والمركبات">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">16</span></label>
+          <span class="num">19</span></label>
         <h3>عمود وفلتر &quot;Documents Status&quot; في قايمتَي السائقين والمركبات</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -336,7 +376,7 @@
     <article class="item" data-id="uat-common#5" data-title="التصدير بيطابق الفلاتر والبحث اللي على الشاشة">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">17</span></label>
+          <span class="num">20</span></label>
         <h3>التصدير بيطابق الفلاتر والبحث اللي على الشاشة</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -346,7 +386,7 @@
     <article class="item" data-id="uat-common#6" data-title="تصدير PDF بالعربي">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">18</span></label>
+          <span class="num">21</span></label>
         <h3>تصدير PDF بالعربي</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -356,7 +396,7 @@
     <article class="item" data-id="week-5-export-header-and-category-defaults#1" data-title="ملف Excel بيفتح بلوجو GCM و&quot;صدّر بواسطة&quot; والتاريخ والوقت">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">19</span></label>
+          <span class="num">22</span></label>
         <h3>ملف Excel بيفتح بلوجو GCM و&quot;صدّر بواسطة&quot; والتاريخ والوقت</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -366,7 +406,7 @@
     <article class="item" data-id="week-5-export-header-and-category-defaults#2" data-title="ملف PDF بنفس الرأس">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">20</span></label>
+          <span class="num">23</span></label>
         <h3>ملف PDF بنفس الرأس</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -380,7 +420,7 @@
     <article class="item" data-id="uat-common#2" data-title="تبديل اللغة (عربي / إنجليزي) والاتجاه">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">21</span></label>
+          <span class="num">24</span></label>
         <h3>تبديل اللغة (عربي / إنجليزي) والاتجاه</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -390,7 +430,7 @@
     <article class="item" data-id="week-3-frd-gap-review#30" data-title="شاشة التحميل واللوجو والاسم">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">22</span></label>
+          <span class="num">25</span></label>
         <h3>شاشة التحميل واللوجو والاسم</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>

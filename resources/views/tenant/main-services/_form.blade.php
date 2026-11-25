@@ -9,7 +9,7 @@
 
   {{-- FRD §1.9.1: nothing is editable once a PO includes the service. --}}
   <div class="alert alert-warning d-none" id="main-service-locked">
-    {{ __('This main service is included in a purchase order, so it can\'t be edited or deactivated.') }}
+    {{ __('This main service is used in a purchase order or a trip, so it can\'t be edited or deactivated.') }}
   </div>
 @endunless
 

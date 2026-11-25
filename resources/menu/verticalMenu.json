@@ -325,6 +325,20 @@
     {
       "name": "Trips",
       "icon": "menu-icon tf-icons ti ti-truck-delivery",
+      "slug": "app-contractor-trip",
+      "roles": ["contractor_user"],
+      "submenu": [
+        {
+          "url": "app/contractor-trip/list",
+          "name": "List",
+          "slug": "app-contractor-trip-list",
+          "roles": ["contractor_user"]
+        }
+      ]
+    },
+    {
+      "name": "Trips",
+      "icon": "menu-icon tf-icons ti ti-truck-delivery",
       "slug": "app-client-trip",
       "roles": ["client_project_manager", "client_project_auditor"],
       "submenu": [

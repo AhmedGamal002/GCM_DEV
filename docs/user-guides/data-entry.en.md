@@ -91,7 +91,17 @@ Dashboard, then an **Accounts** section (Users · Drivers), a **Fleet & Assets**
 - **Edit** any data except the company (locked after creation).
 - **Status:** **deactivate and reactivate** from the edit page. There is no delete.
 
-## 11. What you cannot do (returns 403 or 422)
+## 11. Trips — `/app/trip/list`
+
+Sidebar: **Trips** → List + Add.
+
+- **List:** five counters (awaiting client approval / approved / rejected / completed / cancelled), a server-side table (newest first) with the trip number, date, driver and vehicle with their affiliation, client, project, sub-service, status and PO link; filters (time range, status, client → project, driver, vehicle, affiliations, main → sub-service), search, and **Excel / PDF export** that matches the screen.
+- **Create a trip (`/app/trip/add`):** pick in order driver → vehicle → client → project → main service → sub-service → facility; each list offers only what fits (active driver, vehicle within the driver's categories, service within the vehicle's category, containers that are free and fit). A vehicle with a built-in container or tank takes no external containers. The location is a map link or `lat, lng` and the photo a normal upload (no GPS or camera for staff). The PO quota is deducted when the trip is saved; with no PO the trip goes without one and the cost is typed. Choosing **No** for client approval records a completed trip directly (client and GCM signatures required, no code).
+- **Edit:** changing date / project / service re-deducts the quota and recomputes the cost; an approved or completed trip keeps its status. Every change is written to the trip history.
+- **Final approval, accepting / rejecting the client's objection, cancelling** (cancel gives the quota and containers back) and **reminding the client** are on the details page. Final approval, rejecting the objection and cancelling ask for a **verification code** sent to your email.
+- **Trip documents:** a completed trip shows its Delivery Note, Waste Manifest (not for supply trips) and the combined PDF.
+
+## 12. What you cannot do (returns 403 or 422)
 
 | | |
 |---|---|
@@ -100,7 +110,7 @@ Dashboard, then an **Accounts** section (Users · Drivers), a **Fleet & Assets**
 | Anything related to Contracts (PO) | ✖ — no Purchase Orders menu, the "Contracts" section and card are hidden on the company and project pages (the list column shows `—`), the export column is blank, and `/app/po/*` and `/api/v1/purchase-orders` return 403 — the FRD gives Data Entry no access to POs, not even to read them |
 | Roles & permissions / Companies management | ✖ |
 
-## 12. Features available now
+## 13. Features available now
 
 Users and Drivers: view/create/edit + every account status (on vacation/deactivate/reactivate) except the System Admin's own account.
 Vehicles, Assets, Intermediate facilities and Services (main and sub): full CRUD including deactivate/reactivate + export. The embedded container in the vehicle form works.

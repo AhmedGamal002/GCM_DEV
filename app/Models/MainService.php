@@ -81,12 +81,21 @@ class MainService extends Model
     }
 
     /**
-     * FRD §1.9.1: editing or deactivating a main service is allowed only
-     * while it has never been used — i.e. while no PO includes it.
+     * Whether any trip that is not cancelled was recorded on this main service (decision ج5: "used" = it appeared in
+     * a trip that wasn't cancelled; permanent, like the sub-service's lock).
+     */
+    public function hasTrips(): bool
+    {
+        return Trip::query()->where('main_service_id', $this->getKey())->where('status', '!=', Trip::STATUS_CANCELLED)->exists();
+    }
+
+    /**
+     * FRD §1.9.1: editing or deactivating a main service is allowed only while it has never been used — i.e. while
+     * no active PO includes it and no trip (that wasn't cancelled) was recorded on it.
      */
     public function isInUse(): bool
     {
-        return $this->hasPurchaseOrders();
+        return $this->hasPurchaseOrders() || $this->hasTrips();
     }
 
     protected function casts(): array

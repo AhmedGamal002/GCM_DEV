@@ -112,7 +112,7 @@
       <span>تم: <b id="s-pass">0</b></span>
       <span>فشل: <b id="s-fail" style="color:var(--bad)">0</b></span>
       <span>متبقي: <b id="s-left">0</b></span>
-      <span>من <b>155</b> بند</span>
+      <span>من <b>175</b> بند</span>
     </div>
     <div class="prog"><i class="p" id="b-pass"></i><i class="f" id="b-fail"></i></div>
     <div class="tools">
@@ -1160,6 +1160,228 @@
   </section>
 
   <section class="doc" data-doc="system-admin-part-2">
+    <h2 class="doc-title">المرحلة التالتة — الرحلات</h2>
+    <p class="doc-note">الرحلات (إنشاء ومتابعة وتعديل وإلغاء) وربطها بباقي صفحات النظام — الجزء اللي يخص دورك.</p>
+    
+    <details open class="group">
+      <summary>قايمة الرحلات والتصدير <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-7-trips#2" data-title="الكروت والجدول">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">100</span></label>
+        <h3>الكروت والجدول</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.14 (إحصائيات حالة الرحلات + جدول الرحلات)</dd></div><div class="row"><dt>الخطوات</dt><dd>افتح Trips ← List بحسابك بعد ما يبقى فيه كام رحلة.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>5 كروت: في انتظار اعتماد العميل، معتمدة، مرفوضة، مكتملة، ملغاة. وجدول مرتب من الأحدث للأقدم بالأعمدة: رقم الرحلة، التاريخ، السائق وتبعيته، المركبة وتبعيتها، العميل، المشروع، الخدمة الفرعية، الحالة، ربط التعاقد (الرقم للموظفين)، وزر العرض (والتعديل لمن يقدر).</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-7-trips#3" data-title="الفلاتر والبحث والترتيب">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">101</span></label>
+        <h3>الفلاتر والبحث والترتيب</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.14 (الفلاتر: المدى الزمني، السائق، المركبة، التبعية، العميل، المشروع، الخدمة، الحالة)</dd></div><div class="row"><dt>الخطوات</dt><dd>جرّب البحث برقم الرحلة وباسم السائق وبلوحة المركبة وباسم المشروع، وكل فلتر لوحده (التاريخ من/إلى، الحالة، العميل ثم المشروع، السائق، المركبة، تبعية السائق وتبعية المركبة، الخدمة الأساسية ثم الفرعية)، وجرّب تجمّع أكتر من فلتر. رتّب بالتاريخ.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>كل فلتر بيضيّق الجدول، والفلاتر بتتجمّع، وقايمة المشروعات بتتحدّث لمشروعات العميل المختار والفرعية لفرعيات الخدمة المختارة.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-7-trips#4" data-title="التصدير بنفس اللي على الشاشة">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">102</span></label>
+        <h3>التصدير بنفس اللي على الشاشة</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.14 (زر تصدير Excel / PDF)</dd></div><div class="row"><dt>الخطوات</dt><dd>طبّق فلتر وبحث وصدّر Excel ثم PDF.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الملف فيه نفس الصفوف اللي على الشاشة بالظبط وبهيدر اللوجو و&quot;صدّر بواسطة&quot; والتاريخ.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+    <details open class="group">
+      <summary>إنشاء رحلة <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-7-trips#5" data-title="فورم الإنشاء والاختيار المتتابع">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">103</span></label>
+        <h3>فورم الإنشاء والاختيار المتتابع</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.14 (إنشاء رحلة جديدة — الاختيار المتتابع)</dd></div><div class="row"><dt>الخطوات</dt><dd>دوس &quot;Add Trip&quot; بحسابك. اختار بالترتيب: السائق ← المركبة ← العميل ← المشروع ← الخدمة الأساسية ← الخدمة الفرعية ← المنشأة.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الخانات في كروت (البيانات الأساسية، الاعتمادات والخدمات، الكمية والتكاليف والمنشأة، البيانات الإضافية). كل خانة بتتفتح بعد اللي قبلها، وتغيير الأب بيمسح التابع. المركبة الافتراضية للسائق بتتختار لوحدها، و&quot;نوع المركبة&quot; وسعتها بيظهروا من المركبة المختارة. قايمة كل خانة فيها <strong>اللي مناسب بس</strong> (سائق نشط، مركبة بتصنيف السائق، خدمة بتصنيف المركبة…).</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-7-trips#6" data-title="حاويات الذهاب والرجوع والمركبات ذات الحاوية المدمجة">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">104</span></label>
+        <h3>حاويات الذهاب والرجوع والمركبات ذات الحاوية المدمجة</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.14 (حاوية الذهاب / حاوية الرجوع)</dd></div><div class="row"><dt>الخطوات</dt><dd>اختار مركبة بدون جسم (<code>DMO 1002</code>/<code>DMO 1005</code>/<code>DMO 1006</code>) وبعدين مركبة بحاوية أو صهريج مدمج (<code>DMO 1001</code>/<code>DMO 1003</code>/<code>DMO 1004</code>).</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>المركبة من غير جسم بتفتح قايمتين: حاوية الذهاب (أصول نشطة مش داخل مشروع ومناسبة لتصنيف المركبة) وحاوية الرجوع (أصول داخل المشروع المختار). المركبة بحاوية أو صهريج مدمج <strong>قايمتي الحاويات فاضيتين</strong> (سعتها هي السعة). حاوية محجوزة في رحلة لسه مكتملتش ولا اتلغت <strong>مش بتظهر</strong>، وحاوية الرجوع ممكن تبقى نفس حاوية الذهاب.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-7-trips#7" data-title="التعاقد وخصم الحصة وإنشاء بدون تعاقد">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">105</span></label>
+        <h3>التعاقد وخصم الحصة وإنشاء بدون تعاقد</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.13 + §1.14 (ربط الرحلة بتعاقد، الحصة)</dd></div><div class="row"><dt>الخطوات</dt><dd>اختار مشروع له تعاقد وخدمة فيه، واحفظ الرحلة. افتح تفاصيل التعاقد. بعدين اعمل رحلة لمشروع ملوش تعاقد للخدمة دي.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>قايمة التعاقدات بتعرض كل تعاقدات المشروع للخدمة (ساري أو غير ساري ماعدا المعطّل) برقمه وحالته وتكلفة الرحلة من غير أرصدة، والخصم بيتم من المختار حتى لو رصيده خلص (الرحلة بتتسجّل بعد ما حصلت). عدد الرحلات المستخدمة في التعاقد زاد. لو مفيش تعاقد بيتحوّل السؤال لـ&quot;بدون تعاقد&quot; لوحده وبتدخل التكلفة يدوي ومتمسحش الخدمة المختارة.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-7-trips#8" data-title="الموقع والصورة (الموظف مش في الموقع)">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">106</span></label>
+        <h3>الموقع والصورة (الموظف مش في الموقع)</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.14 (موقع الرحلة، صورة الرحلة)</dd></div><div class="row"><dt>الخطوات</dt><dd>في الفورم بحسابك: حط في &quot;Trip location&quot; رابط خريطة، وبعدين جرّب كتابة <code>24.7136, 46.6753</code>. ارفع صورة من الجهاز في &quot;Photo from the site&quot;.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>مفيش GPS ولا كاميرا للموظف: الموقع خانة نص (رابط أو إحداثيات بتتحول لرابط خريطة)، والصورة رفع ملف عادي jpg/png. رابط غير http/https أو ملف غير صورة بيترفض برسالة واضحة، وفي التفاصيل الرابط بيفتح الخريطة والصورة بتظهر.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-7-trips#9" data-title="تاريخ ووقت الرحلة (بتوقيت الرياض)">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">107</span></label>
+        <h3>تاريخ ووقت الرحلة (بتوقيت الرياض)</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.14 (تاريخ ووقت الرحلة)</dd></div><div class="row"><dt>الخطوات</dt><dd>اعمل رحلة بتاريخ ووقت محدد (مثلًا 09:30)، افتح التفاصيل، وبعدين افتح التعديل واحفظ من غير ما تغيّر الوقت.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الوقت بيظهر زي ما اتدخل بتوقيت الرياض في التفاصيل والقايمة والتعديل، ومابيتغيّرش بعد الحفظ ولا بعد الاعتماد النهائي.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-7-trips#10" data-title="رحلة مكتملة مباشرة من غير اعتماد العميل">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">108</span></label>
+        <h3>رحلة مكتملة مباشرة من غير اعتماد العميل</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.14 (الرحلة المسجّلة بعد حدوثها)</dd></div><div class="row"><dt>الخطوات</dt><dd>في الفورم اختار &quot;طلب اعتماد العميل&quot; <strong>لا</strong>. املا التوقيعات: توقيع العميل (ارفع صورة) وتوقيع ممثل GCM (من &quot;توقيعي المحفوظ&quot; أو ارسم على الشاشة).</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الرحلة بتتحفظ <strong>مكتملة</strong> من غير رمز تحقق، ولو ناقص توقيع العميل أو توقيع GCM الحفظ بيترفض برسالة. الحاوية الداخلة المشروع والخارجة اتحركت تلقائيًا (راجع الأصل في قايمة الأصول).</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+    <details open class="group">
+      <summary>تفاصيل الرحلة ومراحلها <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-7-trips#11" data-title="تفاصيل الرحلة والسجل">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">109</span></label>
+        <h3>تفاصيل الرحلة والسجل</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.14 (عرض بيانات الرحلة)</dd></div><div class="row"><dt>الخطوات</dt><dd>افتح رحلة من القايمة.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>عمودين: البيانات (العميل والمشروع والسائق والمركبة والحاويات والخدمة والكمية والتكاليف والتعاقد والمنشأة والمستندات والموقع والصور) وسجل أحداث الرحلة (إنشاء، اعتماد، رفض، تعديل، إلغاء…) بالتاريخ والمنفّذ. لو الحساب مراقب بيشوف كل ده من غير أزرار.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-7-trips#12" data-title="تعديل الرحلة">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">110</span></label>
+        <h3>تعديل الرحلة</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.14 (تعديل رحلة)</dd></div><div class="row"><dt>الخطوات</dt><dd>افتح رحلة بحسابك ← Edit. غيّر الكمية، وبعدين غيّر التاريخ أو المشروع أو الخدمة. جرّب تفضّي خانة اختيارية (رقم المنافست مثلًا). جرّب تعدّل رحلة مكتملة.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>التعديل بيتسجّل في السجل بالتغييرات. تغيير التاريخ أو المشروع أو الخدمة بيرجّع الخصم القديم ويخصم من جديد ويحسب التكلفة تاني. الخانة الاختيارية اللي اتفضّت بتتمسح. تعديل رحلة معتمدة أو مكتملة مابيغيّرش حالتها.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-7-trips#13" data-title="الاعتماد النهائي بالتوقيعات ورمز التحقق">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">111</span></label>
+        <h3>الاعتماد النهائي بالتوقيعات ورمز التحقق</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.14 (الاعتماد النهائي من GCM)</dd></div><div class="row"><dt>الخطوات</dt><dd>رحلة اتعمل لها اعتماد من حساب العميل (<code>client.manager</code>) ← فتح التفاصيل ← &quot;Final approval&quot;. اختار توقيعك (المحفوظ أو الرسم)، وأدخل رقم وصورة إيصال التدوير لو الخدمة الفرعية بتتطلبه. اكتب الرمز اللي وصل على الإيميل.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>نافذة الرمز بتفتح تلقائيًا، والرمز الغلط بيتعدّ محاولة، والصح بيكمّل. الرحلة بقت <strong>مكتملة</strong> وتوقيع GCM وختمه اتحفظوا عليها، وظهرت المستندات في كارت &quot;Trip documents&quot;. مدخل البيانات لو اعتمد بيتحفظ توقيعه وختمه هو.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-7-trips#14" data-title="اعتراض العميل: قبوله أو رفضه">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">112</span></label>
+        <h3>اعتراض العميل: قبوله أو رفضه</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.14 (الرحلة المرفوضة من العميل)</dd></div><div class="row"><dt>الخطوات</dt><dd>ارفض رحلة من حساب العميل (<code>client.manager</code>) بسبب، ثم افتحها بحساب الموظف. جرّب &quot;قبول الاعتراض&quot; وفي رحلة تانية &quot;رفض الاعتراض&quot;.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>السبب ظاهر في التفاصيل والسجل. <strong>قبول الاعتراض</strong> (من غير رمز) بيخليك تعدّل الرحلة وبيرجّعها &quot;في انتظار اعتماد العميل&quot; تاني ويمسح تعليق العميل ومرفقه من الرحلة (النص يفضل في السجل). <strong>رفض الاعتراض</strong> بيحتاج رمز وتوقيع العميل (صورة) وتوقيع GCM وبعده الرحلة مكتملة.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-7-trips#15" data-title="إلغاء الرحلة">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">113</span></label>
+        <h3>إلغاء الرحلة</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.14 (إلغاء الرحلة)</dd></div><div class="row"><dt>الخطوات</dt><dd>افتح رحلة (واحدة مكتملة وواحدة لسه) ← &quot;Cancel the trip&quot; بسبب (اختياري) والرمز.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الرحلة بقت <strong>ملغاة</strong>، الحصة اترجعت للتعاقد (عدد الرحلات المستخدمة نقص)، والحاويات اتحررت (وحركة الأصول اتعكست لو كانت مكتملة)، والرحلة بتظهر في كارت &quot;الملغاة&quot; وبتتشال من كميات الاستدامة.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-7-trips#16" data-title="تذكير العميل بالاعتماد">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">114</span></label>
+        <h3>تذكير العميل بالاعتماد</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.14 (تذكير العميل)</dd></div><div class="row"><dt>الخطوات</dt><dd>افتح رحلة في انتظار الاعتماد ← &quot;Remind the client to approve&quot;. دوس تاني على طول.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>رسالة بعدد من اتبعتلهم التذكير (المسؤول الافتراضي أو كل حسابات العميل اللي بتشوف المشروع)، من غير رمز، والتذكير التاني لنفس الرحلة قبل ساعة بيترفض.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-7-trips#17" data-title="مستندات الرحلة">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">115</span></label>
+        <h3>مستندات الرحلة</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.14 (مستند DN ومستند Manifest)</dd></div><div class="row"><dt>الخطوات</dt><dd>افتح رحلة مكتملة بحسابك وبص على كارت &quot;Trip documents&quot;، وافتح كل مستند وصدّر الملف المجمّع. افتح رحلة غير مكتملة.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>سند التسليم وبيان النفايات (ما عدا رحلة التوريد فملهاش بيان) والملف المجمّع بيتفتحوا PDF، ورقم المستند ثابت (<code>DN-…</code>/<code>M-…</code>). الرحلة غير المكتملة كارت المستندات بيقول إنها بتتولّد بعد الاكتمال.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+    <details open class="group">
+      <summary>ربط الرحلات بالخدمات والشركات والمركبات والتعاقدات <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-7-trips#24" data-title="قفل الخدمات بعد أول رحلة">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">116</span></label>
+        <h3>قفل الخدمات بعد أول رحلة</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.9 (قفل الخدمة المستخدمة)</dd></div><div class="row"><dt>الخطوات</dt><dd>بحسابك اعمل خدمة أساسية وفرعية جديدة (من غير تعاقد)، افتح تعديلها وتعطيلها (متاحين)، اعمل عليها رحلة، وارجع حاول تعدّل أو تعطّل. بعدين الغي الرحلة وحاول تاني.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>بعد الرحلة الأولى (حتى لو اكتملت) التعديل والتعطيل بيتقفلوا برسالة بتقول إن الخدمة مستخدمة في رحلة. لو الرحلة الوحيدة اتلغت بيتفتحوا تاني.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-7-trips#25" data-title="أرقام الشركة والمشروع">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">117</span></label>
+        <h3>أرقام الشركة والمشروع</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.4 / §1.11 (إحصائيات الشركة والمشروع)</dd></div><div class="row"><dt>الخطوات</dt><dd>افتح تفاصيل <code>Al Noor Construction</code> وتفاصيل أحد مشروعاتها بحسابك بعد رحلتين (واحدة ملغاة).</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>عدد الرحلات = غير الملغاة بس، والنفايات بالطن = مجموع كمياتها (رحلة التوريد مالهاش كمية).</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-7-trips#26" data-title="أرقام الخدمة الأساسية والفرعية">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">118</span></label>
+        <h3>أرقام الخدمة الأساسية والفرعية</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.9 (إحصائيات الخدمة)</dd></div><div class="row"><dt>الخطوات</dt><dd>افتح تفاصيل الخدمة الأساسية ثم الفرعية اللي استخدمتها في رحلات.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>عدد الرحلات والمشروعات والسائقين والمركبات والحاويات والصهاريج (كل أصل مرة واحدة) والكميات بالطن والمتر المكعب — حقيقية، والخدمة اللي محدش استخدمها أصفار.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-7-trips#27" data-title="المركبة والتعاقد">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">119</span></label>
+        <h3>المركبة والتعاقد</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.5 و§1.13 (إحصائيات المركبة والتعاقد)</dd></div><div class="row"><dt>الخطوات</dt><dd>افتح قايمة المركبات وتفاصيل مركبة عملت بيها رحلات، وبعدين تفاصيل التعاقد المرتبط.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>عمود &quot;عدد الرحلات&quot; في القايمة حقيقي، وكارت الرحلات في التفاصيل فيه إجمالي الرحلات والنفايات والمعدل اليومي (الرحلات ÷ أيام تسجيل المركبة)، وكارت التعاقد &quot;النفايات المنقولة&quot; بمجموع طن الرحلات المخصومة عليه.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+  </section>
+
+  <section class="doc" data-doc="system-admin-part-3">
     <h2 class="doc-title">نواقص المرحلة الأولى — اللي اتكمّل</h2>
     <p class="doc-note">بنود طلعت في مراجعة الـFRD بعد تسليم المرحلة الأولى واتقفلت، وبنود كانت ناقصة من قوايم الاختبار (دورة الإنشاء والتعديل وتغيير الحالة).</p>
     
@@ -1169,7 +1391,7 @@
     <article class="item" data-id="uat-common#1" data-title="التاريخ والوقت الحاليين في الشريط العلوي">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">100</span></label>
+          <span class="num">120</span></label>
         <h3>التاريخ والوقت الحاليين في الشريط العلوي</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1179,7 +1401,7 @@
     <article class="item" data-id="week-3-frd-gap-review#2" data-title="تبديل الوضع الداكن / المضيء">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">101</span></label>
+          <span class="num">121</span></label>
         <h3>تبديل الوضع الداكن / المضيء</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1189,7 +1411,7 @@
     <article class="item" data-id="week-3-frd-gap-review#3" data-title="رسالة الحساب المعطّل عند تسجيل الدخول">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">102</span></label>
+          <span class="num">122</span></label>
         <h3>رسالة الحساب المعطّل عند تسجيل الدخول</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1203,7 +1425,7 @@
     <article class="item" data-id="week-3-frd-gap-review#4" data-title="الملف الشخصي = صورة + كلمة السر (الاسم والبريد للقراءة فقط)">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">103</span></label>
+          <span class="num">123</span></label>
         <h3>الملف الشخصي = صورة + كلمة السر (الاسم والبريد للقراءة فقط)</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1213,7 +1435,7 @@
     <article class="item" data-id="week-3-frd-gap-review#28" data-title="كلمة السر الذاتية من الملف الشخصي">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">104</span></label>
+          <span class="num">124</span></label>
         <h3>كلمة السر الذاتية من الملف الشخصي</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1227,7 +1449,7 @@
     <article class="item" data-id="week-3-frd-gap-review#5" data-title="&quot;آخر تحديث: تم بواسطة X — التاريخ والوقت&quot;">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">105</span></label>
+          <span class="num">125</span></label>
         <h3>&quot;آخر تحديث: تم بواسطة X — التاريخ والوقت&quot;</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1237,7 +1459,7 @@
     <article class="item" data-id="week-3-frd-gap-review#6" data-title="تسمية &quot;رقم الموبايل (حساب واتساب)&quot;">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">106</span></label>
+          <span class="num">126</span></label>
         <h3>تسمية &quot;رقم الموبايل (حساب واتساب)&quot;</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1247,7 +1469,7 @@
     <article class="item" data-id="week-3-frd-gap-review#7" data-title="رقم الموبايل مايتكررش داخل نفس الشركة">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">107</span></label>
+          <span class="num">127</span></label>
         <h3>رقم الموبايل مايتكررش داخل نفس الشركة</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1257,7 +1479,7 @@
     <article class="item" data-id="week-3-frd-gap-review#9" data-title="اسم السائق حقل واحد">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">108</span></label>
+          <span class="num">128</span></label>
         <h3>اسم السائق حقل واحد</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1271,7 +1493,7 @@
     <article class="item" data-id="week-1-2-auth-users-roles#20" data-title="تعديل بيانات مستخدم">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">109</span></label>
+          <span class="num">129</span></label>
         <h3>تعديل بيانات مستخدم</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1281,7 +1503,7 @@
     <article class="item" data-id="week-1-2-auth-users-roles#21" data-title="تغيير حالة مستخدم عادي (في إجازة / تعطيل / إعادة تنشيط)">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">110</span></label>
+          <span class="num">130</span></label>
         <h3>تغيير حالة مستخدم عادي (في إجازة / تعطيل / إعادة تنشيط)</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1291,7 +1513,7 @@
     <article class="item" data-id="week-3-vehicles-drivers-assets#23" data-title="تعديل بيانات سائق">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">111</span></label>
+          <span class="num">131</span></label>
         <h3>تعديل بيانات سائق</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1301,7 +1523,7 @@
     <article class="item" data-id="week-3-vehicles-drivers-assets#24" data-title="تغيير حالة سائق (في إجازة / تعطيل / إعادة تنشيط)">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">112</span></label>
+          <span class="num">132</span></label>
         <h3>تغيير حالة سائق (في إجازة / تعطيل / إعادة تنشيط)</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1311,7 +1533,7 @@
     <article class="item" data-id="week-3-vehicles-drivers-assets#25" data-title="تعديل مركبة">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">113</span></label>
+          <span class="num">133</span></label>
         <h3>تعديل مركبة</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1321,7 +1543,7 @@
     <article class="item" data-id="week-3-vehicles-drivers-assets#26" data-title="إنشاء أصل جديد">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">114</span></label>
+          <span class="num">134</span></label>
         <h3>إنشاء أصل جديد</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1331,7 +1553,7 @@
     <article class="item" data-id="week-3-vehicles-drivers-assets#27" data-title="تغيير حالة أصل (الصيانة / تعطيل / إعادة تنشيط)">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">115</span></label>
+          <span class="num">135</span></label>
         <h3>تغيير حالة أصل (الصيانة / تعطيل / إعادة تنشيط)</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1341,7 +1563,7 @@
     </details>
   </section>
 
-  <section class="doc" data-doc="system-admin-part-3">
+  <section class="doc" data-doc="system-admin-part-4">
     <h2 class="doc-title">تحسينات اتضافت على اللي اتسلّم</h2>
     <p class="doc-note">تحسينات اتعملت بطلبك أو بعد ملاحظاتك على النسخة اللي اتسلّمت: وضوح الفورمات، تنبيهات الوثائق، التصدير، شاشات الحفظ والتحميل وغيرها.</p>
     
@@ -1351,7 +1573,7 @@
     <article class="item" data-id="week-5-form-clarity#1" data-title="الحقول الإجبارية متعلّمة في كل الفورمات">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">116</span></label>
+          <span class="num">136</span></label>
         <h3>الحقول الإجبارية متعلّمة في كل الفورمات</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1361,7 +1583,7 @@
     <article class="item" data-id="week-5-form-clarity#2" data-title="إنشاء وتعديل سائق من غير مركبة افتراضية">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">117</span></label>
+          <span class="num">137</span></label>
         <h3>إنشاء وتعديل سائق من غير مركبة افتراضية</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1371,7 +1593,7 @@
     <article class="item" data-id="week-5-form-clarity#3" data-title="مفيش &quot;حدث خطأ&quot; عامة">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">118</span></label>
+          <span class="num">138</span></label>
         <h3>مفيش &quot;حدث خطأ&quot; عامة</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1385,7 +1607,7 @@
     <article class="item" data-id="week-3-frd-gap-review#10" data-title="القائمة الجانبية: Vehicles فيها List و Categories">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">119</span></label>
+          <span class="num">139</span></label>
         <h3>القائمة الجانبية: Vehicles فيها List و Categories</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1395,7 +1617,7 @@
     <article class="item" data-id="week-3-frd-gap-review#11" data-title="إضافة تصنيف جديد">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">120</span></label>
+          <span class="num">140</span></label>
         <h3>إضافة تصنيف جديد</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1405,7 +1627,7 @@
     <article class="item" data-id="week-3-frd-gap-review#12" data-title="عدد كروت &quot;Vehicles by category&quot; = عدد التصنيفات الفعلي">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">121</span></label>
+          <span class="num">141</span></label>
         <h3>عدد كروت &quot;Vehicles by category&quot; = عدد التصنيفات الفعلي</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1415,7 +1637,7 @@
     <article class="item" data-id="week-3-frd-gap-review#13" data-title="تعديل تصنيف">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">122</span></label>
+          <span class="num">142</span></label>
         <h3>تعديل تصنيف</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1425,7 +1647,7 @@
     <article class="item" data-id="week-3-frd-gap-review#14" data-title="الحذف — مسموح لتصنيف مضاف يدويًا وغير مستخدم فقط">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">123</span></label>
+          <span class="num">143</span></label>
         <h3>الحذف — مسموح لتصنيف مضاف يدويًا وغير مستخدم فقط</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1435,7 +1657,7 @@
     <article class="item" data-id="week-3-frd-gap-review#17" data-title="الواجهة بالعربي">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">124</span></label>
+          <span class="num">144</span></label>
         <h3>الواجهة بالعربي</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1445,7 +1667,7 @@
     <article class="item" data-id="week-3-frd-gap-review#19" data-title="زر &quot;Add category&quot; مش لازق في خانة البحث + زر Export">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">125</span></label>
+          <span class="num">145</span></label>
         <h3>زر &quot;Add category&quot; مش لازق في خانة البحث + زر Export</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1455,7 +1677,7 @@
     <article class="item" data-id="week-5-export-header-and-category-defaults#3" data-title="فورم التصنيف فيه كارت &quot;Default embedded container&quot;">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">126</span></label>
+          <span class="num">146</span></label>
         <h3>فورم التصنيف فيه كارت &quot;Default embedded container&quot;</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1465,7 +1687,7 @@
     <article class="item" data-id="week-5-export-header-and-category-defaults#4" data-title="فورم المركبة بيعبّي القيم دي لما تختار التصنيف">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">127</span></label>
+          <span class="num">147</span></label>
         <h3>فورم المركبة بيعبّي القيم دي لما تختار التصنيف</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1475,7 +1697,7 @@
     <article class="item" data-id="week-3-vehicles-drivers-assets#8" data-title="الحاوية المدمجة — قائمة السعة حسب النوع">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">128</span></label>
+          <span class="num">148</span></label>
         <h3>الحاوية المدمجة — قائمة السعة حسب النوع</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1489,7 +1711,7 @@
     <article class="item" data-id="week-3-vehicles-drivers-assets#28" data-title="تعديل السائق — الملفات الحالية وتصاريح الدخول">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">129</span></label>
+          <span class="num">149</span></label>
         <h3>تعديل السائق — الملفات الحالية وتصاريح الدخول</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1499,7 +1721,7 @@
     <article class="item" data-id="week-3-vehicles-drivers-assets#18" data-title="تعديل الأصل — الاسم والبيانات الإضافية فقط">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">130</span></label>
+          <span class="num">150</span></label>
         <h3>تعديل الأصل — الاسم والبيانات الإضافية فقط</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1509,7 +1731,7 @@
     <article class="item" data-id="week-3-vehicles-drivers-assets#19" data-title="تصنيف السعة يتفلتر حسب نوع الأصل">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">131</span></label>
+          <span class="num">151</span></label>
         <h3>تصنيف السعة يتفلتر حسب نوع الأصل</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1519,7 +1741,7 @@
     <article class="item" data-id="week-3-vehicles-drivers-assets#20" data-title="سعات الأصول — الاسم والبيانات الإضافية فقط للتعديل">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">132</span></label>
+          <span class="num">152</span></label>
         <h3>سعات الأصول — الاسم والبيانات الإضافية فقط للتعديل</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1529,7 +1751,7 @@
     <article class="item" data-id="week-3-vehicles-drivers-assets#21" data-title="البيانات الإضافية الفاضية مبتظهرش (كل الموديولات)">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">133</span></label>
+          <span class="num">153</span></label>
         <h3>البيانات الإضافية الفاضية مبتظهرش (كل الموديولات)</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1543,7 +1765,7 @@
     <article class="item" data-id="week-5-document-expiry#1" data-title="السائق: الإقامة والرخص والتأمين وتصاريح الدخول">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">134</span></label>
+          <span class="num">154</span></label>
         <h3>السائق: الإقامة والرخص والتأمين وتصاريح الدخول</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1553,7 +1775,7 @@
     <article class="item" data-id="week-5-document-expiry#2" data-title="المركبة: الوثائق الأربعة وتصاريح الدخول">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">135</span></label>
+          <span class="num">155</span></label>
         <h3>المركبة: الوثائق الأربعة وتصاريح الدخول</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1563,7 +1785,7 @@
     <article class="item" data-id="week-5-document-expiry#3" data-title="العدّاد بالعربي">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">136</span></label>
+          <span class="num">156</span></label>
         <h3>العدّاد بالعربي</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1573,7 +1795,7 @@
     <article class="item" data-id="week-5-document-expiry#4" data-title="تغيير مدة التنبيه (الافتراضي 30 يوم) لكل من السائقين والمركبات">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">137</span></label>
+          <span class="num">157</span></label>
         <h3>تغيير مدة التنبيه (الافتراضي 30 يوم) لكل من السائقين والمركبات</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1583,7 +1805,7 @@
     <article class="item" data-id="week-5-document-expiry#6" data-title="حالة الوثائق في صف السائق / المركبة">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">138</span></label>
+          <span class="num">158</span></label>
         <h3>حالة الوثائق في صف السائق / المركبة</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1593,7 +1815,7 @@
     <article class="item" data-id="week-5-document-expiry#7" data-title="فتح مرفقات السائق والمركبة بأيقونة العين">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">139</span></label>
+          <span class="num">159</span></label>
         <h3>فتح مرفقات السائق والمركبة بأيقونة العين</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1607,7 +1829,7 @@
     <article class="item" data-id="week-5-account-status#2" data-title="مفيش تغيير حالة للحساب الشخصي">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">140</span></label>
+          <span class="num">160</span></label>
         <h3>مفيش تغيير حالة للحساب الشخصي</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1617,7 +1839,7 @@
     <article class="item" data-id="week-5-account-status#3" data-title="مستخدم متسجّل دخول واتعطّل">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">141</span></label>
+          <span class="num">161</span></label>
         <h3>مستخدم متسجّل دخول واتعطّل</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1627,7 +1849,7 @@
     <article class="item" data-id="week-5-account-status#4" data-title="رسالة واضحة في كل الصفحات + أزرار مقفولة من الأول">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">142</span></label>
+          <span class="num">162</span></label>
         <h3>رسالة واضحة في كل الصفحات + أزرار مقفولة من الأول</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1641,7 +1863,7 @@
     <article class="item" data-id="week-1-2-auth-users-roles#22" data-title="توقيع وختم موظفي GCM (اختياري)">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">143</span></label>
+          <span class="num">163</span></label>
         <h3>توقيع وختم موظفي GCM (اختياري)</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1651,7 +1873,7 @@
     <article class="item" data-id="week-5-export-header-and-category-defaults#5" data-title="تعديل كل بيانات أي حساب بما فيها البريد وحسابك أنت">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">144</span></label>
+          <span class="num">164</span></label>
         <h3>تعديل كل بيانات أي حساب بما فيها البريد وحسابك أنت</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1665,7 +1887,7 @@
     <article class="item" data-id="week-3-frd-gap-review#23" data-title="التصدير (خصوصًا PDF) بيوضّح إنه شغّال">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">145</span></label>
+          <span class="num">165</span></label>
         <h3>التصدير (خصوصًا PDF) بيوضّح إنه شغّال</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1675,7 +1897,7 @@
     <article class="item" data-id="week-3-frd-gap-review#24" data-title="تصدير PDF بالعربي">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">146</span></label>
+          <span class="num">166</span></label>
         <h3>تصدير PDF بالعربي</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1685,7 +1907,7 @@
     <article class="item" data-id="week-3-frd-gap-review#25" data-title="التصدير بيطابق الفلاتر والبحث اللي على الشاشة">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">147</span></label>
+          <span class="num">167</span></label>
         <h3>التصدير بيطابق الفلاتر والبحث اللي على الشاشة</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1695,7 +1917,7 @@
     <article class="item" data-id="week-5-export-header-and-category-defaults#1" data-title="ملف Excel بيفتح بلوجو GCM و&quot;صدّر بواسطة&quot; والتاريخ والوقت">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">148</span></label>
+          <span class="num">168</span></label>
         <h3>ملف Excel بيفتح بلوجو GCM و&quot;صدّر بواسطة&quot; والتاريخ والوقت</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1705,7 +1927,7 @@
     <article class="item" data-id="week-5-export-header-and-category-defaults#2" data-title="ملف PDF بنفس الرأس">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">149</span></label>
+          <span class="num">169</span></label>
         <h3>ملف PDF بنفس الرأس</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1719,7 +1941,7 @@
     <article class="item" data-id="week-3-frd-gap-review#21" data-title="الحفظ البطيء بملفات كبيرة مش شكله معلّق">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">150</span></label>
+          <span class="num">170</span></label>
         <h3>الحفظ البطيء بملفات كبيرة مش شكله معلّق</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1729,7 +1951,7 @@
     <article class="item" data-id="week-3-frd-gap-review#22" data-title="ملف أكبر من الحد يترفض فورًا من غير رفع">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">151</span></label>
+          <span class="num">171</span></label>
         <h3>ملف أكبر من الحد يترفض فورًا من غير رفع</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1739,7 +1961,7 @@
     <article class="item" data-id="week-3-frd-gap-review#29" data-title="نفس شاشة &quot;جاري الحفظ&quot; في كل صفحات الإنشاء والتعديل">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">152</span></label>
+          <span class="num">172</span></label>
         <h3>نفس شاشة &quot;جاري الحفظ&quot; في كل صفحات الإنشاء والتعديل</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1749,7 +1971,7 @@
     <article class="item" data-id="week-3-frd-gap-review#30" data-title="شاشة التحميل واللوجو والاسم">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">153</span></label>
+          <span class="num">173</span></label>
         <h3>شاشة التحميل واللوجو والاسم</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1763,7 +1985,7 @@
     <article class="item" data-id="week-3-vehicles-drivers-assets#22" data-title="تبديل اللغة يترجم كل الصفحات">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">154</span></label>
+          <span class="num">174</span></label>
         <h3>تبديل اللغة يترجم كل الصفحات</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -1773,7 +1995,7 @@
     <article class="item" data-id="week-3-frd-gap-review#20" data-title="المحتوى بعرض الشاشة كله (Wide) كوضع افتراضي">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">155</span></label>
+          <span class="num">175</span></label>
         <h3>المحتوى بعرض الشاشة كله (Wide) كوضع افتراضي</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>

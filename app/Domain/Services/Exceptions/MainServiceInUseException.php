@@ -13,11 +13,11 @@ class MainServiceInUseException extends RuntimeException
 {
     public static function inPurchaseOrder(): self
     {
-        return new self(__('This main service is included in a purchase order, so it can\'t be edited or deactivated.'));
+        return new self(__('This main service is used in a purchase order or a trip, so it can\'t be edited or deactivated.'));
     }
 
     public static function lockedSubService(): self
     {
-        return new self(__('A sub-service under this main service is tied to an ongoing trip, so the main service can\'t be deactivated.'));
+        return new self(__('A sub-service under this main service is used in a trip, so the main service can\'t be deactivated.'));
     }
 }

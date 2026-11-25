@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Domain\Trips\Support\TripStatistics;
 use App\Domain\Settings\Support\ExpiryWarning;
 use App\Domain\Vehicles\Actions\CreateVehicleAction;
 use App\Domain\Vehicles\Actions\UpdateVehicleAction;
@@ -96,6 +97,10 @@ class VehicleController extends Controller
         $vehicle = Vehicle::with([...self::LIST_WITH, 'documents', 'updatedBy'])->findOrFail($vehicle);
 
         Gate::authorize('view', $vehicle);
+        $stats = TripStatistics::forVehicle($vehicle->id);
+        // the daily rate: trips / the days since the vehicle was registered (at least one day)
+        $stats['daily_rate'] = round($stats['trips'] / max(1, (int) $vehicle->created_at->diffInDays(now())), 2);
+        $vehicle->setAttribute('trip_stats', $stats);
 
         return VehicleResource::make($vehicle);
     }
@@ -241,6 +246,8 @@ class VehicleController extends Controller
             ->visibleTo($request->user())
             // `documents` (permits included) feed the list's documents-status column and its export.
             ->with([...self::LIST_WITH, 'documents'])
+            // "Trips done" column: the trips that weren't cancelled (TripStatistics counts the same way).
+            ->withCount(['trips' => fn ($q) => $q->where('status', '!=', \App\Models\Trip::STATUS_CANCELLED)])
             ->when($request->filled('category'), fn ($q) => $q->whereHas('category', fn ($c) => $c->where('slug', $request->string('category'))))
             ->when($request->filled('operational_status'), fn ($q) => $q->where('operational_status', $request->string('operational_status')))
             ->when($request->filled('affiliation'), fn ($q) => $q->where('affiliation', $request->string('affiliation')))

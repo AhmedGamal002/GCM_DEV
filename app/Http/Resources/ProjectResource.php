@@ -43,15 +43,15 @@ class ProjectResource extends JsonResource
             'operational_status' => $this->operational_status,
             'additional_data' => $this->additional_data,
 
-            // Trips don't exist yet, so those figures are 0 until that module lands. The user count (client
+            // The trip figures (`trip_stats`) are set by the show endpoint (TripStatistics) — 0 in a list row. The user count (client
             // accounts that can see the project) comes from withUsersCount(), the contract count from
             // withCount('purchaseOrders') (null for a role without PO access).
             'contracts_count' => $contracts = $this->contractsCount($request),
             'users_count' => (int) ($this->users_count ?? 0),
             'stats' => [
                 'contracts' => $contracts,
-                'trips' => 0,
-                'waste_tons' => 0,
+                'trips' => ($this->trip_stats ?? [])['trips'] ?? 0,
+                'waste_tons' => ($this->trip_stats ?? [])['waste_tons'] ?? 0,
             ],
 
             'updated_by_name' => $this->whenLoaded('updatedBy', fn () => $this->updatedBy?->name),

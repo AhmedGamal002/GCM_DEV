@@ -173,7 +173,7 @@ document.addEventListener('DOMContentLoaded', function () {
       document.getElementById('pov-updated-by').textContent = t.last_updated_by.replace(':name', po.updated_by_name).replace(':at', at);
     }
 
-    // Statistics: trips and cost from the ledger; the waste quantity comes with the trips module.
+    // Statistics: trips and cost from the ledger; the waste moved from the trips under this contract.
     const totals = po.totals || {};
     const set = (key, value, sub) => {
       document.querySelector(`[data-stat="${key}"]`).textContent = value;
@@ -181,7 +181,7 @@ document.addEventListener('DOMContentLoaded', function () {
     };
     set('trips', num(totals.trips_used || 0, 0), `${t.of || 'of'} ${num(totals.max_trips || 0, 0)}`);
     set('cost', num(totals.cost_used || 0, 2), `${t.of || 'of'} ${num(totals.max_cost || 0, 2)} ${currency}`);
-    set('waste', '0', '');
+    set('waste', num(totals.waste_tons || 0, 3), '');
 
     const services = document.getElementById('pov-services');
     services.textContent = '';
