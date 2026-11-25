@@ -29,6 +29,9 @@ class MenuVisibilityTest extends TestCase
     {
         parent::setUp();
 
+        // the dashboard loads its own page script: these tests are about the menu, not the built assets
+        $this->withoutVite();
+
         $this->seed(RoleSeeder::class);
 
         $tenant = Tenant::create(['name' => 'GCM', 'slug' => 'gcm', 'status' => 'active']);

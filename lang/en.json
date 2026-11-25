@@ -1217,5 +1217,10 @@
   "Search notifications": "Search notifications",
   "New": "New",
   "Notification type": "Notification type",
-  "Notification details": "Notification details"
+  "Notification details": "Notification details",
+  "trips": "trips",
+  "No trips yet.": "No trips yet.",
+  "Trips in the last 30 days": "Trips in the last 30 days",
+  "Main services share of the trips": "Main services share of the trips",
+  "Latest notifications": "Latest notifications"
 }

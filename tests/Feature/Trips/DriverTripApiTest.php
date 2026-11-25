@@ -107,8 +107,9 @@ class DriverTripApiTest extends TripTestCase
 
     public function test_the_choices_are_rechecked_for_the_driver_too(): void
     {
-        // a vehicle his categories don't cover
-        $other = \App\Models\Vehicle::factory()->create();
+        // a vehicle his categories don't cover (the factory's category is random: pin one outside his, or the test is flaky)
+        $outside = \App\Models\VehicleCategory::query()->whereNotIn('id', $this->driver->qualifiedVehicleCategories()->pluck('vehicle_categories.id'))->value('id');
+        $other = \App\Models\Vehicle::factory()->create(['vehicle_category_id' => $outside]);
 
         $this->send('driver/trips', $this->form(['vehicle_id' => $other->id]))->assertUnprocessable();
     }

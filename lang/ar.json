@@ -1217,5 +1217,10 @@
   "Search notifications": "بحث في الإشعارات",
   "New": "جديد",
   "Notification type": "نوع الإشعار",
-  "Notification details": "تفاصيل الإشعار"
+  "Notification details": "تفاصيل الإشعار",
+  "trips": "رحلات",
+  "No trips yet.": "لا توجد رحلات بعد.",
+  "Trips in the last 30 days": "الرحلات خلال آخر 30 يوم",
+  "Main services share of the trips": "نسب الخدمات الأساسية في الرحلات",
+  "Latest notifications": "آخر الإشعارات"
 }

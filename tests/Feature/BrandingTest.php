@@ -17,6 +17,14 @@ class BrandingTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // the dashboard loads its own page script: these tests are about the layout, not the built assets
+        $this->withoutVite();
+    }
+
     private const LOGO = 'assets/img/branding/logo-light.png';
 
     public function test_the_logo_file_is_shipped(): void

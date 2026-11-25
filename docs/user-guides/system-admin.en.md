@@ -296,4 +296,4 @@ The notices you get: a trip made by the driver (new, rejected by the client, rec
 | General Settings | Warning period for driver and vehicle document expiry (default 30 days, 1–365) — the "time left" bars on the driver and vehicle pages turn yellow (tag "Need review") from then on | — |
 | Trips | List + counters + filters + export, create / edit (cascading lists, quota deduction), final approval, objection handling, cancel, remind the client, documents; the services lock after the first trip and the company / project / service / vehicle / PO pages show real trip figures | Notifications, dashboard and reports (Week 8) |
 | Notifications | The bell (latest five + unread dot), the notifications page (filters + search), and contract alerts | — |
-| Dashboard | Shell screen | Real stats (Week 8) |
+| Dashboard | The real dashboard: the five trip statuses, a 30-day trips chart, the main services' share, resources by status, purchase-order states and the latest ten notifications — each role gets only its own sections | — |
