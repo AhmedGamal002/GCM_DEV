@@ -101,7 +101,13 @@ Sidebar: **Trips** → List + Add.
 - **Final approval, accepting / rejecting the client's objection, cancelling** (cancel gives the quota and containers back) and **reminding the client** are on the details page. Final approval, rejecting the objection and cancelling ask for a **verification code** sent to your email.
 - **Trip documents:** a completed trip shows its Delivery Note, Waste Manifest (not for supply trips) and the combined PDF.
 
-## 12. What you cannot do (returns 403 or 422)
+## 12. Notifications — `/app/notifications`
+
+The **bell** in the top bar shows a dot when something is unread and lists the **latest five** notifications (type, sentence, date and time), each linking to the trip (or contract); "Mark all as read" and "View all notifications" are in its menu. The **Notifications page** has a table of all your own notifications (newest first) with a filter by type, a time range and a search box (trip code, contract number, type). They are ordinary notifications, not instant ones — they appear when the page loads or the bell opens. You only ever see your own, and never the person who caused the change.
+
+The notices you get: a trip made by the driver (new, rejected by the client, receipt photo added) and the client's approval of any trip. You get no contract alerts (POs are not yours).
+
+## 13. What you cannot do (returns 403 or 422)
 
 | | |
 |---|---|
@@ -110,7 +116,7 @@ Sidebar: **Trips** → List + Add.
 | Anything related to Contracts (PO) | ✖ — no Purchase Orders menu, the "Contracts" section and card are hidden on the company and project pages (the list column shows `—`), the export column is blank, and `/app/po/*` and `/api/v1/purchase-orders` return 403 — the FRD gives Data Entry no access to POs, not even to read them |
 | Roles & permissions / Companies management | ✖ |
 
-## 13. Features available now
+## 14. Features available now
 
 Users and Drivers: view/create/edit + every account status (on vacation/deactivate/reactivate) except the System Admin's own account.
 Vehicles, Assets, Intermediate facilities and Services (main and sub): full CRUD including deactivate/reactivate + export. The embedded container in the vehicle form works.

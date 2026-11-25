@@ -24,6 +24,12 @@ Sidebar: **Trips** → List + Add.
 - **Recycle receipt photo:** add or replace it on the trip details until the trip is completed.
 - You can't edit a trip after creating it, and there is no export.
 
+## Notifications — `/app/notifications`
+
+The **bell** in the top bar shows a dot when something is unread and lists the **latest five** notifications (type, sentence, date and time), each linking to the trip (or contract); "Mark all as read" and "View all notifications" are in its menu. The **Notifications page** has a table of all your own notifications (newest first) with a filter by type, a time range and a search box (trip code, contract number, type). They are ordinary notifications, not instant ones — they appear when the page loads or the bell opens. You only ever see your own, and never the person who caused the change.
+
+The driver is not a recipient of notices; the bell and the page show an empty state.
+
 ## What they cannot do
 
 - Any access to vehicle, driver, asset, or user data.

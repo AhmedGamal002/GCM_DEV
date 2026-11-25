@@ -102,7 +102,7 @@
       <span>تم: <b id="s-pass">0</b></span>
       <span>فشل: <b id="s-fail" style="color:var(--bad)">0</b></span>
       <span>متبقي: <b id="s-left">0</b></span>
-      <span>من <b>273</b> بند</span>
+      <span>من <b>283</b> بند</span>
     </div>
     <div class="prog"><i class="p" id="b-pass"></i><i class="f" id="b-fail"></i></div>
     <div class="tools">
@@ -3280,6 +3280,124 @@
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
       <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.6 (جدول رحلات السائق + Driver Trips Tracker)</dd></div><div class="row"><dt>الخطوات</dt><dd>افتح تفاصيل سائق عمل رحلات (Drivers ← عرض). بص على كارت &quot;Driver Trips Tracker&quot; وعلى جدول الرحلات وجرّب فلتر الحالة والمدى والعميل والمشروع والخدمة الأساسية والتصدير.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>المتتبع بيعرض شريط بنسب الرحلات المكتملة والجارية (اللي لسه ماكتملتش ولا اتلغت) والملغاة بالأعداد. الجدول فيه رحلات السائق ده بس بأعمدة: رقم الرحلة، التاريخ، المركبة، العميل، المشروع، الحالة، التفاصيل.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Trips/TripLinksTest::test_the_driver_tracker_counts_completed_ongoing_and_cancelled_trips</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+  </section>
+
+  <section class="doc" data-doc="week-8-notifications">
+    <h2 class="doc-title">قبول التنفيذ — المرحلة 3 (أسبوع 8): الإشعارات داخل النظام<small>آخر مزامنة: FRD V01.14 (2026-11-26)</small></h2>
+    
+    
+    <details open class="group">
+      <summary>أ) الجرس وصفحة الإشعارات <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-8-notifications#1" data-title="الجرس والعدّاد">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">1</span></label>
+        <h3>الجرس والعدّاد</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>&quot;قائمة الاشعارات (آخر 5 اشعارات مع رابط لصفحة جميع الاشعارات)&quot;</dd></div><div class="row"><dt>الخطوات</dt><dd>سجّل دخول بأي حساب غير المراقب والسائق، واعمل حدث يخصه (راجع البنود اللي بعد كده). بص على جرس الشريط العلوي، ودوس عليه.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>نقطة حمرا على الجرس لو فيه إشعار لسه مقروش. القايمة فيها <strong>آخر 5 إشعارات</strong> (نوع الإشعار + الجملة + التاريخ والوقت)، الجديد بلون مميز، وعدّاد غير المقروء في الهيدر وزرار &quot;تحديد الكل كمقروء&quot; وزرار &quot;عرض كل الإشعارات&quot;. الدوس على إشعار بيفتح صفحة الرحلة (أو التعاقد) الخاصة بدورك. من غير إشعارات بتظهر رسالة &quot;لا توجد إشعارات بعد&quot;.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Notifications/NotificationApiTest</code>, <code>Notifications/NotificationPagesTest</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-8-notifications#2" data-title="صفحة الإشعارات">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">2</span></label>
+        <h3>صفحة الإشعارات</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>&quot;صفحة الاشعارات — جدول بالتاريخ والوقت ونوع الاشعار وتفاصيله + فلتر النوع والمدى الزمني + شريط بحث&quot;</dd></div><div class="row"><dt>الخطوات</dt><dd>من الجرس دوس &quot;عرض كل الإشعارات&quot;. جرّب فلتر النوع، والتاريخ من/إلى، والبحث برقم رحلة وبكلمة من نوع الإشعار. دوس &quot;تحديد الكل كمقروء&quot;.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>جدول بكل إشعاراتك من الأحدث، بالأعمدة: التاريخ والوقت، نوع الإشعار، تفاصيل الإشعار (رابط لصفحة الحدث). كل فلتر بيضيّق الجدول والبحث بيلاقي برقم الرحلة (أو التعاقد) وبنوع الإشعار. بعد &quot;تحديد الكل كمقروء&quot; بتختفي علامة &quot;جديد&quot; ونقطة الجرس.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Notifications/NotificationApiTest</code>, <code>Notifications/NotificationPagesTest</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-8-notifications#3" data-title="إشعاراتي أنا بس">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">3</span></label>
+        <h3>إشعاراتي أنا بس</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>&quot;اخطار بحدوث تعديل ما يهم المستخدم … وفق صلاحياته&quot;</dd></div><div class="row"><dt>الخطوات</dt><dd>اعمل حدث بيجيب إشعار لحساب (مثلًا اعتماد العميل لرحلة) وافتح الجرس بحساب تاني مش من المستلمين (مراقب أو سائق).</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الحساب التاني مايشوفش الإشعار ده لا في الجرس ولا في الصفحة، ومايقدرش يطلبه ولا يعلّمه مقروء.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Notifications/NotificationApiTest::test_a_user_reads_only_their_own_notifications</code>, <code>test_a_user_cannot_mark_someone_elses_notification_by_id</code>, <code>TripNotificationsTest::test_the_auditor_and_the_driver_are_never_notified</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+    <details open class="group">
+      <summary>ب) إشعارات الرحلات (الستة) <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-8-notifications#4" data-title="رحلة جديدة تحتاج اعتماد العميل">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">4</span></label>
+        <h3>رحلة جديدة تحتاج اعتماد العميل</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>&quot;رحلة جديدة تحتاج اعتماد من العميل — عند انشاء رحلة جديدة من السائق او مدير النظام&quot;</dd></div><div class="row"><dt>الخطوات</dt><dd>(أ) اعمل رحلة بحساب <code>admin</code> (فورم الموظف). (ب) اعمل رحلة بحساب <code>driver</code>. افتح الجرس بـ<code>client.manager</code> ثم <code>contractor.desert</code> ثم <code>dataentry</code>.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>في الحالتين <strong>ممثل العميل الافتراضي</strong> (<code>client.manager</code>) ومستخدم <strong>المتعهد</strong> صاحب السائق أو المركبة بيجيلهم &quot;رحلة جديدة تحتاج اعتماد العميل&quot;. <code>dataentry</code> ومدير النظام الآخر بيجيلهم <strong>لو الرحلة عملها السائق بس</strong>. لو مفيش ممثل افتراضي نشط بيوصل لكل حسابات العميل اللي تقدر تعتمد المشروع. رحلة اتسجلت <strong>مكتملة مباشرة</strong> مابتبعتش الإشعار ده.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Notifications/TripNotificationsTest::test_a_trip_made_by_staff_tells_the_clients_approver_and_the_contractor_not_the_staff</code>, <code>test_a_trip_made_by_the_driver_also_tells_the_admin_and_data_entry</code>, <code>test_without_the_default_approver_every_client_account_that_can_act_is_told</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-8-notifications#5" data-title="اعتماد العميل أو رفضه">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">5</span></label>
+        <h3>اعتماد العميل أو رفضه</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>&quot;رحلة معتمدة من العميل&quot; / &quot;رحلة مرفوضة من العميل&quot;</dd></div><div class="row"><dt>الخطوات</dt><dd>من حساب العميل اعتمد رحلة، واعمل رحلة تانية (بحساب <code>driver</code>) وارفضها بسبب. افتح الجرس بـ<code>admin</code> و<code>dataentry</code>.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الاعتماد بيوصل لمدير النظام ومدخل البيانات دايمًا. الرفض بيوصلهم <strong>لو الرحلة عملها السائق</strong> (حسب الـFRD: لو الموظف هو اللي عملها مفيش إشعار). حساب العميل اللي اعتمد أو رفض مايجيلوش إشعار بفعله.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Notifications/TripNotificationsTest::test_the_clients_approval_tells_the_staff_but_not_the_client_who_did_it</code>, <code>test_the_clients_rejection_tells_the_staff_only_when_the_driver_made_the_trip</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-8-notifications#6" data-title="تحديث بيانات رحلة (صورة إيصال التدوير)">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">6</span></label>
+        <h3>تحديث بيانات رحلة (صورة إيصال التدوير)</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>&quot;رحلة تم تحديث بياناتها — عندما يقوم السائق بإدراج صورة إيصال إعادة التدوير لاحقا&quot;</dd></div><div class="row"><dt>الخطوات</dt><dd>بحساب <code>driver</code> ارفع صورة إيصال التدوير على رحلة هو عملها. افتح الجرس بـ<code>admin</code> و<code>dataentry</code>.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>&quot;تحديث بيانات رحلة&quot; للاتنين برقم الرحلة. لو الرحلة عملها موظف مفيش إشعار.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Notifications/TripNotificationsTest::test_the_recycle_receipt_tells_the_staff_when_the_driver_made_the_trip</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-8-notifications#7" data-title="الاعتماد النهائي والإلغاء">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">7</span></label>
+        <h3>الاعتماد النهائي والإلغاء</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>&quot;رحلة معتمدة نهائياً&quot; / &quot;رحلة ملغاة&quot; — مدير / مراقب مشروع العميل والمتعهد</dd></div><div class="row"><dt>الخطوات</dt><dd>اعتمد رحلة نهائيًا بحساب <code>admin</code> (بعد اعتماد العميل)، واعمل رحلة تانية وألغيها. افتح الجرس بـ<code>client.manager</code> و<code>client.auditor</code> و<code>contractor.desert</code>.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd><strong>كل</strong> حسابات العميل اللي بتشوف المشروع (المدير والمراقب) ومستخدم المتعهد بيجيلهم &quot;رحلة معتمدة نهائيًا&quot; و&quot;رحلة ملغاة&quot;. كمان رحلة اتسجلت مكتملة مباشرة، ورفض اعتراض العميل (اللي بيكمّل الرحلة) بيبعتوا &quot;معتمدة نهائيًا&quot;. مدير النظام اللي عمل الإجراء مايجيلوش إشعار، والحساب المعطّل مايجيلوش حاجة، والحساب في إجازة بيجيله.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Notifications/TripNotificationsTest::test_the_final_approval_tells_every_client_account_and_the_contractor_not_the_staff</code>, <code>test_a_trip_recorded_as_completed_straight_away_is_a_final_approval_for_them_too</code>, <code>test_the_cancellation_tells_every_client_account_and_the_contractor</code>, <code>test_a_deactivated_account_is_not_notified_and_one_on_vacation_is</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-8-notifications#8" data-title="الإشعار مافيهوش بيانات حساسة">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">8</span></label>
+        <h3>الإشعار مافيهوش بيانات حساسة</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>رؤية الحقول داخل الرحلة (التكلفة لموظفي GCM بس)</dd></div><div class="row"><dt>الخطوات</dt><dd>افتح إشعارات العميل والمتعهد والسائق بعد أي رحلة.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الجملة فيها رقم الرحلة وحالتها بس — مفيش تكلفة ولا رقم تعاقد ولا أي بيانات تانية.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Notifications/TripNotificationsTest::test_the_notification_carries_the_trip_code_and_no_cost</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+    <details open class="group">
+      <summary>ج) تنبيه نفاذ التعاقد <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-8-notifications#9" data-title="تنبيه على وشك النفاذ / نفذ بسبب الرحلات">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">9</span></label>
+        <h3>تنبيه على وشك النفاذ / نفذ بسبب الرحلات</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>القاعدة بعد قرار صاحب المنتج (2026-11-09): تنبيه لكل من له صلاحية إنشاء التعاقدات</dd></div><div class="row"><dt>الخطوات</dt><dd>بـ<code>admin</code> اعمل تعاقد ببند خدمة بحد أقصى رحلتين ونسبة تنبيه 60، واعمل عليه رحلتين (الأولى بعدها يبقى باقي رحلة = 50%).</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>بعد الرحلة الأولى بيجيلك إشعار &quot;تعاقد على وشك النفاذ&quot; باسم التعاقد والخدمة، وبعد التانية &quot;تعاقد نفذ&quot; (كل واحد مرة واحدة). لو ألغيت رحلة ورجع البند سليم وبعدين قرّب تاني بيتبعت تاني. مدخل البيانات والمراقب وحسابات العميل مايجيلهمش (مفيش عندهم صلاحية إنشاء التعاقدات). الدوس على الإشعار بيفتح تفاصيل التعاقد. تعاقد معطّل مابيبعتش حاجة.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Notifications/ContractAlertTest</code></dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-8-notifications#10" data-title="تنبيه سببه التاريخ (الفحص اليومي)">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">10</span></label>
+        <h3>تنبيه سببه التاريخ (الفحص اليومي)</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>نفس القاعدة — مكوّن التاريخ في البند</dd></div><div class="row"><dt>الخطوات</dt><dd>(للمطوّر) خلّي تاريخ نهاية تعاقد نشط قريب (داخل نسبة التنبيه من مدته) من غير ما تعمل أي رحلة، وشغّل <code>php artisan notifications:check-purchase-orders</code> مرتين (الأمر متجدول يوميًا الساعة 1 صباحًا).</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>إشعار واحد &quot;تعاقد على وشك النفاذ&quot; لمدير النظام، وتشغيل الأمر تاني مايكرّرش الإشعار. التعاقد اللي مدته انتهت بيتبعت له &quot;تعاقد نفذ&quot; مرة واحدة.</dd></div><div class="row"><dt>يغطيه آليًا</dt><dd><code>Notifications/ContractAlertTest::test_the_daily_check_catches_a_line_whose_dates_ran_low_and_notifies_once</code>, <code>test_the_daily_check_says_nothing_about_a_line_in_good_shape</code></dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     </details>

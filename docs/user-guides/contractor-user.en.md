@@ -50,6 +50,12 @@ Sidebar: **Trips** → List. **View and export only.**
 - **List:** five counters, a table with the trip number, date, driver and vehicle with their affiliation, client, project, sub-service, status and PO link (*linked / not linked* — no number), filters (time range, status, affiliations), search and **Excel / PDF export** of what's on screen.
 - **Details:** the trip data as it is — **no costs, PO number, history or photos** — and, once the trip is completed, the **Delivery Note** only (no waste manifest or combined PDF).
 
+## 7. Notifications — `/app/notifications`
+
+The **bell** in the top bar shows a dot when something is unread and lists the **latest five** notifications (type, sentence, date and time), each linking to the trip (or contract); "Mark all as read" and "View all notifications" are in its menu. The **Notifications page** has a table of all your own notifications (newest first) with a filter by type, a time range and a search box (trip code, contract number, type). They are ordinary notifications, not instant ones — they appear when the page loads or the bell opens. You only ever see your own, and never the person who caused the change.
+
+The notices you get — for trips whose driver or vehicle is your contractor's: a new trip awaiting the client's approval, a trip finally approved, and a cancelled trip. A notice opens the trip's page.
+
 ## What you cannot do
 
 - Create, edit or change the status of any user, driver, vehicle or asset (there are no buttons, and the server refuses the request).
@@ -66,3 +72,4 @@ Sidebar: **Trips** → List. **View and export only.**
 | Vehicles: view + documents + export | ✅ |
 | Assets (containers / tanks): view + export | ✅ |
 | Trips: table + trip data + delivery note (view / export) | ✅ |
+| Notifications: bell + page for your contractor's trips | ✅ |

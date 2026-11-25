@@ -13,3 +13,6 @@ Schedule::command('sanctum:prune-expired --hours=24')->daily();
 
 // One-time codes are useless after minutes; keep the table small (OtpChallenge::prunable() = older than a week).
 Schedule::command('model:prune', ['--model' => [\App\Models\OtpChallenge::class]])->daily();
+
+// Contract alerts the calendar caused (a line running low or out with no write) — part 8.2.
+Schedule::command('notifications:check-purchase-orders')->dailyAt('01:00');

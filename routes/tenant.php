@@ -177,6 +177,9 @@ Route::middleware(['auth', 'tenant'])->group(function () {
     Route::get('/app/driver-trip/add', [DriverTripPageController::class, 'add'])->middleware('can:createAsDriver,App\Models\Trip')->name('app-driver-trip-add');
     Route::get('/app/driver-trip/view/{trip}', [DriverTripPageController::class, 'view'])->whereNumber('trip')->name('app-driver-trip-view');
 
+    // The notifications page (part 8.2): every signed-in tenant user reads their own (the controller is a shell).
+    Route::get('/app/notifications', [\App\Http\Controllers\Web\Notifications\NotificationPageController::class, 'index'])->name('app-notifications');
+
     // The contractor user's trips (part 7.7): view + export of the trips of his drivers and vehicles (the controller checks the role).
     Route::get('/app/contractor-trip/list', [ContractorTripPageController::class, 'list'])->name('app-contractor-trip-list');
     Route::get('/app/contractor-trip/view/{trip}', [ContractorTripPageController::class, 'view'])->whereNumber('trip')->name('app-contractor-trip-view');

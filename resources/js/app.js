@@ -16,6 +16,7 @@ import './gcm-camera';
 import './gcm-signature-pad';
 import './gcm-trip-lists';
 import './gcm-otp';
+import './gcm-notifications';
 /*
   Add custom scripts here
 */

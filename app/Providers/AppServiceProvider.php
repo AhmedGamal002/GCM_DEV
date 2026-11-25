@@ -3,12 +3,17 @@
 namespace App\Providers;
 
 use App\Auth\TenantUnawareEloquentUserProvider;
+use App\Domain\Notifications\Listeners\NotifyAboutContractLineStatus;
+use App\Domain\Notifications\Listeners\NotifyAboutTripEvent;
+use App\Domain\PurchaseOrders\Events\PurchaseOrderLineStatusChanged;
+use App\Domain\Trips\Events\TripEventRecorded;
 use App\Models\PersonalAccessToken;
 use App\Support\SafeExcelValueBinder;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\Str;
@@ -34,6 +39,10 @@ class AppServiceProvider extends ServiceProvider
     // ArabicText). Without subsetting DomPDF embeds the whole ~750KB font
     // file in every PDF, even a one-page one.
     config()->set('dompdf.options.enable_font_subsetting', true);
+
+    // In-app notifications (part 8.2): a trip's history row and a PO line changing status.
+    Event::listen(TripEventRecorded::class, NotifyAboutTripEvent::class);
+    Event::listen(PurchaseOrderLineStatusChanged::class, NotifyAboutContractLineStatus::class);
 
     // Excel exports must not turn user-typed "=..." text into formulas — see SafeExcelValueBinder.
     config()->set('excel.value_binder.default', SafeExcelValueBinder::class);

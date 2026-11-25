@@ -94,28 +94,46 @@ $navbarUserPhotoUrl = (Auth::check() && Auth::user() instanceof \App\Models\User
             <!-- / Style Switcher -->
           @endif
 
-          <!--
-            Notification bell — intentionally has no notification list yet.
-            This will connect to a real notifications API in a later phase;
-            until then it stays as an empty state rather than showing the
-            Vuexy demo's static/fake notifications.
-          -->
-          <li class="nav-item dropdown-notifications navbar-dropdown dropdown me-3 me-xl-2">
-            <a class="nav-link btn btn-text-secondary btn-icon rounded-pill dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
-              <i class="ti ti-bell ti-md"></i>
+          {{--
+            Notification bell (part 8.2): for a tenant user it is live — the latest five notifications and how many are
+            unread, from /api/v1/notifications/latest (resources/js/gcm-notifications.js; ordinary notifications, not
+            instant ones). The Platform (Super Admin) has none, so it keeps the empty state.
+          --}}
+          @php
+            $bellLive = Auth::check() && Auth::user() instanceof \App\Models\User;
+          @endphp
+          <li class="nav-item dropdown-notifications navbar-dropdown dropdown me-3 me-xl-2" @if ($bellLive) id="gcm-bell" @endif>
+            <a class="nav-link btn btn-text-secondary btn-icon rounded-pill dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" aria-label="{{ __('Notifications') }}">
+              <span class="position-relative">
+                <i class="ti ti-bell ti-md"></i>
+                @if ($bellLive)
+                  <span class="badge rounded-pill bg-danger badge-dot badge-notifications d-none" id="gcm-bell-dot"></span>
+                @endif
+              </span>
             </a>
             <ul class="dropdown-menu dropdown-menu-end p-0">
               <li class="dropdown-menu-header border-bottom">
                 <div class="dropdown-header d-flex align-items-center py-3">
                   <h6 class="mb-0 me-auto">{{ __('Notifications') }}</h6>
+                  @if ($bellLive)
+                    <span class="badge bg-label-primary me-2 d-none" id="gcm-bell-count"></span>
+                    <a href="javascript:void(0);" class="small d-none" id="gcm-bell-read-all">{{ __('Mark all as read') }}</a>
+                  @endif
                 </div>
               </li>
-              <li class="dropdown-notifications-list">
+              <li class="dropdown-notifications-list" @if ($bellLive) id="gcm-bell-list" style="max-height: 24rem; overflow-y: auto" @endif>
                 <div class="text-center text-muted py-6 px-4">
                   <i class="ti ti-bell-off ti-lg mb-2 d-block"></i>
                   <small>{{ __('No notifications yet.') }}</small>
                 </div>
               </li>
+              @if ($bellLive)
+                <li class="border-top">
+                  <div class="d-grid p-3">
+                    <a class="btn btn-primary btn-sm" href="{{ route('app-notifications') }}">{{ __('View all notifications') }}</a>
+                  </div>
+                </li>
+              @endif
             </ul>
           </li>
           <!--/ Notification -->

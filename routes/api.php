@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\V1\FacilityController;
 use App\Http\Controllers\Api\V1\MainServiceController;
 use App\Http\Controllers\Api\V1\ProfileController;
 use App\Http\Controllers\Api\V1\ProjectAssetController;
+use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\OtpController;
 use App\Http\Controllers\Api\V1\ProjectController;
 use App\Http\Controllers\Api\V1\PurchaseOrderController;
@@ -204,6 +205,11 @@ Route::prefix('v1')->group(function () {
         Route::post('/otp/verify', [OtpController::class, 'verify'])->middleware('throttle:otp-verify');
         Route::get('/otp/status', [OtpController::class, 'status']);
         Route::post('/trips/{trip}/remind-client', [TripReminderController::class, 'store'])->whereNumber('trip');
+
+        // ── Phase 3 · 8.2 the signed-in user's own in-app notifications (the bell and the notifications page) ──
+        Route::get('/notifications/latest', [NotificationController::class, 'latest']);
+        Route::post('/notifications/read', [NotificationController::class, 'read']);
+        Route::get('/notifications', [NotificationController::class, 'index']);
 
         // ── Phase 3 · 7.4 GCM's trips (FRD V01.14 §1.14) ──
         // TripPolicy: manage = System Admin / Data Entry, view / export + Auditor. The final approval, rejecting

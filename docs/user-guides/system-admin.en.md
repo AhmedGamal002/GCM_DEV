@@ -273,7 +273,13 @@ Sidebar: **Trips** → List + Add.
 - **Final approval, accepting / rejecting the client's objection, cancelling** (cancel gives the quota and containers back) and **reminding the client** are on the details page. Final approval, rejecting the objection and cancelling ask for a **verification code** sent to your email.
 - **Trip documents:** a completed trip shows its Delivery Note, Waste Manifest (not for supply trips) and the combined PDF.
 
-## 16. Features available now
+## 16. Notifications — `/app/notifications`
+
+The **bell** in the top bar shows a dot when something is unread and lists the **latest five** notifications (type, sentence, date and time), each linking to the trip (or contract); "Mark all as read" and "View all notifications" are in its menu. The **Notifications page** has a table of all your own notifications (newest first) with a filter by type, a time range and a search box (trip code, contract number, type). They are ordinary notifications, not instant ones — they appear when the page loads or the bell opens. You only ever see your own, and never the person who caused the change.
+
+The notices you get: a trip made by the driver (new, rejected by the client, receipt photo added), the client's approval of any trip, and the **contract alerts** — a PO service about to run out or exhausted, once per change (from trips and from a daily check). The contract notice opens the PO.
+
+## 17. Features available now
 
 | Module | Available | Deferred |
 |---|---|---|
@@ -289,4 +295,5 @@ Sidebar: **Trips** → List + Add.
 | Purchase orders | Create / edit (locks to the quota once a trip is recorded) / deactivate + quota per service + computed status + overlap rule + attachment + stats + export + contracts section on the company and project pages | — |
 | General Settings | Warning period for driver and vehicle document expiry (default 30 days, 1–365) — the "time left" bars on the driver and vehicle pages turn yellow (tag "Need review") from then on | — |
 | Trips | List + counters + filters + export, create / edit (cascading lists, quota deduction), final approval, objection handling, cancel, remind the client, documents; the services lock after the first trip and the company / project / service / vehicle / PO pages show real trip figures | Notifications, dashboard and reports (Week 8) |
+| Notifications | The bell (latest five + unread dot), the notifications page (filters + search), and contract alerts | — |
 | Dashboard | Shell screen | Real stats (Week 8) |

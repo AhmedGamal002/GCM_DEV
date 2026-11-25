@@ -80,12 +80,18 @@ Sidebar: **Trips** → List.
 - **Details:** the full trip data and its history, with **no action buttons** (view only).
 - **Trip documents:** a completed trip shows its Delivery Note, Waste Manifest (not for supply trips) and the combined PDF.
 
-## 13. What you cannot do (returns 403)
+## 13. Notifications — `/app/notifications`
+
+The **bell** in the top bar shows a dot when something is unread and lists the **latest five** notifications (type, sentence, date and time), each linking to the trip (or contract); "Mark all as read" and "View all notifications" are in its menu. The **Notifications page** has a table of all your own notifications (newest first) with a filter by type, a time range and a search box (trip code, contract number, type). They are ordinary notifications, not instant ones — they appear when the page loads or the bell opens. You only ever see your own, and never the person who caused the change.
+
+The Auditor is not a recipient of notices (the FRD names none), but the bell and the page are there and show an empty state.
+
+## 14. What you cannot do (returns 403)
 
 - Create, edit, or deactivate any user / driver / vehicle / asset / facility / service / company / project / category, or insert an asset into a project.
 - Change your name or email on the profile page.
 - Manage roles & permissions / tenants.
 
-## 14. Features available now
+## 15. Features available now
 
 Full view + export across every built module (Users, Drivers, Vehicles, Assets, Intermediate facilities, Main & sub-services, Contractors, Client companies, Client projects, Purchase orders, and asset capacities) — was limited to vehicles and assets only before the FRD V01.14 upgrade. Self-service password change works from the profile page.

@@ -29,6 +29,7 @@ const CO = 'week-4-client-companies';
 const PR = 'week-5-projects';
 const W6 = 'week-6-purchase-orders';
 const W7 = 'week-7-trips';
+const W8N = 'week-8-notifications';
 const CA = 'week-5-client-accounts';
 const AS = 'week-5-account-status';
 const FC = 'week-5-form-clarity';
@@ -100,6 +101,7 @@ export const ROLES = [
           { title: 'إنشاء رحلة', ids: range(W7, 5, 10) },
           { title: 'تفاصيل الرحلة ومراحلها', ids: range(W7, 11, 17) },
           { title: 'ربط الرحلات بالخدمات والشركات والمركبات والتعاقدات', ids: [...range(W7, 24, 27), ...range(W7, 28, 29)] },
+          { title: 'الإشعارات (الجرس وصفحة الإشعارات وتنبيه نفاذ التعاقد)', ids: range(W8N, 1, 9) },
         ],
       },
       {
@@ -164,6 +166,7 @@ export const ROLES = [
           { title: 'إنشاء رحلة', ids: [...range(W7, 5, 6), ...range(W7, 8, 10)] },
           { title: 'تفاصيل الرحلة ومراحلها', ids: range(W7, 11, 17) },
           { title: 'ربط الرحلات بالخدمات والشركات والمركبات والسائقين', ids: [...range(W7, 24, 26), ...range(W7, 28, 29)] },
+          { title: 'الإشعارات (الجرس وصفحة الإشعارات)', ids: list(W8N, 1, 2, 4, 5, 6, 8) },
         ],
       },
       {
@@ -321,6 +324,7 @@ export const ROLES = [
         title: P3,
         groups: [
           { title: 'رحلات متعهدي', ids: [...range(W7, 21, 23), `${W7}#28`] },
+          { title: 'الإشعارات', ids: list(W8N, 1, 2, 4, 7, 8) },
         ],
       },
       {
@@ -367,6 +371,10 @@ export const ROLES = [
           ...(r.slug === 'client-project-manager' ? [{ title: 'التعاقدات (تعاقدات مشروعاتك)', ids: list(W6, 20) }] : []),
           { title: 'حالة الحساب (تعطيل فوري / إجازة)', ids: ['uat-client#3', 'uat-client#4'] },
         ],
+      },
+      {
+        title: P3,
+        groups: [{ title: 'الإشعارات', ids: list(W8N, 1, 2, 4, 7, 8) }],
       },
       {
         title: P1,
