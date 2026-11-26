@@ -86,12 +86,16 @@ The **bell** in the top bar shows a dot when something is unread and lists the *
 
 The Auditor is not a recipient of notices (the FRD names none), but the bell and the page are there and show an empty state.
 
-## 14. What you cannot do (returns 403)
+## 14. Reports — `/app/reports`
+
+Sidebar: **Reports**. Nine filters — time range (today, this week, this month, this quarter, this year, or a custom range), client company, project, sub-service, trip approval status, vehicle, driver, subcontractor, recycling facility — drive everything on the page together: the figures (trips, waste in tons and m³, vehicles used, drivers), the charts (trips over the period, trips by status, sub-services by trips and tons) and the **Trips Summary** table with its **Excel** export (No., trip No., client company, project, date, time, delivery note No., waste manifest No., sub-service, container capacity, trip status). The delivery note / manifest numbers are the generated documents' numbers, shown once the trip's documents were first generated. A cancelled trip is a row of the summary and counts in the status chart only.
+
+## 15. What you cannot do (returns 403)
 
 - Create, edit, or deactivate any user / driver / vehicle / asset / facility / service / company / project / category, or insert an asset into a project.
 - Change your name or email on the profile page.
 - Manage roles & permissions / tenants.
 
-## 15. Features available now
+## 16. Features available now
 
 Full view + export across every built module (Users, Drivers, Vehicles, Assets, Intermediate facilities, Main & sub-services, Contractors, Client companies, Client projects, Purchase orders, and asset capacities) — was limited to vehicles and assets only before the FRD V01.14 upgrade. Self-service password change works from the profile page.

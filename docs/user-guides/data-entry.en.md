@@ -107,7 +107,11 @@ The **bell** in the top bar shows a dot when something is unread and lists the *
 
 The notices you get: a trip made by the driver (new, rejected by the client, receipt photo added) and the client's approval of any trip. You get no contract alerts (POs are not yours).
 
-## 13. What you cannot do (returns 403 or 422)
+## 13. Reports — `/app/reports`
+
+Sidebar: **Reports**. Nine filters — time range (today, this week, this month, this quarter, this year, or a custom range), client company, project, sub-service, trip approval status, vehicle, driver, subcontractor, recycling facility — drive everything on the page together: the figures (trips, waste in tons and m³, vehicles used, drivers), the charts (trips over the period, trips by status, sub-services by trips and tons) and the **Trips Summary** table with its **Excel** export (No., trip No., client company, project, date, time, delivery note No., waste manifest No., sub-service, container capacity, trip status). The delivery note / manifest numbers are the generated documents' numbers, shown once the trip's documents were first generated. A cancelled trip is a row of the summary and counts in the status chart only.
+
+## 14. What you cannot do (returns 403 or 422)
 
 | | |
 |---|---|
@@ -116,7 +120,7 @@ The notices you get: a trip made by the driver (new, rejected by the client, rec
 | Anything related to Contracts (PO) | ✖ — no Purchase Orders menu, the "Contracts" section and card are hidden on the company and project pages (the list column shows `—`), the export column is blank, and `/app/po/*` and `/api/v1/purchase-orders` return 403 — the FRD gives Data Entry no access to POs, not even to read them |
 | Roles & permissions / Companies management | ✖ |
 
-## 14. Features available now
+## 15. Features available now
 
 Users and Drivers: view/create/edit + every account status (on vacation/deactivate/reactivate) except the System Admin's own account.
 Vehicles, Assets, Intermediate facilities and Services (main and sub): full CRUD including deactivate/reactivate + export. The embedded container in the vehicle form works.

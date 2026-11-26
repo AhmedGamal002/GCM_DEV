@@ -31,6 +31,7 @@ const W6 = 'week-6-purchase-orders';
 const W7 = 'week-7-trips';
 const W8N = 'week-8-notifications';
 const W8D = 'week-8-dashboard';
+const W8R = 'week-8-reports';
 const CA = 'week-5-client-accounts';
 const AS = 'week-5-account-status';
 const FC = 'week-5-form-clarity';
@@ -104,6 +105,7 @@ export const ROLES = [
           { title: 'ربط الرحلات بالخدمات والشركات والمركبات والتعاقدات', ids: [...range(W7, 24, 27), ...range(W7, 28, 29)] },
           { title: 'الإشعارات (الجرس وصفحة الإشعارات وتنبيه نفاذ التعاقد)', ids: range(W8N, 1, 9) },
           { title: 'لوحة التحكم', ids: range(W8D, 1, 7) },
+          { title: 'التقارير — ملخص الرحلات', ids: range(W8R, 1, 6) },
         ],
       },
       {
@@ -170,6 +172,7 @@ export const ROLES = [
           { title: 'ربط الرحلات بالخدمات والشركات والمركبات والسائقين', ids: [...range(W7, 24, 26), ...range(W7, 28, 29)] },
           { title: 'الإشعارات (الجرس وصفحة الإشعارات)', ids: list(W8N, 1, 2, 4, 5, 6, 8) },
           { title: 'لوحة التحكم', ids: list(W8D, 1, 2, 3, 4, 5, 7) },
+          { title: 'التقارير — ملخص الرحلات', ids: range(W8R, 1, 6) },
         ],
       },
       {
@@ -243,6 +246,7 @@ export const ROLES = [
           { title: 'تفاصيل الرحلة والمستندات', ids: list(W7, 11, 17) },
           { title: 'أرقام الرحلات في الشركات والخدمات والمركبات والتعاقدات', ids: [...range(W7, 25, 27), ...range(W7, 28, 29)] },
           { title: 'لوحة التحكم', ids: list(W8D, 1, 2, 3, 4, 5, 6, 7) },
+          { title: 'التقارير — ملخص الرحلات', ids: range(W8R, 1, 6) },
         ],
       },
       {
@@ -383,6 +387,7 @@ export const ROLES = [
         groups: [
           { title: 'الإشعارات', ids: list(W8N, 1, 2, 4, 7, 8) },
           { title: 'لوحة التحكم', ids: list(W8D, 1, 2, 3, 4, 8) },
+          { title: 'التقارير — ملخص الرحلات', ids: list(W8R, 1, 2, 3, 4, 5, 7) },
         ],
       },
       {

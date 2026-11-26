@@ -279,7 +279,11 @@ The **bell** in the top bar shows a dot when something is unread and lists the *
 
 The notices you get: a trip made by the driver (new, rejected by the client, receipt photo added), the client's approval of any trip, and the **contract alerts** — a PO service about to run out or exhausted, once per change (from trips and from a daily check). The contract notice opens the PO.
 
-## 17. Features available now
+## 17. Reports — `/app/reports`
+
+Sidebar: **Reports**. Nine filters — time range (today, this week, this month, this quarter, this year, or a custom range), client company, project, sub-service, trip approval status, vehicle, driver, subcontractor, recycling facility — drive everything on the page together: the figures (trips, waste in tons and m³, vehicles used, drivers), the charts (trips over the period, trips by status, sub-services by trips and tons) and the **Trips Summary** table with its **Excel** export (No., trip No., client company, project, date, time, delivery note No., waste manifest No., sub-service, container capacity, trip status). The delivery note / manifest numbers are the generated documents' numbers, shown once the trip's documents were first generated. A cancelled trip is a row of the summary and counts in the status chart only.
+
+## 18. Features available now
 
 | Module | Available | Deferred |
 |---|---|---|

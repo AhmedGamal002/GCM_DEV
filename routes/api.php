@@ -21,6 +21,7 @@ use App\Http\Controllers\Api\V1\ProjectAssetController;
 use App\Http\Controllers\Api\V1\DashboardController;
 use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\OtpController;
+use App\Http\Controllers\Api\V1\ReportController;
 use App\Http\Controllers\Api\V1\ProjectController;
 use App\Http\Controllers\Api\V1\PurchaseOrderController;
 use App\Http\Controllers\Api\V1\TripController;
@@ -206,6 +207,12 @@ Route::prefix('v1')->group(function () {
         Route::post('/otp/verify', [OtpController::class, 'verify'])->middleware('throttle:otp-verify');
         Route::get('/otp/status', [OtpController::class, 'status']);
         Route::post('/trips/{trip}/remind-client', [TripReminderController::class, 'store'])->whereNumber('trip');
+
+        // ── Phase 3 · 8.4 reports (ReportAccess: staff + the client's accounts; the client's project auditor the Excel only) ──
+        Route::get('/reports/filters', [ReportController::class, 'filters']);
+        Route::get('/reports/charts', [ReportController::class, 'charts']);
+        Route::get('/reports/trips-summary/export', [ReportController::class, 'exportTripsSummary']);
+        Route::get('/reports/trips-summary', [ReportController::class, 'tripsSummary']);
 
         // ── Phase 3 · 8.3 the signed-in user's dashboard (what he may see of trips, resources, POs + his notifications) ──
         Route::get('/dashboard', [DashboardController::class, 'show']);

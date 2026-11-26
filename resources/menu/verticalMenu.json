@@ -323,6 +323,13 @@
       ]
     },
     {
+      "url": "app/reports",
+      "name": "Reports",
+      "icon": "menu-icon tf-icons ti ti-report-analytics",
+      "slug": "app-reports",
+      "roles": ["system_admin", "data_entry", "auditor", "client_project_manager", "client_project_auditor"]
+    },
+    {
       "name": "Trips",
       "icon": "menu-icon tf-icons ti ti-truck-delivery",
       "slug": "app-contractor-trip",

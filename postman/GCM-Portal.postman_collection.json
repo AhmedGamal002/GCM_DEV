@@ -9943,6 +9943,846 @@
       ]
     },
     {
+      "name": "Notifications",
+      "description": "The signed-in user's OWN in-app notifications (FRD V01.14 \"الاشعارات والايميلات التلقائية\", part 8.2) — ordinary notifications, not instant ones. Every query is the caller's own rows; there is no way to read or mark anyone else's.\n\nTypes: trip_created (new trip awaiting the client's approval), trip_updated (the driver added the recycle receipt photo), trip_client_approved, trip_client_rejected, trip_final_approved, trip_cancelled, po_near_exhaustion, po_exhausted (the contract alert, to everyone who may create POs, once per change of status — from trips and from the daily `notifications:check-purchase-orders`). `type_label` and `detail` are written in the request's language; `url` opens the page of the reader's role (staff / client / contractor / driver trip page, or the PO). No cost and no PO number in a trip notification.",
+      "item": [
+        {
+          "name": "List my notifications",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/notifications?per_page=15&page=1",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "notifications"
+              ],
+              "query": [
+                {
+                  "key": "per_page",
+                  "value": "15"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "type",
+                  "value": "trip_cancelled",
+                  "disabled": true
+                },
+                {
+                  "key": "date_from",
+                  "value": "2026-11-01",
+                  "disabled": true
+                },
+                {
+                  "key": "date_to",
+                  "value": "2026-11-30",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "ALN-T0001",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Newest first, paginated (`per_page`, `page`). Filters: `type` (one of the types above), `date_from` / `date_to` (Y-m-d, on the date it was written), `search` (trip code / PO number, or a word of the type label)."
+          },
+          "response": [
+            {
+              "name": "200 — example",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/notifications?per_page=15&page=1",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "notifications"
+                  ],
+                  "query": [
+                    {
+                      "key": "per_page",
+                      "value": "15"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "type",
+                      "value": "trip_cancelled",
+                      "disabled": true
+                    },
+                    {
+                      "key": "date_from",
+                      "value": "2026-11-01",
+                      "disabled": true
+                    },
+                    {
+                      "key": "date_to",
+                      "value": "2026-11-30",
+                      "disabled": true
+                    },
+                    {
+                      "key": "search",
+                      "value": "ALN-T0001",
+                      "disabled": true
+                    }
+                  ]
+                },
+                "description": "Newest first, paginated (`per_page`, `page`). Filters: `type` (one of the types above), `date_from` / `date_to` (Y-m-d, on the date it was written), `search` (trip code / PO number, or a word of the type label)."
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"data\": [\n        {\n            \"id\": 41,\n            \"type\": \"trip_cancelled\",\n            \"type_label\": \"Trip cancelled\",\n            \"detail\": \"Trip ALN-T0001 was cancelled.\",\n            \"subject\": \"ALN-T0001\",\n            \"url\": \"http://localhost:8000/app/trip/view/1\",\n            \"read\": false,\n            \"created_at\": \"2026-11-25T14:41:00.000000Z\"\n        }\n    ],\n    \"links\": {\n        \"first\": \"…\",\n        \"last\": \"…\",\n        \"prev\": null,\n        \"next\": null\n    },\n    \"meta\": {\n        \"current_page\": 1,\n        \"last_page\": 1,\n        \"per_page\": 15,\n        \"total\": 1\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Bell — latest five + unread count",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/notifications/latest",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "notifications",
+                "latest"
+              ],
+              "query": []
+            },
+            "description": "What the bell in the top bar shows: the latest five notifications and how many are unread."
+          },
+          "response": [
+            {
+              "name": "200 — example",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/notifications/latest",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "notifications",
+                    "latest"
+                  ],
+                  "query": []
+                },
+                "description": "What the bell in the top bar shows: the latest five notifications and how many are unread."
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"data\": [\n        {\n            \"id\": 41,\n            \"type\": \"trip_cancelled\",\n            \"type_label\": \"Trip cancelled\",\n            \"detail\": \"Trip ALN-T0001 was cancelled.\",\n            \"subject\": \"ALN-T0001\",\n            \"url\": \"http://localhost:8000/app/trip/view/1\",\n            \"read\": false,\n            \"created_at\": \"2026-11-25T14:41:00.000000Z\"\n        }\n    ],\n    \"unread_count\": 1\n}"
+            }
+          ]
+        },
+        {
+          "name": "Mark as read",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/notifications/read",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "notifications",
+                "read"
+              ],
+              "query": []
+            },
+            "description": "Marks the caller's unread notifications read — all of them, or only `ids` (an id that isn't yours is ignored). Returns how many were marked. (A vacation account gets 403 like any write.)",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"ids\": [\n        41\n    ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "name": "200 — example",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/notifications/read",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "notifications",
+                    "read"
+                  ],
+                  "query": []
+                },
+                "description": "Marks the caller's unread notifications read — all of them, or only `ids` (an id that isn't yours is ignored). Returns how many were marked. (A vacation account gets 403 like any write.)",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"ids\": [\n        41\n    ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"data\": {\n        \"marked\": 1\n    }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "description": "The signed-in user's dashboard (FRD V01.14 \"لوحة التحكم\", part 8.3). Every figure is computed with the scope of the page it summarises, and a section the role may not see is NOT in the answer:\n- trips_30_days / trip_statuses / services_share — any role that reads trips (staff: all; client: his projects; driver: his own; contractor user: his drivers' and vehicles'). The cancelled count in trip_statuses only (not in the chart nor the services share);\n- resources (drivers / vehicles / containers / tanks by status) — System Admin, Data Entry, Auditor, contractor user (his own);\n- purchase_orders (active POs by items status: valid / near_exhaustion / exhausted, each line's own alert percent) — System Admin, Auditor, the client's project manager (his projects);\n- notifications — the caller's latest ten;\n- can_create_trip — true for a driver (the \"Add Trip\" button).",
+      "item": [
+        {
+          "name": "Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/dashboard",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "dashboard"
+              ],
+              "query": []
+            },
+            "description": "Read only, any signed-in tenant user — the sections depend on the role (see the folder description)."
+          },
+          "response": [
+            {
+              "name": "200 — example",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/dashboard",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "dashboard"
+                  ],
+                  "query": []
+                },
+                "description": "Read only, any signed-in tenant user — the sections depend on the role (see the folder description)."
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"data\": {\n        \"trips_30_days\": [\n            {\n                \"date\": \"2026-10-28\",\n                \"count\": 0\n            },\n            {\n                \"date\": \"…\",\n                \"count\": 0\n            },\n            {\n                \"date\": \"2026-11-26\",\n                \"count\": 2\n            }\n        ],\n        \"trip_statuses\": [\n            {\n                \"status\": \"awaiting_client_approval\",\n                \"label\": \"Awaiting client approval\",\n                \"count\": 2\n            },\n            {\n                \"status\": \"client_approved\",\n                \"label\": \"Client approved\",\n                \"count\": 1\n            },\n            {\n                \"status\": \"client_issue\",\n                \"label\": \"Client issue\",\n                \"count\": 1\n            },\n            {\n                \"status\": \"completed\",\n                \"label\": \"Completed trip\",\n                \"count\": 3\n            },\n            {\n                \"status\": \"cancelled\",\n                \"label\": \"Cancelled trip\",\n                \"count\": 1\n            }\n        ],\n        \"services_share\": [\n            {\n                \"id\": 1,\n                \"name\": \"Solid Waste Transport\",\n                \"count\": 3,\n                \"percent\": 42.9\n            },\n            {\n                \"id\": 2,\n                \"name\": \"Hazardous Waste Transport\",\n                \"count\": 3,\n                \"percent\": 42.9\n            },\n            {\n                \"id\": 3,\n                \"name\": \"Water Supply\",\n                \"count\": 1,\n                \"percent\": 14.3\n            }\n        ],\n        \"resources\": {\n            \"drivers\": {\n                \"active\": 1,\n                \"on_vacation\": 0,\n                \"deactivated\": 0\n            },\n            \"vehicles\": {\n                \"active\": 6,\n                \"on_maintenance\": 0,\n                \"deactivated\": 0\n            },\n            \"containers\": {\n                \"active\": 9,\n                \"on_maintenance\": 1,\n                \"deactivated\": 0\n            },\n            \"tanks\": {\n                \"active\": 5,\n                \"on_maintenance\": 0,\n                \"deactivated\": 1\n            }\n        },\n        \"purchase_orders\": {\n            \"valid\": 2,\n            \"near_exhaustion\": 0,\n            \"exhausted\": 0\n        },\n        \"notifications\": [\n            {\n                \"id\": 41,\n                \"type\": \"trip_cancelled\",\n                \"type_label\": \"Trip cancelled\",\n                \"detail\": \"Trip ALN-T0001 was cancelled.\",\n                \"subject\": \"ALN-T0001\",\n                \"url\": \"http://localhost:8000/app/trip/view/1\",\n                \"read\": false,\n                \"created_at\": \"2026-11-25T14:41:00.000000Z\"\n            }\n        ],\n        \"can_create_trip\": false\n    }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Reports",
+      "description": "The reports section (FRD V01.14 \"التقارير والاحصائيات\", part 8.4). Every request takes the same nine filters (all optional): period (today / week / month / quarter / year = the current period up to now, the week starting on Sunday; custom + date_from / date_to), company_id, project_id, sub_service_id, status, vehicle_id, driver_id, contractor_id (his driver OR vehicle), facility_id — on top of the trips the user sees (a client: his projects).\n\nWho: System Admin, Data Entry, Auditor and the client's project manager — everything; the client's project auditor — the filters, the trips summary and its Excel, NOT the charts (403); driver and contractor user — 403.\n\nThe DN / manifest numbers are the generated documents' numbers (DN-100001 / M-100001), present once the trip's documents were first generated; a cancelled trip is a row like any other.",
+      "item": [
+        {
+          "name": "Filter lists",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/reports/filters",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "reports",
+                "filters"
+              ],
+              "query": []
+            },
+            "description": "What the nine filters choose from — only what appears in the trips the user sees — plus `sees_charts`."
+          },
+          "response": [
+            {
+              "name": "200 — example",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/reports/filters",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "reports",
+                    "filters"
+                  ],
+                  "query": []
+                },
+                "description": "What the nine filters choose from — only what appears in the trips the user sees — plus `sees_charts`."
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"data\": {\n        \"periods\": [\n            {\n                \"id\": \"today\",\n                \"name\": \"Today\"\n            },\n            {\n                \"id\": \"week\",\n                \"name\": \"This week\"\n            },\n            {\n                \"id\": \"month\",\n                \"name\": \"This month\"\n            },\n            {\n                \"id\": \"quarter\",\n                \"name\": \"This quarter\"\n            },\n            {\n                \"id\": \"year\",\n                \"name\": \"This year\"\n            },\n            {\n                \"id\": \"custom\",\n                \"name\": \"Custom range\"\n            }\n        ],\n        \"statuses\": [\n            {\n                \"id\": \"completed\",\n                \"name\": \"Completed trip\"\n            }\n        ],\n        \"companies\": [\n            {\n                \"id\": 1,\n                \"name\": \"Al Noor Construction\"\n            }\n        ],\n        \"projects\": [\n            {\n                \"id\": 1,\n                \"name\": \"Al Noor Tower\",\n                \"company_id\": 1\n            }\n        ],\n        \"sub_services\": [\n            {\n                \"id\": 2,\n                \"name\": \"General waste\"\n            }\n        ],\n        \"vehicles\": [\n            {\n                \"id\": 1,\n                \"name\": \"DMO 1001\"\n            }\n        ],\n        \"drivers\": [\n            {\n                \"id\": 1,\n                \"name\": \"Driver\"\n            }\n        ],\n        \"contractors\": [],\n        \"facilities\": [\n            {\n                \"id\": 1,\n                \"name\": \"Al Ain Safe Landfill\"\n            }\n        ],\n        \"sees_charts\": true\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Trips summary",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/reports/trips-summary?per_page=15&page=1&period=month",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "reports",
+                "trips-summary"
+              ],
+              "query": [
+                {
+                  "key": "per_page",
+                  "value": "15"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "period",
+                  "value": "month",
+                  "description": "today | week | month | quarter | year | custom (with date_from / date_to)"
+                },
+                {
+                  "key": "date_from",
+                  "value": "2026-11-01",
+                  "disabled": true
+                },
+                {
+                  "key": "date_to",
+                  "value": "2026-11-30",
+                  "disabled": true
+                },
+                {
+                  "key": "company_id",
+                  "value": "{{last_company_id}}",
+                  "disabled": true
+                },
+                {
+                  "key": "project_id",
+                  "value": "{{last_project_id}}",
+                  "disabled": true
+                },
+                {
+                  "key": "sub_service_id",
+                  "value": "{{last_sub_service_id}}",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "completed",
+                  "disabled": true
+                },
+                {
+                  "key": "vehicle_id",
+                  "value": "{{last_vehicle_id}}",
+                  "disabled": true
+                },
+                {
+                  "key": "driver_id",
+                  "value": "{{last_driver_id}}",
+                  "disabled": true
+                },
+                {
+                  "key": "contractor_id",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "facility_id",
+                  "value": "{{last_facility_id}}",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "The trips summary rows (FRD columns), newest first, paginated (`per_page`, `page`)."
+          },
+          "response": [
+            {
+              "name": "200 — example",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/reports/trips-summary?per_page=15&page=1&period=month",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "reports",
+                    "trips-summary"
+                  ],
+                  "query": [
+                    {
+                      "key": "per_page",
+                      "value": "15"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "period",
+                      "value": "month",
+                      "description": "today | week | month | quarter | year | custom (with date_from / date_to)"
+                    },
+                    {
+                      "key": "date_from",
+                      "value": "2026-11-01",
+                      "disabled": true
+                    },
+                    {
+                      "key": "date_to",
+                      "value": "2026-11-30",
+                      "disabled": true
+                    },
+                    {
+                      "key": "company_id",
+                      "value": "{{last_company_id}}",
+                      "disabled": true
+                    },
+                    {
+                      "key": "project_id",
+                      "value": "{{last_project_id}}",
+                      "disabled": true
+                    },
+                    {
+                      "key": "sub_service_id",
+                      "value": "{{last_sub_service_id}}",
+                      "disabled": true
+                    },
+                    {
+                      "key": "status",
+                      "value": "completed",
+                      "disabled": true
+                    },
+                    {
+                      "key": "vehicle_id",
+                      "value": "{{last_vehicle_id}}",
+                      "disabled": true
+                    },
+                    {
+                      "key": "driver_id",
+                      "value": "{{last_driver_id}}",
+                      "disabled": true
+                    },
+                    {
+                      "key": "contractor_id",
+                      "value": "1",
+                      "disabled": true
+                    },
+                    {
+                      "key": "facility_id",
+                      "value": "{{last_facility_id}}",
+                      "disabled": true
+                    }
+                  ]
+                },
+                "description": "The trips summary rows (FRD columns), newest first, paginated (`per_page`, `page`)."
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"data\": [\n        {\n            \"id\": \"12\",\n            \"code\": \"ALN-T0003\",\n            \"company\": \"Al Noor Construction\",\n            \"project\": \"Al Noor Tower\",\n            \"date\": \"2026-11-24\",\n            \"time\": \"09:30\",\n            \"delivery_note\": \"DN-100001\",\n            \"waste_manifest\": \"M-100001\",\n            \"sub_service\": \"General waste\",\n            \"capacity\": \"Standard skip\",\n            \"status\": \"completed\",\n            \"status_label\": \"Completed trip\"\n        }\n    ],\n    \"meta\": {\n        \"current_page\": 1,\n        \"last_page\": 1,\n        \"per_page\": 15,\n        \"total\": 1\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Trips summary — Excel",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/reports/trips-summary/export?period=month",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "reports",
+                "trips-summary",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "month",
+                  "description": "today | week | month | quarter | year | custom (with date_from / date_to)"
+                },
+                {
+                  "key": "date_from",
+                  "value": "2026-11-01",
+                  "disabled": true
+                },
+                {
+                  "key": "date_to",
+                  "value": "2026-11-30",
+                  "disabled": true
+                },
+                {
+                  "key": "company_id",
+                  "value": "{{last_company_id}}",
+                  "disabled": true
+                },
+                {
+                  "key": "project_id",
+                  "value": "{{last_project_id}}",
+                  "disabled": true
+                },
+                {
+                  "key": "sub_service_id",
+                  "value": "{{last_sub_service_id}}",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "completed",
+                  "disabled": true
+                },
+                {
+                  "key": "vehicle_id",
+                  "value": "{{last_vehicle_id}}",
+                  "disabled": true
+                },
+                {
+                  "key": "driver_id",
+                  "value": "{{last_driver_id}}",
+                  "disabled": true
+                },
+                {
+                  "key": "contractor_id",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "facility_id",
+                  "value": "{{last_facility_id}}",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "The same rows as an Excel file (binary — Send and Download / Save Response), oldest first, numbered, with the shared logo / \"exported by\" / date header."
+          },
+          "response": []
+        },
+        {
+          "name": "Charts and figures",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/reports/charts?period=month",
+              "host": [
+                "{{api_base}}"
+              ],
+              "path": [
+                "reports",
+                "charts"
+              ],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "month",
+                  "description": "today | week | month | quarter | year | custom (with date_from / date_to)"
+                },
+                {
+                  "key": "date_from",
+                  "value": "2026-11-01",
+                  "disabled": true
+                },
+                {
+                  "key": "date_to",
+                  "value": "2026-11-30",
+                  "disabled": true
+                },
+                {
+                  "key": "company_id",
+                  "value": "{{last_company_id}}",
+                  "disabled": true
+                },
+                {
+                  "key": "project_id",
+                  "value": "{{last_project_id}}",
+                  "disabled": true
+                },
+                {
+                  "key": "sub_service_id",
+                  "value": "{{last_sub_service_id}}",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "completed",
+                  "disabled": true
+                },
+                {
+                  "key": "vehicle_id",
+                  "value": "{{last_vehicle_id}}",
+                  "disabled": true
+                },
+                {
+                  "key": "driver_id",
+                  "value": "{{last_driver_id}}",
+                  "disabled": true
+                },
+                {
+                  "key": "contractor_id",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "facility_id",
+                  "value": "{{last_facility_id}}",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "The headline figures (trips, tons, m³, vehicles, drivers), the trips over the period (by day up to 62 days, by month beyond), the five statuses, and the sub-services by trips and tons. A cancelled trip counts in the statuses only. Not for the client's project auditor."
+          },
+          "response": [
+            {
+              "name": "200 — example",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{api_base}}/reports/charts?period=month",
+                  "host": [
+                    "{{api_base}}"
+                  ],
+                  "path": [
+                    "reports",
+                    "charts"
+                  ],
+                  "query": [
+                    {
+                      "key": "period",
+                      "value": "month",
+                      "description": "today | week | month | quarter | year | custom (with date_from / date_to)"
+                    },
+                    {
+                      "key": "date_from",
+                      "value": "2026-11-01",
+                      "disabled": true
+                    },
+                    {
+                      "key": "date_to",
+                      "value": "2026-11-30",
+                      "disabled": true
+                    },
+                    {
+                      "key": "company_id",
+                      "value": "{{last_company_id}}",
+                      "disabled": true
+                    },
+                    {
+                      "key": "project_id",
+                      "value": "{{last_project_id}}",
+                      "disabled": true
+                    },
+                    {
+                      "key": "sub_service_id",
+                      "value": "{{last_sub_service_id}}",
+                      "disabled": true
+                    },
+                    {
+                      "key": "status",
+                      "value": "completed",
+                      "disabled": true
+                    },
+                    {
+                      "key": "vehicle_id",
+                      "value": "{{last_vehicle_id}}",
+                      "disabled": true
+                    },
+                    {
+                      "key": "driver_id",
+                      "value": "{{last_driver_id}}",
+                      "disabled": true
+                    },
+                    {
+                      "key": "contractor_id",
+                      "value": "1",
+                      "disabled": true
+                    },
+                    {
+                      "key": "facility_id",
+                      "value": "{{last_facility_id}}",
+                      "disabled": true
+                    }
+                  ]
+                },
+                "description": "The headline figures (trips, tons, m³, vehicles, drivers), the trips over the period (by day up to 62 days, by month beyond), the five statuses, and the sub-services by trips and tons. A cancelled trip counts in the statuses only. Not for the client's project auditor."
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"data\": {\n        \"totals\": {\n            \"trips\": 7,\n            \"quantity_ton\": 14,\n            \"quantity_cbm\": 0,\n            \"vehicles\": 1,\n            \"drivers\": 1\n        },\n        \"timeline\": {\n            \"unit\": \"day\",\n            \"points\": [\n                {\n                    \"key\": \"2026-11-01\",\n                    \"count\": 0\n                },\n                {\n                    \"key\": \"…\",\n                    \"count\": 1\n                }\n            ]\n        },\n        \"statuses\": [\n            {\n                \"status\": \"completed\",\n                \"label\": \"Completed trip\",\n                \"count\": 3\n            }\n        ],\n        \"sub_services\": [\n            {\n                \"id\": 2,\n                \"name\": \"General waste\",\n                \"trips\": 3,\n                \"quantity_ton\": 6\n            }\n        ]\n    }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "name": "13. General Settings (System Admin only)",
       "item": [
         {

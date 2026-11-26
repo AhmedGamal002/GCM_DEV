@@ -177,6 +177,9 @@ Route::middleware(['auth', 'tenant'])->group(function () {
     Route::get('/app/driver-trip/add', [DriverTripPageController::class, 'add'])->middleware('can:createAsDriver,App\Models\Trip')->name('app-driver-trip-add');
     Route::get('/app/driver-trip/view/{trip}', [DriverTripPageController::class, 'view'])->whereNumber('trip')->name('app-driver-trip-view');
 
+    // The reports page (part 8.4): staff + the client's accounts (the controller checks ReportAccess).
+    Route::get('/app/reports', [\App\Http\Controllers\Web\Reports\ReportPageController::class, 'index'])->name('app-reports');
+
     // The notifications page (part 8.2): every signed-in tenant user reads their own (the controller is a shell).
     Route::get('/app/notifications', [\App\Http\Controllers\Web\Notifications\NotificationPageController::class, 'index'])->name('app-notifications');
 
