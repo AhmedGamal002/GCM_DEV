@@ -1,7 +1,9 @@
 /**
  * The client's trip details (FRD V01.14 §1.14, the "العميل" details page, part 7.5) — GET /api/v1/trips/{id},
  * which sends only what this account may see (ج18: the PO number to the project manager only; no costs, no
- * facility, no document numbers, no history). Every value is escaped / set as text.
+ * facility, no paper document numbers, no history). Every value is escaped / set as text. Once the trip is
+ * completed the generated delivery note and waste manifest (8.1, د10 — view only, no combined PDF) are listed in
+ * the shared "Trip documents" card.
  *
  * Buttons (FRD): "Approve the trip" — straight from here when the account has a saved signature (the legal
  * confirmation, then the e-mailed code; its saved signature and stamp are used), otherwise it opens the review
@@ -11,6 +13,7 @@
 'use strict';
 
 import { STATUS_CLASS, confirmBox, submitReview } from './client-trip/review-core.js';
+import { renderTripDocuments } from './trip/documents-card.js';
 
 $(function () {
   const t = window.clientTripViewTranslations || {};
@@ -76,6 +79,14 @@ $(function () {
     fileLink('ctv-photo', files['live-photo']);
     setText('ctv-comment', trip.client_comment);
     fileLink('ctv-attachment', files['client-attachment']);
+
+    renderTripDocuments(trip, {
+      card: $id('ctv-generated-card'),
+      list: $id('ctv-generated'),
+      hint: $id('ctv-generated-hint'),
+      exportButton: null, // the combined PDF is GCM staff's only (د10)
+      labels: { delivery_note: t.delivery_note, waste_manifest: t.waste_manifest },
+    });
 
     if (trip.updated_by && trip.updated_at) {
       $id('ctv-updated-by').textContent = t.last_updated_by

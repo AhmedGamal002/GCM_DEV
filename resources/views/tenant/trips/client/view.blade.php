@@ -24,6 +24,8 @@
     approve_title: @json(__('Approve the trip')),
     approve_message: @json(__('Approving the trip requires that the signature entered is your legal signature, since the documents the system generates are used with official bodies; the same applies to the operational stamp. Please confirm.')),
     approve_saved: @json(__('Your saved signature and stamp will be used.')),
+    delivery_note: @json(__('Delivery Note')),
+    waste_manifest: @json(__('Waste Manifest')),
   };
   window.clientTripViewId = {{ $trip->id }};
   window.clientTripHasSavedSignature = @json(auth()->user()->signature_image !== null);
@@ -100,6 +102,16 @@
           <li class="mb-2"><span class="h6">{{ __('Quantity moved') }}:</span> <span id="ctv-quantity"></span></li>
           <li class="mb-0"><span class="h6">{{ __('Live photo') }}:</span> <span id="ctv-photo">—</span></li>
         </ul>
+      </div>
+    </div>
+
+    {{-- Part 8.1 / د10: the generated delivery note and waste manifest, view only (the combined PDF is GCM's), once
+         the trip is completed — GET /trips/{id} → documents, the same card as the staff and driver pages. --}}
+    <div class="card mb-6 d-none" id="ctv-generated-card">
+      <h5 class="card-header">{{ __('Trip documents') }}</h5>
+      <div class="card-body">
+        <ul class="list-unstyled mb-0" id="ctv-generated"></ul>
+        <p class="text-muted small mb-0 d-none" id="ctv-generated-hint">{{ __('The trip\'s documents are generated once the trip is completed.') }}</p>
       </div>
     </div>
 

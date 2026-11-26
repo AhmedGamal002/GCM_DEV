@@ -1,12 +1,12 @@
 /**
  * The "Trip documents" card of a trip's details page (part 8.1): the generated delivery note and waste manifest
- * the viewer may open, and — for GCM staff — the combined PDF. Shared by the staff and the driver pages; the client's
- * page (part 7.5, A's) reads the same `documents` field.
+ * the viewer may open, and — for GCM staff — the combined PDF. Shared by the staff, driver, contractor and client pages.
  *
  * `trip.documents` is what GET /trips/{id} returns for THIS role — a key that is not there is not shown
  * (a supplying trip has no waste manifest; the driver gets the delivery note only), `export_url` is null for
- * everyone but staff and before the trip is completed. A document's `number` is null until the first time it is opened,
- * then fixed: with no number the name is shown alone. Nothing here decides who sees what — the server did.
+ * everyone but staff and before the trip is completed. A document's `number` is reserved when the trip completes
+ * (a trip completed before that gets it the first time it is opened): with no number the name is shown alone.
+ * Nothing here decides who sees what — the server did.
  */
 'use strict';
 

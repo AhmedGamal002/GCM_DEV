@@ -236,3 +236,99 @@
 - **المتوقع:** المتتبع بيعرض شريط بنسب الرحلات المكتملة والجارية (اللي لسه ماكتملتش ولا اتلغت) والملغاة بالأعداد. الجدول فيه رحلات السائق ده بس بأعمدة: رقم الرحلة، التاريخ، المركبة، العميل، المشروع، الحالة، التفاصيل.
 - **يغطيه آليًا:** `Trips/TripLinksTest::test_the_driver_tracker_counts_completed_ongoing_and_cancelled_trips`
 - **النتيجة:** ⬜
+
+---
+
+## ز) رحلات العميل — `/app/client-trip/*`
+
+> مدير مشروعات العميل (`client.manager`، كل مشروعات Al Noor) ومراقب مشروعات العميل (`client.auditor`، Al Noor Tower بس — وهو ممثل المشروع، يعني **المعتمد الافتراضي**). الاتنين بيعتمدوا ويرفضوا، والفرق في اللي بيشوفوه. **محتاج:** رحلة أو اتنين «في انتظار اعتماد العميل» على Al Noor Tower (اعملها بـ`admin` أو بـ`driver`)، ورمز التحقق بيوصل لإيميل الحساب.
+
+### 30. قايمة رحلات العميل ونطاقها
+- **FRD:** §1.14 (رحلات العميل — الإحصائيات والجدول والفلاتر)
+- **الخطوات:** سجّل دخول بـ`client.manager` وافتح Trips ← List، وبعدين بـ`client.auditor`. جرّب الفلاتر (المدى الزمني، المشروع، الخدمة الأساسية ثم الفرعية، الحالة، الربط بالتعاقد) والبحث، وصدّر Excel وPDF.
+- **المتوقع:** كروت الحالات وجدول بالأعمدة: رقم الرحلة، التاريخ، السائق، المركبة، المشروع، المعتمد الافتراضي من العميل، الخدمة الفرعية، الحالة، التعاقد، التفاصيل. `client.manager` بيشوف رحلات كل مشروعات Al Noor و`client.auditor` رحلات Al Noor Tower بس، ومحدش منهم بيشوف رحلات شركة تانية. قايمة المشروعات في الفلتر = مشروعاته بس. **مفيش أي تكلفة** في الجدول ولا التصدير، ورقم التعاقد بيظهر لمدير المشروعات بس (المراقب بيشوف «مرتبط بتعاقد» من غير رقم، والبحث برقم التعاقد مابيلاقيش له حاجة). التصدير فيه نفس الصفوف اللي على الشاشة.
+- **يغطيه آليًا:** `Trips/ClientTripApiTest::test_the_client_lists_and_counts_the_trips_of_its_projects_only`, `test_another_companys_client_sees_none_of_the_trips`, `test_the_filters_list_the_clients_projects_and_services`, `test_the_client_auditor_cannot_find_a_trip_by_its_po_number`, `test_the_client_manager_finds_a_trip_by_its_po_number`, `test_the_client_export_has_the_clients_columns_and_its_trips_only`, `Trips/ClientTripPagesTest`
+- **النتيجة:** ⬜
+
+### 31. تفاصيل الرحلة للعميل
+- **FRD:** §1.14 (تفاصيل الرحلة — العميل) + ج18 (مين يشوف أي حقل)
+- **الخطوات:** افتح «عرض» لرحلة في انتظار الاعتماد بـ`client.manager`، وبعدين نفس الرحلة بـ`client.auditor`. جرّب تفتح رابط تفاصيل رحلة مشروع مش بتاعك (غيّر الرقم في الرابط).
+- **المتوقع:** البيانات الأساسية للرحلة (الرقم، التاريخ، السائق، المركبة)، وبيانات العميل (الشركة، المشروع، المسؤول الميداني، رابط الموقع)، وبيانات الخدمة (التعاقد، الخدمة الأساسية والفرعية، الكمية بالطن والمتر المكعب، الصورة الحية)، وملاحظات العميل ومرفقاته. **مفيش تكلفة ولا منشأة ولا أرقام ورق المستندات ولا سجل أحداث.** رقم التعاقد لمدير المشروعات بس. رحلة مشروع مش بتاعك = «غير موجودة» (404) مش «ممنوع».
+- **يغطيه آليًا:** `Trips/TripVisibilityTest::test_the_client_manager_sees_the_po_number_but_no_cost_facility_or_document_number`, `test_the_client_auditor_sees_neither_po_number_cost_facility_nor_document_number`, `Trips/ClientTripApiTest::test_another_projects_trip_is_a_404_everywhere`, `test_the_client_opens_the_live_photo_and_its_own_attachment`, `test_the_client_cannot_open_signatures_or_staff_documents`
+- **النتيجة:** ⬜
+
+### 32. اعتماد الرحلة من صفحة المراجعة
+- **FRD:** §1.14 (اعتماد العميل — تعديل الخدمة الفرعية + التوقيع والختم + المرفق والتعليق) + ج7 + 7.3 (رمز التحقق)
+- **الخطوات:** من القايمة أو التفاصيل دوس «Edit» (أو «Approve / Reject» في الجدول). غيّر الخدمة الفرعية، ارسم توقيعك وعلّم «احفظ توقيعي»، ارفع ختم ومرفق واكتب تعليق، ودوس اعتماد ← تأكيد التوقيع القانوني ← رمز التحقق (من الإيميل).
+- **المتوقع:** قايمة الخدمات الفرعية فيها بس الفرعيات النشطة من نفس الخدمة الأساسية واللي بتناسب حاوية الرحلة. من غير رمز صحيح مفيش اعتماد. بعد الاعتماد الحالة «معتمدة من العميل» وأزرار الاعتماد والتعديل بتختفي، والتوقيع اتحفظ في ملفك الشخصي (ولو ماعلّمتش «احفظ توقيعي» مابيتحفظش). مفيش أي حقل تاني اتغيّر غير الخدمة الفرعية. مدير النظام ومدخل البيانات بيوصلهم إشعار «اعتمدها العميل».
+- **يغطيه آليًا:** `Trips/ClientTripApiTest::test_approving_needs_the_emailed_code`, `test_the_client_approves_with_a_drawn_signature_and_keeps_it_on_its_profile`, `test_the_drawn_signature_stays_off_the_profile_unless_asked`, `test_the_client_switches_to_a_sub_service_that_suits_the_container`, `test_approving_changes_nothing_but_the_sub_service`, `test_approving_without_a_signature_is_refused`
+- **النتيجة:** ⬜
+
+### 33. الاعتماد المباشر من التفاصيل بالتوقيع المحفوظ
+- **FRD:** §1.14 («من شاشة تفاصيل الرحلة يمكن للعميل الاعتماد بشكل مباشر»)
+- **الخطوات:** بحساب **عنده توقيع محفوظ** (من الملف الشخصي، أو من اعتماد سابق علّمت فيه «احفظ توقيعي») افتح تفاصيل رحلة في انتظار الاعتماد ← «Approve the trip» ← تأكيد ← الرمز. بعدين جرّب نفس الزرار بحساب **مالوش** توقيع محفوظ.
+- **المتوقع:** بالتوقيع المحفوظ الرحلة بتتعتمد من التفاصيل على طول بتوقيعك وختمك المحفوظين. من غير توقيع محفوظ الزرار بيفتح صفحة المراجعة عشان ترسم توقيع.
+- **يغطيه آليًا:** `Trips/ClientTripApiTest::test_the_client_approves_with_its_saved_signature_and_an_uploaded_stamp`
+- **النتيجة:** ⬜
+
+### 34. رفض الرحلة (اعتراض العميل)
+- **FRD:** §1.14 (رفض العميل — سبب إلزامي + مرفق) + ج8
+- **الخطوات:** من صفحة المراجعة لرحلة في انتظار الاعتماد دوس رفض من غير ما تكتب سبب، وبعدين اكتب سبب وارفع ملف (PDF أو صورة) ودوس رفض ← الرمز. جرّب ترفع ملف من نوع تاني.
+- **المتوقع:** الرفض من غير سبب بيترفض برسالة واضحة، والنوع الغلط بيترفض. بعد الرفض الحالة «اعتراض العميل» والسبب والمرفق بيظهروا في التفاصيل (عند العميل وعند GCM). الرحلة بتستنى قرار GCM (قبول الاعتراض أو رفضه).
+- **يغطيه آليًا:** `Trips/ClientTripApiTest::test_rejecting_needs_the_reasons`, `test_rejecting_needs_the_emailed_code`, `test_the_client_rejects_with_the_reasons_and_a_file`, `test_an_attachment_of_another_type_is_refused`
+- **النتيجة:** ⬜
+
+### 35. مين يعتمد، والرحلة اللي خرجت من الانتظار
+- **FRD:** §1.14 + ج6 (المعتمد الافتراضي للإشعار والتذكير بس)
+- **الخطوات:** اعمل رحلة على Al Noor Tower. اعتمدها بـ`client.manager` (مش المعتمد الافتراضي). افتح رحلة تانية اتعتمدت أو اكتملت أو اتلغت بحساب عميل.
+- **المتوقع:** أي مدير أو مراقب بيشوف المشروع يقدر يعتمد أو يرفض — المعتمد الافتراضي بيوصله الإشعار والتذكير بس، ومايقيّدش الاعتماد. الرحلة اللي مابقتش «في انتظار الاعتماد» مالهاش أزرار اعتماد ولا تعديل، ولو اتبعت الطلب بنفسه بيترفض. موظفو GCM مايقدروش يعتمدوا بالنيابة عن العميل من صفحاته.
+- **يغطيه آليًا:** `Trips/ClientTripApiTest::test_the_details_carry_the_client_buttons_and_the_default_approver`, `test_the_client_auditor_approves_too`, `test_the_client_buttons_are_off_once_the_trip_left_awaiting`, `test_a_trip_no_longer_awaiting_is_a_409`, `test_staff_cannot_approve_for_the_client`
+- **النتيجة:** ⬜
+
+---
+
+## ح) المستندات المولّدة للرحلة — سند التسليم وبيان النفايات
+
+> بتتولّد من بيانات الرحلة لما تكتمل بس (د3). كارت **Trip documents** في صفحة تفاصيل الرحلة عند كل دور بيعرض اللي يقدر يفتحه (أيقونة العين بتفتح الـPDF في تبويب جديد). **محتاج:** رحلتين مكتملتين على الأقل (واحدة منهم بمركبة عليها تصريح دخول ساري)، ورحلة «توريد» مكتملة لو عندك خدمة توريد.
+
+### 36. رقم المستندات
+- **FRD:** §1.14 (رقم سند التسليم ورقم المنافست) + د2
+- **الخطوات:** كمّل رحلة (اعتماد نهائي) وافتح تفاصيلها على طول من غير ما تفتح أي مستند. كمّل رحلة تانية لشركة عميل تانية. بعدين عدّل الرحلة الأولى (مثلًا الكمية) وافتح مستنداتها تاني. الغي رحلة مكتملة.
+- **المتوقع:** أول ما الرحلة تكتمل بيظهر رقمها: `DN-100001` لسند التسليم و`M-100001` لبيان النفايات (نفس الرقم للاتنين)، والرحلة اللي بعدها `100002` حتى لو لشركة تانية (تسلسل واحد لكل الرحلات بترتيب اكتمالها). الرقم بيظهر كمان في ملخص الرحلات في التقارير. التعديل بيتحدّث في المستند لكن الرقم مابيتغيّرش. الرحلة الملغاة مالهاش مستندات، ورقمها مابيرجعش لحد تاني.
+- **يغطيه آليًا:** `Trips/TripDocumentsTest::test_every_way_to_completion_reserves_the_number_in_the_order_trips_complete`, `test_the_delivery_note_opens_inline_with_the_number_reserved_at_completion`, `test_editing_a_completed_trip_updates_its_documents_but_not_their_number`, `test_a_cancelled_trip_has_no_documents_even_if_they_were_generated`, `test_the_number_runs_per_tenant`, `Reports/ReportApiTest::test_a_row_carries_the_frds_columns`
+- **النتيجة:** ⬜
+
+### 37. محتوى سند التسليم
+- **FRD:** §1.14 (مستند DN — مصدر المعلومات) + د5 + د6 + د8 + د9
+- **الخطوات:** افتح سند التسليم لرحلة مكتملة اعتمدها العميل بتوقيعه وختمه.
+- **المتوقع:** فيه رقم المستند ورقم الرحلة وشركة العميل والمشروع والتاريخ (`2026-11-03`، أرقام لاتينية) والسائق ورقم المركبة. قوايم الخدمات الفرعية (غير خطرة / خطرة / توريد) وكل سعات الحاويات **كاملة** وعليها علامة على المختار. ممثل العميل باسمه وتوقيعه وختمه **وقت الاعتماد** (لو غيّرهم بعدين المستند مابيتغيّرش)، وممثل GCM (اللي عمل الاعتماد النهائي) باسمه ورقم تليفونه وتوقيعه وختمه. **مفيش تكلفة ولا رقم تعاقد.** النص العربي متوصّل وفي اتجاهه الصح.
+- **يغطيه آليًا:** `Trips/TripDocumentsTest::test_the_documents_print_the_trip_and_its_representatives`, `test_the_lists_print_every_active_item_with_the_trips_marked`, `test_the_trips_own_sub_service_stays_listed_after_it_is_deactivated`, `test_the_printed_text_is_escaped_and_arabic_is_shaped`
+- **النتيجة:** ⬜
+
+### 38. محتوى بيان النفايات ورحلة التوريد
+- **FRD:** §1.14 (مستند Manifest — مصدر المعلومات) + د7
+- **الخطوات:** افتح بيان النفايات لرحلة مكتملة بمركبة عليها تصريح دخول ساري يوم الرحلة، وبعدين لرحلة مركبتها مالهاش تصريح ساري يومها. افتح تفاصيل رحلة توريد مكتملة.
+- **المتوقع:** البيان فيه نفس البيانات الأساسية + منشأة التخلص والتدوير + أكواد ألوان الحاويات وعليها علامة على كود الخدمة الفرعية + **رقم تصريح الدخول الساري يوم الرحلة** (الأحدث لو أكتر من واحد، وفاضي لو مفيش). رحلة التوريد ليها سند تسليم بس — **مالهاش بيان نفايات**.
+- **يغطيه آليًا:** `Trips/TripDocumentsTest::test_the_permit_is_the_entry_permit_valid_on_the_trip_date`, `test_there_is_no_permit_when_none_is_valid_on_the_trip_date`, `test_a_supplying_trip_has_a_delivery_note_but_no_waste_manifest`
+- **النتيجة:** ⬜
+
+### 39. الملف المجمّع (موظفو GCM بس)
+- **FRD:** §1.14 (تصدير المستندات) + د10
+- **الخطوات:** بـ`admin` افتح رحلة مكتملة عليها صورة إيصال تدوير ← «Export trip documents». جرّب رحلة مكتملة من غير إيصال.
+- **المتوقع:** بيتنزّل PDF واحد باسم الرحلة بالترتيب: سند التسليم ← بيان النفايات ← صورة إيصال التدوير، والناقص بيتشال من غير صفحة فاضية. الزرار مش موجود لأي حد غير موظفي GCM (المراقب يقدر يصدّر). الحساب اللي في إجازة يقدر يعاين المستندات بس مايصدّرش.
+- **يغطيه آليًا:** `Trips/TripDocumentsTest::test_the_combined_pdf_is_a_download_named_after_the_trip`, `test_the_combined_pdf_adds_the_recycle_receipt_photo_last_when_there_is_one`, `test_the_combined_pdf_leaves_out_a_missing_receipt`, `test_an_account_on_vacation_previews_but_does_not_export`
+- **النتيجة:** ⬜
+
+### 40. مين يفتح أي مستند
+- **FRD:** §1.14 + د10 + ج18 + ج19
+- **الخطوات:** افتح تفاصيل نفس الرحلة المكتملة بكل دور: `admin` و`auditor` (`/app/trip/view/…`)، `client.manager` و`client.auditor` (`/app/client-trip/view/…`)، `driver` (`/app/driver-trip/view/…`)، ومستخدم المتعهد لو مركبتها أو سائقها تبعه (`/app/contractor-trip/view/…`). بعدين افتح رحلة لسه ماكتملتش.
+- **المتوقع:** الإدارة والمراقب: المستندين + زرار الملف المجمّع. **حسابات العميل: المستندين عرض بس، من غير الملف المجمّع.** السائق ومستخدم المتعهد: سند التسليم بس. حد مالوش علاقة بالرحلة (سائق تاني، متعهد تاني، عميل شركة تانية) مابيلاقيهاش أصلًا. الرحلة اللي ماكتملتش الكارت بيقول إن المستندات بتتولّد بعد الاكتمال.
+- **يغطيه آليًا:** `Trips/TripDocumentsTest::test_staff_and_the_client_open_both_documents_and_only_staff_export_them`, `test_the_details_list_the_documents_each_role_may_open`, `test_the_client_sees_both_documents_without_the_export`, `test_the_driver_opens_the_delivery_note_of_their_trip_only`, `test_the_contractor_user_opens_the_delivery_note_of_a_trip_with_its_vehicle`, `test_a_client_of_another_company_does_not_find_the_trip`, `test_an_unfinished_trip_lists_no_documents`, `Trips/ClientTripPagesTest::test_the_details_page_has_the_trip_documents_card`
+- **النتيجة:** ⬜
+
+### 41. القوايم الطويلة في المستند
+- **FRD:** د8 (كل الخدمات الفرعية وكل السعات من غير حد أقصى)
+- **الخطوات:** لو عندك خدمات فرعية أو سعات كتير (عشرات)، افتح سند التسليم لرحلة مكتملة وقلّب في كل صفحاته.
+- **المتوقع:** القايمة بتكمّل على صفحات زيادة من غير صفحات فاضية ومن غير ما بند يتكرر أو يقع، والأسماء الطويلة بتتقصّر بنفس الشكل في كل الصفحات.
+- **يغطيه آليًا:** `Trips/TripDocumentsTest::test_the_middle_pages_of_a_long_list_are_drawn_and_cover_every_row_once`, `test_a_list_label_too_wide_for_its_cell_is_shortened_the_same_way_on_every_page`
+- **النتيجة:** ⬜

@@ -84,7 +84,7 @@
 <body>
 <div class="wrap">
   <h1>GCM Portal — اختبار القبول: مدير مشروعات العميل</h1>
-  <p class="sub">حسابك تابع لشركة <strong>Al Noor Construction</strong> بصلاحية على <strong>كل مشروعاتها</strong> (الحالية والمستقبلية). صفحات العميل الفعلية (الرحلات والتقارير، وتعاقدات مشروعاتك لمدير المشروعات) — التعاقدات اتبنت والباقي جاي مع موديولاته في مرحلة لاحقة — حاليًا الحساب بيدخل ويظبط ملفه الشخصي بس. الدور ده اتبنى في المرحلة التانية — فكل الملف تحتها.<br>لكل بند: جرّب الخطوات وقارن بالنتيجة المتوقعة. علّم ✔ لو نجح، ودوس "فشل" واكتب ملاحظة لو طلع غلط. تقدّمك بيتحفظ تلقائيًا في المتصفح ده، ولما تخلص صدّر النتيجة.</p>
+  <p class="sub">حسابك تابع لشركة <strong>Al Noor Construction</strong> بصلاحية على <strong>كل مشروعاتها</strong> (الحالية والمستقبلية). بتشوف رحلات مشروعاتك وتعتمدها أو ترفضها برمز تحقق، ومستنداتها بعد ما تكتمل، ولوحة التحكم والإشعارات والتقارير (وتعاقدات مشروعاتك لو انت مدير المشروعات). الدور ده اتبنى في المرحلة التانية — فكل الملف تحتها.<br>لكل بند: جرّب الخطوات وقارن بالنتيجة المتوقعة. علّم ✔ لو نجح، ودوس "فشل" واكتب ملاحظة لو طلع غلط. تقدّمك بيتحفظ تلقائيًا في المتصفح ده، ولما تخلص صدّر النتيجة.</p>
 
   <div class="setup">
     <h2>بيانات الدخول</h2>
@@ -109,7 +109,7 @@
       <span>تم: <b id="s-pass">0</b></span>
       <span>فشل: <b id="s-fail" style="color:var(--bad)">0</b></span>
       <span>متبقي: <b id="s-left">0</b></span>
-      <span>من <b>26</b> بند</span>
+      <span>من <b>34</b> بند</span>
     </div>
     <div class="prog"><i class="p" id="b-pass"></i><i class="f" id="b-fail"></i></div>
     <div class="tools">
@@ -211,12 +211,100 @@
     <p class="doc-note">الرحلات (إنشاء ومتابعة وتعديل وإلغاء) وربطها بباقي صفحات النظام — الجزء اللي يخص دورك.</p>
     
     <details open class="group">
+      <summary>رحلات مشروعاتي (القايمة والتفاصيل والاعتماد والرفض) <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-7-trips#30" data-title="قايمة رحلات العميل ونطاقها">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">7</span></label>
+        <h3>قايمة رحلات العميل ونطاقها</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.14 (رحلات العميل — الإحصائيات والجدول والفلاتر)</dd></div><div class="row"><dt>الخطوات</dt><dd>سجّل دخول بـ<code>client.manager</code> وافتح Trips ← List، وبعدين بـ<code>client.auditor</code>. جرّب الفلاتر (المدى الزمني، المشروع، الخدمة الأساسية ثم الفرعية، الحالة، الربط بالتعاقد) والبحث، وصدّر Excel وPDF.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>كروت الحالات وجدول بالأعمدة: رقم الرحلة، التاريخ، السائق، المركبة، المشروع، المعتمد الافتراضي من العميل، الخدمة الفرعية، الحالة، التعاقد، التفاصيل. <code>client.manager</code> بيشوف رحلات كل مشروعات Al Noor و<code>client.auditor</code> رحلات Al Noor Tower بس، ومحدش منهم بيشوف رحلات شركة تانية. قايمة المشروعات في الفلتر = مشروعاته بس. <strong>مفيش أي تكلفة</strong> في الجدول ولا التصدير، ورقم التعاقد بيظهر لمدير المشروعات بس (المراقب بيشوف «مرتبط بتعاقد» من غير رقم، والبحث برقم التعاقد مابيلاقيش له حاجة). التصدير فيه نفس الصفوف اللي على الشاشة.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-7-trips#31" data-title="تفاصيل الرحلة للعميل">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">8</span></label>
+        <h3>تفاصيل الرحلة للعميل</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.14 (تفاصيل الرحلة — العميل) + ج18 (مين يشوف أي حقل)</dd></div><div class="row"><dt>الخطوات</dt><dd>افتح «عرض» لرحلة في انتظار الاعتماد بـ<code>client.manager</code>، وبعدين نفس الرحلة بـ<code>client.auditor</code>. جرّب تفتح رابط تفاصيل رحلة مشروع مش بتاعك (غيّر الرقم في الرابط).</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>البيانات الأساسية للرحلة (الرقم، التاريخ، السائق، المركبة)، وبيانات العميل (الشركة، المشروع، المسؤول الميداني، رابط الموقع)، وبيانات الخدمة (التعاقد، الخدمة الأساسية والفرعية، الكمية بالطن والمتر المكعب، الصورة الحية)، وملاحظات العميل ومرفقاته. <strong>مفيش تكلفة ولا منشأة ولا أرقام ورق المستندات ولا سجل أحداث.</strong> رقم التعاقد لمدير المشروعات بس. رحلة مشروع مش بتاعك = «غير موجودة» (404) مش «ممنوع».</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-7-trips#32" data-title="اعتماد الرحلة من صفحة المراجعة">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">9</span></label>
+        <h3>اعتماد الرحلة من صفحة المراجعة</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.14 (اعتماد العميل — تعديل الخدمة الفرعية + التوقيع والختم + المرفق والتعليق) + ج7 + 7.3 (رمز التحقق)</dd></div><div class="row"><dt>الخطوات</dt><dd>من القايمة أو التفاصيل دوس «Edit» (أو «Approve / Reject» في الجدول). غيّر الخدمة الفرعية، ارسم توقيعك وعلّم «احفظ توقيعي»، ارفع ختم ومرفق واكتب تعليق، ودوس اعتماد ← تأكيد التوقيع القانوني ← رمز التحقق (من الإيميل).</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>قايمة الخدمات الفرعية فيها بس الفرعيات النشطة من نفس الخدمة الأساسية واللي بتناسب حاوية الرحلة. من غير رمز صحيح مفيش اعتماد. بعد الاعتماد الحالة «معتمدة من العميل» وأزرار الاعتماد والتعديل بتختفي، والتوقيع اتحفظ في ملفك الشخصي (ولو ماعلّمتش «احفظ توقيعي» مابيتحفظش). مفيش أي حقل تاني اتغيّر غير الخدمة الفرعية. مدير النظام ومدخل البيانات بيوصلهم إشعار «اعتمدها العميل».</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-7-trips#33" data-title="الاعتماد المباشر من التفاصيل بالتوقيع المحفوظ">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">10</span></label>
+        <h3>الاعتماد المباشر من التفاصيل بالتوقيع المحفوظ</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.14 («من شاشة تفاصيل الرحلة يمكن للعميل الاعتماد بشكل مباشر»)</dd></div><div class="row"><dt>الخطوات</dt><dd>بحساب <strong>عنده توقيع محفوظ</strong> (من الملف الشخصي، أو من اعتماد سابق علّمت فيه «احفظ توقيعي») افتح تفاصيل رحلة في انتظار الاعتماد ← «Approve the trip» ← تأكيد ← الرمز. بعدين جرّب نفس الزرار بحساب <strong>مالوش</strong> توقيع محفوظ.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>بالتوقيع المحفوظ الرحلة بتتعتمد من التفاصيل على طول بتوقيعك وختمك المحفوظين. من غير توقيع محفوظ الزرار بيفتح صفحة المراجعة عشان ترسم توقيع.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-7-trips#34" data-title="رفض الرحلة (اعتراض العميل)">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">11</span></label>
+        <h3>رفض الرحلة (اعتراض العميل)</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.14 (رفض العميل — سبب إلزامي + مرفق) + ج8</dd></div><div class="row"><dt>الخطوات</dt><dd>من صفحة المراجعة لرحلة في انتظار الاعتماد دوس رفض من غير ما تكتب سبب، وبعدين اكتب سبب وارفع ملف (PDF أو صورة) ودوس رفض ← الرمز. جرّب ترفع ملف من نوع تاني.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الرفض من غير سبب بيترفض برسالة واضحة، والنوع الغلط بيترفض. بعد الرفض الحالة «اعتراض العميل» والسبب والمرفق بيظهروا في التفاصيل (عند العميل وعند GCM). الرحلة بتستنى قرار GCM (قبول الاعتراض أو رفضه).</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-7-trips#35" data-title="مين يعتمد، والرحلة اللي خرجت من الانتظار">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">12</span></label>
+        <h3>مين يعتمد، والرحلة اللي خرجت من الانتظار</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.14 + ج6 (المعتمد الافتراضي للإشعار والتذكير بس)</dd></div><div class="row"><dt>الخطوات</dt><dd>اعمل رحلة على Al Noor Tower. اعتمدها بـ<code>client.manager</code> (مش المعتمد الافتراضي). افتح رحلة تانية اتعتمدت أو اكتملت أو اتلغت بحساب عميل.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>أي مدير أو مراقب بيشوف المشروع يقدر يعتمد أو يرفض — المعتمد الافتراضي بيوصله الإشعار والتذكير بس، ومايقيّدش الاعتماد. الرحلة اللي مابقتش «في انتظار الاعتماد» مالهاش أزرار اعتماد ولا تعديل، ولو اتبعت الطلب بنفسه بيترفض. موظفو GCM مايقدروش يعتمدوا بالنيابة عن العميل من صفحاته.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+    <details open class="group">
+      <summary>مستندات الرحلة <span class="count"></span></summary>
+      
+    <article class="item" data-id="week-7-trips#37" data-title="محتوى سند التسليم">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">13</span></label>
+        <h3>محتوى سند التسليم</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.14 (مستند DN — مصدر المعلومات) + د5 + د6 + د8 + د9</dd></div><div class="row"><dt>الخطوات</dt><dd>افتح سند التسليم لرحلة مكتملة اعتمدها العميل بتوقيعه وختمه.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>فيه رقم المستند ورقم الرحلة وشركة العميل والمشروع والتاريخ (<code>2026-11-03</code>، أرقام لاتينية) والسائق ورقم المركبة. قوايم الخدمات الفرعية (غير خطرة / خطرة / توريد) وكل سعات الحاويات <strong>كاملة</strong> وعليها علامة على المختار. ممثل العميل باسمه وتوقيعه وختمه <strong>وقت الاعتماد</strong> (لو غيّرهم بعدين المستند مابيتغيّرش)، وممثل GCM (اللي عمل الاعتماد النهائي) باسمه ورقم تليفونه وتوقيعه وختمه. <strong>مفيش تكلفة ولا رقم تعاقد.</strong> النص العربي متوصّل وفي اتجاهه الصح.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    <article class="item" data-id="week-7-trips#38" data-title="محتوى بيان النفايات ورحلة التوريد">
+      <header>
+        <label class="check"><input type="checkbox" class="pass" aria-label="تم">
+          <span class="num">14</span></label>
+        <h3>محتوى بيان النفايات ورحلة التوريد</h3>
+        <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
+      </header>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>§1.14 (مستند Manifest — مصدر المعلومات) + د7</dd></div><div class="row"><dt>الخطوات</dt><dd>افتح بيان النفايات لرحلة مكتملة بمركبة عليها تصريح دخول ساري يوم الرحلة، وبعدين لرحلة مركبتها مالهاش تصريح ساري يومها. افتح تفاصيل رحلة توريد مكتملة.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>البيان فيه نفس البيانات الأساسية + منشأة التخلص والتدوير + أكواد ألوان الحاويات وعليها علامة على كود الخدمة الفرعية + <strong>رقم تصريح الدخول الساري يوم الرحلة</strong> (الأحدث لو أكتر من واحد، وفاضي لو مفيش). رحلة التوريد ليها سند تسليم بس — <strong>مالهاش بيان نفايات</strong>.</dd></div></dl>
+      <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
+    </article>
+    </details>
+    <details open class="group">
       <summary>الإشعارات <span class="count"></span></summary>
       
     <article class="item" data-id="week-8-notifications#1" data-title="الجرس والعدّاد">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">7</span></label>
+          <span class="num">15</span></label>
         <h3>الجرس والعدّاد</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -226,7 +314,7 @@
     <article class="item" data-id="week-8-notifications#2" data-title="صفحة الإشعارات">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">8</span></label>
+          <span class="num">16</span></label>
         <h3>صفحة الإشعارات</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -236,7 +324,7 @@
     <article class="item" data-id="week-8-notifications#4" data-title="رحلة جديدة تحتاج اعتماد العميل">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">9</span></label>
+          <span class="num">17</span></label>
         <h3>رحلة جديدة تحتاج اعتماد العميل</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -246,7 +334,7 @@
     <article class="item" data-id="week-8-notifications#7" data-title="الاعتماد النهائي والإلغاء">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">10</span></label>
+          <span class="num">18</span></label>
         <h3>الاعتماد النهائي والإلغاء</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -256,7 +344,7 @@
     <article class="item" data-id="week-8-notifications#8" data-title="الإشعار مافيهوش بيانات حساسة">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">11</span></label>
+          <span class="num">19</span></label>
         <h3>الإشعار مافيهوش بيانات حساسة</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -270,7 +358,7 @@
     <article class="item" data-id="week-8-dashboard#1" data-title="الأقسام اللي كل دور بيشوفها">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">12</span></label>
+          <span class="num">20</span></label>
         <h3>الأقسام اللي كل دور بيشوفها</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -280,7 +368,7 @@
     <article class="item" data-id="week-8-dashboard#2" data-title="حالات الرحلات الخمس">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">13</span></label>
+          <span class="num">21</span></label>
         <h3>حالات الرحلات الخمس</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -290,7 +378,7 @@
     <article class="item" data-id="week-8-dashboard#3" data-title="رسم الرحلات في آخر 30 يوم">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">14</span></label>
+          <span class="num">22</span></label>
         <h3>رسم الرحلات في آخر 30 يوم</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -300,7 +388,7 @@
     <article class="item" data-id="week-8-dashboard#4" data-title="رسم نسب الخدمات الأساسية">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">15</span></label>
+          <span class="num">23</span></label>
         <h3>رسم نسب الخدمات الأساسية</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -310,7 +398,7 @@
     <article class="item" data-id="week-8-dashboard#8" data-title="نطاق الرؤية (عميل / سائق / متعهد)">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">16</span></label>
+          <span class="num">24</span></label>
         <h3>نطاق الرؤية (عميل / سائق / متعهد)</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -324,7 +412,7 @@
     <article class="item" data-id="week-8-reports#1" data-title="الوصول للصفحة لكل دور">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">17</span></label>
+          <span class="num">25</span></label>
         <h3>الوصول للصفحة لكل دور</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -334,7 +422,7 @@
     <article class="item" data-id="week-8-reports#2" data-title="الفلاتر التسعة">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">18</span></label>
+          <span class="num">26</span></label>
         <h3>الفلاتر التسعة</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -344,7 +432,7 @@
     <article class="item" data-id="week-8-reports#3" data-title="المدى الزمني">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">19</span></label>
+          <span class="num">27</span></label>
         <h3>المدى الزمني</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -354,17 +442,17 @@
     <article class="item" data-id="week-8-reports#4" data-title="ملخص الرحلات (الجدول)">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">20</span></label>
+          <span class="num">28</span></label>
         <h3>ملخص الرحلات (الجدول)</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
-      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>&quot;تقرير ملخص الرحلات (Trips Summary)&quot;</dd></div><div class="row"><dt>الخطوات</dt><dd>بص على جدول &quot;ملخص الرحلات&quot; تحت الصفحة.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الأعمدة: رقم الرحلة، شركة العميل، المشروع، التاريخ، الوقت، رقم مستند التسليم، رقم بيان النفايات، الخدمة الفرعية، سعة الحاوية، حالة الرحلة — من الأحدث. <strong>أرقام المستندات هي أرقام المستندات المولّدة (<code>DN-…</code>/<code>M-…</code>)</strong> وبتظهر بعد ما الرحلة تكتمل ويتفتح مستندها أول مرة، وقبلها &quot;—&quot;. رحلة التوريد مالهاش بيان نفايات. الرحلة الملغاة بتظهر كصف عادي بحالتها.</dd></div></dl>
+      <dl><div class="row"><dt>مرجع الـFRD</dt><dd>&quot;تقرير ملخص الرحلات (Trips Summary)&quot;</dd></div><div class="row"><dt>الخطوات</dt><dd>بص على جدول &quot;ملخص الرحلات&quot; تحت الصفحة.</dd></div><div class="row"><dt>النتيجة المتوقعة</dt><dd>الأعمدة: رقم الرحلة، شركة العميل، المشروع، التاريخ، الوقت، رقم مستند التسليم، رقم بيان النفايات، الخدمة الفرعية، سعة الحاوية، حالة الرحلة — من الأحدث. <strong>أرقام المستندات هي أرقام المستندات المولّدة (<code>DN-…</code>/<code>M-…</code>)</strong> وبتظهر من لحظة اكتمال الرحلة، وقبلها &quot;—&quot;. رحلة التوريد مالهاش بيان نفايات. الرحلة الملغاة بتظهر كصف عادي بحالتها.</dd></div></dl>
       <textarea class="note" rows="2" placeholder="ملاحظات — لو فشل: اكتب اللي حصل فعليًا"></textarea>
     </article>
     <article class="item" data-id="week-8-reports#5" data-title="تصدير ملخص الرحلات Excel">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">21</span></label>
+          <span class="num">29</span></label>
         <h3>تصدير ملخص الرحلات Excel</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -374,7 +462,7 @@
     <article class="item" data-id="week-8-reports#7" data-title="نطاق العميل">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">22</span></label>
+          <span class="num">30</span></label>
         <h3>نطاق العميل</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -394,7 +482,7 @@
     <article class="item" data-id="uat-common#1" data-title="التاريخ والوقت الحاليين في الشريط العلوي">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">23</span></label>
+          <span class="num">31</span></label>
         <h3>التاريخ والوقت الحاليين في الشريط العلوي</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -404,7 +492,7 @@
     <article class="item" data-id="week-3-frd-gap-review#2" data-title="تبديل الوضع الداكن / المضيء">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">24</span></label>
+          <span class="num">32</span></label>
         <h3>تبديل الوضع الداكن / المضيء</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -424,7 +512,7 @@
     <article class="item" data-id="uat-common#2" data-title="تبديل اللغة (عربي / إنجليزي) والاتجاه">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">25</span></label>
+          <span class="num">33</span></label>
         <h3>تبديل اللغة (عربي / إنجليزي) والاتجاه</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>
@@ -434,7 +522,7 @@
     <article class="item" data-id="week-3-frd-gap-review#30" data-title="شاشة التحميل واللوجو والاسم">
       <header>
         <label class="check"><input type="checkbox" class="pass" aria-label="تم">
-          <span class="num">26</span></label>
+          <span class="num">34</span></label>
         <h3>شاشة التحميل واللوجو والاسم</h3>
         <button type="button" class="failbtn" title="علّم إن البند فشل">فشل</button>
       </header>

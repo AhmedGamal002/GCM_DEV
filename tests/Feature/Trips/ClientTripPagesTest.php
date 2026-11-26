@@ -30,6 +30,21 @@ class ClientTripPagesTest extends TripTestCase
         $this->get("/app/client-trip/review/{$trip->id}")->assertOk()->assertSee($trip->code);
     }
 
+    public function test_the_details_page_has_the_trip_documents_card(): void
+    {
+        // Part 8.1 / د10: the client views the generated documents from its trip details — the shared card,
+        // filled from GET /trips/{id} → documents (no combined-PDF button: that is GCM's).
+        $trip = $this->createAwaiting();
+
+        $this->actingAs($this->clientAuditor, 'web')
+            ->get("/app/client-trip/view/{$trip->id}")
+            ->assertOk()
+            ->assertSee('id="ctv-generated-card"', false)
+            ->assertSee('id="ctv-generated-hint"', false)
+            ->assertSee(__('Trip documents'))
+            ->assertDontSee('Export trip documents');
+    }
+
     public function test_the_client_auditor_opens_the_pages_too(): void
     {
         $trip = $this->createAwaiting();

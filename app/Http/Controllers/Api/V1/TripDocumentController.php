@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Gate;
  *
  * The trip is looked up among those the user sees (Trip::scopeVisibleTo) — any other is a 404. Documents
  * exist only once the trip is completed (د3): before that the answer is 409; a supplying trip has no waste
- * manifest (TripDocuments) — 404. The first generation reserves the trip's document number (د2).
+ * manifest (TripDocuments) — 404. The document number (د2) is reserved at completion (CompleteTrip).
  */
 class TripDocumentController extends Controller
 {

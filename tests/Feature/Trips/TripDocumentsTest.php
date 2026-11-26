@@ -25,7 +25,8 @@ use PHPUnit\Framework\Attributes\DataProvider;
  * Part 8.1 — a trip's generated documents (FRD V01.14 §1.14 "الوثائق المولدة تلقائياً"):
  *
  *  - only once the trip is completed (د3), generated on request; the number (one per trip, shared by
- *    DN- and M-, per tenant from 100001 — د2) is reserved on the first generation and never changes;
+ *    DN- and M-, per tenant from 100001 — د2) is reserved when the trip is completed (or on the first
+ *    generation, for a trip completed before that) and never changes;
  *  - who opens what (د10 and the plan): staff and the client's accounts both documents, the driver and
  *    the contractor user the delivery note, the combined PDF staff only; another's trip is a 404;
  *  - what they print (the FRD's source columns, د5–د9): the data is checked on TripDocumentData, the
@@ -74,10 +75,10 @@ class TripDocumentsTest extends TripTestCase
         $this->assertSame(TripDocumentNumber::FIRST, $trip->fresh()->document_number, 'a reserved number is never given back');
     }
 
-    public function test_the_delivery_note_opens_inline_with_its_number_reserved_on_the_first_generation(): void
+    public function test_the_delivery_note_opens_inline_with_the_number_reserved_at_completion(): void
     {
         $trip = $this->completed();
-        $this->assertNull($trip->fresh()->document_number);
+        $this->assertSame(100001, $trip->fresh()->document_number, 'reserved when the trip completed, before any document is opened');
 
         $response = $this->read($this->admin, "trips/{$trip->id}/documents/delivery-note")->assertOk();
 
@@ -87,28 +88,63 @@ class TripDocumentsTest extends TripTestCase
         $this->assertSame(100001, $trip->fresh()->document_number);
     }
 
-    public function test_both_documents_share_one_number_that_runs_across_companies_and_never_changes(): void
+    public function test_every_way_to_completion_reserves_the_number_in_the_order_trips_complete(): void
     {
-        $first = $this->completed();
-        $second = $this->completed();
+        $approvedLater = $this->clientApprove($this->createAwaiting());
+
+        // Created already completed (no client approval).
+        $direct = app(\App\Domain\Trips\Actions\CreateTripByStaffAction::class)
+            ->execute($this->admin, $this->staffData(['requires_client_approval' => false]), [], $this->completion());
+        // The client's objection rejected — completes the trip.
+        $objected = app(\App\Domain\Trips\Actions\RejectClientObjectionAction::class)
+            ->execute($this->clientReject($this->createAwaiting()), $this->admin, $this->completion());
+        // Final approval straight from "awaiting", without the client.
+        $withoutClient = $this->finalApprove($this->createAwaiting(), $this->completion());
+        $this->finalApprove($approvedLater);
+
+        $this->assertSame(100001, $direct->fresh()->document_number);
+        $this->assertSame(100002, $objected->fresh()->document_number);
+        $this->assertSame(100003, $withoutClient->fresh()->document_number);
+        $this->assertSame(100004, $approvedLater->fresh()->document_number, 'the order of completion, not of creation');
+    }
+
+    public function test_a_trip_completed_before_the_change_gets_its_number_on_the_first_generation(): void
+    {
+        $completed = $this->completed(); // 100001, at completion
 
         $otherProject = Project::factory()->for(Company::factory()->create(['prefix' => 'BRK']))->create();
-        $third = Trip::factory()->forProject($otherProject)->create(['status' => Trip::STATUS_COMPLETED]);
+        $older = Trip::factory()->forProject($otherProject)->create(['status' => Trip::STATUS_COMPLETED]);
+        $this->assertNull($older->document_number);
 
-        // Generated out of order: the number follows the first generation, not the trip.
-        $this->assertSame(100001, TripDocumentNumber::reserve($second));
-        $this->assertSame(100002, TripDocumentNumber::reserve($third));
-        $this->assertSame(100003, TripDocumentNumber::reserve($first));
-        $this->assertSame(100001, TripDocumentNumber::reserve($second->fresh()), 'a second generation keeps the number');
+        $this->assertSame(100002, TripDocumentNumber::reserve($older), 'one sequence across companies');
+        $this->assertSame(100002, TripDocumentNumber::reserve($older->fresh()), 'a second generation keeps the number');
+        $this->assertSame(100001, TripDocumentNumber::reserve($completed->fresh()));
 
-        $second->refresh();
-        $this->assertSame('DN-100001', TripDocuments::code($second, TripDocuments::DELIVERY_NOTE));
-        $this->assertSame('M-100001', TripDocuments::code($second, TripDocuments::WASTE_MANIFEST));
+        $older->refresh();
+        $this->assertSame('DN-100002', TripDocuments::code($older, TripDocuments::DELIVERY_NOTE));
+        $this->assertSame('M-100002', TripDocuments::code($older, TripDocuments::WASTE_MANIFEST));
+    }
+
+    public function test_completed_trips_without_a_number_are_numbered_by_the_migration_in_completion_order(): void
+    {
+        $numbered = $this->completed(); // 100001
+        $later = Trip::factory()->create(['status' => Trip::STATUS_COMPLETED, 'completed_at' => now()->subDay()]);
+        $earlier = Trip::factory()->create(['status' => Trip::STATUS_COMPLETED, 'completed_at' => now()->subDays(3)]);
+        $cancelled = Trip::factory()->create(['status' => Trip::STATUS_CANCELLED]);
+        $awaiting = $this->createAwaiting();
+
+        (require database_path('migrations/2026_11_26_110000_reserve_document_numbers_of_completed_trips.php'))->up();
+
+        $this->assertSame(100001, $numbered->fresh()->document_number, 'a number already taken is kept');
+        $this->assertSame(100002, $earlier->fresh()->document_number);
+        $this->assertSame(100003, $later->fresh()->document_number);
+        $this->assertNull($cancelled->fresh()->document_number);
+        $this->assertNull($awaiting->fresh()->document_number);
     }
 
     public function test_reserving_the_number_is_not_an_edit_and_an_edit_cannot_change_it(): void
     {
-        $trip = $this->completed();
+        $trip = Trip::factory()->create(['status' => Trip::STATUS_COMPLETED]); // completed before numbers were reserved at completion
         $updatedAt = $trip->fresh()->updated_at;
         $events = TripEvent::where('trip_id', $trip->id)->count();
 
@@ -251,7 +287,7 @@ class TripDocumentsTest extends TripTestCase
         $documents = $this->read($this->clientAuditor, "trips/{$trip->id}")->assertOk()->json('data.documents');
 
         $this->assertSame(['delivery_note', 'waste_manifest', 'export_url'], array_keys($documents));
-        $this->assertNull($documents['delivery_note']['number'], 'not generated yet');
+        $this->assertSame('DN-100001', $documents['delivery_note']['number'], 'reserved at completion, before anyone opens it');
         $this->assertNull($documents['export_url']);
     }
 

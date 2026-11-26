@@ -79,7 +79,7 @@ final class TripDocuments
         return $trip->document_number === null ? null : self::PREFIXES[$kind].'-'.$trip->document_number;
     }
 
-    /** One generated document as PDF bytes (reserves the trip's number on its first generation). */
+    /** One generated document as PDF bytes (reserves the trip's number if its completion didn't already). */
     public static function render(Trip $trip, string $kind): string
     {
         TripDocumentNumber::reserve($trip);

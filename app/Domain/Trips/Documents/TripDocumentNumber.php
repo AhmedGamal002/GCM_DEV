@@ -9,13 +9,15 @@ use Illuminate\Support\Facades\DB;
 /**
  * The number of a trip's generated documents — decision د2: one number per
  * trip shared by both documents (DN-100001 / M-100001), one sequence per
- * tenant across all its trips, from 100001. Reserved the first time a
- * document of the trip is generated (د3) and never changed after (the column
- * is locked in Trip::booted()); a trip cancelled after that keeps its number,
- * so the sequence may have gaps.
+ * tenant across all its trips, from 100001. Reserved when the trip is
+ * completed (CompleteTrip — so the trips summary report has it before anyone
+ * opens a document; generating a document still reserves it for a trip
+ * completed before that) and never changed after (the column is locked in
+ * Trip::booted()); a completed trip cancelled later keeps its number, so the
+ * sequence may have gaps.
  *
- * Two generations at the same moment (the same trip opened twice, or two
- * trips) are serialized: the trip's row is locked and re-read (a second
+ * Two reservations at the same moment (the same trip opened twice, two
+ * trips completed together) are serialized: the trip's row is locked and re-read (a second
  * request sees the number the first one reserved), then the tenant's row,
  * and the highest number read with a locking read — a plain read would see
  * the transaction's older snapshot on MySQL (CLAUDE.md). unique(tenant_id,

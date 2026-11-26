@@ -2,6 +2,7 @@
 
 namespace App\Domain\Trips\Support;
 
+use App\Domain\Trips\Documents\TripDocumentNumber;
 use App\Models\Trip;
 use App\Models\User;
 
@@ -15,7 +16,9 @@ use App\Models\User;
  *  2. the completion requirements (TripCompletionRequirements) — nothing
  *     completes without them;
  *  3. the status, who completed it and when;
- *  4. the containers move (TripAssetMovement, ج3).
+ *  4. the containers move (TripAssetMovement, ج3);
+ *  5. the number of its generated documents is reserved (TripDocumentNumber, د2) — at completion rather than
+ *     when a document is first opened, so the trips summary report shows DN-/M- for every completed trip.
  *
  * Runs inside the caller's transaction, on the locked row.
  */
@@ -36,5 +39,6 @@ final class CompleteTrip
         $trip->save();
 
         TripAssetMovement::apply($trip, $actor);
+        TripDocumentNumber::reserve($trip);
     }
 }

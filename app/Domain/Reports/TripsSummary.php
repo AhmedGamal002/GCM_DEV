@@ -15,8 +15,8 @@ use App\Models\User;
  *
  * The DN / manifest columns are the trip's GENERATED document numbers (DN-100001 / M-100001 — the ones printed on the
  * delivery note and the waste manifest the client opens), not the paper numbers staff type into the form, which a
- * client may not see (ج18). Readings of ours: a number exists once the trip's documents were first generated (8.1:
- * it is reserved then), so a trip not yet completed — or completed but never opened — shows "—"; a supply trip has
+ * client may not see (ج18). The number is reserved when the trip is completed (CompleteTrip), so a trip not yet
+ * completed shows "—". Readings of ours: a supply trip has
  * no manifest (8.1); the viewer must be allowed the document kind (TripFieldVisibility::documentKinds).
  */
 final class TripsSummary
